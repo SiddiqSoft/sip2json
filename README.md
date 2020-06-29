@@ -68,20 +68,22 @@ v1.0.0   | Basic decoder and encoder for response messages: NOTIFY, ACK,
   "mh":[  {"Call-ID":null},
           {"Content-Type":"application/sdp"}
   ],
-  "mb":{  "sdp":[ {  "v":0,    // Start of session block
+  "mb":{  "sdp":[ {  "v":0,     // Start of session block
                      "o":"",
                      "s":"",
                      "i":"",
                      "t":{"start":0, "stop":0},
-                     "a_sl":[] // Session-level a= values.
-                     "m":[],   // Media descriptors
-                     "a_ml":[] // Media-level a= values.
+                     "a_sl":[], // Session-level a= values.
+                     "m":[],    // Media descriptors
+                     "a_ml":[]  // Media-level a= values.
                   }
           ]
   }
 }
 ```
 
-[JSON for Modern C++](https://nlohmann.github.io/json/)
-[SIP Messages Definition](https://tools.ietf.org/html/rfc3261#section-7)
-[FMT Library](https://fmt.dev/latest/index.html)
+### External resources
+- [JSON for Modern C++](https://nlohmann.github.io/json/)
+- [SIP Messages Definition](https://tools.ietf.org/html/rfc3261#section-7)
+- [FMT Library](https://fmt.dev/latest/index.html)
+- [SDP specification](https://en.wikipedia.org/wiki/Session_Description_Protocol)
