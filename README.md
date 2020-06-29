@@ -34,6 +34,16 @@ We skewed towards the following tradeoffs:
   - The primary datastore is the [json](https://github.com/nlohmann/json) data structure
   - C++17
 
+### Out of scope
+This library is intendended to be used as a basis for you application and does not provide:
+- IO facility
+- Buffer management
+- Encryption
+- Managing CSeq
+- Thread safety is your responsibility
+  - The functions do not use shared data, however, any paramter provided must be protected/available for the duration of the call.
+- Async/callbacks are not the design goal of this library: no IO is performed and thus no likelyhood of the calls being suspended. Trying to force callbacks here in this simple library would likely create unnecessary overhead.
+
 ## Usage
 
 The library is provided as a nuget package but can also be used as a header-only dependency.

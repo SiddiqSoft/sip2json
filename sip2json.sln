@@ -1,0 +1,54 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30204.135
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "basictest", "test\basictest\basictest.vcxproj", "{6370E3CF-2CB1-48EE-AE9C-8C76C3B4E5DA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{0833CF10-6FB8-4734-9619-7E657E41CC84}"
+	ProjectSection(SolutionItems) = preProject
+		build\sip2json.nuspec = build\sip2json.nuspec
+		build\sip2json.symbols.nuspec = build\sip2json.symbols.nuspec
+		build\sip2json.symbols.targets = build\sip2json.symbols.targets
+		build\sip2json.targets = build\sip2json.targets
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{E3DA636E-8C31-4F79-8942-BFCD04F22CE5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{BE17724B-F2AA-40B9-94E0-0B2EFCAA5768}"
+	ProjectSection(SolutionItems) = preProject
+		src\sip2json.hpp = src\sip2json.hpp
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DB1C31B9-F77C-4B8B-9B97-1910126B8A8C}"
+	ProjectSection(SolutionItems) = preProject
+		.clang-format = .clang-format
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		.vsconfig = .vsconfig
+		azure-pipelines.yml = azure-pipelines.yml
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6370E3CF-2CB1-48EE-AE9C-8C76C3B4E5DA}.Debug|x64.ActiveCfg = Debug|x64
+		{6370E3CF-2CB1-48EE-AE9C-8C76C3B4E5DA}.Debug|x64.Build.0 = Debug|x64
+		{6370E3CF-2CB1-48EE-AE9C-8C76C3B4E5DA}.Release|x64.ActiveCfg = Release|x64
+		{6370E3CF-2CB1-48EE-AE9C-8C76C3B4E5DA}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6370E3CF-2CB1-48EE-AE9C-8C76C3B4E5DA} = {E3DA636E-8C31-4F79-8942-BFCD04F22CE5}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {25E6134F-7578-47C5-930A-4035E716747D}
+	EndGlobalSection
+EndGlobal

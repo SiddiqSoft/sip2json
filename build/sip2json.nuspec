@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
+
+  <!--
+		First meta data information about the package itself.
+		Documentation can be found at: (or via nuget.org)
+		https://docs.microsoft.com/en-us/nuget/reference/nuspec#optional-metadata-elements
+	-->
+  <metadata>
+    <!-- required: -->
+    <id>sip2json</id>
+    <version>$VERSION$</version>
+    <authors>Abdulkareem Siddiq, LoopUp LLC.</authors>
+    <description>Ring2 SIP Factory Library</description>
+    <!-- encouraged: should include `native` and `nativepackage` -->
+    <tags>sip sdp pint native cpp</tags>
+    <!-- Add additional optional tags here. -->
+    <!--<license type="expression">MIT</license>-->
+    <projectUrl>https://github.com/siddiqsoftware/sip2json</projectUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <licenseUrl>https://github.com/siddiqsoftware/sip2json/blob/master/LICENSE</licenseUrl>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright (c) 2020 Abdelkareem Siddiq</copyright>
+    <!-- Dependencies -->
+    <dependencies>
+      <dependency id="fmt" version="6.2.1"/>
+      <dependency id="nlohmann.json" version="3.8.0"/>
+      <dependency id="r2dtlib" version="2.1.0"/>
+    </dependencies>
+  </metadata>
+
+  <!--
+		Specify the content for your package.
+		This is only a packing list, no build semantic is defined here!
+		Stick to conventions described by nuget.org:
+		https://docs.microsoft.com/en-us/nuget/create-packages/creating-a-package#from-a-convention-based-working-directory
+	-->
+  <files>
+    <!-- includes -->
+    <file src="..\*.hpp" target="build\native\include" />
+
+    <!-- Debug libs and bins -->
+    <file src="..\output\Debug\sip2json.lib" target="build\native\lib\Debug" />
+    <file src="..\output\Debug\sip2json.pdb" target="build\native\lib\Debug" />
+
+    <!-- Release libs and bins -->
+    <file src="..\output\Release\sip2json.lib" target="build\native\lib\Release" />
+    <file src="..\output\Release\sip2json.pdb" target="build\native\lib\Release" />
+
+    <!-- MSBuild .targets files -->
+    <file src="sip2json.targets" target="build\native" />
+  </files>
+</package>

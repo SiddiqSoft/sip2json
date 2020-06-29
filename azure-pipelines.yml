@@ -1,0 +1,109 @@
+trigger:
+  batch: true
+  branches:
+    include:
+    - master
+    - bufix/*
+    - feature/*
+  paths:
+    exclude:
+    - README.md
+
+pool:
+  name: Azure Pipelines
+  vmImage: 'windows-2019'
+  demands:
+  - msbuild
+  - visualstudio
+  - vstest
+
+variables:
+  buildPlatform: 'x64'
+  
+steps:
+- task: NuGetToolInstaller@1
+  displayName: 'Use NuGet 5.4.0'
+  inputs:
+    versionSpec: 5.4.0
+
+- task: gittools.gitversion.gitversion-task.GitVersion@5
+  displayName: GitVersion
+
+- script: echo %Action%%BuildVersion%
+  displayName: 'Set build version'
+  env:
+    Action: '##vso[build.updatebuildnumber]'
+    BuildVersion: $(GitVersion.NugetVersionV2)
+
+- task: NuGetCommand@2
+  displayName: 'NuGet restore'
+  inputs:
+    vstsFeed: 'a0302836-2c67-4470-bcb5-10149e5447f9'
+  continueOnError: true
+
+- task: VSBuild@1
+  displayName: 'Build solution sip2json.sln DEBUG'
+  inputs:
+    solution: sip2json.sln
+    vsVersion: 16.0
+    platform: x64
+    configuration: debug
+    maximumCpuCount: true
+    msbuildArchitecture: x64
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+
+- task: VSBuild@1
+  displayName: 'Build solution sip2json.sln RELEASE'
+  inputs:
+    solution: sip2json.sln
+    vsVersion: 16.0
+    platform: x64
+    configuration: release
+    maximumCpuCount: true
+    msbuildArchitecture: x64
+
+- task: VSTest@2
+  displayName: 'VsTest - testAssemblies'
+  inputs:
+    vsTestVersion: 16.0
+    runInParallel: false
+    platform: x64
+    configuration: release
+    diagnosticsEnabled: True
+    rerunFailedTests: true
+  continueOnError: true
+
+- task: PublishTestResults@2
+  displayName: 'Publish Test Results **/TEST-*.xml'
+  inputs:
+    testResultsFormat: VSTest
+    buildPlatform: x64
+    buildConfiguration: release
+  continueOnError: true
+
+- task: NuGetCommand@2
+  displayName: 'NuGet push'
+  inputs:
+    command: push
+    packagesToPush: 'build\*.nupkg;build\*symbols*.nupkg'
+    publishVstsFeed: 'a0302836-2c67-4470-bcb5-10149e5447f9'
+    allowPackageConflicts: true
+  enabled: false
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+
+- task: NuGetCommand@2
+  displayName: 'NuGet pack'
+  inputs:
+    command: pack
+    packagesToPack: 'build/sip2json.nuspec;build/sip2json.symbols.nuspec'
+    buildProperties: 'VERSION=$(build.buildNumber)'
+
+- task: NuGetCommand@2
+  displayName: 'NuGet push'
+  inputs:
+    command: push
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg;build/*.nupkg;build/*symbols.nupkg'
+    publishVstsFeed: 'a0302836-2c67-4470-bcb5-10149e5447f9'
+    allowPackageConflicts: true
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+
