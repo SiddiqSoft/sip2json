@@ -17,6 +17,9 @@
 #include <random>
 #include <sstream>
 
+#include "sip2json_response_codes.h"
+#include "sip2json_utils.h"
+
 #include "nlohmann/json.hpp"
 #include "fmt/chrono.h"
 
@@ -28,123 +31,75 @@ namespace siddiqsoftware
 
 	class sip2json
 	{
-#pragma region Datetime helpers
 	public:
-		/// @brief Create a string representation of the timepoint as RFC1123 spec
-		/// @param tp Optional system_clock::timepoint; uses "now" if not provided
-		/// @return String with your date/time as "Sun, 28 Jun 2020 23:29:00 GMT"
-		static std::string getRFC1123(std::chrono::system_clock::time_point& tp = std::chrono::system_clock::now()) noexcept(false)
-		{
-			return fmt::format("{:%a, %d %b %Y %T} GMT", fmt::gmtime(std::chrono::system_clock::to_time_t(tp)));
-		}
+		static const inline std::string_view MetaLibName	   = "sip2json";
+		static const inline std::string_view MetaSchemaVersion = "0.1.0";
+		static const inline std::string_view MetaParserVersion = "1.0.0";
 
+		static const inline std::string_view MessageTypeRequest	 = "sip2json.request";
+		static const inline std::string_view MessageTypeResponse = "sip2json.response";
 
-		/// @brief Creates a string representaiton of the date time in ISO8601 format with millisecond precision.
-		/// @param tp Optional system_clock::timepoint; uses "now" if not provided
-		/// @return String ISO8601 "2020-06-28T23:29:00.000Z"
-		static std::string getISO8601(std::chrono::system_clock::time_point& tp = std::chrono::system_clock::now()) noexcept(false)
-		{
-			auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(tp.time_since_epoch()).count();
-			return fmt::format("{:%Y-%m-%dT%T}.{:03}Z", fmt::gmtime(std::chrono::system_clock::to_time_t(tp)), ms);
-		}
-#pragma endregion
+		static const inline std::string_view SIPVersion				  = "SIP/2.0";
+		static const inline std::string_view SIPLineTerminator		  = "\r\n";
+		static const inline std::string_view SIPHeaderBlockTerminator = "\r\n\r\n";
+		static const inline std::string_view SIPSDPBlockStart		  = "v=0\r\n";
 
-	public:
-		/// @brief Creates a pseudo random number generated UUID v4. It is best to use platform-specific method to ensure guid
-		/// @return string 44 character of the format: 7792eaf4-456f-4d47-d93-863af0e0-a8b99b9b9988
-		static std::string createCallId()
-		{
-			static std::random_device			 rd;
-			static std::mt19937_64				 generator(rd());
-			static std::uniform_int_distribution ud(0, 15);
-			static std::uniform_int_distribution ud2(8, 11);
-
-			std::stringstream sBuffer;
-
-			sBuffer << std::hex;
-			for (auto i = 0; i < 8; i++)
-				sBuffer << ud(generator);
-			sBuffer << "-";
-			for (auto i = 0; i < 4; i++)
-				sBuffer << ud(generator);
-			sBuffer << "-4";
-			for (auto i = 0; i < 3; i++)
-				sBuffer << ud(generator);
-			sBuffer << "-";
-			for (auto i = 0; i < 3; i++)
-				sBuffer << ud(generator);
-			sBuffer << "-";
-			for (auto i = 0; i < 8; i++)
-				sBuffer << ud(generator);
-			sBuffer << "-";
-			for (auto i = 0; i < 12; i++)
-				sBuffer << ud2(generator);
-			return sBuffer.str();
-		}
 
 #pragma region SIPMessage helpers
 	private:
 		/// @brief Creates a basic SIP Message content in json. This method is used by the createRequest and createResponse methods
-		/// @return json with basic "sections": mh and mb
-		static nlohmann::json createRawMessage()
+		/// @param messageType Must be one of MessageTypeRequest or MessageTypeResponse
+		/// @return json document with basic sections
+		static nlohmann::json createRawMessage(const std::string_view& messageType)
 		{
-			nlohmann::json sipm;
-
-			// message-headers
-			sipm["/mh/To"_json_pointer]				= nullptr;
-			sipm["/mh/From"_json_pointer]			= nullptr;
-			sipm["/mh/CSeq"_json_pointer]			= nullptr;
-			sipm["/mh/Call-ID"_json_pointer]		= nullptr;
-			sipm["/mh/Max-Forwards"_json_pointer]	= 1;
-			sipm["/mh/Via"_json_pointer]			= nullptr;
-			sipm["/mh/Content-Length"_json_pointer] = 0;
-			//sipm["/mh/Content-Type"_json_pointer]	= nullptr;
-			sipm["/mh/Date"_json_pointer]			= getRFC1123();
-			sipm["/mh/User-Agent"_json_pointer]		= "sip2json";
-			sipm["/mh/Authorization"_json_pointer]	= nullptr;
-
-			// message-body
-			sipm["mb"] = nullptr;
-
-			return sipm;
+			return nlohmann::json {{"type", messageType},
+								   {"version", MetaSchemaVersion},
+								   {"mb", nullptr},
+								   {"mh",
+									{{"Call-ID", nullptr},
+									 {"Date", getRFC1123()},
+									 {"To", nullptr},
+									 {"From", nullptr},
+									 {"CSeq", nullptr},
+									 {"Content-Length", 0},
+									 {"Content-Type", nullptr},
+									 {"User-Agent", fmt::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
+									 {"Max-Forwards", 0},
+									 {"Via", nullptr},
+									 {"Authorization", nullptr}}}};
 		}
 
 	public:
 		static nlohmann::json createRequest(const std::string_view& method,
 											const std::string_view& uri,
 											const std::string_view& callId = {},
-											uint32_t				cseq   = 1)
+											uint32_t				cseq   = 0,
+											nlohmann::json&			sipm   = createRawMessage(MessageTypeRequest))
 		{
-			// A generic message is created with common mh and empty mb
-			nlohmann::json sipm = createRawMessage();
-
 			// start-line: may either be a request-line or a status-line
 			// request-line: METHOD Request-URI SIP/2.0
-			sipm["type"] = "request";
-
 			// rl ==> "request-line" (request message type) and sl ==> "status-line" (response message type)
-			sipm["rl"] = fmt::format("{} {} SIP/2.0", method, uri);
-
+			sipm.erase("sl");
+			sipm["/rl/method"_json_pointer]	 = method;
+			sipm["/rl/uri"_json_pointer]	 = uri;
+			sipm["/rl/version"_json_pointer] = SIPVersion;
 			// message-headers
-			sipm["/mh/Call-ID"_json_pointer] = callId.empty() ? createCallId() : callId;
-			sipm["/mh/CSeq"_json_pointer]	 = fmt::format("{} {}", cseq, method);
+			if (!callId.empty()) sipm["/mh/Call-ID"_json_pointer] = callId;
+			if (cseq > 0) sipm["/mh/CSeq"_json_pointer] = fmt::format("{} {}", cseq, method);
 
 			return sipm;
 		}
 
 
-		static nlohmann::json createResponse(uint32_t statusCode, const std::string_view& reasonPhrase)
+		static nlohmann::json createResponse(uint32_t statusCode, nlohmann::json& sipm = createRawMessage(MessageTypeResponse))
 		{
-			// A generic message is created with common mh and empty mb
-			nlohmann::json sipm = createRawMessage();
-
 			// start-line: may either be a request-line or a status-line
 			// request-line: METHOD Request-URI SIP/2.0
-			sipm["type"] = "response";
-
 			// sl ==> "status-line" (response message type)
-			sipm["sl"] = fmt::format("SIP/2.0 {} {}", statusCode, reasonPhrase);
-
+			sipm.erase("rl");
+			sipm["/sl/status"_json_pointer]	 = statusCode;
+			sipm["/sl/reason"_json_pointer]	 = getReasonPhrase(statusCode);
+			sipm["/sl/version"_json_pointer] = SIPVersion;
 
 			return sipm;
 		}
@@ -159,19 +114,24 @@ namespace siddiqsoftware
 			if (sipm.size() == 0) throw std::invalid_argument(fmt::format("{}:sipm is empty.", __func__));
 
 
-			if (sipm.value("/type"_json_pointer, std::string {}).compare("request") == 0)
+			if (sipm.value("/type"_json_pointer, std::string {}).compare(MessageTypeRequest) == 0)
 			{
 				// Request Line
-				buffer = fmt::format("{}\r\n", sipm.value("/rl"_json_pointer, std::string {}));
+				buffer = fmt::format("{} {} SIP/2.0\r\n",
+									 sipm.value("/rl/method"_json_pointer, std::string {}),
+									 sipm.value("/rl/uri"_json_pointer, std::string {}));
 			}
-			else if (sipm.value("/type"_json_pointer, std::string {}).compare("response") == 0)
+			else if (sipm.value("/type"_json_pointer, std::string {}).compare(MessageTypeResponse) == 0)
 			{
 				// Status Line
-				buffer = fmt::format("{}\r\n", sipm.value("/sl"_json_pointer, std::string {}));
+				buffer = fmt::format("SIP/2.0 {} {}\r\n",
+									 sipm.value("/sl/status"_json_pointer, 0),
+									 sipm.value("/sl/reason"_json_pointer, std::string {}));
 			}
 			else
 			{
-				throw std::invalid_argument(fmt::format("{}:sipm /type is neither `request` nor `response`.", __func__));
+				throw std::invalid_argument(
+						fmt::format("{}:sipm /type is neither `{}` nor `{}`.", __func__, MessageTypeRequest, MessageTypeResponse));
 			}
 
 			// Headers
@@ -257,6 +217,7 @@ namespace siddiqsoftware
 
 	// References
 	// SIP Messages: https://tools.ietf.org/html/rfc3261#section-7
+	// SIP Response Codes: https://en.wikipedia.org/wiki/List_of_SIP_response_codes
 	// JSON Library: https://nlohmann.github.io/json/
 	// FMT Library : https://fmt.dev/latest/index.html
 } // namespace siddiqsoftware

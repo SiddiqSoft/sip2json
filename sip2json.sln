@@ -18,6 +18,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{BE17724B-F2AA-40B9-94E0-0B2EFCAA5768}"
 	ProjectSection(SolutionItems) = preProject
 		src\sip2json.hpp = src\sip2json.hpp
+		src\sip2json_response_codes.h = src\sip2json_response_codes.h
+		src\sip2json_utils.h = src\sip2json_utils.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DB1C31B9-F77C-4B8B-9B97-1910126B8A8C}"

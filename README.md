@@ -54,7 +54,7 @@ The library is provided as a nuget package but can also be used as a header-only
 
  Release | Notes
 ---------|---------
-v1.0.0   | Basic decoder and encoder for response messages: NOTIFY, ACK, 
+v1.0.0   | Basic decoder for NOTIFY and encoder for REGISTER and SUBSCRIBE.
 
 ## References
 
@@ -63,27 +63,71 @@ v1.0.0   | Basic decoder and encoder for response messages: NOTIFY, ACK,
 #### Request Sample
 ```json
 {
-  "type":"request",
-  "rl":"INVITE requestURI SIP/2.0",
+  "type":"sip2json.request",
+  "version":"0.1.0",
+  "rl":{"method":"INVITE", "uri":"", "version":"SIP/2.0"},
   "mh":[  {"Call-ID":null},
           {"Content-Type":"application/sdp"}
   ],
-  "mb":{  "sdp":[ {  "v":0,     // Start of session block
-                     "o":"",
-                     "s":"",
-                     "i":"",
-                     "t":{"start":0, "stop":0},
-                     "a_sl":[], // Session-level a= values.
-                     "m":[],    // Media descriptors
-                     "a_ml":[]  // Media-level a= values.
+  "mb":{  "sdp":[ { "v":0,
+                    "o":"",
+                    "s":"",
+                    "i":null,
+                    "u":null,
+                    "e":[],
+                    "p":[],
+                    "c":null,
+                    "b":[],
+                    "t":[],
+                    "z":null,
+                    "k":null,
+                    "sa":[],
+                    "m":[],
+                    "ma":[]
                   }
           ]
   }
 }
 ```
 
+**NOTE**
+
+> The fields are listed as json pointer key names.
+
+Field | Type   | Description
+------|--------|--------------
+`/type` | string | One of the following: `sip2json.request` or `sip2json.response`
+`/version` | string | `0.1.0`
+`/rl/method` | string | Request Line: SIP Method (currently only one of the following: `REGISTER`, `SUBSCRIBE`, `NOTIFY` is supported.)
+`/rl/uri` | string | Request Line: Request URI.
+`/rl/version` | string | Request Line: Always `SIP/2.0` for this implementation.
+`/mh/*` | array | An array of key-value pairs representing the SIP message headers.
+`/mb/*` | object | Object containing the content. As of this implementation, we only support SDP message blocks
+
+
+`/mb/sdp` Field | Type | Description
+------|------|-------------
+`/v` | integer | Contant; Set to `0`. Do not modify! This tag is used to delimit a session descriptor block.
+`/o` | string |
+`/s` | string |
+`/i` | string | Optional.
+`/u` | string | Optional.
+`/e` | string | Optional.
+`/p` | string | Optional.
+`/c` | string | Optional.
+`/b` | string | Optional.
+`/t` | Array | Timing for this block. Array of integer values `/mb/sdp[x]/t[0]` -> start `/mb/sdp[x]/t[1]` -> end.
+`/z` | string | Optional.
+`/k` | string | Optional. Encryption key.
+`/sa` | array | Session-level a-line items
+`/m` | string | Media descriptors
+`/ma` | array | Media-level a-line items
+
+
 ### External resources
 - [JSON for Modern C++](https://nlohmann.github.io/json/)
-- [SIP Messages Definition](https://tools.ietf.org/html/rfc3261#section-7)
 - [FMT Library](https://fmt.dev/latest/index.html)
+- [GoogleTest primer](https://github.com/google/googletest/blob/master/googletest/docs/primer.md)
+- [SIP Messages Definition](https://tools.ietf.org/html/rfc3261#section-7)
 - [SDP specification](https://en.wikipedia.org/wiki/Session_Description_Protocol)
+- [SIP Response Codes](https://en.wikipedia.org/wiki/List_of_SIP_response_codes)

@@ -37,7 +37,8 @@
 	-->
   <files>
     <!-- includes -->
-    <file src="..\*.hpp" target="build\native\include" />
+    <file src="..\src\*.h" target="build\native\include" />
+    <file src="..\src\*.hpp" target="build\native\include" />
 
     <!-- Debug libs and bins -->
     <file src="..\output\Debug\sip2json.lib" target="build\native\lib\Debug" />
