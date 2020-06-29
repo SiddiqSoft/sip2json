@@ -1,5 +1,7 @@
 # sip2json
-SIP Parser for Modern C++
+<b>SIP Parser for Modern C++</b><br/>
+<small>Copyright &copy;2020 Abdelkareem Siddiq. All rights reserved.</small>
+
 
 ## Design goals
 
@@ -48,6 +50,14 @@ This library is intendended to be used as a basis for you application and does n
 
 The library is provided as a nuget package but can also be used as a header-only dependency.
 
+## Roadmap
+
+ Release | Notes
+---------|---------
+v1.0.0   | Basic decoder and encoder for response messages: NOTIFY, ACK, 
+
 ## References
 
 [JSON for Modern C++](https://nlohmann.github.io/json/)
+[SIP Messages Definition](https://tools.ietf.org/html/rfc3261#section-7)
+[FMT Library](https://fmt.dev/latest/index.html)

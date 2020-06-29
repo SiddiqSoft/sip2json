@@ -23,6 +23,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DB1C31B9-F77C-4B8B-9B97-1910126B8A8C}"
 	ProjectSection(SolutionItems) = preProject
 		.clang-format = .clang-format
+		.clang-tidy = .clang-tidy
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
 		.vsconfig = .vsconfig

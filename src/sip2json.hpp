@@ -59,27 +59,27 @@ namespace siddiqsoftware
 			static std::uniform_int_distribution ud(0, 15);
 			static std::uniform_int_distribution ud2(8, 11);
 
-			std::stringstream					 rets;
+			std::stringstream sBuffer;
 
-			rets << std::hex;
+			sBuffer << std::hex;
 			for (auto i = 0; i < 8; i++)
-				rets << ud(generator);
-			rets << "-";
+				sBuffer << ud(generator);
+			sBuffer << "-";
 			for (auto i = 0; i < 4; i++)
-				rets << ud(generator);
-			rets << "-4";
+				sBuffer << ud(generator);
+			sBuffer << "-4";
 			for (auto i = 0; i < 3; i++)
-				rets << ud(generator);
-			rets << "-";
+				sBuffer << ud(generator);
+			sBuffer << "-";
 			for (auto i = 0; i < 3; i++)
-				rets << ud(generator);
-			rets << "-";
+				sBuffer << ud(generator);
+			sBuffer << "-";
 			for (auto i = 0; i < 8; i++)
-				rets << ud(generator);
-			rets << "-";
+				sBuffer << ud(generator);
+			sBuffer << "-";
 			for (auto i = 0; i < 12; i++)
-				rets << ud2(generator);
-			return rets.str();
+				sBuffer << ud2(generator);
+			return sBuffer.str();
 		}
 
 #pragma region SIPMessage helpers
@@ -98,7 +98,7 @@ namespace siddiqsoftware
 			sipm["/mh/Max-Forwards"_json_pointer]	= 1;
 			sipm["/mh/Via"_json_pointer]			= nullptr;
 			sipm["/mh/Content-Length"_json_pointer] = 0;
-			sipm["/mh/Content-Type"_json_pointer]	= nullptr;
+			//sipm["/mh/Content-Type"_json_pointer]	= nullptr;
 			sipm["/mh/Date"_json_pointer]			= getRFC1123();
 			sipm["/mh/User-Agent"_json_pointer]		= "sip2json";
 			sipm["/mh/Authorization"_json_pointer]	= nullptr;
@@ -106,7 +106,7 @@ namespace siddiqsoftware
 			// message-body
 			sipm["mb"] = nullptr;
 
-			return std::move(sipm);
+			return sipm;
 		}
 
 	public:
@@ -129,7 +129,7 @@ namespace siddiqsoftware
 			sipm["/mh/Call-ID"_json_pointer] = callId.empty() ? createCallId() : callId;
 			sipm["/mh/CSeq"_json_pointer]	 = fmt::format("{} {}", cseq, method);
 
-			return std::move(sipm);
+			return sipm;
 		}
 
 
@@ -146,19 +146,111 @@ namespace siddiqsoftware
 			sipm["sl"] = fmt::format("SIP/2.0 {} {}", statusCode, reasonPhrase);
 
 
-			return std::move(sipm);
+			return sipm;
 		}
 #pragma endregion
 
-		/// @brief De-serialize the SIP message (if present)
+	public:
+		static std::string serialize(nlohmann::json& sipm)
+		{
+			std::string buffer {};
+			std::string contentType {};
+
+			if (sipm.size() == 0) throw std::invalid_argument(fmt::format("{}:sipm is empty.", __func__));
+
+
+			if (sipm.value("/type"_json_pointer, std::string {}).compare("request") == 0)
+			{
+				// Request Line
+				buffer = fmt::format("{}\r\n", sipm.value("/rl"_json_pointer, std::string {}));
+			}
+			else if (sipm.value("/type"_json_pointer, std::string {}).compare("response") == 0)
+			{
+				// Status Line
+				buffer = fmt::format("{}\r\n", sipm.value("/sl"_json_pointer, std::string {}));
+			}
+			else
+			{
+				throw std::invalid_argument(fmt::format("{}:sipm /type is neither `request` nor `response`.", __func__));
+			}
+
+			// Headers
+			auto mh = sipm.at("/mh"_json_pointer);
+			if (mh.size() > 0)
+			{
+				for (auto& [key, value] : mh.items())
+				{
+					if (key.compare("Content-Type") == 0) contentType = value;
+
+					if (value.is_null())
+					{ /* do nothing; skip field. */
+					}
+					else if (value.is_number_unsigned())
+					{
+						buffer += fmt::format("{}: {}\r\n", key, value.get<uint64_t>());
+					}
+					else if (value.is_number_integer())
+					{
+						buffer += fmt::format("{}: {}\r\n", key, value.get<int64_t>());
+					}
+					else if (value.is_number_float())
+					{
+						buffer += fmt::format("{}: {}\r\n", key, value.get<float>());
+					}
+					else
+					{
+						buffer += fmt::format("{}: {}\r\n", key, value);
+					}
+				};
+
+				// End of the message header section
+				buffer += "\r\n";
+			}
+			else
+			{
+				throw std::invalid_argument(fmt::format("{}:sipm does not contain mh.", __func__));
+			}
+
+			// Body
+			// NOTE: we extract the contentType value during the header serialization.
+			if (contentType.compare("application/sdp") == 0)
+			{
+				if (sipm.contains("/mb"_json_pointer))
+				{
+					if (sipm.contains("/mb/sdp"_json_pointer))
+					{
+						// the sdp is stored as an array of objects
+						auto sdp = sipm.at("/mb/sdp"_json_pointer);
+						for (auto& item : sdp)
+						{
+							buffer += "v=0\r\n"; // always write this out at the start of each SDP element
+						}
+					}
+					else
+					{
+						throw std::invalid_argument(fmt::format("{}:sipm mb does not have sdp element.", __func__));
+					}
+				}
+				else
+				{
+					throw std::invalid_argument(fmt::format("{}:sipm does not have mb.", __func__));
+				}
+			}
+
+			return buffer;
+		}
+
+
+	public:
+		/// @brief De-serialize the *first* SIP message (if present) from the buffer. Repeated calls to this method will extract the remaining messages.
+		/// @param dest An existing json object; existing items will be replaced.
 		/// @param bufferStart iterator to the start of the buffer the client expects a SIP message.
 		/// @param bufferEnd iterator to the end of the buffer the client expects a SIP message.
-		/// @return A json ojbect representing the first SIP message if one is found in the range.
-		static nlohmann::json parseFromBuffer(std::string::iterator& bufferStart, std::string::iterator& bufferEnd) noexcept(false)
+		/// @return true/false depending on whether the buffer contained a sipmessage
+		static bool
+		parseFromBuffer(nlohmann::json& dest, std::string::iterator& bufferStart, std::string::iterator& bufferEnd) noexcept(false)
 		{
-			nlohmann::json retSipMessage;
-
-			return std::move(retSipMessage);
+			return false;
 		}
 	};
 

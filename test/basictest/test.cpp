@@ -1,3 +1,11 @@
+/*
+  Unit Tests for GoogleTest framework for sip2json
+  A SIP Parser for Modern C++ / Version 1.0.0
+  https://github.com/siddiqsoftware/sip2json/
+  Copyright 2003-2020 Abdelkareem Siddiq.
+  All rights reserved.
+*/
+
 #include <string>
 #include <chrono>
 
@@ -66,11 +74,45 @@ namespace siddiqsoftware
 	TEST(SIPHelpers, Test_createRequest)
 	{
 		auto registerMessage = sip2json::createRequest("REGISTER", "sip:hello@world.com", {}, 1);
-		auto diagContents	 = registerMessage.dump(2);
-		std::cout << diagContents << std::endl;
+		auto diagContents	 = registerMessage.flatten().dump(2);
 		std::cerr << diagContents << std::endl;
 		EXPECT_TRUE(registerMessage.size() != 0);
+		EXPECT_TRUE(!registerMessage.value("/mh/Call-ID"_json_pointer, std::string {}).empty());
+		EXPECT_TRUE(registerMessage.value("/mh/Call-ID"_json_pointer, std::string {}).length() == 44);
+		EXPECT_TRUE(registerMessage.value("/type"_json_pointer, std::string {}).compare("request") == 0);
 	}
 
 
+	TEST(SIPHelpers, Test_createResponse)
+	{
+		auto dummyMessage = sip2json::createResponse(500, "Unknown");
+		auto diagContents = dummyMessage.flatten().dump(2);
+		std::cerr << diagContents << std::endl;
+		EXPECT_TRUE(dummyMessage.size() != 0);
+		EXPECT_TRUE(dummyMessage.value("/type"_json_pointer, std::string {}).compare("response") == 0);
+	}
+
+
+	TEST(SIPSerializers, Test_serialize)
+	{
+		auto registerMessage = sip2json::createRequest("REGISTER", "sip:hello@world.com", {}, 1);
+
+		registerMessage["/mh/To"_json_pointer]		= "sip:hello@world.com";
+		registerMessage["/mh/Contact"_json_pointer] = "sip:hello@world.com";
+
+		auto strsipm = sip2json::serialize(registerMessage);
+		std::cerr << strsipm << std::endl;
+		EXPECT_TRUE(strsipm.length() != 0);
+	}
+
+	TEST(SIPSerializers, Test_serialize_empty_mb)
+	{
+		auto registerMessage = sip2json::createRequest("REGISTER", "sip:hello@world.com", {}, 1);
+
+		registerMessage["/mh/To"_json_pointer]		= "sip:hello@world.com";
+		registerMessage["/mh/Contact"_json_pointer] = "sip:hello@world.com";
+		// Set the content-type but fail to actually set the mb
+		registerMessage["/mh/Content-Type"_json_pointer] = "application/sdp";
+		EXPECT_ANY_THROW(sip2json::serialize(registerMessage));
+	}
 } // namespace siddiqsoftware
