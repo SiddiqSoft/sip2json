@@ -32,17 +32,17 @@ namespace siddiqsoftware
 	class sip2json
 	{
 	public:
-		static const inline std::string_view MetaLibName	   = "sip2json";
-		static const inline std::string_view MetaSchemaVersion = "0.1.0";
-		static const inline std::string_view MetaParserVersion = "1.0.0";
+		static const inline std::string MetaLibName		  = "sip2json";
+		static const inline std::string MetaSchemaVersion = "0.1.0";
+		static const inline std::string MetaParserVersion = "1.0.0";
 
-		static const inline std::string_view MessageTypeRequest	 = "sip2json.request";
-		static const inline std::string_view MessageTypeResponse = "sip2json.response";
+		static const inline std::string MessageTypeRequest	= "sip2json.request";
+		static const inline std::string MessageTypeResponse = "sip2json.response";
 
-		static const inline std::string_view SIPVersion				  = "SIP/2.0";
-		static const inline std::string_view SIPLineTerminator		  = "\r\n";
-		static const inline std::string_view SIPHeaderBlockTerminator = "\r\n\r\n";
-		static const inline std::string_view SIPSDPBlockStart		  = "v=0\r\n";
+		static const inline std::string SIPVersion				 = "SIP/2.0";
+		static const inline std::string SIPLineTerminator		 = "\r\n";
+		static const inline std::string SIPHeaderBlockTerminator = "\r\n\r\n";
+		static const inline std::string SIPSDPBlockStart		 = "v=0\r\n";
 
 
 #pragma region SIPMessage helpers
@@ -50,36 +50,40 @@ namespace siddiqsoftware
 		/// @brief Creates a basic SIP Message content in json. This method is used by the createRequest and createResponse methods
 		/// @param messageType Must be one of MessageTypeRequest or MessageTypeResponse
 		/// @return json document with basic sections
-		static nlohmann::json createRawMessage(const std::string_view& messageType)
+		static nlohmann::json createRawMessage(const std::string& messageType)
 		{
+			static const std::string userAgent = fmt::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion);
+
 			return nlohmann::json {{"type", messageType},
 								   {"version", MetaSchemaVersion},
 								   {"mb", nullptr},
 								   {"mh",
 									{{"Call-ID", nullptr},
 									 {"Date", getRFC1123()},
+									 {"X-Date", getISO8601()},
 									 {"To", nullptr},
 									 {"From", nullptr},
 									 {"CSeq", nullptr},
 									 {"Content-Length", 0},
 									 {"Content-Type", nullptr},
-									 {"User-Agent", fmt::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
+									 {"User-Agent", userAgent},
 									 {"Max-Forwards", 0},
 									 {"Via", nullptr},
 									 {"Authorization", nullptr}}}};
 		}
 
 	public:
-		static nlohmann::json createRequest(const std::string_view& method,
-											const std::string_view& uri,
-											const std::string_view& callId = {},
-											uint32_t				cseq   = 0,
-											nlohmann::json&			sipm   = createRawMessage(MessageTypeRequest))
+		static nlohmann::json createRequest(const std::string& method,
+											const std::string& uri,
+											const std::string& callId = {},
+											uint32_t		   cseq	  = 0,
+											nlohmann::json&	   sipm	  = createRawMessage(MessageTypeRequest))
 		{
 			// start-line: may either be a request-line or a status-line
 			// request-line: METHOD Request-URI SIP/2.0
 			// rl ==> "request-line" (request message type) and sl ==> "status-line" (response message type)
 			sipm.erase("sl");
+			sipm["/type"_json_pointer]		 = MessageTypeRequest;
 			sipm["/rl/method"_json_pointer]	 = method;
 			sipm["/rl/uri"_json_pointer]	 = uri;
 			sipm["/rl/version"_json_pointer] = SIPVersion;
@@ -97,6 +101,7 @@ namespace siddiqsoftware
 			// request-line: METHOD Request-URI SIP/2.0
 			// sl ==> "status-line" (response message type)
 			sipm.erase("rl");
+			sipm["/type"_json_pointer]		 = MessageTypeResponse;
 			sipm["/sl/status"_json_pointer]	 = statusCode;
 			sipm["/sl/reason"_json_pointer]	 = getReasonPhrase(statusCode);
 			sipm["/sl/version"_json_pointer] = SIPVersion;
@@ -140,7 +145,7 @@ namespace siddiqsoftware
 			{
 				for (auto& [key, value] : mh.items())
 				{
-					if (key.compare("Content-Type") == 0) contentType = value;
+					if ((key.compare("Content-Type") == 0) && value.is_string()) contentType = value;
 
 					if (value.is_null())
 					{ /* do nothing; skip field. */
@@ -157,9 +162,13 @@ namespace siddiqsoftware
 					{
 						buffer += fmt::format("{}: {}\r\n", key, value.get<float>());
 					}
-					else
+					else if (value.is_string())
 					{
 						buffer += fmt::format("{}: {}\r\n", key, value);
+					}
+					else
+					{
+						buffer += fmt::format("{}: {{}}\r\n", key, value);
 					}
 				};
 

@@ -109,9 +109,9 @@ namespace siddiqsoftware
 		registerMessage["/mh/Contact"_json_pointer] = "sip:hello@world.com";
 
 		EXPECT_TRUE(registerMessage.size() != 0);
-		EXPECT_TRUE(!registerMessage.value("/mh/Call-ID"_json_pointer, std::string {}).empty());
 		EXPECT_TRUE(registerMessage.value("/mh/Call-ID"_json_pointer, std::string {}).length() == 44);
-		EXPECT_TRUE(registerMessage.value("/type"_json_pointer, std::string {}).compare(sip2json::MessageTypeRequest) == 0);
+		EXPECT_EQ(registerMessage.value("/type"_json_pointer, std::string {}), sip2json::MessageTypeRequest)
+				<< "registerMessage type is:" << registerMessage.value("/type"_json_pointer, std::string {}) << "---";
 
 		// WARNING
 		// As we're passing the registerMessage as parameter to create an inplace response message
@@ -120,10 +120,9 @@ namespace siddiqsoftware
 		auto responseMessage = sip2json::createResponse(200, registerMessage);
 
 		EXPECT_TRUE(responseMessage.size() != 0);
-		EXPECT_TRUE(!responseMessage.value("/mh/Call-ID"_json_pointer, std::string {}).empty());
 		EXPECT_TRUE(responseMessage.value("/mh/Call-ID"_json_pointer, std::string {}).length() == 44);
-		EXPECT_TRUE(responseMessage.value("/type"_json_pointer, std::string {}).compare(sip2json::MessageTypeResponse) == 0)
-				<< responseMessage.value("/type"_json_pointer, std::string {});
+		EXPECT_EQ(responseMessage.value("/type"_json_pointer, std::string {}), sip2json::MessageTypeResponse)
+				<< "responseMessage type:" << responseMessage.value("/type"_json_pointer, std::string {}) << "----";
 		EXPECT_TRUE(!responseMessage.value("/mh/Date"_json_pointer, std::string {}).empty());
 
 		std::cerr << "After response; registerMessage:" << registerMessage.flatten().dump(2) << std::endl;
@@ -147,7 +146,7 @@ namespace siddiqsoftware
 
 		auto strsipm = sip2json::serialize(registerMessage);
 		std::cerr << strsipm << std::endl;
-		EXPECT_TRUE(strsipm.length() != 0);
+		EXPECT_TRUE(strsipm.length() != 0) << "Serialized message must be non-empty.";
 	}
 
 	TEST(SIPSerializers, Test_serialize_empty_mb)
