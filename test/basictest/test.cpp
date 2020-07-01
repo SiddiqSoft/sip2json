@@ -190,7 +190,35 @@ namespace siddiqsoftware
 		EXPECT_ANY_THROW(sip2json::parseFromBuffer(buffer.begin(), buffer.end()));
 	}
 
-	TEST(SIPParser, Test_parse_NOTIFY_1)
+	TEST(SIPParser, Test_parse_NOTIFY_1_startline)
+	{
+		std::stringstream testFile;
+		std::ifstream	  sampleInputFile("NOTIFY_LegDrop.sip");
+
+		if (sampleInputFile.is_open())
+		{
+			while (sampleInputFile.peek() != EOF)
+			{
+				testFile << (char)sampleInputFile.get();
+			}
+			sampleInputFile.close();
+		}
+
+		EXPECT_TRUE(testFile.str().length() > 0);
+
+		auto buffer = testFile.str();
+		auto sipm	= sip2json::parseFromBuffer(buffer.begin(), buffer.end());
+
+		std::cerr << "Decoded SIPMessage document" << sipm.dump(2);
+
+		// Start checking if we decoded properly..
+		// METHOD: NOTIFY
+		EXPECT_EQ(siddiqsoftware::METHOD_NOTIFY, sipm.value("/rl/method"_json_pointer, std::string {}));
+		EXPECT_EQ("sip:subscribe_to_call_events@loopup.com;machine", sipm.value("/rl/uri"_json_pointer, std::string {}));
+	}
+
+
+	TEST(SIPParser, Test_parse_NOTIFY_1_headers)
 	{
 		std::stringstream testFile;
 		std::ifstream	  sampleInputFile("NOTIFY_LegDrop.sip");
@@ -225,6 +253,178 @@ namespace siddiqsoftware
 		// Content-Length
 		EXPECT_EQ(848, sipm.getContentLength());
 	}
+
+
+	TEST(SIPParser, Test_parse_NOTIFY_1_headers_serialize)
+	{
+		std::stringstream testFile;
+		std::ifstream	  sampleInputFile("NOTIFY_LegDrop.sip");
+
+		if (sampleInputFile.is_open())
+		{
+			while (sampleInputFile.peek() != EOF)
+			{
+				testFile << (char)sampleInputFile.get();
+			}
+			sampleInputFile.close();
+		}
+
+		EXPECT_TRUE(testFile.str().length() > 0);
+
+		auto buffer = testFile.str();
+		auto sipm	= sip2json::parseFromBuffer(buffer.begin(), buffer.end());
+
+		std::cerr << "Decoded SIPMessage document" << sipm.dump(2);
+
+		// Start checking if we decoded properly..
+		// METHOD: NOTIFY
+		EXPECT_EQ(METHOD_NOTIFY, sipm.value("/rl/method"_json_pointer, std::string {}));
+		EXPECT_EQ("sip:subscribe_to_call_events@loopup.com;machine", sipm.value("/rl/uri"_json_pointer, std::string {}));
+		// Via is an array
+		ASSERT_TRUE(sipm.value("/mh/Via"_json_pointer, nlohmann::json {}).is_array());
+		EXPECT_EQ(sipm.value("/mh/Via"_json_pointer, nlohmann::json {}).size(), 4);
+		// Call-ID
+		EXPECT_EQ(sipm.getCallID(), "6732196043737il-ed-mara-01");
+		// Content-Type
+		EXPECT_EQ(CONTENT_TYPE_APP_SDP, sipm.getContentType());
+		// Content-Length
+		EXPECT_EQ(848, sipm.getContentLength());
+
+		EXPECT_EQ("jrbirge@nscorp.com", sipm.value("/mh/X-control-master"_json_pointer, ""));
+		EXPECT_EQ("267 NOTIFY", sipm.value("/mh/CSeq"_json_pointer, ""));
+		EXPECT_EQ(false, sipm.value("/mh/X-Billing-code-required"_json_pointer, true));
+		EXPECT_EQ("NjczMjE5NjA0MzczN2lsLWVkLW1hcmEtMDE6MTU5MzU0NTA2NTo4MDQ0NjU=",
+				  sipm.value("/mh/X-Call-Instance-ID"_json_pointer, ""));
+
+		// Now, we will serialize the decoded sipm..
+		auto serializedFromDecoded = sip2json::serialize(sipm);
+
+		std::cerr << "Serialized from decoded SIPMessage\n" << serializedFromDecoded;
+
+		// So we can decode it again and ensure that we can round-trip!
+		auto sipm2 = sip2json::parseFromBuffer(serializedFromDecoded.begin(), serializedFromDecoded.end());
+		EXPECT_EQ(METHOD_NOTIFY, sipm2.value("/rl/method"_json_pointer, std::string {}));
+		EXPECT_EQ("sip:subscribe_to_call_events@loopup.com;machine", sipm2.value("/rl/uri"_json_pointer, std::string {}));
+		// Via is an array
+		ASSERT_TRUE(sipm2.value("/mh/Via"_json_pointer, nlohmann::json {}).is_array());
+		EXPECT_EQ(sipm2.value("/mh/Via"_json_pointer, nlohmann::json {}).size(), 4);
+		// Call-ID
+		EXPECT_EQ(sipm2.getCallID(), "6732196043737il-ed-mara-01");
+		// Content-Type
+		EXPECT_EQ(CONTENT_TYPE_APP_SDP, sipm2.getContentType());
+		// Content-Length
+		EXPECT_EQ(848, sipm2.getContentLength());
+
+		EXPECT_EQ("jrbirge@nscorp.com", sipm2.value("/mh/X-control-master"_json_pointer, ""));
+		EXPECT_EQ("267 NOTIFY", sipm2.value("/mh/CSeq"_json_pointer, ""));
+		EXPECT_EQ(false, sipm2.value("/mh/X-Billing-code-required"_json_pointer, true));
+		EXPECT_EQ("NjczMjE5NjA0MzczN2lsLWVkLW1hcmEtMDE6MTU5MzU0NTA2NTo4MDQ0NjU=",
+				  sipm2.value("/mh/X-Call-Instance-ID"_json_pointer, ""));
+	}
+
+
+	TEST(SIPParser, Test_parse_NOTIFY_1_body_serialize)
+	{
+		std::stringstream testFile;
+		std::ifstream	  sampleInputFile("NOTIFY_LegDrop.sip");
+
+		if (sampleInputFile.is_open())
+		{
+			while (sampleInputFile.peek() != EOF)
+			{
+				testFile << (char)sampleInputFile.get();
+			}
+			sampleInputFile.close();
+		}
+
+		EXPECT_TRUE(testFile.str().length() > 0);
+
+		auto buffer = testFile.str();
+		auto sipm	= sip2json::parseFromBuffer(buffer.begin(), buffer.end());
+
+		std::cerr << "Decoded SIPMessage document" << sipm.flatten().dump(2);
+
+		// Start checking if we decoded properly..
+		// METHOD: NOTIFY
+		EXPECT_EQ(METHOD_NOTIFY, sipm.value("/rl/method"_json_pointer, std::string {}));
+		EXPECT_EQ("sip:subscribe_to_call_events@loopup.com;machine", sipm.value("/rl/uri"_json_pointer, std::string {}));
+		// Via is an array
+		ASSERT_TRUE(sipm.value("/mh/Via"_json_pointer, nlohmann::json {}).is_array());
+		EXPECT_EQ(sipm.value("/mh/Via"_json_pointer, nlohmann::json {}).size(), 4);
+		// Call-ID
+		EXPECT_EQ(sipm.getCallID(), "6732196043737il-ed-mara-01");
+		// Content-Type
+		EXPECT_EQ(CONTENT_TYPE_APP_SDP, sipm.getContentType());
+		// Content-Length
+		EXPECT_EQ(848, sipm.getContentLength());
+
+		EXPECT_EQ("jrbirge@nscorp.com", sipm.value("/mh/X-control-master"_json_pointer, ""));
+		EXPECT_EQ("267 NOTIFY", sipm.value("/mh/CSeq"_json_pointer, ""));
+		EXPECT_EQ(false, sipm.value("/mh/X-Billing-code-required"_json_pointer, true));
+		EXPECT_EQ("NjczMjE5NjA0MzczN2lsLWVkLW1hcmEtMDE6MTU5MzU0NTA2NTo4MDQ0NjU=",
+				  sipm.value("/mh/X-Call-Instance-ID"_json_pointer, ""));
+
+		// Check the body
+		EXPECT_TRUE(!sipm.value("/mb"_json_pointer, nlohmann::json {}).empty());
+		EXPECT_TRUE(sipm.value("/mb/sdp"_json_pointer, nlohmann::json {}).is_array());
+		EXPECT_TRUE(sipm.value("/mb/sdp/0/a"_json_pointer, nlohmann::json {}).is_object());
+		// Check access_code is parsed
+		EXPECT_EQ(sipm.value("/mb/sdp/0/a/access_code"_json_pointer, ""), "2873116");
+		// Check leg_no is parsed
+		EXPECT_EQ(sipm.value("/mb/sdp/0/a/leg_no"_json_pointer, ""), "24");
+		// Check status is parsed
+		EXPECT_EQ(sipm.value("/mb/sdp/0/a/status"_json_pointer, ""), "(4) dropped");
+		// Check timing is parsed into array
+		EXPECT_EQ(sipm.value("/mb/sdp/0/t/0"_json_pointer, 0L), 3802534341L);
+		EXPECT_EQ(sipm.value("/mb/sdp/0/t/1"_json_pointer, 0L), 3802534887L);
+
+		EXPECT_EQ(sipm.value("/mb/sdp/0/c/dn"_json_pointer, ""), "+4044166441");
+		EXPECT_EQ(sipm.value("/mb/sdp/0/c/type"_json_pointer, ""), "TN");
+		EXPECT_EQ(sipm.value("/mb/sdp/0/c/subtype"_json_pointer, ""), "RFC2543");
+
+		EXPECT_EQ(sipm.value("/mb/sdp/0/i/dn"_json_pointer, ""), "+4044166441");
+		EXPECT_EQ(sipm.value("/mb/sdp/0/i/name"_json_pointer, ""), "Cell Phone   GA");
+		EXPECT_EQ(sipm.value("/mb/sdp/0/i/type"_json_pointer, ""), "CallByPhone-URL");
+
+		EXPECT_EQ(sipm.value("/mb/sdp/0/o/host"_json_pointer, ""), "il-ed-mara-01.ring2.com");
+		EXPECT_EQ(sipm.value("/mb/sdp/0/o/subtype"_json_pointer, ""), "IP4");
+		EXPECT_EQ(sipm.value("/mb/sdp/0/o/t1"_json_pointer, ""), "148492049389635");
+		EXPECT_EQ(sipm.value("/mb/sdp/0/o/t2"_json_pointer, ""), "847595153");
+		EXPECT_EQ(sipm.value("/mb/sdp/0/o/type"_json_pointer, ""), "IN");
+		EXPECT_EQ(sipm.value("/mb/sdp/0/o/user"_json_pointer, ""), "jrbirge@nscorp.com");
+
+
+		// Now, we will serialize the decoded sipm..
+		auto serializedFromDecoded = sip2json::serialize(sipm);
+
+		std::cerr << "Serialized from decoded SIPMessage\n" << serializedFromDecoded;
+
+		// So we can decode it again and ensure that we can round-trip!
+		auto sipm2 = sip2json::parseFromBuffer(serializedFromDecoded.begin(), serializedFromDecoded.end());
+		EXPECT_EQ(METHOD_NOTIFY, sipm2.value("/rl/method"_json_pointer, std::string {}));
+		EXPECT_EQ("sip:subscribe_to_call_events@loopup.com;machine", sipm2.value("/rl/uri"_json_pointer, std::string {}));
+		// Via is an array
+		ASSERT_TRUE(sipm2.value("/mh/Via"_json_pointer, nlohmann::json {}).is_array());
+		EXPECT_EQ(sipm2.value("/mh/Via"_json_pointer, nlohmann::json {}).size(), 4);
+		// Call-ID
+		EXPECT_EQ(sipm2.getCallID(), "6732196043737il-ed-mara-01");
+		// Content-Type
+		EXPECT_EQ(CONTENT_TYPE_APP_SDP, sipm2.getContentType());
+		// Content-Length
+		EXPECT_EQ(848, sipm2.getContentLength());
+
+		EXPECT_EQ("jrbirge@nscorp.com", sipm2.value("/mh/X-control-master"_json_pointer, ""));
+		EXPECT_EQ("267 NOTIFY", sipm2.value("/mh/CSeq"_json_pointer, ""));
+		EXPECT_EQ(false, sipm2.value("/mh/X-Billing-code-required"_json_pointer, true));
+		EXPECT_EQ("NjczMjE5NjA0MzczN2lsLWVkLW1hcmEtMDE6MTU5MzU0NTA2NTo4MDQ0NjU=",
+				  sipm2.value("/mh/X-Call-Instance-ID"_json_pointer, ""));
+
+
+		//TODO: Forces output; disable when implementation is completed.
+		EXPECT_EQ(sipm.value("/mb/sdp"_json_pointer, nlohmann::json {}).size(), 0)
+				<< "Debugging only; disable line when completed.";
+	}
+
 
 	TEST(SIPParser, Test_parse_REGISTER_200_OK)
 	{

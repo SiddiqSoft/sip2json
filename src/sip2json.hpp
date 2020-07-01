@@ -54,16 +54,16 @@ namespace siddiqsoftware
 								   {"version", MetaSchemaVersion},
 								   {"mb", nullptr},
 								   {"mh",
-									{{"Call-ID", nullptr},
-									 {"To", nullptr},
-									 {"From", nullptr},
-									 {"CSeq", nullptr},
-									 {"Content-Length", 0},
-									 {"Content-Type", nullptr},
-									 {"User-Agent", userAgent},
-									 {"Max-Forwards", 0},
-									 {"Via", nullptr},
-									 {"Authorization", nullptr}}}};
+									{{HF_CALLID, nullptr},
+									 {HF_TO, nullptr},
+									 {HF_FROM, nullptr},
+									 {HF_CSEQ, nullptr},
+									 {HF_CONTENT_LENGTH, 0},
+									 {HF_CONTENT_TYPE, nullptr},
+									 {HF_USER_AGENT, userAgent},
+									 {HF_MAX_FORWARDS, 0},
+									 //{HF_VIA, nullptr},
+									 {HF_AUTHORIZATION, nullptr}}}};
 		}
 
 	public:
@@ -140,32 +140,47 @@ namespace siddiqsoftware
 			auto mh = sipm.at("/mh"_json_pointer);
 			if (mh.size() > 0)
 			{
-				for (auto& [key, value] : mh.items())
+				//TODO: This will not care about the order of the serialized headers. The json library does not care about order.
+				for (auto& [key, val] : mh.items())
 				{
-					if ((key.compare("Content-Type") == 0) && value.is_string()) contentType = value;
+					if (contentType.empty() && (key.compare(HF_CONTENT_TYPE) == 0) && val.is_string()) contentType = val;
 
-					if (value.is_null())
+					if (val.is_null())
 					{ /* do nothing; skip field. */
 					}
-					else if (value.is_number_unsigned())
+					else if (val.is_number_unsigned())
 					{
-						buffer += fmt::format("{}: {}\r\n", key, value.get<uint64_t>());
+						buffer += fmt::format("{}: {}\r\n", key, val.get<uint64_t>());
 					}
-					else if (value.is_number_integer())
+					else if (val.is_number_integer() || val.is_number())
 					{
-						buffer += fmt::format("{}: {}\r\n", key, value.get<int64_t>());
+						buffer += fmt::format("{}: {}\r\n", key, val.get<int64_t>());
 					}
-					else if (value.is_number_float())
+					else if (val.is_number_float())
 					{
-						buffer += fmt::format("{}: {}\r\n", key, value.get<float>());
+						buffer += fmt::format("{}: {}\r\n", key, val.get<float>());
 					}
-					else if (value.is_string())
+					else if (val.is_string())
 					{
-						buffer += fmt::format("{}: {}\r\n", key, value);
+						buffer += fmt::format("{}: {}\r\n", key, val);
+					}
+					else if (val.is_boolean())
+					{
+						buffer += fmt::format("{}: {}\r\n", key, val ? "true" : "false");
+					}
+					else if (val.is_array())
+					{
+						// Special handling for arrays.
+						// We serialize with the same key and the various values follow.
+						for (auto& item : val.items())
+						{
+							auto iv = item.value();
+							buffer += fmt::format("{}: {}\r\n", key, iv);
+						}
 					}
 					else
 					{
-						buffer += fmt::format("{}: {{}}\r\n", key, value);
+						buffer += fmt::format("{}: {{}}\r\n", key, val);
 					}
 				};
 
@@ -179,7 +194,7 @@ namespace siddiqsoftware
 
 			// Body
 			// NOTE: we extract the contentType value during the header serialization.
-			if (contentType.compare("application/sdp") == 0)
+			if (contentType.compare(CONTENT_TYPE_APP_SDP) == 0)
 			{
 				if (sipm.contains("/mb"_json_pointer))
 				{
@@ -261,7 +276,7 @@ namespace siddiqsoftware
 						if (key.find(HF_VIA) == 0)
 						{
 							// Via is an array
-							sipm["mh"]["Via"].push_back(value);
+							sipm["mh"][HF_VIA].push_back(value);
 						}
 						else if (key.find(HF_CONTENT_LENGTH) == 0)
 						{
@@ -282,6 +297,116 @@ namespace siddiqsoftware
 						else
 						{
 							sipm["mh"][key] = value;
+						}
+					}
+					// Offset the start to the point after the start-line.
+					bufferStart += matcher.length();
+				}
+
+				return true;
+			}
+			else
+			{
+				throw std::invalid_argument(fmt::format("{} - Buffer missing header-delimiter within range.", __func__));
+			}
+
+			return false;
+		}
+
+		static bool
+		parseBodySDP(sipmessage& sipm, std::string::iterator& bufferStart, std::string::iterator& bufferEnd) noexcept(false)
+		{
+			std::match_results<std::string::iterator> matcher;
+
+			if (bufferStart != bufferEnd)
+			{
+				uint32_t blockIndex = 0;
+
+				while (std::regex_search(bufferStart, bufferEnd, matcher, SIP_PATTERN_BODY))
+				{
+					if (matcher.size() == 3)
+					{
+						auto key   = matcher[1].str();
+						auto value = matcher[2].str();
+
+						if (key.compare("a") == 0)
+						{
+							// attribute lines
+							//sipm[pkey].push_back(matcher[2].str());
+							std::match_results<std::string::iterator> alineMatcher;
+							if (std::regex_search(value.begin(), value.end(), alineMatcher, SIP_PATTERN_BODY_ALINE) &&
+								alineMatcher.size() == 3)
+							{
+								nlohmann::json::json_pointer pkey(
+										fmt::format("/mb/sdp/{}/{}/{}", blockIndex, key, alineMatcher[1].str()));
+								sipm[pkey] = alineMatcher[2].str();
+							}
+						}
+						else
+						{
+							nlohmann::json::json_pointer pkey(fmt::format("/mb/sdp/{}/{}", blockIndex, key));
+
+							if (key.compare("c") == 0)
+							{
+								std::match_results<std::string::iterator> clineMatcher;
+								if (std::regex_search(value.begin(), value.end(), clineMatcher, SIP_PATTERN_BODY_CLINE) &&
+									clineMatcher.size() >= 3)
+								{
+									sipm[pkey] = nlohmann::json {
+											{"type", clineMatcher[1]}, {"subtype", clineMatcher[2]}, {"dn", clineMatcher[3]}};
+								}
+								else
+								{
+									sipm[pkey] = value;
+								}
+							}
+							else if (key.compare("o") == 0)
+							{
+								std::match_results<std::string::iterator> olineMatcher;
+								if (std::regex_search(value.begin(), value.end(), olineMatcher, SIP_PATTERN_BODY_OLINE) &&
+									olineMatcher.size() >= 6)
+								{
+									sipm[pkey] = nlohmann::json {{"user", olineMatcher[1]},
+																 {"t1", olineMatcher[2]},
+																 {"t2", olineMatcher[3]},
+																 {"type", olineMatcher[4]},
+																 {"subtype", olineMatcher[5]},
+																 {"host", olineMatcher[6]}};
+								}
+								else
+								{
+									sipm[pkey] = value;
+								}
+							}
+							else if (key.compare("i") == 0)
+							{
+								// Identity and number and type of call.
+								std::match_results<std::string::iterator> ilineMatcher;
+								if (std::regex_search(value.begin(), value.end(), ilineMatcher, SIP_PATTERN_BODY_ILINE) &&
+									ilineMatcher.size() >= 3)
+								{
+									sipm[pkey] = nlohmann::json {
+											{"name", ilineMatcher[1]}, {"dn", ilineMatcher[2]}, {"type", ilineMatcher[3]}};
+								}
+								else
+								{
+									sipm[pkey] = value;
+								}
+							}
+							else if (key.compare("t") == 0)
+							{
+								uint32_t ts = 0, te = 0;
+								// timing
+								if (sscanf_s(value.c_str(), "%d %d", &ts, &te) > 0)
+								{
+									sipm[pkey].push_back(ts);
+									sipm[pkey].push_back(te);
+								}
+							}
+							else if (!key.empty())
+							{
+								sipm[pkey] = value;
+							}
 						}
 					}
 					// Offset the start to the point after the start-line.
@@ -319,7 +444,7 @@ namespace siddiqsoftware
 					if (foundRequest)
 					{
 						auto foundHeaders = parseHeaders(sipm, bufferStart, bufferEnd);
-						if (foundHeaders && sipm.getContentLength() > 0) { }
+						if (foundHeaders && sipm.getContentLength() > 0) { parseBodySDP(sipm, bufferStart, bufferEnd); }
 					}
 				}
 				else
