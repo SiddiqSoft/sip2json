@@ -19,6 +19,7 @@
 
 #include "sip2json_response_codes.h"
 #include "sip2json_utils.h"
+#include "sipmessage.h"
 
 #include "nlohmann/json.hpp"
 #include "fmt/chrono.h"
@@ -39,18 +40,13 @@ namespace siddiqsoftware
 		static const inline std::string MessageTypeRequest	= "sip2json.request";
 		static const inline std::string MessageTypeResponse = "sip2json.response";
 
-		static const inline std::string SIPVersion				 = "SIP/2.0";
-		static const inline std::string SIPLineTerminator		 = "\r\n";
-		static const inline std::string SIPHeaderBlockTerminator = "\r\n\r\n";
-		static const inline std::string SIPSDPBlockStart		 = "v=0\r\n";
-
 
 #pragma region SIPMessage helpers
 	private:
 		/// @brief Creates a basic SIP Message content in json. This method is used by the createRequest and createResponse methods
 		/// @param messageType Must be one of MessageTypeRequest or MessageTypeResponse
 		/// @return json document with basic sections
-		static nlohmann::json createRawMessage(const std::string& messageType)
+		static sipmessage createRawMessage(const std::string& messageType)
 		{
 			static const std::string userAgent = fmt::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion);
 
@@ -59,8 +55,6 @@ namespace siddiqsoftware
 								   {"mb", nullptr},
 								   {"mh",
 									{{"Call-ID", nullptr},
-									 {"Date", getRFC1123()},
-									 {"X-Date", getISO8601()},
 									 {"To", nullptr},
 									 {"From", nullptr},
 									 {"CSeq", nullptr},
@@ -73,38 +67,41 @@ namespace siddiqsoftware
 		}
 
 	public:
-		static nlohmann::json createRequest(const std::string& method,
-											const std::string& uri,
-											const std::string& callId = {},
-											uint32_t		   cseq	  = 0,
-											nlohmann::json&	   sipm	  = createRawMessage(MessageTypeRequest))
+		static sipmessage createRequest(const std::string& method,
+										const std::string& uri,
+										const std::string& callId = {},
+										uint32_t		   cseq	  = 0,
+										sipmessage&		   sipm	  = createRawMessage(MessageTypeRequest))
 		{
+			// We must clear these values in case we are updating an existing object.
+			if (sipm.contains("sl")) sipm.erase("sl");
+			sipm["/type"_json_pointer] = MessageTypeRequest;
 			// start-line: may either be a request-line or a status-line
 			// request-line: METHOD Request-URI SIP/2.0
 			// rl ==> "request-line" (request message type) and sl ==> "status-line" (response message type)
-			sipm.erase("sl");
-			sipm["/type"_json_pointer]		 = MessageTypeRequest;
 			sipm["/rl/method"_json_pointer]	 = method;
 			sipm["/rl/uri"_json_pointer]	 = uri;
-			sipm["/rl/version"_json_pointer] = SIPVersion;
+			sipm["/rl/version"_json_pointer] = SIPVER_20;
 			// message-headers
 			if (!callId.empty()) sipm["/mh/Call-ID"_json_pointer] = callId;
 			if (cseq > 0) sipm["/mh/CSeq"_json_pointer] = fmt::format("{} {}", cseq, method);
+			sipm["/mh/Date"_json_pointer] = getRFC1123();
 
 			return sipm;
 		}
 
 
-		static nlohmann::json createResponse(uint32_t statusCode, nlohmann::json& sipm = createRawMessage(MessageTypeResponse))
+		static sipmessage createResponse(uint32_t statusCode, sipmessage& sipm = createRawMessage(MessageTypeResponse))
 		{
+			// We must clear these values in case we are updating an existing object.
+			if (sipm.contains("rl")) sipm.erase("rl");
+			sipm["/type"_json_pointer] = MessageTypeResponse;
 			// start-line: may either be a request-line or a status-line
 			// request-line: METHOD Request-URI SIP/2.0
 			// sl ==> "status-line" (response message type)
-			sipm.erase("rl");
-			sipm["/type"_json_pointer]		 = MessageTypeResponse;
 			sipm["/sl/status"_json_pointer]	 = statusCode;
 			sipm["/sl/reason"_json_pointer]	 = getReasonPhrase(statusCode);
-			sipm["/sl/version"_json_pointer] = SIPVersion;
+			sipm["/sl/version"_json_pointer] = SIPVER_20;
 
 			return sipm;
 		}
@@ -209,17 +206,133 @@ namespace siddiqsoftware
 			return buffer;
 		}
 
+		static bool
+		parseStartLine(sipmessage& sipm, std::string::iterator& bufferStart, std::string::iterator& bufferEnd) noexcept(false)
+		{
+			std::match_results<std::string::iterator> matchStartLine;
+			bool									  found = false;
+
+			found = std::regex_search(bufferStart, bufferEnd, matchStartLine, SIP_PATTERN_REQUEST_STARTLINE);
+			if (!found) found = std::regex_search(bufferStart, bufferEnd, matchStartLine, SIP_PATTERN_RESPONSE_STARTLINE);
+
+			if (found && matchStartLine.size() >= 3)
+			{
+				if (siddiqsoftware::SIPVER_20.compare(matchStartLine[3]) == 0)
+				{
+					sipm["type"]					 = MessageTypeRequest;
+					sipm["/rl/method"_json_pointer]	 = matchStartLine[1];
+					sipm["/rl/uri"_json_pointer]	 = matchStartLine[2];
+					sipm["/rl/version"_json_pointer] = matchStartLine[3];
+				}
+				else
+				{
+					sipm["type"]						= MessageTypeResponse;
+					sipm["/sl/reason"_json_pointer]		= matchStartLine[3];
+					sipm["/sl/statusCode"_json_pointer] = std::stoi(matchStartLine[2].str());
+					sipm["/sl/version"_json_pointer]	= matchStartLine[1];
+				}
+
+				// Offset the start to the point after the start-line.
+				bufferStart += matchStartLine.length();
+			}
+			else
+			{
+			}
+
+			return found;
+		}
+
+		static bool
+		parseHeaders(sipmessage& sipm, std::string::iterator& bufferStart, std::string::iterator& bufferEnd) noexcept(false)
+		{
+			std::match_results<std::string::iterator> matcher;
+			auto									  headerEnd =
+					std::search(bufferStart, bufferEnd, ELEM_HEADERSECTIONDELIMITER.begin(), ELEM_HEADERSECTIONDELIMITER.end());
+
+			if (headerEnd != bufferEnd)
+			{
+				while (std::regex_search(bufferStart, headerEnd, matcher, SIP_PATTERN_HEADER))
+				{
+					if (matcher.size() == 3)
+					{
+						auto key   = matcher[1].str();
+						auto value = matcher[2].str();
+
+						if (key.find(HF_VIA) == 0)
+						{
+							// Via is an array
+							sipm["mh"]["Via"].push_back(value);
+						}
+						else if (key.find(HF_CONTENT_LENGTH) == 0)
+						{
+							sipm["mh"][key] = std::stoi(value);
+						}
+						else if (key.find(HF_EXPIRES) == 0)
+						{
+							sipm["mh"][key] = std::stoi(value);
+						}
+						else if (value.find("true") == 0)
+						{
+							sipm["mh"][key] = true;
+						}
+						else if (value.find("false") == 0)
+						{
+							sipm["mh"][key] = false;
+						}
+						else
+						{
+							sipm["mh"][key] = value;
+						}
+					}
+					// Offset the start to the point after the start-line.
+					bufferStart += matcher.length();
+				}
+
+				return true;
+			}
+			else
+			{
+				throw std::invalid_argument(fmt::format("{} - Buffer missing header-delimiter within range.", __func__));
+			}
+
+			return false;
+		}
 
 	public:
 		/// @brief De-serialize the *first* SIP message (if present) from the buffer. Repeated calls to this method will extract the remaining messages.
-		/// @param dest An existing json object; existing items will be replaced.
 		/// @param bufferStart iterator to the start of the buffer the client expects a SIP message.
 		/// @param bufferEnd iterator to the end of the buffer the client expects a SIP message.
-		/// @return true/false depending on whether the buffer contained a sipmessage
-		static bool
-		parseFromBuffer(nlohmann::json& dest, std::string::iterator& bufferStart, std::string::iterator& bufferEnd) noexcept(false)
+		/// @return A sipmessage object containing the document representing the first decoded sipmessage in the buffer.
+		static sipmessage parseFromBuffer(std::string::iterator& bufferStart, std::string::iterator& bufferEnd) noexcept(false)
 		{
-			return false;
+			sipmessage sipm;
+
+			// Basic assumptions
+			// Ensure that the buffer is processable.
+			if (bufferStart == bufferEnd) throw std::invalid_argument(fmt::format("{}: bufferStart==bufferEnd", __func__));
+
+			if (bufferStart != bufferEnd)
+			{
+				if (auto diff = bufferEnd - bufferStart; diff > SIP_SAMPLE_MINIMAL_MESSAGE.length())
+				{
+					auto foundRequest = parseStartLine(sipm, bufferStart, bufferEnd);
+					if (foundRequest)
+					{
+						auto foundHeaders = parseHeaders(sipm, bufferStart, bufferEnd);
+						if (foundHeaders && sipm.getContentLength() > 0) { }
+					}
+				}
+				else
+				{
+					// Failed; buffer too small
+					throw std::length_error(fmt::format("{}: Buffer too small:{} (smaller than reference {})",
+														__func__,
+														diff,
+														SIP_SAMPLE_MINIMAL_MESSAGE.length()));
+				}
+			}
+
+			return std::move(sipm);
 		}
 	};
 

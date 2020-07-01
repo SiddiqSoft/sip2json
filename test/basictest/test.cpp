@@ -8,6 +8,7 @@
 
 #include <string>
 #include <chrono>
+#include <fstream>
 
 #include "nlohmann/json.hpp"
 #include "fmt/chrono.h"
@@ -95,7 +96,6 @@ namespace siddiqsoftware
 		EXPECT_TRUE(dummyMessage.size() != 0);
 		EXPECT_TRUE(!dummyMessage.value("/sl/reason"_json_pointer, std::string {}).empty());
 		EXPECT_TRUE(dummyMessage.value("/type"_json_pointer, std::string {}).compare(sip2json::MessageTypeResponse) == 0);
-		EXPECT_TRUE(!dummyMessage.value("/mh/Date"_json_pointer, std::string {}).empty());
 	}
 
 
@@ -159,4 +159,146 @@ namespace siddiqsoftware
 		registerMessage["/mh/Content-Type"_json_pointer] = "application/sdp";
 		EXPECT_ANY_THROW(sip2json::serialize(registerMessage));
 	}
+
+	TEST(SIPParser, Test_loadTestFile)
+	{
+		std::stringstream testFile;
+		std::ifstream	  sampleInputFile("NOTIFY_LegDrop.sip");
+
+		if (sampleInputFile.is_open())
+		{
+			while (sampleInputFile.peek() != EOF)
+			{
+				testFile << (char)sampleInputFile.get();
+			}
+			sampleInputFile.close();
+		}
+
+		EXPECT_TRUE(testFile.str().length() > 0);
+	}
+
+
+	TEST(SIPParser, Test_EmptyBodyParseFail)
+	{
+		std::string emptyBuffer;
+		EXPECT_ANY_THROW(sip2json::parseFromBuffer(emptyBuffer.begin(), emptyBuffer.end()));
+	}
+
+	TEST(SIPParser, Test_parse_1_fail)
+	{
+		auto buffer = siddiqsoftware::SIP_SAMPLE_MINIMAL_MESSAGE;
+		EXPECT_ANY_THROW(sip2json::parseFromBuffer(buffer.begin(), buffer.end()));
+	}
+
+	TEST(SIPParser, Test_parse_NOTIFY_1)
+	{
+		std::stringstream testFile;
+		std::ifstream	  sampleInputFile("NOTIFY_LegDrop.sip");
+
+		if (sampleInputFile.is_open())
+		{
+			while (sampleInputFile.peek() != EOF)
+			{
+				testFile << (char)sampleInputFile.get();
+			}
+			sampleInputFile.close();
+		}
+
+		EXPECT_TRUE(testFile.str().length() > 0);
+
+		auto buffer = testFile.str();
+		auto sipm	= sip2json::parseFromBuffer(buffer.begin(), buffer.end());
+
+		std::cerr << "Decoded SIPMessage document" << sipm.dump(2);
+
+		// Start checking if we decoded properly..
+		// METHOD: NOTIFY
+		EXPECT_EQ(siddiqsoftware::METHOD_NOTIFY, sipm.value("/rl/method"_json_pointer, std::string {}));
+		EXPECT_EQ("sip:subscribe_to_call_events@loopup.com;machine", sipm.value("/rl/uri"_json_pointer, std::string {}));
+		// Via is an array
+		ASSERT_TRUE(sipm.value("/mh/Via"_json_pointer, nlohmann::json {}).is_array());
+		EXPECT_EQ(sipm.value("/mh/Via"_json_pointer, nlohmann::json {}).size(), 4);
+		// Call-ID
+		EXPECT_EQ(sipm.getCallID(), "6732196043737il-ed-mara-01");
+		// Content-Type
+		EXPECT_EQ(CONTENT_TYPE_APP_SDP, sipm.getContentType());
+		// Content-Length
+		EXPECT_EQ(848, sipm.getContentLength());
+	}
+
+	TEST(SIPParser, Test_parse_REGISTER_200_OK)
+	{
+		std::stringstream testFile;
+		std::ifstream	  sampleInputFile("REGISTER_200_OK.sip");
+
+		if (sampleInputFile.is_open())
+		{
+			while (sampleInputFile.peek() != EOF)
+			{
+				testFile << (char)sampleInputFile.get();
+			}
+			sampleInputFile.close();
+		}
+
+		EXPECT_TRUE(testFile.str().length() > 0);
+
+		auto buffer = testFile.str();
+		auto sipm	= sip2json::parseFromBuffer(buffer.begin(), buffer.end());
+
+		std::cerr << "Decoded SIPMessage document" << sipm.dump(2);
+
+		// Start checking if we decoded properly..
+		// Start-Line (response): SIP/2.0 200 OK
+		ASSERT_EQ(200, sipm.value("/sl/statusCode"_json_pointer, 0));
+		// Via is an array
+		ASSERT_TRUE(sipm.value("/mh/Via"_json_pointer, nlohmann::json {}).is_array());
+		EXPECT_EQ(sipm.value("/mh/Via"_json_pointer, nlohmann::json {}).size(), 1);
+		ASSERT_EQ(sipm.value("/mh/Via/0"_json_pointer, ""), "SIP/2.0/TCP il-ed-mara-01.ring2.com:8443");
+		// Call-ID
+		ASSERT_EQ(sipm.getCallID(), "8DC1AF9E-8C37-4463-B8C9-1959A1428116");
+		// Content-Type
+		//ASSERT_EQ(CONTENT_TYPE_APP_SDP, sipm.getContentType());
+		// Content-Length
+		ASSERT_EQ(0, sipm.getContentLength());
+		ASSERT_EQ(300, sipm.getExpires());
+		ASSERT_EQ(true, sipm.value("/mh/X-subscribe-to-leg-events"_json_pointer, false));
+	}
+
+	TEST(SIPParser, Test_parse_REGISTER_1)
+	{
+		std::stringstream testFile;
+		std::ifstream	  sampleInputFile("REGISTER_1.sip");
+
+		if (sampleInputFile.is_open())
+		{
+			while (sampleInputFile.peek() != EOF)
+			{
+				testFile << (char)sampleInputFile.get();
+			}
+			sampleInputFile.close();
+		}
+
+		EXPECT_TRUE(testFile.str().length() > 0);
+
+		auto buffer = testFile.str();
+		auto sipm	= sip2json::parseFromBuffer(buffer.begin(), buffer.end());
+
+		std::cerr << "Decoded SIPMessage document" << sipm.dump(2);
+
+		// Start checking if we decoded properly..
+		// Start-Line (response): SIP/2.0 200 OK
+		ASSERT_EQ(METHOD_REGISTER, sipm.value("/rl/method"_json_pointer, ""));
+		ASSERT_TRUE(sipm.value("/mh/Via"_json_pointer, nlohmann::json {}).is_array());
+		ASSERT_TRUE(sipm.value("/mh/Via"_json_pointer, nlohmann::json {}).size() == 1);
+		ASSERT_EQ(sipm.value("/mh/Via/0"_json_pointer, nlohmann::json {}), "SIP/2.0/TCP il-ed-mara-01.ring2.com:8443");
+		// Call-ID
+		ASSERT_EQ(sipm.getCallID(), "8DC1AF9E-8C37-4463-B8C9-1959A1428116");
+		// Content-Type
+		//ASSERT_EQ(CONTENT_TYPE_APP_SDP, sipm.getContentType());
+		// Content-Length
+		ASSERT_EQ(0, sipm.getContentLength());
+		ASSERT_EQ(300, sipm.getExpires());
+		ASSERT_EQ(true, sipm.value("/mh/X-subscribe-to-leg-events"_json_pointer, false));
+	}
+
 } // namespace siddiqsoftware
