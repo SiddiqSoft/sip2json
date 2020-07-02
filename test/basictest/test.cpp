@@ -395,7 +395,7 @@ namespace siddiqsoftware
 
 		EXPECT_EQ(sipm.value("/mb/sdp/0/a/trunk"_json_pointer, ""), "8:chan:0");
 		EXPECT_EQ(sipm.value("/mb/sdp/0/a/user-agent"_json_pointer, ""), "Cisco-SIPGateway/IOS-16.3.3");
-		EXPECT_TRUE(sipm.contains("/mb/sdp/0/a/new_change"_json_pointer));
+		EXPECT_EQ(sipm.value("/mb/sdp/0/a/new_change"_json_pointer, false), true);
 		EXPECT_TRUE(sipm.contains("/mb/sdp/0/a/far_end"_json_pointer));
 		EXPECT_EQ(sipm.value("/mb/sdp/0/a/clir"_json_pointer, ""), "false");
 
@@ -501,7 +501,7 @@ namespace siddiqsoftware
 			EXPECT_EQ(sipm.value("/mb/sdp/0/a/user-agent"_json_pointer, ""), "Cisco-SIPGateway/IOS-16.3.3");
 			EXPECT_EQ(sipm.value("/mb/sdp/0/a/x-ring2-smartproxy"_json_pointer, ""), "usaze-asalt01.ring2.com");
 			EXPECT_EQ(sipm.value("/mb/sdp/0/a/trunk"_json_pointer, ""), "8:chan:0");
-			EXPECT_TRUE(sipm.contains("/mb/sdp/0/a/new_change"_json_pointer));
+			EXPECT_EQ(sipm.value("/mb/sdp/0/a/new_change"_json_pointer, false), true);
 			EXPECT_TRUE(sipm.contains("/mb/sdp/0/a/far_end"_json_pointer));
 			EXPECT_EQ(sipm.value("/mb/sdp/0/a/clir"_json_pointer, ""), "false:18777464263");
 		};

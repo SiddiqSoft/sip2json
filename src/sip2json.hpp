@@ -340,22 +340,23 @@ namespace siddiqsoftware
 
 						if (key.compare("a") == 0)
 						{
-							// attribute lines
+							// attribute lines: https://en.wikipedia.org/wiki/Session_Description_Protocol#Attributes
 							//sipm[pkey].push_back(matcher[2].str());
 							std::match_results<std::string::iterator> alineMatcher;
 							if (std::regex_search(value.begin(), value.end(), alineMatcher, SIP_PATTERN_BODY_ALINE) &&
 								alineMatcher.size() >= 3)
 							{
-								// We matched a=key:value
+								// This is the form where a=attribute:value
 								nlohmann::json::json_pointer pkey(
 										fmt::format("/mb/sdp/{}/{}/{}", blockIndex, key, alineMatcher[1].str()));
 								sipm[pkey] = alineMatcher.length() > 0 ? alineMatcher[2].str() : nullptr;
 							}
 							else if (!value.empty())
 							{
+								// This is the form where a=flag
 								// We matched a=key without the `:` or the "value" so we should store the value with nullptr
 								nlohmann::json::json_pointer pkey(fmt::format("/mb/sdp/{}/{}/{}", blockIndex, key, value));
-								sipm[pkey] = nullptr;
+								sipm[pkey] = true;
 							}
 						}
 						else
