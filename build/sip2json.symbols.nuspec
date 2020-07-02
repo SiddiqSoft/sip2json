@@ -10,16 +10,16 @@
     <!-- required: -->
     <id>sip2json.symbols</id>
     <version>$VERSION$</version>
-    <authors>Abdulkareem Siddiq, LoopUp LLC.</authors>
-    <description>Ring2 SIP Factory Library Symbols</description>
+    <authors>Abdulkareem Siddiq</authors>
+    <description>SIP Parser for Modern C++</description>
     <!-- encouraged: should include `native` and `nativepackage` -->
-    <tags>loopup sip sdp pint ring2 native cpp</tags>
+    <tags>sip sdp pint native cpp</tags>
     <!-- Add additional optional tags here. -->
     <!--<license type="expression">MIT</license>-->
     <projectUrl>https://dev.azure.com/loopup/sys4</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <releaseNotes></releaseNotes>
-    <copyright>Copyright (c) 2003-2020 LoopUp LLC.</copyright>
+    <copyright>Copyright (c) 2003-2020 Abdelkareem Siddiq</copyright>
   </metadata>
 
   <!--
@@ -29,8 +29,10 @@
 		https://docs.microsoft.com/en-us/nuget/create-packages/creating-a-package#from-a-convention-based-working-directory
 	-->
   <files>
+    <!--
     <file src="..\output\Debug\sip2json.pdb" target="build\native\lib\Debug" />
     <file src="..\output\Release\sip2json.pdb" target="build\native\lib\Release" />
+    -->
 
     <!-- MSBuild .targets files -->
     <file src="sip2json.symbols.targets" target="build\native" />
