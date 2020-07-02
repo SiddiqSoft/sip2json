@@ -25,7 +25,6 @@
     <dependencies>
       <dependency id="fmt" version="6.2.1"/>
       <dependency id="nlohmann.json" version="3.8.0"/>
-      <dependency id="r2dtlib" version="2.1.0"/>
     </dependencies>
   </metadata>
 
@@ -37,7 +36,6 @@
 	-->
   <files>
     <!-- includes -->
-    <file src="..\src\*.h" target="build\native\include" />
     <file src="..\src\*.hpp" target="build\native\include" />
 
     <!-- Debug libs and bins -->

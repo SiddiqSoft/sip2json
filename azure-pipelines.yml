@@ -50,7 +50,6 @@ steps:
     configuration: debug
     maximumCpuCount: true
     msbuildArchitecture: x64
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
 - task: VSBuild@1
   displayName: 'Build solution sip2json.sln RELEASE'
@@ -67,11 +66,11 @@ steps:
   inputs:
     testSelector: 'testAssemblies'
     testAssemblyVer2: |
+      **\*test*.exe
       **\*test*.dll
       !**\*TestAdapter.dll
       !**\obj\**
     searchFolder: '$(System.DefaultWorkingDirectory)'
-    vsTestVersion: '16'
     runInParallel: true
     platform: 'x64'
     configuration: 'release'
