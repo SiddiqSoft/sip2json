@@ -202,7 +202,7 @@ namespace siddiqsoftware
 					{
 						// the sdp is stored as an array of objects
 						auto sdp = sipm.at("/mb/sdp"_json_pointer);
-						for (auto& item : sdp)
+						for (auto& block : sdp)
 						{
 							buffer += "v=0\r\n"; // always write this out at the start of each SDP element
 						}
@@ -278,6 +278,11 @@ namespace siddiqsoftware
 							// Via is an array
 							sipm["mh"][HF_VIA].push_back(value);
 						}
+						else if (_stricmp(key.c_str(), HF_CONTENT_TYPE.c_str()) == 0)
+						{
+							// Some encoders send Content-type instead of the standard Content-Type; here we need to normalize it.
+							sipm["mh"][HF_CONTENT_TYPE] = value;
+						}
 						else if (key.find(HF_CONTENT_LENGTH) == 0)
 						{
 							sipm["mh"][key] = std::stoi(value);
@@ -293,6 +298,10 @@ namespace siddiqsoftware
 						else if (value.find("false") == 0)
 						{
 							sipm["mh"][key] = false;
+						}
+						else if (value.empty())
+						{
+							sipm["mh"][key] = nullptr;
 						}
 						else
 						{
@@ -335,11 +344,18 @@ namespace siddiqsoftware
 							//sipm[pkey].push_back(matcher[2].str());
 							std::match_results<std::string::iterator> alineMatcher;
 							if (std::regex_search(value.begin(), value.end(), alineMatcher, SIP_PATTERN_BODY_ALINE) &&
-								alineMatcher.size() == 3)
+								alineMatcher.size() >= 3)
 							{
+								// We matched a=key:value
 								nlohmann::json::json_pointer pkey(
 										fmt::format("/mb/sdp/{}/{}/{}", blockIndex, key, alineMatcher[1].str()));
-								sipm[pkey] = alineMatcher[2].str();
+								sipm[pkey] = alineMatcher.length() > 0 ? alineMatcher[2].str() : nullptr;
+							}
+							else if (!value.empty())
+							{
+								// We matched a=key without the `:` or the "value" so we should store the value with nullptr
+								nlohmann::json::json_pointer pkey(fmt::format("/mb/sdp/{}/{}/{}", blockIndex, key, value));
+								sipm[pkey] = nullptr;
 							}
 						}
 						else
@@ -357,7 +373,7 @@ namespace siddiqsoftware
 								}
 								else
 								{
-									sipm[pkey] = value;
+									sipm[pkey] = !value.empty() ? value : nullptr;
 								}
 							}
 							else if (key.compare("o") == 0)
@@ -375,7 +391,7 @@ namespace siddiqsoftware
 								}
 								else
 								{
-									sipm[pkey] = value;
+									sipm[pkey] = !value.empty() ? value : nullptr;
 								}
 							}
 							else if (key.compare("i") == 0)
@@ -390,7 +406,7 @@ namespace siddiqsoftware
 								}
 								else
 								{
-									sipm[pkey] = value;
+									sipm[pkey] = !value.empty() ? value : nullptr;
 								}
 							}
 							else if (key.compare("t") == 0)
@@ -403,6 +419,10 @@ namespace siddiqsoftware
 									sipm[pkey].push_back(te);
 								}
 							}
+							else if (!key.empty() && value.empty())
+							{
+								sipm[pkey] = nullptr;
+							}
 							else if (!key.empty())
 							{
 								sipm[pkey] = value;
@@ -410,7 +430,7 @@ namespace siddiqsoftware
 						}
 					}
 					// Offset the start to the point after the start-line.
-					bufferStart += matcher.length();
+					bufferStart += matcher.length() + ELEM_NEWLINE.size();
 				}
 
 				return true;
@@ -444,7 +464,28 @@ namespace siddiqsoftware
 					if (foundRequest)
 					{
 						auto foundHeaders = parseHeaders(sipm, bufferStart, bufferEnd);
-						if (foundHeaders && sipm.getContentLength() > 0) { parseBodySDP(sipm, bufferStart, bufferEnd); }
+						if (foundHeaders)
+						{
+							if (sipm.getContentType().compare(CONTENT_TYPE_APP_SDP) == 0)
+							{
+								if (sipm.getContentLength() > 0)
+								{
+									// We must advance the buffer
+									bufferStart += ELEM_HEADERSECTIONDELIMITER.length();
+									// Decode the SDP
+									parseBodySDP(sipm, bufferStart, bufferEnd);
+								}
+							}
+							else if (!sipm.getContentType().empty())
+							{
+								throw std::exception(
+										fmt::format("{}: Content-Type:{} not supported", __func__, sipm.getContentType()).c_str());
+							}
+						}
+						else
+						{
+							throw std::exception(fmt::format("{}: headers not found", __func__).c_str());
+						}
 					}
 				}
 				else

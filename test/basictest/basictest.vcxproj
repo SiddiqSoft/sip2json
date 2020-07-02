@@ -45,6 +45,7 @@
     <ClCompile Include="test.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="NOTIFY_CallEnd.sip" />
     <None Include="NOTIFY_LegAdd.sip" />
     <None Include="packages.config" />
     <None Include="REGISTER_1.sip" />

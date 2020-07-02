@@ -137,6 +137,7 @@ namespace siddiqsoftware
 	static const std::string HF_CONTENT_LENGTH {"Content-Length"};
 	static const std::string HF_CONTENT_LENGTH_ALT {"L"};
 	static const std::string HF_CONTENT_TYPE {"Content-Type"};
+	static const std::string HF_CONTENT_TYPE2 {"Content-type"};
 	static const std::string HF_CONTENT_TYPE_ALT {"c"};
 	static const std::string HF_CALLID {"Call-ID"};
 	static const std::string HF_CALLID_ALT {"i"};
@@ -203,10 +204,10 @@ namespace siddiqsoftware
 	static const std::regex SIP_PATTERN_STARTLINE("^([^\\s]+)\\s*([^\\s]+)\\s*([^\\r\\n|\\n]+)\\s*");
 	static const std::regex SIP_PATTERN_CONTENT_LENGTH("^Content-Length:\\s{1,1}(\\d+)\\s*(\\r\\n|\\n)");
 	static const std::regex SIP_PATTERN_CONTENT_TYPE("^Content-type:\\s{1,1}([a-z|A-Z|\\-|/]+)\\s*(\\r\\n|\\n)");
-	static const std::regex SIP_PATTERN_HEADER("([^:\\s]*)\\s?:{1,1}\\s{1,1}([^\r\n]*)[\\x0A\\x0D]*");
-	
+	static const std::regex SIP_PATTERN_HEADER("([^:\\s]*)\\s?:{1,1}\\s{1,1}([^\\r\\n]*)[\\x0A\\x0D]*");
+
 	static const std::regex SIP_PATTERN_BODY("([vosictma]{1})=([^\\r\\n]*)");
-	static const std::regex SIP_PATTERN_BODY_ALINE("(\\w*)\\s*:\\s*([^\r\n]*)[\\x0A\\x0D]*");
+	static const std::regex SIP_PATTERN_BODY_ALINE("^([^:|\\r\\n]*)[:]{1}\\s?(.*$)[\\r\\n]?|(.*)[\\r\\n]");
 	static const std::regex SIP_PATTERN_BODY_ILINE("\\\"(.*)\\\"\\s\\((.*)\\)\\s([^\\s]*)");
 	static const std::regex SIP_PATTERN_BODY_CLINE("(\\w*) (\\w*) ([+\\-\\(\\)0-9]*)");
 	static const std::regex SIP_PATTERN_BODY_OLINE("([^\\s]*) (\\d*) (\\d*) (\\w*) (\\w*) ([^\\s]*)");
