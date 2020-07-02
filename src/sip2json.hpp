@@ -17,9 +17,9 @@
 #include <random>
 #include <sstream>
 
-#include "sip2json_response_codes.h"
-#include "sip2json_utils.h"
-#include "sipmessage.h"
+#include "sip2json_response_codes.hpp"
+#include "sip2json_utils.hpp"
+#include "sipmessage.hpp"
 
 #include "nlohmann/json.hpp"
 #include "fmt/chrono.h"
