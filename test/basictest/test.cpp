@@ -359,6 +359,7 @@ namespace siddiqsoftware
 		EXPECT_EQ(783, sipm.getContentLength());
 
 		EXPECT_EQ("akirmayer@sidley.com", sipm.value("/mh/X-control-master"_json_pointer, ""));
+		EXPECT_TRUE(sipm.contains("/mh/X-rss-id"_json_pointer));
 		EXPECT_EQ("2 NOTIFY", sipm.value("/mh/CSeq"_json_pointer, ""));
 		EXPECT_EQ(false, sipm.value("/mh/X-Billing-code-required"_json_pointer, true));
 		EXPECT_EQ("MTUxMDUwNzYxNDE1NjNpbC1lZC1tYXJhLTAxOjE1OTM1NjQxNjc6Mjg0NDcw",
@@ -453,6 +454,7 @@ namespace siddiqsoftware
 
 		EXPECT_EQ("jrbirge@nscorp.com", sipm.value("/mh/X-control-master"_json_pointer, ""));
 		EXPECT_EQ("267 NOTIFY", sipm.value("/mh/CSeq"_json_pointer, ""));
+		EXPECT_TRUE(sipm.contains("/mh/X-rss-id"_json_pointer));
 		EXPECT_EQ(false, sipm.value("/mh/X-Billing-code-required"_json_pointer, true));
 		EXPECT_EQ("NjczMjE5NjA0MzczN2lsLWVkLW1hcmEtMDE6MTU5MzU0NTA2NTo4MDQ0NjU=",
 				  sipm.value("/mh/X-Call-Instance-ID"_json_pointer, ""));
@@ -556,6 +558,7 @@ namespace siddiqsoftware
 			EXPECT_EQ(1326, sipm.getContentLength());
 
 			EXPECT_EQ("matthew.gabbard@stblaw.com", sipm.value("/mh/X-control-master"_json_pointer, ""));
+			EXPECT_TRUE(sipm.contains("/mh/X-rss-id"_json_pointer));
 			EXPECT_EQ("49 NOTIFY", sipm.value("/mh/CSeq"_json_pointer, ""));
 			EXPECT_EQ(true, sipm.value("/mh/X-Billing-code-required"_json_pointer, false));
 			EXPECT_EQ("MTE5MDM1MTIxMjMwNTY3aWwtZWQtbWFyYS0wMToxNTkzNjM3MTcwOjE1Njc0Ng==",
