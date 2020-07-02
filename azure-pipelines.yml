@@ -65,11 +65,17 @@ steps:
 - task: VSTest@2
   displayName: 'VsTest - testAssemblies'
   inputs:
-    vsTestVersion: 16.0
-    runInParallel: false
-    platform: x64
-    configuration: release
-    diagnosticsEnabled: True
+    testSelector: 'testAssemblies'
+    testAssemblyVer2: |
+      **\*test*.dll
+      !**\*TestAdapter.dll
+      !**\obj\**
+    searchFolder: '$(System.DefaultWorkingDirectory)'
+    vsTestVersion: '16'
+    runInParallel: true
+    platform: 'x64'
+    configuration: 'release'
+    diagnosticsEnabled: true
     rerunFailedTests: true
   continueOnError: true
 
