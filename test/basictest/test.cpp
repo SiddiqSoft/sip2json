@@ -323,7 +323,7 @@ namespace siddiqsoftware
 	}
 
 
-	TEST(SIPParser, Test_parse_NOTIFY_LegDrop_body_serialize)
+	TEST(SIPParser, Test_parse_NOTIFY_LegDrop_body)
 	{
 		std::stringstream testFile;
 		std::ifstream	  sampleInputFile("NOTIFY_LegDrop.sip");
@@ -426,7 +426,7 @@ namespace siddiqsoftware
 	}
 
 
-	TEST(SIPParser, Test_parse_NOTIFY_CallEnd_body_serialize)
+	TEST(SIPParser, Test_parse_NOTIFY_CallEnd_body)
 	{
 		std::stringstream testFile;
 		std::ifstream	  sampleInputFile("NOTIFY_CallEnd.sip");
