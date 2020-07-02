@@ -25,6 +25,7 @@
     <RootNamespace>edialvalidationsuite</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectSubType>NativeUnitTestProject</ProjectSubType>
+    <ProjectName>edial_validation_tests</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -172,7 +173,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="edialvalidationsuite.cpp" />
+    <ClCompile Include="edial_validation_tests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

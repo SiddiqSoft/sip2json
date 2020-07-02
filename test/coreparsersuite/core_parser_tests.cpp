@@ -21,7 +21,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace siddiqsoftware
 {
-	TEST_CLASS(Helpers)
+	TEST_CLASS(core_parser_tests)
 	{
 	public:
 		bool dummy;
