@@ -28,7 +28,7 @@ namespace siddiqsoftware
 		std::string loadSampleFile(const std::string& fileName)
 		{
 			std::stringstream testFile;
-			std::ifstream	  sampleInputFile(fmt::format("../test/samples/{}", fileName));
+			std::ifstream	  sampleInputFile(fmt::format("../test/samples/{}.sip", fileName));
 
 			if (sampleInputFile.is_open())
 			{
@@ -49,7 +49,7 @@ namespace siddiqsoftware
 		// NOLINTNEXTLINE
 		TEST_METHOD(Test_parse_NOTIFY_1_startline)
 		{
-			auto buffer		 = loadSampleFile("NOTIFY_LegDrop.sip");
+			auto buffer		 = loadSampleFile("NOTIFY_LegDrop");
 			auto bufferStart = buffer.begin();
 			auto sipm		 = sip2json::parseFromBuffer(bufferStart, buffer.end());
 
@@ -65,7 +65,7 @@ namespace siddiqsoftware
 		// NOLINTNEXTLINE
 		TEST_METHOD(Test_parse_NOTIFY_1_headers)
 		{
-			auto buffer		 = loadSampleFile("NOTIFY_LegDrop.sip");
+			auto buffer		 = loadSampleFile("NOTIFY_LegDrop");
 			auto bufferStart = buffer.begin();
 			auto sipm		 = sip2json::parseFromBuffer(bufferStart, buffer.end());
 
@@ -90,7 +90,7 @@ namespace siddiqsoftware
 		// NOLINTNEXTLINE
 		TEST_METHOD(Test_parse_NOTIFY_1_headers_serialize)
 		{
-			auto buffer		 = loadSampleFile("NOTIFY_LegDrop.sip");
+			auto buffer		 = loadSampleFile("NOTIFY_LegDrop");
 			auto bufferStart = buffer.begin();
 			auto sipm		 = sip2json::parseFromBuffer(bufferStart, buffer.end());
 
@@ -146,9 +146,9 @@ namespace siddiqsoftware
 		}
 
 		// NOLINTNEXTLINE
-		TEST_METHOD(Test_parse_NOTIFY_LegAdd_body)
+		TEST_METHOD(NOTIFY_LegAdd)
 		{
-			auto buffer		 = loadSampleFile("NOTIFY_LegAdd.sip");
+			auto buffer		 = loadSampleFile("NOTIFY_LegAdd");
 			auto bufferStart = buffer.begin();
 			auto sipm		 = sip2json::parseFromBuffer(bufferStart, buffer.end());
 
@@ -231,9 +231,9 @@ namespace siddiqsoftware
 		}
 
 		// NOLINTNEXTLINE
-		TEST_METHOD(Test_parse_NOTIFY_LegDrop_body)
+		TEST_METHOD(NOTIFY_LegDrop)
 		{
-			auto buffer		 = loadSampleFile("NOTIFY_LegDrop.sip");
+			auto buffer		 = loadSampleFile("NOTIFY_LegDrop");
 			auto bufferStart = buffer.begin();
 			auto sipm		 = sip2json::parseFromBuffer(bufferStart, buffer.end());
 
@@ -326,9 +326,9 @@ namespace siddiqsoftware
 
 
 		// NOLINTNEXTLINE
-		TEST_METHOD(Test_parse_NOTIFY_CallEnd_body)
+		TEST_METHOD(NOTIFY_CallEnd)
 		{
-			auto buffer		 = loadSampleFile("NOTIFY_CallEnd.sip");
+			auto buffer		 = loadSampleFile("NOTIFY_CallEnd");
 			auto bufferStart = buffer.begin();
 			auto sipm		 = sip2json::parseFromBuffer(bufferStart, buffer.end());
 
@@ -416,9 +416,9 @@ namespace siddiqsoftware
 
 
 		// NOLINTNEXTLINE
-		TEST_METHOD(Test_parse_REGISTER_200_OK)
+		TEST_METHOD(REGISTER_200_OK)
 		{
-			auto buffer		 = loadSampleFile("REGISTER_200_OK.sip");
+			auto buffer		 = loadSampleFile("REGISTER_200_OK");
 			auto bufferStart = buffer.begin();
 			auto sipm		 = sip2json::parseFromBuffer(bufferStart, buffer.end());
 
@@ -443,9 +443,9 @@ namespace siddiqsoftware
 
 
 		// NOLINTNEXTLINE
-		TEST_METHOD(Test_parse_REGISTER_1)
+		TEST_METHOD(REGISTER_1)
 		{
-			auto buffer		 = loadSampleFile("REGISTER_1.sip");
+			auto buffer		 = loadSampleFile("REGISTER_1");
 			auto bufferStart = buffer.begin();
 			auto sipm		 = sip2json::parseFromBuffer(bufferStart, buffer.end());
 
@@ -470,25 +470,34 @@ namespace siddiqsoftware
 
 
 		// NOLINTNEXTLINE
-		TEST_METHOD(Test_Parse_HeaderWithContinuation)
+		TEST_METHOD(OK_REGISTER_Multiline_ContactHeader_1)
 		{
-			auto buffer		 = loadSampleFile("OK_REGISTER_Multiline_ContactHeader_1.sip");
+			auto buffer		 = loadSampleFile(__func__);
 			auto item		 = 0;
 			auto bufferStart = buffer.begin();
 
-			try
+			auto msgs = sip2json::parseAllFromBuffer(bufferStart, buffer.end());
+			// Source file has three frames
+			Assert::AreEqual<size_t>(3, msgs.size());
+			// Affirm that the first frame has a Contact that has been unfolded properly!
+			Assert::AreEqual<std::string>(
+					msgs[0].value("/mh/Contact"_json_pointer, ""),
+					"sip:jcollier@federationbankia.com;expires=1593725109;tag=sp2(263988)_IL-PS-CONGO-02.ring2.com, "
+					"sip:jcollier@federationbankia.com;expires=1593725109;tag=sp2(26392)_IL-PS-CONGO-01.ring2.com, "
+					"sip:jcollier@federationbankia.com;expires=1593725269;tag=65750151432167il-ed-mara-01__sp3[USCHEQ-ASRTA01."
+					"ring2.com]");
+			// Affirm that the second item's contact is a single line
+			Assert::AreEqual<std::string>(msgs[1].value("/mh/Contact"_json_pointer, ""), "<sip:216.111.92.37:8443;transport=ssl>");
+
+			// Affirm that the third element's contact ends with a space.
+			Assert::AreEqual<std::string>(msgs[2].value("/mh/Contact"_json_pointer, ""),
+										  "<sip:216.111.92.37:8443;transport=ssl>;expires=3600;tag=65750151432167il-ed-mara-01__"
+										  "sp3[USCHEQ-ASRTA01.ring2.com], ");
+
+			for (auto& i : msgs)
 			{
-				auto msgs = sip2json::parseAllFromBuffer(bufferStart, buffer.end());
-				Assert::AreEqual<size_t>(3, msgs.size());
-				for (auto& i : msgs)
-				{
-					auto str = fmt::format("{} - document {} -> {}\n", __func__, ++item, i.flatten().dump(2));
-					Logger::WriteMessage(str.c_str());
-				}
-			}
-			catch (std::exception& se)
-			{
-				Logger::WriteMessage(se.what());
+				auto str = fmt::format("{} - document {} -> {}\n", __func__, ++item, i.flatten().dump(2));
+				Logger::WriteMessage(str.c_str());
 			}
 		}
 	};
