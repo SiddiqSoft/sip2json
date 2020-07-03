@@ -21,6 +21,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace siddiqsoftware
 {
+	// NOLINTNEXTLINE
 	TEST_CLASS(edial_validation_tests)
 	{
 	public:
@@ -45,11 +46,12 @@ namespace siddiqsoftware
 	public:
 		bool dummy;
 
-
+		// NOLINTNEXTLINE
 		TEST_METHOD(Test_parse_NOTIFY_1_startline)
 		{
-			auto buffer = loadSampleFile("NOTIFY_LegDrop.sip");
-			auto sipm	= sip2json::parseFromBuffer(buffer.begin(), buffer.end());
+			auto buffer		 = loadSampleFile("NOTIFY_LegDrop.sip");
+			auto bufferStart = buffer.begin();
+			auto sipm		 = sip2json::parseFromBuffer(bufferStart, buffer.end());
 
 			std::cerr << "Decoded SIPMessage document" << sipm.dump(2);
 
@@ -60,11 +62,12 @@ namespace siddiqsoftware
 										  sipm.value("/rl/uri"_json_pointer, std::string {}));
 		}
 
-
+		// NOLINTNEXTLINE
 		TEST_METHOD(Test_parse_NOTIFY_1_headers)
 		{
-			auto buffer = loadSampleFile("NOTIFY_LegDrop.sip");
-			auto sipm	= sip2json::parseFromBuffer(buffer.begin(), buffer.end());
+			auto buffer		 = loadSampleFile("NOTIFY_LegDrop.sip");
+			auto bufferStart = buffer.begin();
+			auto sipm		 = sip2json::parseFromBuffer(bufferStart, buffer.end());
 
 			std::cerr << "Decoded SIPMessage document" << sipm.dump(2);
 
@@ -84,11 +87,12 @@ namespace siddiqsoftware
 			Assert::AreEqual<uint32_t>(848, sipm.getContentLength());
 		}
 
-
+		// NOLINTNEXTLINE
 		TEST_METHOD(Test_parse_NOTIFY_1_headers_serialize)
 		{
-			auto buffer = loadSampleFile("NOTIFY_LegDrop.sip");
-			auto sipm	= sip2json::parseFromBuffer(buffer.begin(), buffer.end());
+			auto buffer		 = loadSampleFile("NOTIFY_LegDrop.sip");
+			auto bufferStart = buffer.begin();
+			auto sipm		 = sip2json::parseFromBuffer(bufferStart, buffer.end());
 
 			std::cerr << "Decoded SIPMessage document" << sipm.dump(2);
 
@@ -119,7 +123,8 @@ namespace siddiqsoftware
 			std::cerr << "Serialized from decoded SIPMessage\n" << serializedFromDecoded;
 
 			// So we can decode it again and ensure that we can round-trip!
-			auto sipm2 = sip2json::parseFromBuffer(serializedFromDecoded.begin(), serializedFromDecoded.end());
+			auto serializedFromDecodedStart = serializedFromDecoded.begin();
+			auto sipm2						= sip2json::parseFromBuffer(serializedFromDecodedStart, serializedFromDecoded.end());
 			Assert::AreEqual<std::string>(METHOD_NOTIFY, sipm2.value("/rl/method"_json_pointer, std::string {}));
 			Assert::AreEqual<std::string>("sip:subscribe_to_call_events@loopup.com;machine",
 										  sipm2.value("/rl/uri"_json_pointer, std::string {}));
@@ -140,11 +145,12 @@ namespace siddiqsoftware
 										  sipm2.value("/mh/X-Call-Instance-ID"_json_pointer, ""));
 		}
 
-
+		// NOLINTNEXTLINE
 		TEST_METHOD(Test_parse_NOTIFY_LegAdd_body)
 		{
-			auto buffer = loadSampleFile("NOTIFY_LegAdd.sip");
-			auto sipm	= sip2json::parseFromBuffer(buffer.begin(), buffer.end());
+			auto buffer		 = loadSampleFile("NOTIFY_LegAdd.sip");
+			auto bufferStart = buffer.begin();
+			auto sipm		 = sip2json::parseFromBuffer(bufferStart, buffer.end());
 
 			std::cerr << "Decoded SIPMessage document" << sipm.flatten().dump(2);
 
@@ -214,7 +220,8 @@ namespace siddiqsoftware
 			std::cerr << "Serialized from decoded SIPMessage\n" << serializedFromDecoded;
 
 			// So we can decode it again and ensure that we can round-trip!
-			auto sipm2 = sip2json::parseFromBuffer(serializedFromDecoded.begin(), serializedFromDecoded.end());
+			auto serializedFromDecodedStart = serializedFromDecoded.begin();
+			auto sipm2						= sip2json::parseFromBuffer(serializedFromDecodedStart, serializedFromDecoded.end());
 			Assert::AreEqual<std::string>(METHOD_NOTIFY, sipm2.value("/rl/method"_json_pointer, std::string {}));
 			Assert::AreEqual<std::string>("sip:subscribe_to_call_events@loopup.com;machine",
 										  sipm2.value("/rl/uri"_json_pointer, std::string {}));
@@ -223,10 +230,12 @@ namespace siddiqsoftware
 			Assert::AreEqual<size_t>(sipm2.value("/mh/Via"_json_pointer, nlohmann::json {}).size(), 4);
 		}
 
+		// NOLINTNEXTLINE
 		TEST_METHOD(Test_parse_NOTIFY_LegDrop_body)
 		{
-			auto buffer = loadSampleFile("NOTIFY_LegDrop.sip");
-			auto sipm	= sip2json::parseFromBuffer(buffer.begin(), buffer.end());
+			auto buffer		 = loadSampleFile("NOTIFY_LegDrop.sip");
+			auto bufferStart = buffer.begin();
+			auto sipm		 = sip2json::parseFromBuffer(bufferStart, buffer.end());
 
 			std::cerr << "Decoded SIPMessage document" << sipm.flatten().dump(2);
 
@@ -293,7 +302,8 @@ namespace siddiqsoftware
 			std::cerr << "Serialized from decoded SIPMessage\n" << serializedFromDecoded;
 
 			// So we can decode it again and ensure that we can round-trip!
-			auto sipm2 = sip2json::parseFromBuffer(serializedFromDecoded.begin(), serializedFromDecoded.end());
+			auto serializedFromDecodedStart = serializedFromDecoded.begin();
+			auto sipm2						= sip2json::parseFromBuffer(serializedFromDecodedStart, serializedFromDecoded.end());
 			Assert::AreEqual<std::string>(METHOD_NOTIFY, sipm2.value("/rl/method"_json_pointer, std::string {}));
 			Assert::AreEqual<std::string>("sip:subscribe_to_call_events@loopup.com;machine",
 										  sipm2.value("/rl/uri"_json_pointer, std::string {}));
@@ -315,10 +325,12 @@ namespace siddiqsoftware
 		}
 
 
+		// NOLINTNEXTLINE
 		TEST_METHOD(Test_parse_NOTIFY_CallEnd_body)
 		{
-			auto buffer = loadSampleFile("NOTIFY_CallEnd.sip");
-			auto sipm	= sip2json::parseFromBuffer(buffer.begin(), buffer.end());
+			auto buffer		 = loadSampleFile("NOTIFY_CallEnd.sip");
+			auto bufferStart = buffer.begin();
+			auto sipm		 = sip2json::parseFromBuffer(bufferStart, buffer.end());
 
 			std::cerr << "Decoded SIPMessage document" << sipm.flatten().dump(2);
 
@@ -392,7 +404,8 @@ namespace siddiqsoftware
 			std::cerr << "Serialized from decoded SIPMessage\n" << serializedFromDecoded;
 
 			// So we can decode it again and ensure that we can round-trip!
-			auto sipm2 = sip2json::parseFromBuffer(serializedFromDecoded.begin(), serializedFromDecoded.end());
+			auto serializedFromDecodedStart = serializedFromDecoded.begin();
+			auto sipm2						= sip2json::parseFromBuffer(serializedFromDecodedStart, serializedFromDecoded.end());
 
 			//verifyItems(sipm2);
 
@@ -402,10 +415,12 @@ namespace siddiqsoftware
 		}
 
 
+		// NOLINTNEXTLINE
 		TEST_METHOD(Test_parse_REGISTER_200_OK)
 		{
-			auto buffer = loadSampleFile("REGISTER_200_OK.sip");
-			auto sipm	= sip2json::parseFromBuffer(buffer.begin(), buffer.end());
+			auto buffer		 = loadSampleFile("REGISTER_200_OK.sip");
+			auto bufferStart = buffer.begin();
+			auto sipm		 = sip2json::parseFromBuffer(bufferStart, buffer.end());
 
 			std::cerr << "Decoded SIPMessage document" << sipm.dump(2);
 
@@ -426,16 +441,19 @@ namespace siddiqsoftware
 			Assert::AreEqual<bool>(true, sipm.value("/mh/X-subscribe-to-leg-events"_json_pointer, false));
 		}
 
+
+		// NOLINTNEXTLINE
 		TEST_METHOD(Test_parse_REGISTER_1)
 		{
-			auto buffer = loadSampleFile("REGISTER_1.sip");
-			auto sipm	= sip2json::parseFromBuffer(buffer.begin(), buffer.end());
+			auto buffer		 = loadSampleFile("REGISTER_1.sip");
+			auto bufferStart = buffer.begin();
+			auto sipm		 = sip2json::parseFromBuffer(bufferStart, buffer.end());
 
 			std::cerr << "Decoded SIPMessage document" << sipm.dump(2);
 
 			// Start checking if we decoded properly..
 			// Start-Line (response): SIP/2.0 200 OK
-			Assert::AreEqual<>(METHOD_REGISTER, sipm.value("/rl/method"_json_pointer, ""));
+			Assert::AreEqual<std::string>(METHOD_REGISTER, sipm.value("/rl/method"_json_pointer, ""));
 			Assert::IsTrue(sipm.value("/mh/Via"_json_pointer, nlohmann::json {}).is_array());
 			Assert::IsTrue(sipm.value("/mh/Via"_json_pointer, nlohmann::json {}).size() == 1);
 			Assert::AreEqual<std::string>(sipm.value("/mh/Via/0"_json_pointer, nlohmann::json {}),
@@ -448,6 +466,30 @@ namespace siddiqsoftware
 			Assert::AreEqual<uint32_t>(0, sipm.getContentLength());
 			Assert::AreEqual<uint32_t>(300, sipm.getExpires());
 			Assert::AreEqual<bool>(true, sipm.value("/mh/X-subscribe-to-leg-events"_json_pointer, false));
+		}
+
+
+		// NOLINTNEXTLINE
+		TEST_METHOD(Test_Parse_HeaderWithContinuation)
+		{
+			auto buffer		 = loadSampleFile("OK_REGISTER_Multiline_ContactHeader_1.sip");
+			auto item		 = 0;
+			auto bufferStart = buffer.begin();
+
+			try
+			{
+				auto msgs = sip2json::parseAllFromBuffer(bufferStart, buffer.end());
+				Assert::AreEqual<size_t>(3, msgs.size());
+				for (auto& i : msgs)
+				{
+					auto str = fmt::format("{} - document {} -> {}\n", __func__, ++item, i.flatten().dump(2));
+					Logger::WriteMessage(str.c_str());
+				}
+			}
+			catch (std::exception& se)
+			{
+				Logger::WriteMessage(se.what());
+			}
 		}
 	};
 } // namespace siddiqsoftware

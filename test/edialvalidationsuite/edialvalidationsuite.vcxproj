@@ -79,6 +79,10 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <EnableMicrosoftCodeAnalysis>false</EnableMicrosoftCodeAnalysis>
+    <EnableClangTidyCodeAnalysis>true</EnableClangTidyCodeAnalysis>
+    <ClangTidyChecks>modernize-*,cppcoreguidelines-*,-modernize-use-trailing-return-type,-cppcoreguidelines-avoid-magic-numbers</ClangTidyChecks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
@@ -89,6 +93,10 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <EnableMicrosoftCodeAnalysis>false</EnableMicrosoftCodeAnalysis>
+    <EnableClangTidyCodeAnalysis>true</EnableClangTidyCodeAnalysis>
+    <ClangTidyChecks>modernize-*,cppcoreguidelines-*,-modernize-use-trailing-return-type,-cppcoreguidelines-avoid-magic-numbers</ClangTidyChecks>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>

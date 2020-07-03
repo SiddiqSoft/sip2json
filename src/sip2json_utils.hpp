@@ -12,6 +12,7 @@
 #include <chrono>
 #include <random>
 #include <sstream>
+#include <optional>
 
 #include "nlohmann/json.hpp"
 #include "fmt/chrono.h"
@@ -22,8 +23,9 @@ namespace siddiqsoftware
 	/// @brief Create a string representation of the timepoint as RFC1123 spec
 	/// @param tp Optional system_clock::timepoint; uses "now" if not provided
 	/// @return String with your date/time as "Sun, 28 Jun 2020 23:29:00 GMT"
-	static std::string getRFC1123(std::chrono::system_clock::time_point& tp = std::chrono::system_clock::now()) noexcept(false)
+	static std::string getRFC1123(std::optional<std::chrono::system_clock::time_point> src = {}) noexcept(false)
 	{
+		auto tp = src.value_or(std::chrono::system_clock::now());
 		return fmt::format("{:%a, %d %b %Y %T} GMT", fmt::gmtime(std::chrono::system_clock::to_time_t(tp)));
 	}
 
@@ -31,8 +33,9 @@ namespace siddiqsoftware
 	/// @brief Creates a string representaiton of the date time in ISO8601 format with millisecond precision.
 	/// @param tp Optional system_clock::timepoint; uses "now" if not provided
 	/// @return String ISO8601 "2020-06-28T23:29:00.000Z"
-	static std::string getISO8601(std::chrono::system_clock::time_point& tp = std::chrono::system_clock::now()) noexcept(false)
+	static std::string getISO8601(std::optional<std::chrono::system_clock::time_point> src = {}) noexcept(false)
 	{
+		auto tp = src.value_or(std::chrono::system_clock::now());
 		auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(tp.time_since_epoch()).count();
 		return fmt::format("{:%Y-%m-%dT%T}.{:03}Z", fmt::gmtime(std::chrono::system_clock::to_time_t(tp)), ms);
 	}
@@ -200,14 +203,14 @@ namespace siddiqsoftware
 	// Helpers to parse the SIP buffer
 	static const std::regex SIP_PATTERN_REQUEST_STARTLINE(
 			"(MESSAGE|INFO|INVITE|ACK|OPTIONS|BYE|CANCEL|REGISTER|SUBSCRIBE|NOTIFY)\\s{1,1}([^\\s]+)\\s{1,1}(SIP/2.0)\\s*");
-	static const std::regex SIP_PATTERN_RESPONSE_STARTLINE("(SIP/2.0)\\s{1,1}([^\\s]+)\\s{1,1}([^\\r\\n|^\\n]+)\\s*");
+	static const std::regex SIP_PATTERN_RESPONSE_STARTLINE("^(SIP/2.0)\\s{1,1}([^\\s]+)\\s{1,1}([^\\r\\n|^\\n]+)\\s*");
 	static const std::regex SIP_PATTERN_STARTLINE("^([^\\s]+)\\s*([^\\s]+)\\s*([^\\r\\n|\\n]+)\\s*");
 	static const std::regex SIP_PATTERN_CONTENT_LENGTH("^Content-Length:\\s{1,1}(\\d+)\\s*(\\r\\n|\\n)");
 	static const std::regex SIP_PATTERN_CONTENT_TYPE("^Content-type:\\s{1,1}([a-z|A-Z|\\-|/]+)\\s*(\\r\\n|\\n)");
 	static const std::regex SIP_PATTERN_HEADER("([^:\\s]*)\\s?:{1,1}\\s{1,1}([^\\r\\n]*)[\\x0A\\x0D]*");
 
-	static const std::regex SIP_PATTERN_BODY("([vosictma]{1})=([^\\r\\n]*)");
-	static const std::regex SIP_PATTERN_BODY_ALINE("^([^:|\\r\\n]*)[:]{1}\\s?(.*$)[\\r\\n]?|(.*)[\\r\\n]");
+	static const std::regex SIP_PATTERN_BODY("([vosictma]{1})=([^\r\n]*)");
+	static const std::regex SIP_PATTERN_BODY_ALINE("^([^:|\r\n]*)[:]{1}\\s?(.*$)[\r\n]?|(.*)[\r\n]");
 	static const std::regex SIP_PATTERN_BODY_ILINE("^(.*) \\(([^\\s]*)\\) ([^\\s|\r\n]*)");
 	static const std::regex SIP_PATTERN_BODY_CLINE("(\\w*) (\\w*) ([+\\-\\(\\)0-9]*)");
 	static const std::regex SIP_PATTERN_BODY_OLINE("([^\\s]*) (\\d*) (\\d*) (\\w*) (\\w*) ([^\\s]*)");

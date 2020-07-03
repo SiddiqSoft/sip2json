@@ -21,23 +21,27 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace siddiqsoftware
 {
+	// NOLINTNEXTLINE
 	TEST_CLASS(core_parser_tests)
 	{
 	public:
 		bool dummy;
+
+		// NOLINTNEXTLINE
 		TEST_METHOD(Test_createCallId)
 		{
 			auto ci = createCallId();
 			Assert::IsTrue(ci.length() == 44);
 		}
 
-
+		// NOLINTNEXTLINE
 		TEST_METHOD(Test_getRFC1123)
 		{
 			auto todays_date = getRFC1123();
 			Assert::IsTrue(!todays_date.empty());
 		}
 
+		// NOLINTNEXTLINE
 		TEST_METHOD(Test_getRFC1123_args)
 		{
 			tm knowntm {};
@@ -55,12 +59,14 @@ namespace siddiqsoftware
 			Assert::IsTrue(todays_date.compare("Sat, 13 Nov 2010 23:29:00 GMT") == 0);
 		}
 
+		// NOLINTNEXTLINE
 		TEST_METHOD(Test_getISO8601)
 		{
 			auto todays_date = getISO8601();
 			Assert::IsTrue(!todays_date.empty());
 		}
 
+		// NOLINTNEXTLINE
 		TEST_METHOD(Test_getISO8601_args)
 		{
 			tm knowntm {};
@@ -81,11 +87,13 @@ namespace siddiqsoftware
 	}; // Helpers
 
 
+	// NOLINTNEXTLINE
 	TEST_CLASS(SIPHelpers)
 	{
 	public:
 		bool dummy;
 
+		// NOLINTNEXTLINE
 		TEST_METHOD(Test_createRequest)
 		{
 			auto registerMessage = sip2json::createRequest("REGISTER", "sip:hello@world.com", createCallId(), 1);
@@ -98,7 +106,7 @@ namespace siddiqsoftware
 			Assert::IsTrue(registerMessage.value("/type"_json_pointer, std::string {}).find("request") != std::string::npos);
 		}
 
-
+		// NOLINTNEXTLINE
 		TEST_METHOD(Test_createResponse)
 		{
 			auto dummyMessage = sip2json::createResponse(500);
@@ -109,7 +117,7 @@ namespace siddiqsoftware
 			Assert::IsTrue(dummyMessage.value("/type"_json_pointer, std::string {}).compare(sip2json::MessageTypeResponse) == 0);
 		}
 
-
+		// NOLINTNEXTLINE
 		TEST_METHOD(Test_createRequest_then_response)
 		{
 			auto registerMessage = sip2json::createRequest("REGISTER", "sip:hello@world.com", createCallId(), 1);
@@ -147,6 +155,7 @@ namespace siddiqsoftware
 										  responseMessage.value("/mh/Call-ID"_json_pointer, "resp"));
 		}
 
+		// NOLINTNEXTLINE
 		TEST_METHOD(Test_serialize)
 		{
 			auto registerMessage = sip2json::createRequest("REGISTER", "sip:hello@world.com", createCallId(), 1);
@@ -159,6 +168,7 @@ namespace siddiqsoftware
 			Assert::IsTrue(strsipm.length() != 0);
 		}
 
+		// NOLINTNEXTLINE
 		TEST_METHOD(Test_serialize_empty_mb)
 		{
 			auto registerMessage = sip2json::createRequest("REGISTER", "sip:hello@world.com", createCallId(), 1);
@@ -170,6 +180,7 @@ namespace siddiqsoftware
 			Assert::ExpectException<std::exception>([&]() { sip2json::serialize(registerMessage); });
 		}
 
+		// NOLINTNEXTLINE
 		TEST_METHOD(Test_loadTestFile)
 		{
 			std::stringstream testFile;
@@ -187,17 +198,24 @@ namespace siddiqsoftware
 			Assert::IsTrue(testFile.str().length() > 0);
 		}
 
-
+		// NOLINTNEXTLINE
 		TEST_METHOD(Test_EmptyBodyParseFail)
 		{
 			std::string emptyBuffer;
-			Assert::ExpectException<std::exception>([&]() { sip2json::parseFromBuffer(emptyBuffer.begin(), emptyBuffer.end()); });
+			Assert::ExpectException<std::exception>([&]() {
+				auto bs = emptyBuffer.begin();
+				sip2json::parseFromBuffer(bs, emptyBuffer.end());
+			});
 		}
 
+		// NOLINTNEXTLINE
 		TEST_METHOD(Test_parse_1_fail)
 		{
 			auto buffer = siddiqsoftware::SIP_SAMPLE_MINIMAL_MESSAGE;
-			Assert::ExpectException<std::exception>([&]() { sip2json::parseFromBuffer(buffer.begin(), buffer.end()); });
+			Assert::ExpectException<std::exception>([&]() {
+				auto bs = buffer.begin();
+				sip2json::parseFromBuffer(bs, buffer.end());
+			});
 		}
 	}; // SIPHelpers
 } // namespace siddiqsoftware

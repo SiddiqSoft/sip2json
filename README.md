@@ -105,8 +105,10 @@ Field | Type   | Description
 `/mh/*` | array | An array of key-value pairs representing the SIP message headers.
 `/mb/*` | object | Object containing the content. As of this implementation, we only support SDP message blocks
 
+> The sdp is an array.
+> `/mh/sdp/0/{attribute}` where the 
 
-`/mb/sdp` Field | Type | Description
+`{attribute}` | Type | Description
 ------|------|-------------
 `/v` | integer | Contant; Set to `0`. Do not modify! This tag is used to delimit a session descriptor block.
 `/o` | string |
@@ -120,10 +122,15 @@ Field | Type   | Description
 `/t` | Array | Timing for this block. Array of integer values `/mb/sdp[x]/t[0]` -> start `/mb/sdp[x]/t[1]` -> end.
 `/z` | string | Optional.
 `/k` | string | Optional. Encryption key.
-`/sa` | array | Session-level a-line items
+`/sa` | array | Session-level a-line items; NOTE: This is not supported.
 `/m` | string | Media descriptors
-`/ma` | array | Media-level a-line items
+`/a` | array | Media-level a-line items
 
+
+## Tests
+
+- Clang-Tidy is used. VSTest throws warnings so the tag `//NOLINTNEXTLINE` per each `TEST_CLASS(xx)` and `TEST_METHOD(ddd)` instance.
+- VSTest is used instead of googletest. The later is cross-platform but lacks the level of integration and ability to log to Visual Studio intermediate output.
 
 ### External resources
 - [JSON for Modern C++](https://nlohmann.github.io/json/)
