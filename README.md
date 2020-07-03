@@ -3,6 +3,7 @@
 <small>Copyright &copy;2020 Abdelkareem Siddiq. All rights reserved.</small>
 
 [![Build Status](https://dev.azure.com/loopup/sys4/_apis/build/status/siddiqsoftware.sip2json?branchName=feature%2Fbootstrap)](https://dev.azure.com/loopup/sys4/_build/latest?definitionId=118&branchName=feature%2Fbootstrap)
+Build Version 0.2.0
 
 ## Design goals
 
@@ -19,14 +20,13 @@ When solving for resilience and high-availability, using systems such as No-SQL 
 JSON libraries feature patching, merging and diff'ing of JSON documents therefore we can offload the transforms to templates which can accomplish this task instead of manipulating bespoke C++ classes.
 
 We skewed towards the following tradeoffs:
-- Not the fastest but the most convenient.
 - API must be native C++17 without any wrappers or compromises.
-- Current data systems require json as the native format.
 - Simple, small code
-- Let the client worry about transforming the documents
-
+- Dependencies should be widely-used and respected
+- Transforms must be easy
 
 ### Features
+- Header only!
 - Everything is stored in a json document
   - Request Line
   - Headers
