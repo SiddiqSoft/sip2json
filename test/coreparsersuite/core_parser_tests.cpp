@@ -199,16 +199,6 @@ namespace siddiqsoftware
 		}
 
 		// NOLINTNEXTLINE
-		TEST_METHOD(Test_EmptyBodyParseFail)
-		{
-			std::string emptyBuffer;
-			Assert::ExpectException<std::exception>([&]() {
-				auto bs = emptyBuffer.begin();
-				sip2json::parseFromBuffer(bs, emptyBuffer.end());
-			});
-		}
-
-		// NOLINTNEXTLINE
 		TEST_METHOD(Test_parse_1_fail)
 		{
 			auto buffer = siddiqsoftware::SIP_SAMPLE_MINIMAL_MESSAGE;

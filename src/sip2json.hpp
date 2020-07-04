@@ -69,11 +69,11 @@ namespace siddiqsoftware
 		}
 
 	public:
-		static sipmessage createRequest(const std::string&		   method,
-										const std::string&		   uri,
-										const std::string&		   callId = {},
-										uint32_t				   cseq	  = 0,
-										std::optional<sipmessage> src	  = {})
+		static sipmessage createRequest(const std::string&		  method,
+										const std::string&		  uri,
+										const std::string&		  callId = {},
+										uint32_t				  cseq	 = 0,
+										std::optional<sipmessage> src	 = {})
 		{
 			auto sipm = src.value_or(createRawMessage(MessageTypeRequest));
 			// We must clear these values in case we are updating an existing object.
@@ -271,6 +271,11 @@ namespace siddiqsoftware
 				// Via is an array
 				sipm["mh"][HF_VIA].push_back(value);
 			}
+			else if (_stricmp(key.c_str(), "uthorization") == 0)
+			{
+				// Some encoders send "uthorization" instead of "Authorization"
+				sipm["mh"][HF_AUTHORIZATION] = value;
+			}
 			else if (_stricmp(key.c_str(), HF_CONTENT_TYPE.c_str()) == 0)
 			{
 				// Some encoders send Content-type instead of the standard Content-Type; here we need to normalize it.
@@ -335,8 +340,9 @@ namespace siddiqsoftware
 						{
 							// We found the `\r\n`;
 							// Next, check if this is a folded element
-							if ((*(hend + ELEM_NEWLINE.size() + 1) == ' ') ||
-								((*hend + ELEM_NEWLINE.size() + 1) == '\t')) // peek ahead to see if we have.. folded indicator
+							if ((headerEnd != (hend + ELEM_NEWLINE.size() + 1)) &&
+								((*(hend + ELEM_NEWLINE.size() + 1) == ' ') ||
+								 ((*hend + ELEM_NEWLINE.size() + 1) == '\t'))) // peek ahead to see if we have.. folded indicator
 							{
 								// Yes, we have a folded item.
 								// build up the value..
@@ -458,9 +464,11 @@ namespace siddiqsoftware
 		{
 			std::match_results<std::string::iterator> matcher;
 
+			// NOTE: bufferStart points to the location past the very first v=0 as this is the signal of the start
+			// of the body. Therefore, we start with blockIndex = 0 and then increment everytime we encounter next v=0
 			if (bufferStart != bufferEnd)
 			{
-				uint32_t blockIndex = 0;
+				int32_t blockIndex = -1;
 
 				while (std::regex_search(bufferStart, bufferEnd, matcher, SIP_PATTERN_BODY))
 				{
@@ -469,7 +477,16 @@ namespace siddiqsoftware
 						auto key   = matcher[1].str();
 						auto value = matcher[2].str();
 
-						if (key.compare("a") == 0)
+						if (key.compare("v") == 0)
+						{
+							// First element; increment blockIndex.
+							// Add the next element to a new SDP object.
+							blockIndex++; // the first match will increment this to "0"
+							//nlohmann::json::json_pointer pkey(fmt::format("/mb/sdp/{}/{}", blockIndex, key));
+							//sipm[pkey]						   = 0;
+							sipm["mb"]["sdp"][blockIndex][key] = 0;
+						}
+						else if (key.compare("a") == 0)
 						{
 							// attribute lines: https://en.wikipedia.org/wiki/Session_Description_Protocol#Attributes
 							//sipm[pkey].push_back(matcher[2].str());
@@ -576,14 +593,6 @@ namespace siddiqsoftware
 		}
 
 	public:
-		static std::string unfoldBuffer(std::string& src)
-		{
-			static const std::regex SIP_PATTERN_HEADER_FOLDS("[\r\n]{1}[\\s]{1}");
-
-			return std::move(std::regex_replace(src, SIP_PATTERN_HEADER_FOLDS, ""));
-		}
-
-
 		static std::vector<sipmessage> parseAllFromBuffer(std::string::iterator&	   bufferStart,
 														  const std::string::iterator& bufferEnd) noexcept(false)
 		{
@@ -591,7 +600,17 @@ namespace siddiqsoftware
 
 			while (bufferStart != bufferEnd)
 			{
-				msgs.emplace_back(parseFromBuffer(bufferStart, bufferEnd));
+				try
+				{
+					// It is critical to ensure that we break if the buffer is too small or has remains of partial frames ahead.
+					if (size_t diff = bufferEnd - bufferStart; diff > SIP_SAMPLE_MINIMAL_MESSAGE.length())
+						msgs.emplace_back(parseFromBuffer(bufferStart, bufferEnd));
+					else
+						break;
+				}
+				catch (const std::exception&)
+				{
+				}
 			}
 
 			return msgs;
@@ -605,10 +624,6 @@ namespace siddiqsoftware
 										  const std::string::iterator& bufferEnd) noexcept(false)
 		{
 			sipmessage sipm;
-
-			// Basic assumptions
-			// Ensure that the buffer is processable.
-			if (bufferStart == bufferEnd) throw std::invalid_argument(fmt::format("{}: bufferStart==bufferEnd", __func__));
 
 			if (bufferStart != bufferEnd)
 			{
@@ -624,27 +639,27 @@ namespace siddiqsoftware
 							{
 								if (sipm.getContentLength() > 0)
 								{
-									// We must advance the buffer
-									bufferStart += ELEM_HEADERSECTIONDELIMITER.length();
+									// Do We advance the buffer?
+									//bufferStart += ELEM_HEADERSECTIONDELIMITER.length();
 									// Decode the SDP
 									parseBodySDP(sipm, bufferStart, bufferEnd);
 								}
 							}
 							else if (!sipm.getContentType().empty())
 							{
-								throw std::exception(
+								throw std::invalid_argument(
 										fmt::format("{}: Content-Type:{} not supported", __func__, sipm.getContentType()).c_str());
 							}
 						}
 						else
 						{
-							throw std::exception(fmt::format("{}: headers not found", __func__).c_str());
+							throw std::runtime_error(fmt::format("{}: headers not found", __func__).c_str());
 						}
 					}
 				}
 				else
 				{
-					// Failed; buffer too small
+					// This will end our scan.
 					throw std::length_error(fmt::format("{}: Buffer too small:{} (smaller than reference {})",
 														__func__,
 														diff,
@@ -652,7 +667,7 @@ namespace siddiqsoftware
 				}
 			}
 
-			return std::move(sipm);
+			return sipm;
 		}
 	};
 

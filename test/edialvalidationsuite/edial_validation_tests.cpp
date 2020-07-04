@@ -500,5 +500,61 @@ namespace siddiqsoftware
 				Logger::WriteMessage(str.c_str());
 			}
 		}
+
+
+		// NOLINTNEXTLINE
+		TEST_METHOD(NOTIFY_SDP_multi_1)
+		{
+			auto buffer		 = loadSampleFile(__func__);
+			auto item		 = 0;
+			auto bufferStart = buffer.begin();
+
+			auto msgs = sip2json::parseAllFromBuffer(bufferStart, buffer.end());
+			// We're going to have a single frame
+			Assert::AreEqual<size_t>(1, msgs.size());
+
+			for (auto& i : msgs)
+			{
+				auto str = fmt::format("{} - document {} -> {}\n", __func__, ++item, i.flatten().dump(2));
+				Logger::WriteMessage(str.c_str());
+			}
+
+			// Affirm that the first frame has a Contact that has been unfolded properly!
+			Assert::AreEqual<std::string>(msgs[0].value("/mh/Contact"_json_pointer, ""), "<sip:localhost:8443;transport=ssl>");
+			// We should have 4 SDP elements
+			Assert::AreEqual<size_t>(4, msgs[0].value("/mb/sdp"_json_pointer, nlohmann::json {}).size());
+		}
+
+
+		// NOLINTNEXTLINE
+		TEST_METHOD(Trying_INVITE_1)
+		{
+			auto buffer		 = loadSampleFile(__func__);
+			auto item		 = 0;
+			auto bufferStart = buffer.begin();
+
+			auto msgs = sip2json::parseAllFromBuffer(bufferStart, buffer.end());
+
+			Logger::WriteMessage(fmt::format("{} - Found: {} messages\n", __func__, msgs.size()).c_str());
+
+			// We're going to have a single frame
+			Assert::AreEqual<size_t>(1, msgs.size());
+
+			for (auto& i : msgs)
+			{
+				auto str = fmt::format("{} - document {} -> {}\n", __func__, ++item, i.flatten().dump(2));
+				Logger::WriteMessage(str.c_str());
+			}
+
+			Assert::AreEqual<std::string>("1593721670540996", msgs[0].value("/mh/X-Message-Time"_json_pointer, ""));
+			Assert::AreEqual<std::string>("3 INVITE", msgs[0].value("/mh/CSeq"_json_pointer, ""));
+
+			Assert::AreEqual<uint32_t>(100, msgs[0].value("/sl/statusCode"_json_pointer, 0));
+			Assert::AreEqual<std::string>("Trying", msgs[0].value("/sl/reason"_json_pointer, ""));
+			Assert::AreEqual<std::string>(
+					"X-Signed start=\"1593721669\",expire=\"1593725269\",user=\"jcollier@federationbankia.com\",confwiz=\"my "
+					"string\",nsadrs=\"il-ed-mara-01.ring2.com\",signed=\"a73789748d9c7dd2d1092794597d2a57\"",
+					msgs[0].value("/mh/Authorization"_json_pointer, ""));
+		}
 	};
 } // namespace siddiqsoftware

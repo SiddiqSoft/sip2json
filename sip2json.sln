@@ -40,7 +40,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{6C56536E-7471-46FF-8625-1E38ED2424B2}"
 	ProjectSection(SolutionItems) = preProject
 		test\samples\2020-07-02__006592__io__recv.log = test\samples\2020-07-02__006592__io__recv.log
-		test\samples\Mixed_Stream_1.sip = test\samples\Mixed_Stream_1.sip
 		test\samples\NOTIFY_CallEnd.sip = test\samples\NOTIFY_CallEnd.sip
 		test\samples\NOTIFY_LegAdd.sip = test\samples\NOTIFY_LegAdd.sip
 		test\samples\NOTIFY_LegDrop.sip = test\samples\NOTIFY_LegDrop.sip
@@ -48,6 +47,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{6C56
 		test\samples\OK_REGISTER_Multiline_ContactHeader_1.sip = test\samples\OK_REGISTER_Multiline_ContactHeader_1.sip
 		test\samples\REGISTER_1.sip = test\samples\REGISTER_1.sip
 		test\samples\REGISTER_200_OK.sip = test\samples\REGISTER_200_OK.sip
+		test\samples\Trying_INVITE_1.sip = test\samples\Trying_INVITE_1.sip
 	EndProjectSection
 EndProject
 Global
