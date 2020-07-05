@@ -232,38 +232,46 @@ namespace siddiqsoftware
 			std::match_results<std::string::iterator> matchStartLine;
 			bool									  found = false;
 
-			found = std::regex_search(bufferStart, bufferEnd, matchStartLine, SIP_PATTERN_REQUEST_STARTLINE);
-			if (!found) found = std::regex_search(bufferStart, bufferEnd, matchStartLine, SIP_PATTERN_RESPONSE_STARTLINE);
-
+			found = std::regex_search(bufferStart, bufferEnd, matchStartLine, SIP_PATTERN_STARTLINE);
 			if (found && matchStartLine.size() >= 3)
 			{
-				if (siddiqsoftware::SIPVER_20.compare(matchStartLine[3]) == 0)
+				if (SIPVER_20.compare(matchStartLine[3]) == 0)
 				{
 					sipm["type"]					 = MessageTypeRequest;
 					sipm["/rl/method"_json_pointer]	 = matchStartLine[1];
 					sipm["/rl/uri"_json_pointer]	 = matchStartLine[2];
 					sipm["/rl/version"_json_pointer] = matchStartLine[3];
 				}
-				else
+				else if (SIPVER_20.compare(matchStartLine[1]) == 0)
 				{
 					sipm["type"]						= MessageTypeResponse;
 					sipm["/sl/reason"_json_pointer]		= matchStartLine[3];
 					sipm["/sl/statusCode"_json_pointer] = std::stoi(matchStartLine[2].str());
 					sipm["/sl/version"_json_pointer]	= matchStartLine[1];
 				}
+				else
+				{
+					throw std::invalid_argument(fmt::format("{} - SIP Startline not found.", __func__));
+				}
 
 				// Offset the start to the point after the start-line. Make sure to skip over any prefix!
 				// We may have junk or left-over crud at the start (especially if we're using text files)
-				bufferStart += matchStartLine.length() + matchStartLine.prefix().length();
+				bufferStart += matchStartLine.length() + matchStartLine.prefix().length() + ELEM_NEWLINE.size();
 			}
 			else
 			{
+				throw std::invalid_argument(fmt::format("{} - SIP Startline not found.", __func__));
 			}
 
 			return found;
 		}
 
 	private:
+		/// @brief Store the value in the header section. Performs from basic transforms/detection of bool, integer
+		/// @param sipm The target sipmessage object
+		/// @param key The key
+		/// @param value The value
+		/// @return Returns true if the store was successful.
 		static bool storeHeaderValue(sipmessage& sipm, const std::string& key, const std::string& value)
 		{
 			if (key.find(HF_VIA) == 0)
@@ -316,6 +324,12 @@ namespace siddiqsoftware
 			bool done  = false;
 			bool found = false;
 
+			// WARNING
+			// The bufferStart must point to the start of the first sequence (excluding the CRLF) after the startline is processed!
+
+			// Scan for the location of the header section end within the frame.
+			// If we don't have one, then we should bail out.
+			// Note that for response messages, it is likely that the bufferEnd will also be the headerEnd (no content).
 			auto headerEnd =
 					std::search(bufferStart, bufferEnd, ELEM_HEADERSECTIONDELIMITER.begin(), ELEM_HEADERSECTIONDELIMITER.end());
 
@@ -604,17 +618,29 @@ namespace siddiqsoftware
 				{
 					// It is critical to ensure that we break if the buffer is too small or has remains of partial frames ahead.
 					if (size_t diff = bufferEnd - bufferStart; diff > SIP_SAMPLE_MINIMAL_MESSAGE.length())
-						msgs.emplace_back(parseFromBuffer(bufferStart, bufferEnd));
+					{
+						auto sipm = parseFromBuffer(bufferStart, bufferEnd);
+						if (!sipm.empty())
+							msgs.emplace_back(sipm);
+						else
+							break;
+					}
 					else
+					{
+						// We do not have sufficient buffer to ensure a valid sipmessage; break out.
 						break;
+					}
 				}
-				catch (const std::exception&)
+				catch (const std::exception& ex)
 				{
+					OutputDebugStringA( fmt::format("{} - Exception:{}\n", __func__, ex.what() ).c_str() );
+					break;
 				}
 			}
 
 			return msgs;
 		}
+
 
 		/// @brief De-serialize the *first* SIP message (if present) from the buffer. Repeated calls to this method will extract the remaining messages.
 		/// @param bufferStart iterator to the start of the buffer the client expects a SIP message.

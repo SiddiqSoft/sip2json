@@ -201,10 +201,8 @@ namespace siddiqsoftware
 	static const std::string SIP_ADDR_PREFIX {"sip:"};
 
 	// Helpers to parse the SIP buffer
-	static const std::regex SIP_PATTERN_REQUEST_STARTLINE(
-			"(MESSAGE|INFO|INVITE|ACK|OPTIONS|BYE|CANCEL|REGISTER|SUBSCRIBE|NOTIFY)\\s{1,1}([^\\s]+)\\s{1,1}(SIP/2.0)\\s*");
-	static const std::regex SIP_PATTERN_RESPONSE_STARTLINE("^(SIP/2.0)\\s{1,1}([^\\s]+)\\s{1,1}([^\\r\\n|^\\n]+)\\s*");
-	static const std::regex SIP_PATTERN_STARTLINE("^([^\\s]+)\\s*([^\\s]+)\\s*([^\\r\\n|\\n]+)\\s*");
+	static const std::regex SIP_PATTERN_STARTLINE("^(MESSAGE|INFO|INVITE|ACK|OPTIONS|BYE|CANCEL|REGISTER|SUBSCRIBE|NOTIFY|SIP/"
+												  "2.0)\\s{1,1}([^\\s]+)\\s{1,1}([^\\r\\n]*)");
 	static const std::regex SIP_PATTERN_CONTENT_LENGTH("^Content-Length:\\s{1,1}(\\d+)\\s*(\\r\\n|\\n)");
 	static const std::regex SIP_PATTERN_CONTENT_TYPE("^Content-type:\\s{1,1}([a-z|A-Z|\\-|/]+)\\s*(\\r\\n|\\n)");
 	static const std::regex SIP_PATTERN_HEADER("([^:\\s]*)\\s?:{1,1}\\s{1,1}([^\\r\\n]*)[\\x0A\\x0D]*");

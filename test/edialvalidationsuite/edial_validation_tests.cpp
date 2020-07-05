@@ -538,7 +538,7 @@ namespace siddiqsoftware
 			Logger::WriteMessage(fmt::format("{} - Found: {} messages\n", __func__, msgs.size()).c_str());
 
 			// We're going to have a single frame
-			Assert::AreEqual<size_t>(1, msgs.size());
+			Assert::AreEqual<size_t>(1, msgs.size(), L"Expect only one message parsed.");
 
 			for (auto& i : msgs)
 			{
