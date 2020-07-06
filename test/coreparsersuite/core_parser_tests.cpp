@@ -17,9 +17,11 @@
 
 #include "CppUnitTest.h"
 
-using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-namespace siddiqsoftware
+using namespace Microsoft::VisualStudio::CppUnitTestFramework;
+using namespace siddiqsoftware;
+
+namespace test_suite
 {
 	// NOLINTNEXTLINE
 	TEST_CLASS(core_parser_tests)

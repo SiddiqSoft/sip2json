@@ -17,15 +17,17 @@
 
 #include "CppUnitTest.h"
 
-using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-namespace siddiqsoftware
+using namespace Microsoft::VisualStudio::CppUnitTestFramework;
+using namespace siddiqsoftware;
+
+namespace test_suite
 {
 	// NOLINTNEXTLINE
 	TEST_CLASS(edial_validation_tests)
 	{
 	public:
-		std::string loadSampleFile(const std::string& fileName)
+		std::string loadSampleFile(const std::string_view& fileName)
 		{
 			std::stringstream testFile;
 			std::ifstream	  sampleInputFile(fmt::format("../test/samples/{}.sip", fileName));
@@ -149,7 +151,7 @@ namespace siddiqsoftware
 		// NOLINTNEXTLINE
 		TEST_METHOD(NOTIFY_LegAdd)
 		{
-			auto buffer		 = loadSampleFile("NOTIFY_LegAdd");
+			auto buffer		 = loadSampleFile(__func__); // NOLINT
 			auto bufferStart = buffer.begin();
 			auto sipm		 = sip2json::parseFromBuffer(bufferStart, buffer.end());
 
@@ -219,7 +221,7 @@ namespace siddiqsoftware
 		// NOLINTNEXTLINE
 		TEST_METHOD(NOTIFY_LegDrop)
 		{
-			auto buffer		 = loadSampleFile("NOTIFY_LegDrop");
+			auto buffer		 = loadSampleFile(__func__); // NOLINT
 			auto bufferStart = buffer.begin();
 			auto sipm		 = sip2json::parseFromBuffer(bufferStart, buffer.end());
 
@@ -287,7 +289,7 @@ namespace siddiqsoftware
 		// NOLINTNEXTLINE
 		TEST_METHOD(NOTIFY_CallEnd)
 		{
-			auto buffer		 = loadSampleFile("NOTIFY_CallEnd");
+			auto buffer		 = loadSampleFile(__func__); // NOLINT
 			auto bufferStart = buffer.begin();
 			auto sipm		 = sip2json::parseFromBuffer(bufferStart, buffer.end());
 
@@ -362,7 +364,7 @@ namespace siddiqsoftware
 		// NOLINTNEXTLINE
 		TEST_METHOD(REGISTER_200_OK)
 		{
-			auto buffer		 = loadSampleFile("REGISTER_200_OK");
+			auto buffer		 = loadSampleFile(__func__); // NOLINT
 			auto bufferStart = buffer.begin();
 			auto sipm		 = sip2json::parseFromBuffer(bufferStart, buffer.end());
 
@@ -416,7 +418,7 @@ namespace siddiqsoftware
 		// NOLINTNEXTLINE
 		TEST_METHOD(OK_REGISTER_Multiline_ContactHeader_1)
 		{
-			auto buffer		 = loadSampleFile(__func__);
+			auto buffer		 = loadSampleFile(__func__); // NOLINT
 			auto item		 = 0;
 			auto bufferStart = buffer.begin();
 
@@ -449,7 +451,7 @@ namespace siddiqsoftware
 		// NOLINTNEXTLINE
 		TEST_METHOD(NOTIFY_SDP_multi_1)
 		{
-			auto buffer		 = loadSampleFile(__func__);
+			auto buffer		 = loadSampleFile(__func__); // NOLINT
 			auto item		 = 0;
 			auto bufferStart = buffer.begin();
 
@@ -473,7 +475,7 @@ namespace siddiqsoftware
 		// NOLINTNEXTLINE
 		TEST_METHOD(Trying_INVITE_1)
 		{
-			auto buffer		 = loadSampleFile(__func__);
+			auto buffer		 = loadSampleFile(__func__); // NOLINT
 			auto item		 = 0;
 			auto bufferStart = buffer.begin();
 
@@ -505,7 +507,7 @@ namespace siddiqsoftware
 		// NOLINTNEXTLINE
 		TEST_METHOD(Mixed_Stream_1)
 		{
-			auto							buffer		= loadSampleFile(__func__);
+			auto							buffer		= loadSampleFile(__func__); // NOLINT
 			auto							item		= 0;
 			auto							bufferStart = buffer.begin();
 			std::vector						matchTarget {"", // 0 element is dud.
@@ -553,14 +555,14 @@ namespace siddiqsoftware
 			}
 
 			Logger::WriteMessage(fmt::format("{} - Found: {} messages\n", __func__, msgs.size()).c_str());
-			Assert::AreEqual<size_t>(matchTarget.size()-1, msgs.size(), L"Expect 18 messages parsed.");
+			Assert::AreEqual<size_t>(matchTarget.size() - 1, msgs.size(), L"Expect 18 messages parsed.");
 		}
 
 
 		// NOLINTNEXTLINE
 		TEST_METHOD(RandomStream_Recv_File_1)
 		{
-			auto							buffer		= loadSampleFile(__func__);
+			auto							buffer		= loadSampleFile(__func__); // NOLINT
 			auto							item		= 0;
 			auto							bufferStart = buffer.begin();
 			std::vector						matchTarget {"", // 0 element is dud.
@@ -1049,7 +1051,7 @@ namespace siddiqsoftware
 			}
 
 			Logger::WriteMessage(fmt::format("{} - Found: {} messages\n", __func__, msgs.size()).c_str());
-			Assert::AreEqual<size_t>(matchTarget.size()-1, msgs.size(), L"Expected 459 messages parsed.");
+			Assert::AreEqual<size_t>(matchTarget.size() - 1, msgs.size(), L"Expected 459 messages parsed.");
 		}
 	};
-} // namespace siddiqsoftware
+} // namespace test_suite

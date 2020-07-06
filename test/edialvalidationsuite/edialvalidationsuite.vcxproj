@@ -79,7 +79,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
-    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
     <EnableMicrosoftCodeAnalysis>false</EnableMicrosoftCodeAnalysis>
     <EnableClangTidyCodeAnalysis>true</EnableClangTidyCodeAnalysis>
     <ClangTidyChecks>modernize-*,cppcoreguidelines-*,-modernize-use-trailing-return-type,-cppcoreguidelines-avoid-magic-numbers</ClangTidyChecks>
@@ -110,10 +110,12 @@
       </PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeaderOutputFile />
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <AdditionalLibraryDirectories>$(VCInstallDir)UnitTest\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -168,6 +170,7 @@
       </PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeaderOutputFile />
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
