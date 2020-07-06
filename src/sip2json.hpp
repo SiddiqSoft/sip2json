@@ -633,7 +633,7 @@ namespace siddiqsoftware
 				}
 				catch (const std::exception& ex)
 				{
-					OutputDebugStringA( fmt::format("{} - Exception:{}\n", __func__, ex.what() ).c_str() );
+					OutputDebugStringA(fmt::format("{} - Exception:{}\n", __func__, ex.what()).c_str());
 					break;
 				}
 			}
@@ -665,10 +665,11 @@ namespace siddiqsoftware
 							{
 								if (sipm.getContentLength() > 0)
 								{
-									// Do We advance the buffer?
-									//bufferStart += ELEM_HEADERSECTIONDELIMITER.length();
+									// We must limit the decode to the reported size of the content
+									auto bodyEnd = bufferStart;
+									bodyEnd += sipm.getContentLength();
 									// Decode the SDP
-									parseBodySDP(sipm, bufferStart, bufferEnd);
+									parseBodySDP(sipm, bufferStart, bodyEnd);
 								}
 							}
 							else if (!sipm.getContentType().empty())
