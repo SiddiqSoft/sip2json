@@ -73,6 +73,7 @@ steps:
       !**\obj\**
     searchFolder: '$(System.DefaultWorkingDirectory)'
     runInParallel: true
+    codeCoverageEnabled: true
     platform: 'x64'
     configuration: 'release'
     diagnosticsEnabled: true
