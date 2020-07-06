@@ -16,6 +16,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{BE17724B-F2AA-40B9-94E0-0B2EFCAA5768}"
 	ProjectSection(SolutionItems) = preProject
 		src\sip2json.hpp = src\sip2json.hpp
+		src\sip2json_exception.hpp = src\sip2json_exception.hpp
 		src\sip2json_response_codes.hpp = src\sip2json_response_codes.hpp
 		src\sip2json_utils.hpp = src\sip2json_utils.hpp
 		src\sipmessage.hpp = src\sipmessage.hpp
