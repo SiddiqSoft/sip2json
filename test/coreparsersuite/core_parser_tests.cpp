@@ -132,7 +132,7 @@ namespace test_suite
 			std::cerr << diagContents << std::endl;
 			Assert::IsTrue(dummyMessage.size() != 0);
 			Assert::IsTrue(!dummyMessage.value("/sl/reason"_json_pointer, std::string {}).empty());
-			Assert::IsTrue(dummyMessage.value("/type"_json_pointer, std::string {}).compare(sip2json::MessageTypeResponse) == 0);
+			Assert::IsTrue(dummyMessage.value("/type"_json_pointer, std::string {}).compare(sipmessage::MessageTypeResponse) == 0);
 		}
 
 		// NOLINTNEXTLINE
@@ -148,7 +148,7 @@ namespace test_suite
 			Assert::IsTrue(registerMessage.size() != 0);
 			Assert::IsTrue(registerMessage.value("/mh/Call-ID"_json_pointer, std::string {}).length() == 44);
 			Assert::AreEqual<std::string>(registerMessage.value("/type"_json_pointer, std::string {}),
-										  sip2json::MessageTypeRequest);
+										  sipmessage::MessageTypeRequest);
 
 			// WARNING
 			// As we're passing the registerMessage as parameter to create an inplace response message
@@ -159,7 +159,7 @@ namespace test_suite
 			Assert::IsTrue(responseMessage.size() != 0);
 			Assert::IsTrue(responseMessage.value("/mh/Call-ID"_json_pointer, std::string {}).length() == 44);
 			Assert::AreEqual<std::string>(responseMessage.value("/type"_json_pointer, std::string {}),
-										  sip2json::MessageTypeResponse);
+										  sipmessage::MessageTypeResponse);
 			Assert::IsTrue(!responseMessage.value("/mh/Date"_json_pointer, std::string {}).empty());
 
 			std::cerr << "After response; registerMessage:" << registerMessage.flatten().dump(2) << std::endl;
@@ -176,7 +176,8 @@ namespace test_suite
 		// NOLINTNEXTLINE
 		TEST_METHOD(Test_serialize)
 		{
-			auto registerMessage = sip2json::createRequest("REGISTER", "sip:hello@world.com", createCallId(), 1);
+			auto myCallId		 = createCallId();
+			auto registerMessage = sip2json::createRequest("REGISTER", "sip:hello@world.com", myCallId, 1);
 
 			registerMessage["/mh/To"_json_pointer]		= "sip:hello@world.com";
 			registerMessage["/mh/Contact"_json_pointer] = "sip:hello@world.com";
@@ -184,6 +185,19 @@ namespace test_suite
 			auto strsipm = sip2json::serialize(registerMessage);
 			std::cerr << strsipm << std::endl;
 			Assert::IsTrue(strsipm.length() != 0);
+
+			auto sipm2 = sip2json::parseFromBuffer(strsipm);
+			Assert::IsTrue(!sipm2.empty());
+			Assert::AreEqual(registerMessage.getContentLength(), sipm2.getContentLength());
+			Assert::AreEqual(registerMessage.getCallID(), sipm2.getCallID());
+
+			Logger::WriteMessage("\n============vvv=\n");
+			Logger::WriteMessage(strsipm.c_str());
+			Logger::WriteMessage("\n============   =\n");
+			Logger::WriteMessage(sip2json::serialize(sipm2).c_str());
+			Logger::WriteMessage("\n============^^^=\n");
+
+			Assert::AreEqual(strsipm.length(), sip2json::serialize(sipm2).length());
 		}
 
 		// NOLINTNEXTLINE

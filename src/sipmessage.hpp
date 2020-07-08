@@ -28,6 +28,10 @@ namespace siddiqsoftware
 	class sipmessage : public nlohmann::json
 	{
 	public:
+		static const inline std::string MessageTypeRequest	= "sip2json.request";
+		static const inline std::string MessageTypeResponse = "sip2json.response";
+
+	public:
 		sipmessage() = default;
 		sipmessage(const nlohmann::json& src)
 		{
@@ -50,8 +54,18 @@ namespace siddiqsoftware
 		{
 			// Special concession for some SIP servers which incorrectly encode this field.
 			// First we try the Content-Type and default to looking up Content-type else return empty string.
-			return (this->contains("/mh/Content-Type"_json_pointer)) ? this->value("/mh/Content-Type"_json_pointer, "")
-																	 : this->value("/mh/Content-type"_json_pointer, "");
+			if (this->at("mh").contains("Content-Type"))
+			{
+				auto ct = this->at("mh").at("Content-Type");
+				return ct.is_null() ? std::string {} : ct.get<std::string>();
+			}
+			else if (this->at("mh").contains("Content-type"))
+			{
+				auto ct = this->at("mh").at("Content-type");
+				return ct.is_null() ? std::string {} : ct.get<std::string>();
+			}
+
+			return std::string {};
 		};
 		inline const auto getCallID() { return this->value("/mh/Call-ID"_json_pointer, ""); };
 		inline const auto getMethod() { return this->value("/rl/method"_json_pointer, ""); };
@@ -60,5 +74,7 @@ namespace siddiqsoftware
 		inline const auto getReason() { return this->value("/sl/reason"_json_pointer, ""); };
 		inline auto		  getHeaders() { return this->at("mh"); };
 		inline auto		  getBody() { return this->at("mb"); };
-	};
+		inline auto		  isMessageTypeRequest() { return (this->value("type", "").compare(MessageTypeRequest) == 0); };
+		inline auto		  isMessageTypeResponse() { return (this->value("type", "").compare(MessageTypeResponse) == 0); };
+	}; // class sipmessage
 } // namespace siddiqsoftware

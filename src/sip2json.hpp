@@ -40,9 +40,6 @@ namespace siddiqsoftware
 		static const inline std::string MetaSchemaVersion = "0.1.0";
 		static const inline std::string MetaParserVersion = "1.0.0";
 
-		static const inline std::string MessageTypeRequest	= "sip2json.request";
-		static const inline std::string MessageTypeResponse = "sip2json.response";
-
 
 #pragma region SIPMessage helpers
 	private:
@@ -70,16 +67,23 @@ namespace siddiqsoftware
 		}
 
 	public:
+		/// @brief Create a skeleton request message
+		/// @param method One of the SIP method
+		/// @param uri SIP URI
+		/// @param callId Optional Call-ID
+		/// @param cseq Optional CSeq
+		/// @param src Optional base sipmessage
+		/// @return sipmessage
 		static sipmessage createRequest(const std::string&		  method,
 										const std::string&		  uri,
 										const std::string&		  callId = {},
 										uint32_t				  cseq	 = 0,
 										std::optional<sipmessage> src	 = {})
 		{
-			auto sipm = src.value_or(createRawMessage(MessageTypeRequest));
+			auto sipm = src.value_or(createRawMessage(sipmessage::MessageTypeRequest));
 			// We must clear these values in case we are updating an existing object.
 			if (sipm.contains("sl")) sipm.erase("sl");
-			sipm["/type"_json_pointer] = MessageTypeRequest;
+			sipm["/type"_json_pointer] = sipmessage::MessageTypeRequest;
 			// start-line: may either be a request-line or a status-line
 			// request-line: METHOD Request-URI SIP/2.0
 			// rl ==> "request-line" (request message type) and sl ==> "status-line" (response message type)
@@ -95,13 +99,17 @@ namespace siddiqsoftware
 		}
 
 
+		/// @brief Create a skeleton response/status message
+		/// @param statusCode Unsigned integer representing status code of the messages
+		/// @param src Optional. Base sipmessage
+		/// @return sipmessage
 		static sipmessage createResponse(uint32_t statusCode, std::optional<sipmessage> src = {})
 		{
-			auto sipm = src.value_or(createRawMessage(MessageTypeResponse));
+			auto sipm = src.value_or(createRawMessage(sipmessage::MessageTypeResponse));
 
 			// We must clear these values in case we are updating an existing object.
 			if (sipm.contains("rl")) sipm.erase("rl");
-			sipm["/type"_json_pointer] = MessageTypeResponse;
+			sipm["/type"_json_pointer] = sipmessage::MessageTypeResponse;
 			// start-line: may either be a request-line or a status-line
 			// request-line: METHOD Request-URI SIP/2.0
 			// sl ==> "status-line" (response message type)
@@ -113,123 +121,13 @@ namespace siddiqsoftware
 		}
 #pragma endregion
 
-	public:
-		static std::string serialize(sipmessage& sipm) noexcept(false)
-		{
-			static const std::string supportedMethods {
-					"MESSAGE|INFO|INVITE|ACK|OPTIONS|BYE|CANCEL|REGISTER|SUBSCRIBE|NOTIFY|SIP/2.0"};
-			std::string buffer {};
-			std::string contentType {};
-
-			// Assert: non-empty json document
-			sip2json_throw_if<empty_message_error>(sipm.size() == 0, "{}:sipm is empty.", __func__);
-			// Assert: Method is one of the supported items
-			auto methodFoundInSupported = supportedMethods.find(sipm.getMethod());
-			sip2json_throw_if<invalid_document_error>(supportedMethods.find(sipm.getMethod()) == std::string::npos,
-													  "{}:Unsupported method:{}",
-													  __func__,
-													  sipm.getMethod());
-			// Assert: Header must exist
-			sip2json_throw_if<invalid_document_error>(!sipm.contains("/mh"_json_pointer), "{}:sipm does not contain mh.", __func__);
-
-			if (sipm.value("/type"_json_pointer, std::string {}).compare(MessageTypeRequest) == 0)
-			{
-				// Request Line
-				buffer = fmt::format("{} {} SIP/2.0\r\n", sipm.getMethod(), sipm.getUri());
-			}
-			else if (sipm.value("/type"_json_pointer, std::string {}).compare(MessageTypeResponse) == 0)
-			{
-				// Status Line
-				buffer = fmt::format("SIP/2.0 {} {}\r\n", sipm.getStatusCode(), sipm.getReason());
-			}
-			else
-			{
-				sip2json_throw<invalid_document_error>(
-						"{}:sipm /type is neither `{}` nor `{}`.", __func__, MessageTypeRequest, MessageTypeResponse);
-			}
-
-			// Headers
-			auto mh = sipm.at("/mh"_json_pointer);
-			if (mh.size() > 0)
-			{
-				//TODO: This will not care about the order of the serialized headers. The json library does not care about order.
-				for (auto& [key, val] : mh.items())
-				{
-					if (contentType.empty() && (key.compare(HF_CONTENT_TYPE) == 0) && val.is_string()) contentType = val;
-
-					if (val.is_null())
-					{ /* do nothing; skip field. */
-					}
-					else if (val.is_number_unsigned())
-					{
-						buffer += fmt::format("{}: {}\r\n", key, val.get<uint64_t>());
-					}
-					else if (val.is_number_integer() || val.is_number())
-					{
-						buffer += fmt::format("{}: {}\r\n", key, val.get<int64_t>());
-					}
-					else if (val.is_number_float())
-					{
-						buffer += fmt::format("{}: {}\r\n", key, val.get<float>());
-					}
-					else if (val.is_string())
-					{
-						buffer += fmt::format("{}: {}\r\n", key, val);
-					}
-					else if (val.is_boolean())
-					{
-						buffer += fmt::format("{}: {}\r\n", key, val ? "true" : "false");
-					}
-					else if (val.is_array())
-					{
-						// Special handling for arrays.
-						// We serialize with the same key and the various values follow.
-						for (auto& item : val.items())
-						{
-							auto iv = item.value();
-							buffer += fmt::format("{}: {}\r\n", key, iv);
-						}
-					}
-					else
-					{
-						buffer += fmt::format("{}: {{}}\r\n", key, val);
-					}
-				};
-
-				// End of the message header section
-				buffer += "\r\n";
-			}
-
-			// Body
-			// NOTE: we extract the contentType value during the header serialization.
-			if (contentType.compare(CONTENT_TYPE_APP_SDP) == 0)
-			{
-				if (sipm.contains("/mb"_json_pointer))
-				{
-					if (sipm.contains("/mb/sdp"_json_pointer))
-					{
-						// the sdp is stored as an array of objects
-						auto sdp = sipm.at("/mb/sdp"_json_pointer);
-						for (auto& block : sdp)
-						{
-							buffer += "v=0\r\n"; // always write this out at the start of each SDP element
-						}
-					}
-					else
-					{
-						sip2json_throw<invalid_document_error>("{}:sipm mb does not have sdp element.", __func__);
-					}
-				}
-				else
-				{
-					sip2json_throw<invalid_document_error>("{}:sipm does not have mb.", __func__);
-				}
-			}
-
-			return buffer;
-		}
-
-
+#pragma region Parsing helpers
+	private:
+		/// @brief Parse the start line
+		/// @param sipm Destination sipmessage
+		/// @param bufferStart Start of the stream.
+		/// @param bufferEnd End of the stream
+		/// @return true/false depending on the state of the decode of start line.
 		static bool
 		parseStartLine(sipmessage& sipm, std::string::iterator& bufferStart, const std::string::iterator& bufferEnd) noexcept(false)
 		{
@@ -241,17 +139,17 @@ namespace siddiqsoftware
 			{
 				if (SIPVER_20.compare(matchStartLine[3]) == 0)
 				{
-					sipm["type"]					 = MessageTypeRequest;
+					sipm["type"]					 = sipmessage::MessageTypeRequest;
 					sipm["/rl/method"_json_pointer]	 = matchStartLine[1];
 					sipm["/rl/uri"_json_pointer]	 = matchStartLine[2];
 					sipm["/rl/version"_json_pointer] = matchStartLine[3];
 				}
 				else if (SIPVER_20.compare(matchStartLine[1]) == 0)
 				{
-					sipm["type"]						= MessageTypeResponse;
-					sipm["/sl/reason"_json_pointer]		= matchStartLine[3];
-					sipm["/sl/status"_json_pointer] = std::stoi(matchStartLine[2].str());
-					sipm["/sl/version"_json_pointer]	= matchStartLine[1];
+					sipm["type"]					 = sipmessage::MessageTypeResponse;
+					sipm["/sl/reason"_json_pointer]	 = matchStartLine[3];
+					sipm["/sl/status"_json_pointer]	 = std::stoi(matchStartLine[2].str());
+					sipm["/sl/version"_json_pointer] = matchStartLine[1];
 				}
 				else
 				{
@@ -271,7 +169,6 @@ namespace siddiqsoftware
 		}
 
 
-	private:
 		/// @brief Store the value in the header section. Performs from basic transforms/detection of bool, integer
 		/// @param sipm The target sipmessage object
 		/// @param key The key
@@ -322,27 +219,29 @@ namespace siddiqsoftware
 			return true;
 		}
 
-	private:
+
+		/// @brief Decode headers within the stream
+		/// @param sipm Destination sipmessage
+		/// @param bufferStart Start of the buffer. Just past the end of the start line section (tip of the header section).
+		/// @param bufferEnd End of the stream
+		/// @return true/false depending on the state of the decode of headers.
 		static bool
-		parseHeaders2(sipmessage& sipm, std::string::iterator& bufferStart, const std::string::iterator& bufferEnd) noexcept(false)
+		parseHeaders(sipmessage& sipm, std::string::iterator& bufferStart, const std::string::iterator& bufferEnd) noexcept(false)
 		{
 			bool done  = false;
 			bool found = false;
 
 			// WARNING
 			// The bufferStart must point to the start of the first sequence (excluding the CRLF) after the startline is processed!
-
 			// Scan for the location of the header section end within the frame.
 			// If we don't have one, then we should bail out.
 			// Note that for response messages, it is likely that the bufferEnd will also be the headerEnd (no content).
 			auto headerEnd =
 					std::search(bufferStart, bufferEnd, ELEM_HEADERSECTIONDELIMITER.begin(), ELEM_HEADERSECTIONDELIMITER.end());
 
-			auto a1 = bufferEnd - bufferStart;
-			auto a2 = bufferEnd - headerEnd;
-			OutputDebugStringA(fmt::format("{} - bufferEnd-bufferStart:{}   bufferEnd-headerEnd:{}\n", __func__, a1, a2).c_str());
 			// Assert header end delimiter must exist!
-			sip2json_throw_if<incomplete_buffer_for_header_error>((bufferEnd - headerEnd) < ELEM_HEADERSECTIONDELIMITER.size(),
+			sip2json_throw_if<incomplete_buffer_for_header_error>(size_t(bufferEnd - headerEnd) <
+																		  ELEM_HEADERSECTIONDELIMITER.size(),
 																  "{}:Cannot find header section delimiter.",
 																  __func__);
 
@@ -412,80 +311,11 @@ namespace siddiqsoftware
 		}
 
 
-		static bool
-		parseHeaders1(sipmessage& sipm, std::string::iterator& bufferStart, const std::string::iterator& bufferEnd) noexcept(false)
-		{
-			std::match_results<std::string::iterator> matcher;
-			auto									  headerEnd =
-					std::search(bufferStart, bufferEnd, ELEM_HEADERSECTIONDELIMITER.begin(), ELEM_HEADERSECTIONDELIMITER.end());
-
-			if (headerEnd != bufferEnd)
-			{
-				while (std::regex_search(bufferStart, headerEnd, matcher, SIP_PATTERN_HEADER))
-				{
-					if (matcher.size() == 3)
-					{
-						auto key   = matcher[1].str();
-						auto value = matcher[2].str();
-
-						if (key.find(HF_VIA) == 0)
-						{
-							// Via is an array
-							sipm["mh"][HF_VIA].push_back(value);
-						}
-						else if (_stricmp(key.c_str(), HF_CONTENT_TYPE.c_str()) == 0)
-						{
-							// Some encoders send Content-type instead of the standard Content-Type; here we need to normalize it.
-							sipm["mh"][HF_CONTENT_TYPE] = value;
-						}
-						else if (key.find(HF_CONTENT_LENGTH) == 0)
-						{
-							sipm["mh"][key] = std::stoi(value);
-						}
-						else if (key.find(HF_EXPIRES) == 0)
-						{
-							sipm["mh"][key] = std::stoi(value);
-						}
-						else if (value.find("true") == 0)
-						{
-							sipm["mh"][key] = true;
-						}
-						else if (value.find("false") == 0)
-						{
-							sipm["mh"][key] = false;
-						}
-						else if (value.empty())
-						{
-							sipm["mh"][key] = nullptr;
-						}
-						else
-						{
-							sipm["mh"][key] = value;
-						}
-					}
-					// Offset the start to the point after the start-line.
-					bufferStart += matcher.length();
-				}
-
-				return true;
-			}
-			else
-			{
-				sip2json_throw<incomplete_buffer_for_header_error>("{} - Buffer missing header-delimiter within range.", __func__);
-			}
-
-			return false;
-		}
-
-
-	public:
-		static bool
-		parseHeaders(sipmessage& sipm, std::string::iterator& bufferStart, const std::string::iterator& bufferEnd) noexcept(false)
-		{
-			return parseHeaders2(sipm, bufferStart, bufferEnd);
-		}
-
-
+		/// @brief Decode a SDP message blocks
+		/// @param sipm Destination sipmessage
+		/// @param bufferStart Start of the buffer. Just past the end of the header section (tip of the content section).
+		/// @param bufferEnd End of the content area (not the end of the stream)
+		/// @return true/false depending on the state of the decode of SDP blocks.
 		static bool
 		parseBodySDP(sipmessage& sipm, std::string::iterator& bufferStart, const std::string::iterator& bufferEnd) noexcept(false)
 		{
@@ -618,8 +448,15 @@ namespace siddiqsoftware
 
 			return false;
 		}
+#pragma endregion
 
 	public:
+		/// @brief Given a buffer, parse each message and return a vector of sipmessage objects. If the parseCallback is provided then the return is empty.
+		/// @param bufferStart Start of the buffer (modified by call to this method).
+		/// @param bufferEnd End of the buffer
+		/// @param parseCallback Optional callback which takes a reference to the sipmessage just decoded. If present, the return is empty vector.
+		/// @param errorCallback Optional callback to handle the error on the parse.
+		/// @return If parseCallback is provided then the return vector is empty otherwise vector of sipmessage decoded within the stream.
 		static std::vector<sipmessage>
 		parseAllFromBuffer(std::string::iterator&							   bufferStart,
 						   const std::string::iterator&						   bufferEnd,
@@ -697,6 +534,15 @@ namespace siddiqsoftware
 		}
 
 
+		/// @brief Convenient method to parse a given buffer by calling the parseFromBuffer(iterator) version.
+		/// @param buffer string buffer
+		/// @return sipmessage
+		static sipmessage parseFromBuffer(std::string& buffer) noexcept(false)
+		{
+			return parseFromBuffer(buffer.begin(), buffer.end());
+		}
+
+
 		/// @brief De-serialize the *first* SIP message (if present) from the buffer. Repeated calls to this method will extract the remaining messages.
 		/// @param bufferStart iterator to the start of the buffer the client expects a SIP message.
 		/// @param bufferEnd iterator to the end of the buffer the client expects a SIP message.
@@ -761,6 +607,207 @@ namespace siddiqsoftware
 			}
 
 			return sipm;
+		}
+
+
+		/// @brief Serializes the sipmessage document
+		/// @param sipm Source sipmessage
+		/// @return Return serialized sipmessage
+		static std::string serialize(sipmessage& sipm) noexcept(false)
+		{
+			static const std::string supportedMethods {
+					"MESSAGE|INFO|INVITE|ACK|OPTIONS|BYE|CANCEL|REGISTER|SUBSCRIBE|NOTIFY|SIP/2.0"};
+			std::string buffer {};
+			std::string contentType {};
+
+			// Assert: non-empty json document
+			sip2json_throw_if<empty_message_error>(sipm.size() == 0, "{}:sipm is empty.", __func__);
+			// Assert: Method is one of the supported items
+			sip2json_throw_if<invalid_document_error>(supportedMethods.find(sipm.getMethod()) == std::string::npos,
+													  "{}:Unsupported method:{}",
+													  __func__,
+													  sipm.getMethod());
+			// Assert: Header must exist
+			sip2json_throw_if<invalid_document_error>(!sipm.contains("/mh"_json_pointer), "{}:sipm does not contain mh.", __func__);
+
+			if (sipm.isMessageTypeRequest())
+			{
+				// Request Line
+				buffer = fmt::format("{} {} SIP/2.0\r\n", sipm.getMethod(), sipm.getUri());
+			}
+			else if (sipm.isMessageTypeResponse())
+			{
+				// Status Line
+				buffer = fmt::format("SIP/2.0 {} {}\r\n", sipm.getStatusCode(), sipm.getReason());
+			}
+			else
+			{
+				sip2json_throw<invalid_document_error>("{}:sipm /type is neither `{}` nor `{}`.",
+													   __func__,
+													   sipmessage::MessageTypeRequest,
+													   sipmessage::MessageTypeResponse);
+			}
+
+			// Encode the body first so we can get the content-length properly.
+			auto body					 = serializeSDP(sipm);
+			sipm["mh"]["Content-Length"] = body.length();
+
+			// Headers
+			auto mh = sipm.getHeaders();
+			if (mh.size() > 0)
+			{
+				//TODO: This will not care about the order of the serialized headers. The json library does not care about order.
+				for (auto& [key, val] : mh.items())
+				{
+					if (contentType.empty() && (key.compare(HF_CONTENT_TYPE) == 0) && val.is_string()) contentType = val;
+
+					if (val.is_null())
+					{ /* do nothing; skip field. */
+					}
+					else if (val.is_number_unsigned())
+					{
+						buffer += fmt::format("{}: {}\r\n", key, val.get<uint64_t>());
+					}
+					else if (val.is_number_integer() || val.is_number())
+					{
+						buffer += fmt::format("{}: {}\r\n", key, val.get<int64_t>());
+					}
+					else if (val.is_number_float())
+					{
+						buffer += fmt::format("{}: {}\r\n", key, val.get<float>());
+					}
+					else if (val.is_string())
+					{
+						buffer += fmt::format("{}: {}\r\n", key, val);
+					}
+					else if (val.is_boolean())
+					{
+						buffer += fmt::format("{}: {}\r\n", key, val ? "true" : "false");
+					}
+					else if (val.is_array())
+					{
+						// Special handling for arrays.
+						// We serialize with the same key and the various values follow.
+						for (auto& item : val.items())
+						{
+							auto iv = item.value();
+							buffer += fmt::format("{}: {}\r\n", key, iv);
+						}
+					}
+					else
+					{
+						buffer += fmt::format("{}: {{}}\r\n", key, val);
+					}
+				};
+
+				// End of the message header section
+				buffer += ELEM_NEWLINE;
+			}
+
+			// Add the body
+			buffer += body;
+
+			return buffer;
+		}
+
+	private:
+		/// @brief Serializes the SDP content
+		/// @param sipm sipmessage object
+		/// @return string representing the sdp
+		static std::string serializeSDP(sipmessage& sipm) noexcept(false)
+		{
+			std::string buffer {};
+			auto		contentType = sipm.getContentType();
+
+			// Body
+			// NOTE: we extract the contentType value during the header serialization.
+			if (contentType.compare(CONTENT_TYPE_APP_SDP) == 0)
+			{
+				if (sipm.contains("/mb"_json_pointer))
+				{
+					if (sipm.contains("/mb/sdp"_json_pointer))
+					{
+						// the sdp is stored as an array of objects
+						auto sdp = sipm.at("/mb/sdp"_json_pointer);
+						for (auto& block : sdp)
+						{
+							buffer += fmt::format("v=0\r\no={}\r\ns={}\r\ni={}\r\nc={}\r\nt={}\r\nm={}\r\n{}",
+												  serializeSDPelement(block, "o"),
+												  serializeSDPelement(block, "s"),
+												  serializeSDPelement(block, "i"),
+												  serializeSDPelement(block, "c"),
+												  serializeSDPelement(block, "t"),
+												  serializeSDPelement(block, "m"),
+												  serializeSDPelement(block, "a"));
+						}
+					}
+					else
+					{
+						sip2json_throw<invalid_document_error>("{}:sipm mb does not have sdp element.", __func__);
+					}
+				}
+				else
+				{
+					sip2json_throw<invalid_document_error>("{}:sipm does not have mb.", __func__);
+				}
+			}
+
+			return buffer;
+		}
+
+
+		/// @brief Helper to serialize the SDP element with custom decode
+		/// @param sdpBlock The SDP block from the SDP array
+		/// @param element The element: o, s, i, c, t, m, a. When returning a= the code builds CRLF terminators.
+		/// @return Returns the sdp element as string.
+		static std::string serializeSDPelement(nlohmann::json& sdpBlock, const std::string& element)
+		{
+			if (auto item = sdpBlock.at(element); item.is_object())
+			{
+				if (element == "a")
+				{
+					std::string ret;
+
+					for (auto& kv : item.items())
+					{
+						auto v = kv.value();
+						if (v.is_string())
+							ret += fmt::format("a={}:{}\r\n", kv.key(), v);
+						else if (v.is_boolean() && v == "true")
+							ret += fmt::format("a={}\r\n", kv.key());
+						else
+							ret += fmt::format("a={}\r\n", kv.key());
+					}
+
+					return ret;
+				}
+				if (element == "o")
+				{
+					return fmt::format("{} {} {} {} {} {}",
+									   item.value("user", ""),
+									   item.value("t1", ""),
+									   item.value("t2", ""),
+									   item.value("type", ""),
+									   item.value("subtype", ""),
+									   item.value("host", ""));
+				}
+				if (element == "i")
+				{ return fmt::format("{} ({}) {}", item.value("name", ""), item.value("dn", ""), item.value("type", "")); }
+				if (element == "c")
+				{ return fmt::format("{} {} {}", item.value("type", ""), item.value("subtype", ""), item.value("dn", "")); }
+			}
+			else if (item.is_array())
+			{
+				if (element == "t") { return fmt::format("{} {}", item[0].get<uint32_t>(), item[1].get<uint32_t>()); }
+			}
+			else if (item.is_string())
+			{
+				// In case the parse wasn't able to split properly, it will store it as a string value.
+				// Serialize the as-is case.
+				return item.get<std::string>();
+			}
+
+			return std::string {};
 		}
 	}; // class sip2json
 
