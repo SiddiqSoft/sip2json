@@ -534,15 +534,6 @@ namespace siddiqsoftware
 		}
 
 
-		/// @brief Convenient method to parse a given buffer by calling the parseFromBuffer(iterator) version.
-		/// @param buffer string buffer
-		/// @return sipmessage
-		static sipmessage parseFromBuffer(std::string& buffer) noexcept(false)
-		{
-			return parseFromBuffer(buffer.begin(), buffer.end());
-		}
-
-
 		/// @brief De-serialize the *first* SIP message (if present) from the buffer. Repeated calls to this method will extract the remaining messages.
 		/// @param bufferStart iterator to the start of the buffer the client expects a SIP message.
 		/// @param bufferEnd iterator to the end of the buffer the client expects a SIP message.
@@ -607,6 +598,15 @@ namespace siddiqsoftware
 			}
 
 			return sipm;
+		}
+		
+		
+		/// @brief Convenient method to parse a given buffer by calling the parseFromBuffer(iterator) version.
+		/// @param buffer string buffer
+		/// @return sipmessage
+		static sipmessage parseFromBuffer(std::string& buffer) noexcept(false)
+		{
+			return parseFromBuffer(buffer.begin(), buffer.end());
 		}
 
 
