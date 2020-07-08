@@ -16,52 +16,151 @@
 
 namespace siddiqsoftware
 {
-	enum sip2jsonErrorCodes
+	enum class sip2jsonErrors : uint32_t
 	{
-		ok,
+		ok = std::numeric_limits<uint32_t>::min(),
+		/* parse errors */
 		incomplete_buffer_for_parse,
 		incomplete_buffer_for_content,
 		incomplete_buffer_for_header,
 		invalid_startline,
 		unsupported_contenttype,
+		/* serialization errors */
 		invalid_document,
+		invalid_document_unsupported_method,
+		invalid_document_unsupported_content,
 		empty_message,
-		unknown = -1
+		unknown = std::numeric_limits<uint32_t>::max()
 	};
 
 
-	NLOHMANN_JSON_SERIALIZE_ENUM(sip2jsonErrorCodes,
+	NLOHMANN_JSON_SERIALIZE_ENUM(sip2jsonErrors,
 								 {unknown, nullptr},
 								 {ok, "ok"},
+								 /* parse errors */
 								 {incomplete_buffer_for_parse, "incomplete_buffer_for_parse"},
 								 {incomplete_buffer_for_content, "incomplete_buffer_for_content"},
 								 {incomplete_buffer_for_header, "incomplete_buffer_for_header"},
 								 {invalid_startline, "invalid_startline"},
 								 {unsupported_contenttype, "unsupported_contenttype"},
+								 /* serialization errors */
 								 {invalid_document, "invalid_document"},
+								 {invalid_document_unsupported_method, "invalid_document_unsupported_method"},
+								 {invalid_document_unsupported_content, "invalid_document_unsupported_content"},
 								 {empty_message, "empty_message"});
 
 
-	/// @brief Runtime exception class. Helper to easily classify the various error states during parsing.
-	/// @tparam ...Targs
-	template <typename... Targs> class sip2json_exception : public std::runtime_error
+	class incomplete_buffer_for_parse_error : public std::runtime_error
 	{
-	private:
-		sip2jsonErrorCodes errCode = sip2jsonErrorCodes::unknown;
+	public:
+		sip2jsonErrors errCode = sip2jsonErrors::incomplete_buffer_for_parse;
 
 	public:
-		sip2json_exception(sip2jsonErrorCodes ec, const std::string& formatSpec, Targs... args)
-			: std::runtime_error(fmt::format(formatSpec, args...))
-			, errCode(ec)
+		incomplete_buffer_for_parse_error(const std::string& msg)
+			: std::runtime_error(msg)
 		{
 		}
-
-			 operator uint32_t() const { return errCode; }
-		bool is_ok() { return errCode == ok; }
-		bool is_incomplete_buffer_for_parse() { return errCode == incomplete_buffer_for_parse; }
-		bool is_incomplete_buffer_for_content() { return errCode == incomplete_buffer_for_content; }
-		bool is_incomplete_buffer_for_header() { return errCode == incomplete_buffer_for_header; }
-		bool is_invalid_startline() { return errCode == invalid_startline; }
-		bool is_unsupported_contenttype() { return errCode == unsupported_contenttype; }
 	};
+
+
+	class incomplete_buffer_for_content_error : public std::runtime_error
+	{
+	public:
+		sip2jsonErrors errCode = sip2jsonErrors::incomplete_buffer_for_content;
+
+	public:
+		incomplete_buffer_for_content_error(const std::string& msg)
+			: std::runtime_error(msg)
+		{
+		}
+	};
+
+
+	class incomplete_buffer_for_header_error : public std::runtime_error
+	{
+	public:
+		sip2jsonErrors errCode = sip2jsonErrors::incomplete_buffer_for_header;
+
+	public:
+		incomplete_buffer_for_header_error(const std::string& msg)
+			: std::runtime_error(msg)
+		{
+		}
+	};
+
+
+	class invalid_startline_error : public std::runtime_error
+	{
+	public:
+		sip2jsonErrors errCode = sip2jsonErrors::invalid_startline;
+
+	public:
+		invalid_startline_error(const std::string& msg)
+			: std::runtime_error(msg)
+		{
+		}
+	};
+
+
+	class unsupported_contenttype_error : public std::runtime_error
+	{
+	public:
+		sip2jsonErrors errCode = sip2jsonErrors::unsupported_contenttype;
+
+	public:
+		unsupported_contenttype_error(const std::string& msg)
+			: std::runtime_error(msg)
+		{
+		}
+	};
+
+
+	class invalid_document_error : public std::runtime_error
+	{
+	public:
+		sip2jsonErrors errCode = sip2jsonErrors::invalid_document;
+
+	public:
+		invalid_document_error(const std::string& msg)
+			: std::runtime_error(msg)
+		{
+		}
+	};
+
+
+	class empty_message_error : public std::runtime_error
+	{
+	public:
+		sip2jsonErrors errCode = sip2jsonErrors::empty_message;
+
+	public:
+		empty_message_error(const std::string& msg)
+			: std::runtime_error(msg)
+		{
+		}
+	};
+
+	/// @brief Create and throw a sip2json_error object.
+	/// @tparam ...Args Automatically deduced template argument
+	/// @param ec Error Code (type of error to be created)
+	/// @param formatSpec fmt::format spec
+	/// @param ...args fmt::format arguments
+	/// @return Throws an object sip2json_error object.
+	template <class E, typename... Args> void sip2json_throw(const std::string& formatSpec, Args... args) noexcept(false)
+	{
+		auto e = E(fmt::format(formatSpec, args...));
+		throw e;
+	}
+
+
+	template <class E, typename... Args>
+	void sip2json_throw_if(bool predicate, const std::string& formatSpec, Args... args) noexcept(false)
+	{
+		if (predicate)
+		{
+			auto e = E(fmt::format(formatSpec, args...));
+			throw e;
+		}
+	}
+
 } // namespace siddiqsoftware

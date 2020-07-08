@@ -42,7 +42,7 @@ X-Call-Instance-ID: MTUxMDUwNzYxNDE1NjNpbC1lZC1tYXJhLTAxOjE1OTM1NjQxNjc6Mjg0NDcw
 X-Route-ID: 2
 X-Call-Start-Time: 1593564167.284484
 Content-Length: 783
-Content-type: application/sdp
+Content-type: application/fail-sdp
 
 v=0
 o=akirmayer@sidley.com 55706299459030 847687142 IN IP4 il-ed-mara-01.ring2.com

@@ -50,10 +50,15 @@ namespace siddiqsoftware
 		{
 			// Special concession for some SIP servers which incorrectly encode this field.
 			// First we try the Content-Type and default to looking up Content-type else return empty string.
-
 			return (this->contains("/mh/Content-Type"_json_pointer)) ? this->value("/mh/Content-Type"_json_pointer, "")
 																	 : this->value("/mh/Content-type"_json_pointer, "");
 		};
 		inline const auto getCallID() { return this->value("/mh/Call-ID"_json_pointer, ""); };
+		inline const auto getMethod() { return this->value("/rl/method"_json_pointer, ""); };
+		inline const auto getUri() { return this->value("/rl/uri"_json_pointer, ""); };
+		inline const auto getStatusCode() { return this->value("/sl/status"_json_pointer, 0); };
+		inline const auto getReason() { return this->value("/sl/reason"_json_pointer, ""); };
+		inline auto		  getHeaders() { return this->at("mh"); };
+		inline auto		  getBody() { return this->at("mb"); };
 	};
 } // namespace siddiqsoftware

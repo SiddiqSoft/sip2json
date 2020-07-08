@@ -114,35 +114,38 @@ namespace siddiqsoftware
 #pragma endregion
 
 	public:
-		static std::string serialize(nlohmann::json& sipm)
+		static std::string serialize(sipmessage& sipm) noexcept(false)
 		{
+			static const std::string supportedMethods {
+					"MESSAGE|INFO|INVITE|ACK|OPTIONS|BYE|CANCEL|REGISTER|SUBSCRIBE|NOTIFY|SIP/2.0"};
 			std::string buffer {};
 			std::string contentType {};
 
-			if (sipm.size() == 0) throw sip2json_exception(empty_message, "{}:sipm is empty.", __func__);
-
+			// Assert: non-empty json document
+			sip2json_throw_if<empty_message_error>(sipm.size() == 0, "{}:sipm is empty.", __func__);
+			// Assert: Method is one of the supported items
+			auto methodFoundInSupported = supportedMethods.find(sipm.getMethod());
+			sip2json_throw_if<invalid_document_error>(supportedMethods.find(sipm.getMethod()) == std::string::npos,
+													  "{}:Unsupported method:{}",
+													  __func__,
+													  sipm.getMethod());
+			// Assert: Header must exist
+			sip2json_throw_if<invalid_document_error>(!sipm.contains("/mh"_json_pointer), "{}:sipm does not contain mh.", __func__);
 
 			if (sipm.value("/type"_json_pointer, std::string {}).compare(MessageTypeRequest) == 0)
 			{
 				// Request Line
-				buffer = fmt::format("{} {} SIP/2.0\r\n",
-									 sipm.value("/rl/method"_json_pointer, std::string {}),
-									 sipm.value("/rl/uri"_json_pointer, std::string {}));
+				buffer = fmt::format("{} {} SIP/2.0\r\n", sipm.getMethod(), sipm.getUri());
 			}
 			else if (sipm.value("/type"_json_pointer, std::string {}).compare(MessageTypeResponse) == 0)
 			{
 				// Status Line
-				buffer = fmt::format("SIP/2.0 {} {}\r\n",
-									 sipm.value("/sl/status"_json_pointer, 0),
-									 sipm.value("/sl/reason"_json_pointer, std::string {}));
+				buffer = fmt::format("SIP/2.0 {} {}\r\n", sipm.getStatusCode(), sipm.getReason());
 			}
 			else
 			{
-				throw sip2json_exception(invalid_startline,
-										 "{}:sipm /type is neither `{}` nor `{}`.",
-										 __func__,
-										 MessageTypeRequest,
-										 MessageTypeResponse);
+				sip2json_throw<invalid_document_error>(
+						"{}:sipm /type is neither `{}` nor `{}`.", __func__, MessageTypeRequest, MessageTypeResponse);
 			}
 
 			// Headers
@@ -196,10 +199,6 @@ namespace siddiqsoftware
 				// End of the message header section
 				buffer += "\r\n";
 			}
-			else
-			{
-				throw sip2json_exception(invalid_document, "{}:sipm does not contain mh.", __func__);
-			}
 
 			// Body
 			// NOTE: we extract the contentType value during the header serialization.
@@ -218,17 +217,18 @@ namespace siddiqsoftware
 					}
 					else
 					{
-						throw sip2json_exception(invalid_document, "{}:sipm mb does not have sdp element.", __func__);
+						sip2json_throw<invalid_document_error>("{}:sipm mb does not have sdp element.", __func__);
 					}
 				}
 				else
 				{
-					throw sip2json_exception(invalid_document, "{}:sipm does not have mb.", __func__);
+					sip2json_throw<invalid_document_error>("{}:sipm does not have mb.", __func__);
 				}
 			}
 
 			return buffer;
 		}
+
 
 		static bool
 		parseStartLine(sipmessage& sipm, std::string::iterator& bufferStart, const std::string::iterator& bufferEnd) noexcept(false)
@@ -250,12 +250,12 @@ namespace siddiqsoftware
 				{
 					sipm["type"]						= MessageTypeResponse;
 					sipm["/sl/reason"_json_pointer]		= matchStartLine[3];
-					sipm["/sl/statusCode"_json_pointer] = std::stoi(matchStartLine[2].str());
+					sipm["/sl/status"_json_pointer] = std::stoi(matchStartLine[2].str());
 					sipm["/sl/version"_json_pointer]	= matchStartLine[1];
 				}
 				else
 				{
-					throw sip2json_exception(invalid_startline, "{} - Illformed start-line:{}.", __func__, matchStartLine[0].str());
+					sip2json_throw<invalid_startline_error>("{} - Illformed start-line:{}.", __func__, matchStartLine[0].str());
 				}
 
 				// Offset the start to the point after the start-line. Make sure to skip over any prefix!
@@ -264,7 +264,7 @@ namespace siddiqsoftware
 			}
 			else
 			{
-				throw sip2json_exception(invalid_startline, "{} - SIP Startline not found.", __func__);
+				sip2json_throw<invalid_startline_error>("{} - SIP Startline not found.", __func__);
 			}
 
 			return found;
@@ -337,6 +337,14 @@ namespace siddiqsoftware
 			// Note that for response messages, it is likely that the bufferEnd will also be the headerEnd (no content).
 			auto headerEnd =
 					std::search(bufferStart, bufferEnd, ELEM_HEADERSECTIONDELIMITER.begin(), ELEM_HEADERSECTIONDELIMITER.end());
+
+			auto a1 = bufferEnd - bufferStart;
+			auto a2 = bufferEnd - headerEnd;
+			OutputDebugStringA(fmt::format("{} - bufferEnd-bufferStart:{}   bufferEnd-headerEnd:{}\n", __func__, a1, a2).c_str());
+			// Assert header end delimiter must exist!
+			sip2json_throw_if<incomplete_buffer_for_header_error>((bufferEnd - headerEnd) < ELEM_HEADERSECTIONDELIMITER.size(),
+																  "{}:Cannot find header section delimiter.",
+																  __func__);
 
 			while (!done)
 			{
@@ -463,8 +471,7 @@ namespace siddiqsoftware
 			}
 			else
 			{
-				throw sip2json_exception(
-						incomplete_buffer_for_header, "{} - Buffer missing header-delimiter within range.", __func__);
+				sip2json_throw<incomplete_buffer_for_header_error>("{} - Buffer missing header-delimiter within range.", __func__);
 			}
 
 			return false;
@@ -606,15 +613,18 @@ namespace siddiqsoftware
 			}
 			else
 			{
-				throw sip2json_exception(incomplete_buffer_for_content, "{}:Empty buffer provided.", __func__);
+				sip2json_throw<incomplete_buffer_for_content_error>("{}:Empty buffer provided.", __func__);
 			}
 
 			return false;
 		}
 
 	public:
-		static std::vector<sipmessage> parseAllFromBuffer(std::string::iterator&	   bufferStart,
-														  const std::string::iterator& bufferEnd) noexcept(false)
+		static std::vector<sipmessage>
+		parseAllFromBuffer(std::string::iterator&							   bufferStart,
+						   const std::string::iterator&						   bufferEnd,
+						   std::optional<std::function<void(sipmessage&)>>	   parseCallback = {},
+						   std::optional<std::function<void(sip2jsonErrors&)>> errorCallback = {}) noexcept
 		{
 			std::vector<sipmessage> msgs;
 
@@ -627,7 +637,13 @@ namespace siddiqsoftware
 					{
 						auto sipm = parseFromBuffer(bufferStart, bufferEnd);
 						if (!sipm.empty())
-							msgs.emplace_back(sipm);
+						{
+							// If the callback is provided, then we invoke the callback. Nothing is returned to caller.
+							if (parseCallback.has_value())
+								parseCallback.value()(sipm);
+							else // otherwise we push to the vector to return to caller
+								msgs.emplace_back(sipm);
+						}
 						else
 							break;
 					}
@@ -637,9 +653,42 @@ namespace siddiqsoftware
 						break;
 					}
 				}
+				catch (invalid_startline_error& e)
+				{
+					// If the very first one has issues then we should quit.
+					if (errorCallback.has_value()) errorCallback.value()(e.errCode);
+					break;
+				}
+				catch (unsupported_contenttype_error& e)
+				{
+					// If the very first one has issues then we should quit.
+					if (errorCallback.has_value()) errorCallback.value()(e.errCode);
+					break;
+				}
+				catch (incomplete_buffer_for_parse_error& e)
+				{
+					// If the very first one has issues then we should quit.
+					if (errorCallback.has_value()) errorCallback.value()(e.errCode);
+					break;
+				}
+				catch (incomplete_buffer_for_header_error& e)
+				{
+					// If the very first one has issues then we should quit.
+					if (errorCallback.has_value()) errorCallback.value()(e.errCode);
+					break;
+				}
+				catch (incomplete_buffer_for_content_error& e)
+				{
+					// If the very first one has issues then we should quit.
+					if (errorCallback.has_value()) errorCallback.value()(e.errCode);
+				}
 				catch (const std::exception& ex)
 				{
 					OutputDebugStringA(fmt::format("{} - Exception:{}\n", __func__, ex.what()).c_str());
+					break;
+				}
+				catch (...)
+				{
 					break;
 				}
 			}
@@ -684,32 +733,30 @@ namespace siddiqsoftware
 									}
 									else
 									{
-										throw sip2json_exception(incomplete_buffer_for_parse,
-																 "{}: Available buffer length:{} < Content-Length:{}",
-																 __func__,
-																 availableRemainingBufferSize,
-																 sipm.getContentLength());
+										sip2json_throw<incomplete_buffer_for_content_error>(
+												"{}: Available buffer length:{} < Content-Length:{}",
+												__func__,
+												availableRemainingBufferSize,
+												sipm.getContentLength());
 									}
 								}
 							}
 							else if (!sipm.getContentType().empty())
 							{
-								throw sip2json_exception(unsupported_contenttype,
-														 "{}:Content-Type {} not supported",
-														 __func__,
-														 sipm.getContentType());
+								sip2json_throw<unsupported_contenttype_error>(
+										"{}:Content-Type {} not supported", __func__, sipm.getContentType());
 							}
 						}
 						else
 						{
-							throw sip2json_exception(incomplete_buffer_for_header, "{}:headers not found", __func__);
+							sip2json_throw<incomplete_buffer_for_header_error>("{}:headers not found", __func__);
 						}
 					}
 				}
 				else
 				{
 					// This will end our scan.
-					throw sip2json_exception(incomplete_buffer_for_parse, "{}:Incomplete Buffer for parse to continue.", __func__);
+					sip2json_throw<incomplete_buffer_for_parse_error>("{}:Incomplete Buffer for parse to continue.", __func__);
 				}
 			}
 

@@ -41,7 +41,7 @@ X-restrict-participants: false
 X-Call-Instance-ID: MTUxMDUwNzYxNDE1NjNpbC1lZC1tYXJhLTAxOjE1OTM1NjQxNjc6Mjg0NDcw
 X-Route-ID: 2
 X-Call-Start-Time: 1593564167.284484
-Content-Length: 783
+Content-Length: 7830
 Content-type: application/sdp
 
 v=0
@@ -61,16 +61,3 @@ a=new_change
 a=server:hk-ed-pearl-01.ring2.com
 a=clir:false
 a=far_end:205.252.237.66:16224
-a=conference:1
-a=acs_guid:000799073288
-a=cli-screening:00
-a=trunk:8:chan:0
-a=useforfrom:6531583706@205.252.237.71
-a=audio_payload:PCMA
-a=access_code:2742801
-a=privs:participant
-a=ivr:dialin
-a=creator:akirmayer@sidley.com
-a=dialin:2742801:6660014385@205.252.237.66-$$-1
-a=dest_phone:6531583706
-a=user-agent:Cisco-SIPGateway/IOS-15.5.2.S4

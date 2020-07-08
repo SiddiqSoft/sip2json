@@ -35,42 +35,4 @@ X-Billing-code-required: false
 X-recording-enabled: true
 X-leader-required: true
 X-Video-UsingMCU: false
-X-subject: Asi Kirmayer's Meeting Room
-X-reserved-ports: 0
-X-restrict-participants: false
-X-Call-Instance-ID: MTUxMDUwNzYxNDE1NjNpbC1lZC1tYXJhLTAxOjE1OTM1NjQxNjc6Mjg0NDcw
-X-Route-ID: 2
-X-Call-Start-Time: 1593564167.284484
-Content-Length: 783
-Content-type: application/sdp
-
-v=0
-o=akirmayer@sidley.com 55706299459030 847687142 IN IP4 il-ed-mara-01.ring2.com
-s=
-i=+6568898813 (+6568898813) CallByPhone-URL
-c=TN RFC2543 +6568898813
-t=3802556545 0
-m=audio 1 voice -
-a=status:(203) answered  
-a=mediastatus:sendrecv
-a=cdr_start_time:1593567734.0
-a=leg_no:12
-a=remote:205.252.237.71:12084
-a=flags:1049632
-a=new_change
-a=server:hk-ed-pearl-01.ring2.com
-a=clir:false
-a=far_end:205.252.237.66:16224
-a=conference:1
-a=acs_guid:000799073288
-a=cli-screening:00
-a=trunk:8:chan:0
-a=useforfrom:6531583706@205.252.237.71
-a=audio_payload:PCMA
-a=access_code:2742801
-a=privs:participant
-a=ivr:dialin
-a=creator:akirmayer@sidley.com
-a=dialin:2742801:6660014385@205.252.237.66-$$-1
-a=dest_phone:6531583706
-a=user-agent:Cisco-SIPGateway/IOS-15.5.2.S4
+X-subject: Asi Kirmayer's Meeting R

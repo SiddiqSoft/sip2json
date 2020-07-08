@@ -14,6 +14,7 @@
 #include "fmt/chrono.h"
 
 #include "../../src/sip2json.hpp"
+#include "../../src/sip2json_exception.hpp"
 
 #include "CppUnitTest.h"
 
@@ -23,6 +24,21 @@ using namespace siddiqsoftware;
 
 namespace test_suite
 {
+	static std::string loadSampleFile(const std::string_view& fileName)
+	{
+		std::stringstream testFile;
+		std::ifstream	  sampleInputFile(fmt::format("../test/samples/{}.sip", fileName), std::ios::binary);
+
+		if (sampleInputFile.is_open())
+		{
+			testFile << sampleInputFile.rdbuf();
+			sampleInputFile.close();
+		}
+
+		return testFile.str();
+	}
+
+
 	// NOLINTNEXTLINE
 	TEST_CLASS(core_parser_tests)
 	{
@@ -200,14 +216,151 @@ namespace test_suite
 			Assert::IsTrue(testFile.str().length() > 0);
 		}
 
+
 		// NOLINTNEXTLINE
-		TEST_METHOD(Test_parse_1_fail)
+		TEST_METHOD(Test_incomplete_buffer_for_parse)
 		{
 			auto buffer = siddiqsoftware::SIP_SAMPLE_MINIMAL_MESSAGE;
-			Assert::ExpectException<std::exception>([&]() {
+			try
+			{
 				auto bs = buffer.begin();
 				sip2json::parseFromBuffer(bs, buffer.end());
-			});
+				Assert::Fail(L"Expect exception: incomplete_buffer_for_parse\n");
+			}
+			catch (incomplete_buffer_for_parse_error& e)
+			{
+				Logger::WriteMessage(e.what());
+				Assert::IsTrue(e.errCode == sip2jsonErrors::incomplete_buffer_for_parse);
+			}
 		}
+
+
+		// NOLINTNEXTLINE
+		TEST_METHOD(Test_incomplete_buffer_for_content)
+		{
+			auto buffer = loadSampleFile(__func__); // NOLINT
+			try
+			{
+				auto bs = buffer.begin();
+				sip2json::parseFromBuffer(bs, buffer.end());
+				Assert::Fail(L"Expect exception: incomplete_buffer_for_content\n");
+			}
+			catch (incomplete_buffer_for_content_error& e)
+			{
+				Logger::WriteMessage(e.what());
+				Assert::IsTrue(e.errCode == sip2jsonErrors::incomplete_buffer_for_content);
+			}
+		}
+
+
+		// NOLINTNEXTLINE
+		TEST_METHOD(Test_incomplete_buffer_for_header)
+		{
+			auto buffer = loadSampleFile(__func__); // NOLINT
+			try
+			{
+				auto bs = buffer.begin();
+				sip2json::parseFromBuffer(bs, buffer.end());
+				Assert::Fail(L"Expect exception: incomplete_buffer_for_header\n");
+			}
+			catch (incomplete_buffer_for_header_error& e)
+			{
+				Logger::WriteMessage(e.what());
+				Assert::IsTrue(e.errCode == sip2jsonErrors::incomplete_buffer_for_header);
+			}
+		}
+
+
+		// NOLINTNEXTLINE
+		TEST_METHOD(Test_unsupported_contenttype)
+		{
+			auto buffer = loadSampleFile(__func__); // NOLINT
+			try
+			{
+				auto bs = buffer.begin();
+				sip2json::parseFromBuffer(bs, buffer.end());
+				Assert::Fail(L"Expect exception: unsupported_contenttype\n");
+			}
+			catch (unsupported_contenttype_error& e)
+			{
+				Logger::WriteMessage(e.what());
+				Assert::IsTrue(e.errCode == sip2jsonErrors::unsupported_contenttype);
+			}
+		}
+
+
+		// NOLINTNEXTLINE
+		TEST_METHOD(Test_invalid_document)
+		{
+			sipmessage sipm;
+
+			try
+			{
+				sipm["dummy"] = "world";
+				sip2json::serialize(sipm);
+				Assert::Fail(L"Expect exception: invalid_document\n");
+			}
+			catch (invalid_document_error& e)
+			{
+				Logger::WriteMessage(e.what());
+				Assert::IsTrue(e.errCode == sip2jsonErrors::invalid_document);
+			}
+		}
+
+
+		// NOLINTNEXTLINE
+		TEST_METHOD(Test_invalid_document_startline)
+		{
+			sipmessage sipm = sip2json::createRequest("ROR", "sip:dummy@world.com");
+
+			try
+			{
+				sip2json::serialize(sipm);
+				Assert::Fail(L"Expect exception: invalid_document\n");
+			}
+			catch (invalid_document_error& e)
+			{
+				Logger::WriteMessage(e.what());
+				Assert::IsTrue(e.errCode == sip2jsonErrors::invalid_document);
+			}
+		}
+
+
+		// NOLINTNEXTLINE
+		TEST_METHOD(Test_empty_message)
+		{
+			sipmessage emptyMessage;
+			try
+			{
+				sip2json::serialize(emptyMessage);
+				Assert::Fail(L"Expect exception: empty_message\n");
+			}
+			catch (empty_message_error& e)
+			{
+				Logger::WriteMessage(e.what());
+				Assert::IsTrue(e.errCode == sip2jsonErrors::empty_message);
+			}
+		}
+
+
+		// NOLINTNEXTLINE
+		TEST_METHOD(Test_invalid_startline)
+		{
+			auto buffer = loadSampleFile(__func__); // NOLINT
+
+			try
+			{
+				auto bs = buffer.begin();
+				sip2json::parseFromBuffer(bs, buffer.end());
+				Assert::Fail(L"Expect exception: invalid_startline\n");
+			}
+			catch (invalid_startline_error& e)
+			{
+				Logger::WriteMessage(e.what());
+				Assert::IsTrue(e.errCode == sip2jsonErrors::invalid_startline);
+			}
+		}
+
+
 	}; // SIPHelpers
-} // namespace siddiqsoftware
+} // namespace test_suite

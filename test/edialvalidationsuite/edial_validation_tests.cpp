@@ -23,28 +23,24 @@ using namespace siddiqsoftware;
 
 namespace test_suite
 {
+	static std::string loadSampleFile(const std::string_view& fileName)
+	{
+		std::stringstream testFile;
+		std::ifstream	  sampleInputFile(fmt::format("../test/samples/{}.sip", fileName), std::ios::binary);
+
+		if (sampleInputFile.is_open())
+		{
+			testFile << sampleInputFile.rdbuf();
+			sampleInputFile.close();
+		}
+
+		return testFile.str();
+	}
+
+
 	// NOLINTNEXTLINE
 	TEST_CLASS(edial_validation_tests)
 	{
-	public:
-		std::string loadSampleFile(const std::string_view& fileName)
-		{
-			std::stringstream testFile;
-			std::ifstream	  sampleInputFile(fmt::format("../test/samples/{}.sip", fileName));
-
-			if (sampleInputFile.is_open())
-			{
-				while (sampleInputFile.peek() != EOF)
-				{
-					testFile << (char)sampleInputFile.get();
-				}
-				sampleInputFile.close();
-			}
-
-
-			return testFile.str();
-		}
-
 	public:
 		bool dummy;
 
@@ -372,7 +368,7 @@ namespace test_suite
 
 			// Start checking if we decoded properly..
 			// Start-Line (response): SIP/2.0 200 OK
-			Assert::AreEqual<uint32_t>(200, sipm.value("/sl/statusCode"_json_pointer, 0));
+			Assert::AreEqual<uint32_t>(200, sipm.getStatusCode());
 			// Via is an array
 			Assert::IsTrue(sipm.value("/mh/Via"_json_pointer, nlohmann::json {}).is_array());
 			Assert::AreEqual<size_t>(sipm.value("/mh/Via"_json_pointer, nlohmann::json {}).size(), 1);
@@ -476,31 +472,23 @@ namespace test_suite
 		TEST_METHOD(Trying_INVITE_1)
 		{
 			auto buffer		 = loadSampleFile(__func__); // NOLINT
-			auto item		 = 0;
 			auto bufferStart = buffer.begin();
+			bool passTest	 = false;
 
-			auto msgs = sip2json::parseAllFromBuffer(bufferStart, buffer.end());
+			auto msgs = sip2json::parseAllFromBuffer(bufferStart, buffer.end(), [&](sipmessage& sipm) {
+				Assert::IsTrue(!sipm.empty(), L"Expect valid one message parsed.");
+				Assert::AreEqual<std::string>("1593721670540996", sipm.getHeaders().value("X-Message-Time", ""));
+				Assert::AreEqual<std::string>("3 INVITE", sipm.getHeaders().value("CSeq", ""));
+				Assert::AreEqual<uint32_t>(100, sipm.getStatusCode());
+				Assert::AreEqual<std::string>("Trying", sipm.getReason());
+				Assert::AreEqual<std::string>(
+						"X-Signed start=\"1593721669\",expire=\"1593725269\",user=\"jcollier@federationbankia.com\",confwiz=\"my "
+						"string\",nsadrs=\"il-ed-mara-01.ring2.com\",signed=\"a73789748d9c7dd2d1092794597d2a57\"",
+						sipm.getHeaders().value("Authorization", ""));
+				passTest = true;
+			});
 
-			Logger::WriteMessage(fmt::format("{} - Found: {} messages\n", __func__, msgs.size()).c_str());
-
-			// We're going to have a single frame
-			Assert::AreEqual<size_t>(1, msgs.size(), L"Expect only one message parsed.");
-
-			for (auto& i : msgs)
-			{
-				auto str = fmt::format("{} - document {} -> {}\n", __func__, ++item, i.flatten().dump(2));
-				Logger::WriteMessage(str.c_str());
-			}
-
-			Assert::AreEqual<std::string>("1593721670540996", msgs[0].value("/mh/X-Message-Time"_json_pointer, ""));
-			Assert::AreEqual<std::string>("3 INVITE", msgs[0].value("/mh/CSeq"_json_pointer, ""));
-
-			Assert::AreEqual<uint32_t>(100, msgs[0].value("/sl/statusCode"_json_pointer, 0));
-			Assert::AreEqual<std::string>("Trying", msgs[0].value("/sl/reason"_json_pointer, ""));
-			Assert::AreEqual<std::string>(
-					"X-Signed start=\"1593721669\",expire=\"1593725269\",user=\"jcollier@federationbankia.com\",confwiz=\"my "
-					"string\",nsadrs=\"il-ed-mara-01.ring2.com\",signed=\"a73789748d9c7dd2d1092794597d2a57\"",
-					msgs[0].value("/mh/Authorization"_json_pointer, ""));
+			Assert::IsTrue(passTest);
 		}
 
 
@@ -545,7 +533,7 @@ namespace test_suite
 
 				counters[i.value("/mh/CSeq"_json_pointer, "")]++;
 
-				if (i.value("/sl/statusCode"_json_pointer, 0) != 0)
+				if (i.getStatusCode() != 0)
 					counters[i.value("/sl/reason"_json_pointer, "")]++;
 				else
 					counters[i.value("/mh/method"_json_pointer, "")]++;
@@ -1041,7 +1029,7 @@ namespace test_suite
 
 				counters[i.value("/mh/CSeq"_json_pointer, "")]++;
 
-				if (i.value("/sl/statusCode"_json_pointer, 0) != 0)
+				if (i.getStatusCode() != 0)
 					counters[i.value("/sl/reason"_json_pointer, "")]++;
 				else
 					counters[i.value("/mh/method"_json_pointer, "")]++;

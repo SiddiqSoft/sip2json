@@ -49,6 +49,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{6C56
 		test\samples\RandomStream_Recv_File_1.sip = test\samples\RandomStream_Recv_File_1.sip
 		test\samples\REGISTER_1.sip = test\samples\REGISTER_1.sip
 		test\samples\REGISTER_200_OK.sip = test\samples\REGISTER_200_OK.sip
+		test\samples\Test_incomplete_buffer_for_content.sip = test\samples\Test_incomplete_buffer_for_content.sip
+		test\samples\Test_incomplete_buffer_for_header.sip = test\samples\Test_incomplete_buffer_for_header.sip
+		test\samples\Test_incomplete_buffer_for_parse.sip = test\samples\Test_incomplete_buffer_for_parse.sip
+		test\samples\Test_invalid_startline.sip = test\samples\Test_invalid_startline.sip
+		test\samples\Test_unsupported_contenttype.sip = test\samples\Test_unsupported_contenttype.sip
 		test\samples\Trying_INVITE_1.sip = test\samples\Trying_INVITE_1.sip
 	EndProjectSection
 EndProject
