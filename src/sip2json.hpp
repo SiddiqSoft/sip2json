@@ -767,6 +767,7 @@ namespace siddiqsoftware
 
 	// References
 	// SIP Messages: https://tools.ietf.org/html/rfc3261#section-7
+	// SDP Message format: https://en.wikipedia.org/wiki/Session_Description_Protocol
 	// SIP Response Codes: https://en.wikipedia.org/wiki/List_of_SIP_response_codes
 	// JSON Library: https://nlohmann.github.io/json/
 	// FMT Library : https://fmt.dev/latest/index.html

@@ -102,11 +102,13 @@ Field | Type   | Description
 `/rl/method` | string | Request Line: SIP Method (currently only one of the following: `REGISTER`, `SUBSCRIBE`, `NOTIFY` is supported.)
 `/rl/uri` | string | Request Line: Request URI.
 `/rl/version` | string | Request Line: Always `SIP/2.0` for this implementation.
+`/sl/status` | unsigned int | Status Line: unsigned integer representing one of the [error states](https://en.wikipedia.org/wiki/List_of_SIP_response_codes).
+`/sl/reason` | string | Reason phrase (see status)
+`/sl/version` | string | Status Line: Always `SIP/2.0` for this implementation.
 `/mh/*` | array | An array of key-value pairs representing the SIP message headers.
 `/mb/*` | object | Object containing the content. As of this implementation, we only support SDP message blocks
 
-> The sdp is an array.
-> `/mh/sdp/0/{attribute}` where the 
+> The sdp is an array of objects.
 
 `{attribute}` | Type | Description
 ------|------|-------------
