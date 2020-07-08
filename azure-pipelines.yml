@@ -71,6 +71,7 @@ steps:
       **\*test*.dll
       !**\*TestAdapter.dll
       !**\obj\**
+      !**\Debug\**
     searchFolder: '$(System.DefaultWorkingDirectory)'
     runInParallel: true
     codeCoverageEnabled: true
