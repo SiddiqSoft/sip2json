@@ -600,15 +600,6 @@ namespace siddiqsoftware
 			return sipm;
 		}
 		
-		
-		/// @brief Convenient method to parse a given buffer by calling the parseFromBuffer(iterator) version.
-		/// @param buffer string buffer
-		/// @return sipmessage
-		static sipmessage parseFromBuffer(std::string& buffer) noexcept(false)
-		{
-			return parseFromBuffer(buffer.begin(), buffer.end());
-		}
-
 
 		/// @brief Serializes the sipmessage document
 		/// @param sipm Source sipmessage
