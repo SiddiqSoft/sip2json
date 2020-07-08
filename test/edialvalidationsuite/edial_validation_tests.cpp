@@ -1058,5 +1058,114 @@ namespace test_suite
 			Logger::WriteMessage(fmt::format("{} - Found: {} messages\n", __func__, msgs.size()).c_str());
 			Assert::AreEqual<size_t>(matchTarget.size() - 1, msgs.size(), L"Expected 459 messages parsed.");
 		}
+
+
+		// NOLINTNEXTLINE
+		TEST_METHOD(NOTIFY_EmptyHeaderKey_1)
+		{
+			auto buffer		 = loadSampleFile(__func__); // NOLINT
+			auto item		 = 0;
+			auto bufferStart = buffer.begin();
+
+			auto msgs = sip2json::parseAllFromBuffer(bufferStart, buffer.end());
+			// We're going to have a single frame
+			Assert::AreEqual<size_t>(1, msgs.size());
+
+			for (auto& i : msgs)
+			{
+				auto str = fmt::format("{} - document {} -> {}\n", __func__, ++item, i.flatten().dump(2));
+				Logger::WriteMessage(str.c_str());
+			}
+
+			// Affirm that the first frame has a Contact that has been unfolded properly!
+			Assert::AreEqual<std::string>(msgs[0].value("/mh/Contact"_json_pointer, ""), "<sip:localhost:8443;transport=ssl>");
+			Assert::AreEqual<size_t>(1, msgs[0].value("/mb/sdp"_json_pointer, nlohmann::json {}).size());
+			Assert::AreEqual<size_t>(729, msgs[0].getContentLength());
+
+			// `X-rss-id: ` should end up with a valid empty string header.
+			Assert::IsTrue(msgs[0].contains("/mh/X-rss-id"_json_pointer));
+		}
+
+
+		// NOLINTNEXTLINE
+		TEST_METHOD(NOTIFY_connectorleg_1)
+		{
+			auto buffer		 = loadSampleFile(__func__); // NOLINT
+			auto item		 = 0;
+			auto bufferStart = buffer.begin();
+
+			auto msgs = sip2json::parseAllFromBuffer(bufferStart, buffer.end());
+			// We're going to have a single frame
+			Assert::AreEqual<size_t>(1, msgs.size());
+
+			for (auto& i : msgs)
+			{
+				auto str = fmt::format("{} - document {} -> {}\n", __func__, ++item, i.flatten().dump(2));
+				Logger::WriteMessage(str.c_str());
+			}
+
+			// Affirm that the first frame has a Contact that has been unfolded properly!
+			Assert::AreEqual<std::string>(msgs[0].value("/mh/Contact"_json_pointer, ""), "<sip:localhost:8443;transport=ssl>");
+			Assert::AreEqual<size_t>(1, msgs[0].value("/mb/sdp"_json_pointer, nlohmann::json {}).size());
+			Assert::AreEqual<size_t>(886, msgs[0].getContentLength());
+
+			// c=IN IP4 10.254.254.33
+			Assert::AreEqual<std::string>("IN", msgs[0].value("/mb/sdp/0/c/type"_json_pointer, ""));
+			Assert::AreEqual<std::string>("IP4", msgs[0].value("/mb/sdp/0/c/subtype"_json_pointer, ""));
+			Assert::AreEqual<std::string>("10.254.254.33", msgs[0].value("/mb/sdp/0/c/dn"_json_pointer, ""));
+
+			// a=rtpmap should have 2 entries
+			Assert::IsTrue(msgs[0].value("/mb/sdp/0/a/rtpmap"_json_pointer, nlohmann::json {}).is_array());
+			Assert::AreEqual<size_t>(2, msgs[0].value("/mb/sdp/0/a/rtpmap"_json_pointer, nlohmann::json {}).size());
+		}
+
+
+		// NOLINTNEXTLINE
+		TEST_METHOD(NOTIFY_connectorleg_1_serialize)
+		{
+			auto buffer		 = loadSampleFile("NOTIFY_connectorleg_1"); // NOLINT
+			auto item		 = 0;
+			auto bufferStart = buffer.begin();
+
+			auto msgs = sip2json::parseAllFromBuffer(bufferStart, buffer.end());
+			// We're going to have a single frame
+			Assert::AreEqual<size_t>(1, msgs.size());
+
+			for (auto& i : msgs)
+			{
+				auto str = fmt::format("{} - document {} -> {}\n", __func__, ++item, i.flatten().dump(2));
+				//Logger::WriteMessage(str.c_str());
+			}
+
+			auto verify = [](sipmessage& sipm) {
+				// Affirm that the first frame has a Contact that has been unfolded properly!
+				Assert::AreEqual<std::string>(sipm.value("/mh/Contact"_json_pointer, ""), "<sip:localhost:8443;transport=ssl>");
+				Assert::AreEqual<size_t>(1, sipm.value("/mb/sdp"_json_pointer, nlohmann::json {}).size());
+				Assert::AreEqual<size_t>(886, sipm.getContentLength());
+
+				// c=IN IP4 10.254.254.33
+				Assert::AreEqual<std::string>("IN", sipm.value("/mb/sdp/0/c/type"_json_pointer, ""));
+				Assert::AreEqual<std::string>("IP4", sipm.value("/mb/sdp/0/c/subtype"_json_pointer, ""));
+				Assert::AreEqual<std::string>("10.254.254.33", sipm.value("/mb/sdp/0/c/dn"_json_pointer, ""));
+
+				// a=rtpmap should have 2 entries
+				Assert::IsTrue(sipm.value("/mb/sdp/0/a/rtpmap"_json_pointer, nlohmann::json {}).is_array());
+				Assert::AreEqual<size_t>(2, sipm.value("/mb/sdp/0/a/rtpmap"_json_pointer, nlohmann::json {}).size());
+			};
+
+			// Verify the decode
+			verify(msgs[0]);
+
+			// Let's serialize it
+			auto serialized = sip2json::serialize(msgs[0]);
+			writeSampleFile("NOTIFY_connectorleg_1", serialized);
+
+			// Decode the serialized
+			auto secondBufferStart = serialized.begin();
+			auto sipm2			   = sip2json::parseFromBuffer(secondBufferStart, serialized.end());
+
+			// Verify the decode of the serialized
+			verify(sipm2);
+		}
 	};
 } // namespace test_suite

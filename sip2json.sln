@@ -32,6 +32,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		azure-pipelines.yml = azure-pipelines.yml
 		LICENSE = LICENSE
 		README.md = README.md
+		sip2json.runsettings = sip2json.runsettings
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "edial_validation_tests", "test\edialvalidationsuite\edialvalidationsuite.vcxproj", "{21BF02FD-4390-483A-9904-EB09D033F182}"
@@ -42,6 +43,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{6C56
 	ProjectSection(SolutionItems) = preProject
 		test\samples\Mixed_Stream_1.sip = test\samples\Mixed_Stream_1.sip
 		test\samples\NOTIFY_CallEnd.sip = test\samples\NOTIFY_CallEnd.sip
+		test\samples\NOTIFY_connectorleg_1.sip = test\samples\NOTIFY_connectorleg_1.sip
+		test\samples\NOTIFY_EmptyHeaderKey_1.sip = test\samples\NOTIFY_EmptyHeaderKey_1.sip
 		test\samples\NOTIFY_LegAdd.sip = test\samples\NOTIFY_LegAdd.sip
 		test\samples\NOTIFY_LegDrop.sip = test\samples\NOTIFY_LegDrop.sip
 		test\samples\NOTIFY_SDP_multi_1.sip = test\samples\NOTIFY_SDP_multi_1.sip
@@ -52,6 +55,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{6C56
 		test\samples\Test_incomplete_buffer_for_content.sip = test\samples\Test_incomplete_buffer_for_content.sip
 		test\samples\Test_incomplete_buffer_for_header.sip = test\samples\Test_incomplete_buffer_for_header.sip
 		test\samples\Test_incomplete_buffer_for_parse.sip = test\samples\Test_incomplete_buffer_for_parse.sip
+		test\samples\Test_invalid_document.sip = test\samples\Test_invalid_document.sip
 		test\samples\Test_invalid_startline.sip = test\samples\Test_invalid_startline.sip
 		test\samples\Test_unsupported_contenttype.sip = test\samples\Test_unsupported_contenttype.sip
 		test\samples\Trying_INVITE_1.sip = test\samples\Trying_INVITE_1.sip

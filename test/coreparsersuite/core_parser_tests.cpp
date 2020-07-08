@@ -186,8 +186,8 @@ namespace test_suite
 			std::cerr << strsipm << std::endl;
 			Assert::IsTrue(strsipm.length() != 0);
 
-			auto bufferStart= strsipm.begin();
-			auto sipm2 = sip2json::parseFromBuffer(bufferStart, strsipm.end());
+			auto bufferStart = strsipm.begin();
+			auto sipm2		 = sip2json::parseFromBuffer(bufferStart, strsipm.end());
 			Assert::IsTrue(!sipm2.empty());
 			Assert::AreEqual(registerMessage.getContentLength(), sipm2.getContentLength());
 			Assert::AreEqual(registerMessage.getCallID(), sipm2.getCallID());

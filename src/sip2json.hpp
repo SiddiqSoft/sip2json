@@ -354,7 +354,30 @@ namespace siddiqsoftware
 								// This is the form where a=attribute:value
 								nlohmann::json::json_pointer pkey(
 										fmt::format("/mb/sdp/{}/{}/{}", blockIndex, key, alineMatcher[1].str()));
-								sipm[pkey] = alineMatcher.length() > 0 ? alineMatcher[2].str() : nullptr;
+
+								// We may get multiple items for the same "key" such as `a=rtpmap:x` and `a=rtpmap:y`
+								// In this case we should start an array
+								if (sipm.contains(pkey) && !sipm[pkey].is_array())
+								{
+									auto						 previousValue = sipm[pkey];
+									nlohmann::json::json_pointer pkeyUpOneLevel(fmt::format("/mb/sdp/{}/{}", blockIndex, key));
+									if (sipm[pkeyUpOneLevel].erase(alineMatcher[1].str()) == 1)
+									{
+										// Push the first item
+										sipm[pkey].push_back(previousValue);
+										// Push the current item
+										sipm[pkey].push_back(alineMatcher[2].str());
+									}
+									else
+									{
+										sip2json_throw<unsupported_contenttype_error>(
+												"{}:Failed removing {} from sipmessage.", __func__, std::string(pkey));
+									}
+								}
+								else if (sipm[pkey].is_array())
+									sipm[pkey].push_back(alineMatcher[2].str());
+								else
+									sipm[pkey] = alineMatcher.length() > 0 ? alineMatcher[2].str() : nullptr;
 							}
 							else if (!value.empty())
 							{
@@ -410,9 +433,13 @@ namespace siddiqsoftware
 									sipm[pkey] = nlohmann::json {
 											{"name", ilineMatcher[1]}, {"dn", ilineMatcher[2]}, {"type", ilineMatcher[3]}};
 								}
+								else if (!value.empty())
+								{
+									sipm[pkey] = value;
+								}
 								else
 								{
-									sipm[pkey] = !value.empty() ? value : nullptr;
+									sipm[pkey] = nullptr;
 								}
 							}
 							else if (key.compare("t") == 0)
@@ -599,7 +626,7 @@ namespace siddiqsoftware
 
 			return sipm;
 		}
-		
+
 
 		/// @brief Serializes the sipmessage document
 		/// @param sipm Source sipmessage
@@ -653,7 +680,9 @@ namespace siddiqsoftware
 					if (contentType.empty() && (key.compare(HF_CONTENT_TYPE) == 0) && val.is_string()) contentType = val;
 
 					if (val.is_null())
-					{ /* do nothing; skip field. */
+					{
+						// For null entries, put a blank entry. This is the same as our decode
+						buffer += fmt::format("{}: \r\n", key);
 					}
 					else if (val.is_number_unsigned())
 					{
@@ -762,7 +791,14 @@ namespace siddiqsoftware
 					for (auto& kv : item.items())
 					{
 						auto v = kv.value();
-						if (v.is_string())
+						if (v.is_array())
+						{
+							for (auto& i : v.items())
+							{
+								ret += fmt::format("a={}:{}\r\n", kv.key(), i.value());
+							}
+						}
+						else if (v.is_string())
 							ret += fmt::format("a={}:{}\r\n", kv.key(), v);
 						else if (v.is_boolean() && v == "true")
 							ret += fmt::format("a={}\r\n", kv.key());
