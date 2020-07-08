@@ -73,6 +73,7 @@ steps:
       !**\obj\**
       !**\Debug\**
     searchFolder: '$(System.DefaultWorkingDirectory)'
+    runSettingsFile: 'sip2json.runsettings'
     runInParallel: true
     codeCoverageEnabled: true
     platform: 'x64'
