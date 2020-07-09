@@ -9,7 +9,7 @@
 
     <!-- [x86] | x64  
       - You can also change it from menu Test, Test Settings, Default Processor Architecture -->
-    <TargetPlatform>x86</TargetPlatform>
+    <TargetPlatform>x64</TargetPlatform>
 
     <!-- Framework35 | [Framework40] | Framework45 -->
     <TargetFrameworkVersion>Framework40</TargetFrameworkVersion>
@@ -27,7 +27,7 @@
     <DisableParallelization>false</DisableParallelization>
     <!-- TestSessionTimeout was introduced in Visual Studio 2017 version 15.5 -->
     <!-- Specify timeout in milliseconds. A valid value should be greater than 0 -->
-    <TestSessionTimeout>10000</TestSessionTimeout>
+    <TestSessionTimeout>600000</TestSessionTimeout>
   </RunConfiguration>
   <DataCollectionRunSettings>
     <DataCollectors>
@@ -64,6 +64,8 @@
                 <ModulePath>.*CPPUnitTestFramework.*</ModulePath>
                 <ModulePath>.*TestAdapter.*</ModulePath>
                 <ModulePath>.*nunit.*</ModulePath>
+                <!--<ModulePath>.*json.*</ModulePath>-->
+                <ModulePath>.*fmt.*</ModulePath>
               </Exclude>
             </ModulePaths>
 
@@ -71,10 +73,12 @@
             <!-- (Use "\." to delimit namespaces in C# or Visual Basic, "::" in C++.)  -->
             <Functions>
               <Exclude>
-                <Function>^nlohmann::.*</Function>
-                <Function>^fmt::.*</Function>
-                <Function>^std::.*</Function>
-                <Function>^ATL::.*</Function>
+                <Function>nlohmann::.*</Function>
+                <Function>fmt::.*</Function>
+                <Function>std::.*</Function>
+                <Function>ATL::.*</Function>
+                <Function>__crt_.*</Function>
+                <Function>test_suite::.*</Function>
                 <Function>.*::__GetTestMethodInfo.*</Function>
                 <Function>^Microsoft::VisualStudio::CppCodeCoverageFramework::.*</Function>
                 <Function>^Microsoft::VisualStudio::CppUnitTestFramework::.*</Function>
@@ -99,11 +103,16 @@
             <!-- Match the path of the source files in which each method is defined: -->
             <Sources>
               <Exclude>
+                <Source>.*\\VC\\Tools\\MSVC\\.*</Source>
+                <Source>.*\\Windows Kits\\.*</Source>
+                <Source>.*\\packages\\.*</Source>
                 <Source>.*\\atlmfc\\.*</Source>
                 <Source>.*\\vctools\\.*</Source>
                 <Source>.*\\public\\sdk\\.*</Source>
                 <Source>.*\\microsoft sdks\\.*</Source>
-                <Source>.*\\vc\\include\\.*</Source>
+                <Source>.*\\vc\\tools\\.*</Source>
+                <Source>.*\\ucrt\\.*</Source>
+                <Source>.*\\crt\\.*</Source>
               </Exclude>
             </Sources>
 
