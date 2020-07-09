@@ -522,10 +522,6 @@ namespace siddiqsoftware
 										"{}:Content-Type {} not supported", __func__, sipm.getContentType());
 							}
 						}
-						else
-						{
-							sip2json_throw<incomplete_buffer_for_header_error>("{}:headers not found", __func__);
-						}
 					}
 				}
 				else
@@ -557,7 +553,7 @@ namespace siddiqsoftware
 													  __func__,
 													  sipm.getMethod());
 			// Assert: Header must exist
-			sip2json_throw_if<invalid_document_error>(!sipm.contains("/mh"_json_pointer), "{}:sipm does not contain mh.", __func__);
+			sip2json_throw_if<invalid_document_error>(!sipm.contains("mh"), "{}:sipm does not contain mh.", __func__);
 
 			if (sipm.isMessageTypeRequest())
 			{
@@ -679,7 +675,9 @@ namespace siddiqsoftware
 				}
 				else
 				{
-					sip2json_throw<invalid_document_error>("{}:sipm does not have mb.", __func__);
+					// This should not be an error; there are live SIP messages where the client sets the Content-Type
+					// but also sets the Content-Length to `0` so we should avoid encoding anything.
+					//sip2json_throw<invalid_document_error>("{}:sipm does not have mb.", __func__);
 				}
 			}
 
