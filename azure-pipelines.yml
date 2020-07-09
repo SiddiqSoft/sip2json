@@ -50,7 +50,7 @@ steps:
     configuration: debug
     maximumCpuCount: true
     msbuildArchitecture: x64
-#  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
 - task: VSBuild@1
   displayName: 'Build solution sip2json.sln RELEASE'
@@ -81,10 +81,7 @@ steps:
     diagnosticsEnabled: true
     rerunFailedTests: true
   continueOnError: true
-- task: reportgenerator@4
-  inputs:
-    reports: 'coverage.xml'
-    targetdir: 'coveragereport'
+
 - task: PublishTestResults@2
   displayName: 'Publish Test Results **/TEST-*.xml'
   inputs:
