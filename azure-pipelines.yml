@@ -81,7 +81,10 @@ steps:
     diagnosticsEnabled: true
     rerunFailedTests: true
   continueOnError: true
-
+- task: reportgenerator@4
+  inputs:
+    reports: 'coverage.xml'
+    targetdir: 'coveragereport'
 - task: PublishTestResults@2
   displayName: 'Publish Test Results **/TEST-*.xml'
   inputs:
