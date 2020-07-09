@@ -90,6 +90,15 @@ steps:
     buildConfiguration: release
   continueOnError: true
 
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: |
+      Write-Host "Current directory"
+      get-childitem \.
+      get-childitem TestResults\*
+
+
 - task: reportgenerator@4
   inputs:
     reports: 'coverage.xml'
