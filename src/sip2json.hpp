@@ -400,9 +400,9 @@ namespace siddiqsoftware
 		/// @param errorCallback Optional callback to handle the error on the parse.
 		/// @return If parseCallback is provided then the return vector is empty otherwise vector of sipmessage decoded within the stream.
 		static std::vector<sipmessage>
-		parseAllFromBuffer(std::string::iterator&							   bufferStart,
-						   const std::string::iterator&						   bufferEnd,
-						   std::optional<std::function<void(sipmessage&)>>	   parseCallback = {},
+		parseAllFromBuffer(std::string::iterator&									 bufferStart,
+						   const std::string::iterator&								 bufferEnd,
+						   std::optional<std::function<void(sipmessage&)>>			 parseCallback = {},
 						   std::optional<std::function<void(const sip2jsonErrors&)>> errorCallback = {}) noexcept
 		{
 			std::vector<sipmessage> msgs;
@@ -411,25 +411,19 @@ namespace siddiqsoftware
 			{
 				try
 				{
-					// It is critical to ensure that we break if the buffer is too small or has remains of partial frames ahead.
-					if (size_t diff = bufferEnd - bufferStart; diff > SIP_SAMPLE_MINIMAL_MESSAGE.length())
+					auto sipm = parseFromBuffer(bufferStart, bufferEnd);
+					if (!sipm.empty())
 					{
-						auto sipm = parseFromBuffer(bufferStart, bufferEnd);
-						if (!sipm.empty())
-						{
-							// If the callback is provided, then we invoke the callback. Nothing is returned to caller.
-							if (parseCallback.has_value())
-								parseCallback.value()(sipm);
-							else // otherwise we push to the vector to return to caller
-								msgs.emplace_back(sipm);
-						}
-						else
-							break;
+						// If the callback is provided, then we invoke the callback. Nothing is returned to caller.
+						if (parseCallback.has_value())
+							parseCallback.value()(sipm);
+						else // otherwise we push to the vector to return to caller
+							msgs.emplace_back(sipm);
 					}
 					else
 					{
-						// We do not have sufficient buffer to ensure a valid sipmessage; break out.
-						if (errorCallback.has_value()) errorCallback.value()(sip2jsonErrors::incomplete_buffer_for_parse);
+						// Unknown error; invoke the callback
+						if (errorCallback.has_value()) errorCallback.value()(sip2jsonErrors::unknown);
 						break;
 					}
 				}

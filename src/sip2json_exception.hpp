@@ -140,6 +140,7 @@ namespace siddiqsoftware
 		}
 	};
 
+
 	/// @brief Create and throw a sip2json_error object.
 	/// @tparam ...Args Automatically deduced template argument
 	/// @param ec Error Code (type of error to be created)
