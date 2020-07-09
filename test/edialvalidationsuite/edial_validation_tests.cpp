@@ -475,6 +475,23 @@ namespace test_suite
 				Assert::AreEqual<bool>(true, sipm.value("/mh/X-subscribe-to-leg-events"_json_pointer, false));
 			});
 		}
+
+
+		TEST_METHOD(REGISTER_1_invalidMessageType)
+		{
+			auto buffer		 = loadSampleFile("REGISTER_1"); // NOLINT
+			auto bufferStart = buffer.begin();
+			auto msgs		 = sip2json::parseAllFromBuffer(bufferStart, buffer.end());
+			auto sipm		 = msgs[0];
+
+
+			std::cerr << "Decoded SIPMessage document" << sipm.dump(2);
+
+			// Deliberately poison the message type
+			sipm["type"] = "invalid-message-type";
+			// We should get the desired exception.
+			Assert::ExpectException<invalid_document_error>([&]() { sip2json::serialize(sipm); });
+		}
 	};
 
 

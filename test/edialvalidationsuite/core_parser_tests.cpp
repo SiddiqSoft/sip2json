@@ -484,6 +484,10 @@ namespace test_suite
 
 			sipm["mh"]["Content-Type"] = "test/test2";
 			Assert::AreEqual<std::string>("test/test2", sipm.getContentType());
+
+			sipm["mh"].erase("Content-Type");
+			sipm["mh"].erase("Content-type");
+			Assert::IsTrue(sipm.getContentType().empty());
 		}
 
 	}; // SIPHelpers
@@ -561,6 +565,33 @@ namespace test_suite
 				passTest = true;
 			});
 			Assert::IsTrue(passTest);
+		}
+
+
+		// NOLINTNEXTLINE
+		TEST_METHOD(Test_unknown_exception)
+		{
+			bool pass1Test = false;
+			bool pass2Test = false;
+			auto buffer	   = loadSampleFile("REGISTER_1"); // NOLINT
+			auto bs		   = buffer.begin();
+
+			// Deliberately throw an exception in the parse-callback so we can ensure that the error-callback is invoked.
+			sip2json::parseAllFromBuffer(
+					bs,
+					buffer.end(),
+					[&](sipmessage& sipm) {
+						// We should parse valid message and get our callback.
+						pass1Test = true;
+						// Throw so we can get the error-callback triggered.
+						throw 666;
+					},
+					[&](const sip2jsonErrors& errCode) {
+						if (pass1Test) pass2Test = (errCode == sip2jsonErrors::unknown);
+					});
+
+			Assert::IsTrue(pass1Test, L"First stage callback not invoked.");
+			Assert::IsTrue(pass2Test, L"Error callback not invoked.");
 		}
 	};
 } // namespace test_suite
