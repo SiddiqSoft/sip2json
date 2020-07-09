@@ -95,8 +95,8 @@ steps:
     targetType: 'inline'
     script: |
       Write-Host "Current directory"
-      get-childitem \.
-      get-childitem "$(System.DefaultWorkingDirectory)TestResults\*"
+      get-childitem "$(System.DefaultWorkingDirectory)"
+      get-childitem "$(System.DefaultWorkingDirectory)\TestResults\*"
 
 
 - task: reportgenerator@4
