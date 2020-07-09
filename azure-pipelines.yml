@@ -96,7 +96,7 @@ steps:
     script: |
       Write-Host "Current directory"
       get-childitem \.
-      get-childitem TestResults\*
+      get-childitem "$(System.DefaultWorkingDirectory)TestResults\*"
 
 
 - task: reportgenerator@4
