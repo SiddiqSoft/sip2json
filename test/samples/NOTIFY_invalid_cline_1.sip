@@ -40,14 +40,14 @@ X-subject: Matt Gabbard's Meeting Room
 X-Call-Instance-ID: MTE5MDM1MTIxMjMwNTY3aWwtZWQtbWFyYS0wMToxNTkzNjM3MTcwOjE1Njc0Ng==
 X-Route-ID: 2
 X-Call-Start-Time: 1593637170.156760
-Content-Length: 1332
+Content-Length: 1330
 Content-type: application/sdp
 
 v=0
 o=matthew.gabbard@stblaw.com 3598380125 241 IN IP4 il-ed-mara-01.ring2.com
 s=Matt Gabbard's Meeting Room
 i="Matt%20Gabbard%20-%20" (+12124553521) CallByPhone-URL
-c=T-N RFC/2543 +12124553521(hi)
+c=T-NRFC/2543+12124553521(hi)
 t=3802625984 3802626770
 m=audio 1 voice -
 a=status:(4) dropped

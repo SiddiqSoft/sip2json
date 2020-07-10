@@ -28,14 +28,15 @@ We skewed towards the following tradeoffs:
 
 ### Features
 - Header only!
-- Everything is stored in a json document
-  - Request Line
-  - Headers
-  - Content
+- Everything is stored in as json document in a simple [json container](#container)
+  - [Start Line](#sip-start-line)
+  - [Headers](#sip-headers)
+  - [Content](#sip-body)
 - Serialize to SIP message
 - Deserialize from SIP message stream buffer to json document(s).
 - Dependencies
   - The primary datastore is the [json](https://github.com/nlohmann/json) data structure
+  - The fmtlib (for `C++17` this is a nuget package whereas with `C++20` this would be native)
   - C++17
 
 ### Out of scope
@@ -46,7 +47,7 @@ This library is intendended to be used as a basis for you application and does n
 - Managing CSeq
 - Thread safety is your responsibility
   - The functions do not use shared data, however, any paramter provided must be protected/available for the duration of the call.
-- Async/callbacks are not the design goal of this library: no IO is performed and thus no likelyhood of the calls being suspended. Trying to force callbacks here in this simple library would likely create unnecessary overhead.
+- No statemachine is provided and the `sipmessage` class as well as the `sip2json` class are stateless.
 
 ## Usage
 

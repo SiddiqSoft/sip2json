@@ -23,7 +23,7 @@ using namespace siddiqsoftware;
 
 namespace test_suite
 {
-	static std::string loadSampleFile(const std::string_view& fileName)
+	static std::string loadSampleFile(const std::string& fileName)
 	{
 		std::stringstream testFile;
 		std::ifstream	  sampleInputFile(fmt::format("../test/samples/{}.sip", fileName), std::ios::binary);
@@ -38,7 +38,7 @@ namespace test_suite
 	}
 
 
-	static void writeSampleFile(const std::string_view& fileName, std::string& buffer)
+	static void writeSampleFile(const std::string& fileName, const std::string& buffer)
 	{
 		std::ofstream outputFile(fmt::format("../test/samples/{}.sip.out", fileName), std::ios::binary);
 
@@ -188,9 +188,9 @@ namespace test_suite
 			};
 
 			countOfMessage = 1;
-			roundTripVerify(__func__, std::string {}, msgs[0], verify);
+			roundTripVerify(__func__, std::string(""), msgs[0], verify);   
 			countOfMessage = 2;
-			roundTripVerify(__func__, std::string {}, msgs[1], verify);
+			roundTripVerify(__func__, std::string(""), msgs[1], verify);
 
 			Assert::AreEqual<size_t>(2, countOfMessage);
 		}
@@ -520,6 +520,7 @@ namespace test_suite
 
 			std::cerr << "Decoded SIPMessage document" << sipm.dump(2);
 
+			// NOLINTNEXTLINE
 			roundTripVerify(__func__, buffer, sipm, [&](sipmessage& sipm) {
 				// Start checking if we decoded properly..
 				// Start-Line (response): SIP/2.0 200 OK
@@ -569,14 +570,13 @@ namespace test_suite
 				auto sipm = sip2json::parseFromBuffer(bufferStart, buffer.end());
 
 				// c=T-N RFC/2543 +12124553521(hi)
-				Assert::AreEqual<std::string>("T-N", sipm.value("/b/sdp/0/c/type"_json_pointer, ""));
-				Assert::AreEqual<std::string>("RFC/2543", sipm.value("/b/sdp/0/c/subtype"_json_pointer, ""));
-				Assert::AreEqual<std::string>("+12124553521(hi)", sipm.value("/b/sdp/0/c/dn"_json_pointer, ""));
+				Assert::AreEqual<std::string>("T-NRFC/2543+12124553521(hi)", sipm.value("/b/sdp/0/c"_json_pointer, ""));
 				Logger::WriteMessage(sipm.dump(4).c_str());
 			}
 			catch (std::runtime_error& e)
 			{
 				Logger::WriteMessage(e.what());
+				Assert::Fail(L"Failed on account of exception.");
 			}
 		}
 	};
@@ -751,7 +751,7 @@ namespace test_suite
 
 			Assert::AreEqual<size_t>(2, countOfMessage);
 			debugBuffer += "]";
-			writeSampleFile(__func__, debugBuffer);
+			writeSampleFile(__func__, debugBuffer); // NOLINT
 		}
 
 		// NOLINTNEXTLINE
@@ -1582,7 +1582,7 @@ namespace test_suite
 			}
 
 			debugBuffer += "]";
-			writeSampleFile(__func__, debugBuffer);
+			writeSampleFile(__func__, debugBuffer); // NOLINT
 
 			Logger::WriteMessage(fmt::format("{} - Found: {} messages\n", __func__, msgs.size()).c_str());
 			Assert::AreEqual<size_t>(matchTarget.size() - 1, msgs.size(), L"Expected 459 messages parsed.");
@@ -1702,6 +1702,7 @@ namespace test_suite
 	};
 
 
+	// NOLINTNEXTLINE
 	TEST_CLASS(parseAllFromBuffer)
 	{
 	public:
