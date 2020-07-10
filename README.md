@@ -4,7 +4,7 @@
 
 [![Build Status](https://dev.azure.com/loopup/sys4/_apis/build/status/siddiqsoftware.sip2json?branchName=feature%2Fbootstrap)](https://dev.azure.com/loopup/sys4/_build/latest?definitionId=118&branchName=feature%2Fbootstrap)
 
-<version>0.2.0</version>
+<version>1.0.0</version>
 
 
 [[TOC]]
