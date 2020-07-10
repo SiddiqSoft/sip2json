@@ -6,6 +6,10 @@
 
 <version>0.2.0</version>
 
+
+[[TOC]]
+
+
 ## Design goals
 
 A SIP parser for Modern C++. Here, we target `C++17` with an eye towards `C++20`.
@@ -94,17 +98,101 @@ v1.0.0   | Basic decoder and decoder with support for CloudEvent envelope.
 - Code Coverage is enabled (only if you're using Visual Studio Enterprise).
 - Azure pipelines CI reports on the test results and the coverage results.
 - There are to date `64` tests covering parsing and serialization.
-- Use live SIP data found under the `test\samples` folder.
-- Clang-Tidy is used as a linter to highlight issues with best-practices and static code analysis.
+- Use live SIP data found under the [`test\samples`](test/samples) folder.
+- [Clang-Tidy](.clang-tidy) is used as a linter to highlight issues with best-practices and static code analysis.
+- Consistent formatting using [Clang Format](.clang-format).
+
 
 ## References
 
 ### Json Schema
 
+#### Container
+
 The document contains single character entries: `z`, `s`, `h`, `b`.
+
+```json
+{
+    "z": 0,
+    "s": {},
+    "h": {},
+    "b": null
+}
+```
 
 This approach acknowledges the fact that SIP messages are generated at a very high rate and processing size of data matters.
 Keeping the data compact and mapping the raw SIP and SDP means less intermediate processing is involved and keeps our container usage to a single model (map).
+
+
+Field | Type | Description
+-----:|:-----|--------------------
+**`s`**   | object | Represents the [SIP start line](#sip-start-line).
+**`z`**   | number | Number of ticks since 1900.
+**`h`**   | object | Contains the [SIP headers](#sip-headers).
+`b`   | object | Contains the [SIP body](#sip-body). Optional.<br/>Currently, only the `application/sdp` body encode/decode is supported.<br/>If the `Content-Length` is `0`, despite the value of the `Content-Type` this element is skipped.
+
+#### SIP Start Line
+
+Field | Type | Description
+-----:|:-----|--------------------
+**`type`**   | string | One of `request` or `response`.
+`method`   | string | Present for `request` type. Represents the SIP method.
+`uri`   | string | Present when the type is `request`, this represents the SIP URI element of the SIP request line.
+`status` | string | Present when the type is `response` and represents the status code of the SIP response line.
+`reason` | string | Present when the type is `response` and represents the response phrase of the SIP response line.
+**`version`**   | string | Always `SIP/2.0`.
+
+#### SIP Headers
+
+The object contains key-value elements found in the SIP header section.
+
+- SIP headers with boolean value types are stored as JSON boolean.
+- Default storage type is string
+- The header field `Content-Length` is encoded as JSON number.
+- When more than one item with the same header name is found, it is stored in an array.
+   ```json
+    "h": { "Authorization": "",
+           "Via": [ "via-1",
+                    "via-2",
+                    "via-3"
+           ],
+           "Content-Length": 0 }
+   ```
+- For header elements that are "empty", the JSON value `""` is stored against that header key instead of `null`.
+
+#### SIP Body
+
+The object contains key-value elements found in the body section.
+
+Field | Type | Description
+------|------|-------------
+**`v`** | integer | Contant; Set to `0`. Do not modify! This tag is used to delimit a session descriptor block.
+**`o`** | string |
+**`s`** | string | This can be set to `null` if the item is empty in the SIP message.
+`i` | string | Optional.
+`u` | string | Optional.
+`e` | string | Optional.
+`p` | string | Optional.
+`c` | string | Optional.
+`b` | string | Optional.
+**`t`** | Array | Timing for this block. Array of integer values representing the start and end time of the leg.
+`z` | string | Optional.
+`k` | string | Optional. Encryption key.
+**`m`** | string | Media descriptors
+**`a`** | array | Media-level a-line items. **Session-level a-line items are not supported.**
+
+- Elements with boolean value types are stored as JSON boolean.
+- Default storage type is string
+- When more than one item with the same name is found, it is stored in an array. `"a":{"rtpmap":""}` or `"a":{"rtpmap":["",""]}`.
+   ```json
+    "a": { "remote": "",
+           "rtpmap": [ "",
+                       ""],
+           "new_change": true }
+   ```
+- Attribute keys that are `a=new_change` are stored as `"a":{"new_change":true}`
+
+
 
 #### Request Document
 ```json
@@ -159,77 +247,6 @@ Keeping the data compact and mapping the raw SIP and SDP means less intermediate
     "h": {}
 }
 ```
-
-##### Container
-
-Field | Type | Description
------:|:-----|--------------------
-**`s`**   | object | Represents the [SIP start line](#sip-start-line).
-**`z`**   | number | Number of ticks since 1900.
-**`h`**   | object | Contains the [SIP headers](#sip-headers).
-`b`   | object | Contains the [SIP body](#sip-body). Optional.<br/>Currently, only the `application/sdp` body encode/decode is supported.<br/>If the `Content-Length` is `0`, despite the value of the `Content-Type` this element is skipped.
-
-##### SIP Start Line
-
-Field | Type | Description
------:|:-----|--------------------
-**`type`**   | string | One of `request` or `response`.
-`method`   | string | Present for `request` type. Represents the SIP method.
-`uri`   | string | Present when the type is `request`, this represents the SIP URI element of the SIP request line.
-`status` | string | Present when the type is `response` and represents the status code of the SIP response line.
-`reason` | string | Present when the type is `response` and represents the response phrase of the SIP response line.
-**`version`**   | string | Always `SIP/2.0`.
-
-##### SIP Headers
-
-The object contains key-value elements found in the SIP header section.
-
-- SIP headers with boolean value types are stored as JSON boolean.
-- Default storage type is string
-- The header field `Content-Length` is encoded as JSON number.
-- When more than one item with the same header name is found, it is stored in an array.
-   ```json
-    "h": { "Authorization": "",
-           "Via": [ "via-1",
-                    "via-2",
-                    "via-3"
-           ],
-           "Content-Length": 0 }
-   ```
-- For header elements that are "empty", the JSON value `""` is stored against that header key instead of `null`.
-
-##### SIP Body
-
-The object contains key-value elements found in the body section.
-
-Field | Type | Description
-------|------|-------------
-**`v`** | integer | Contant; Set to `0`. Do not modify! This tag is used to delimit a session descriptor block.
-**`o`** | string |
-**`s`** | string | This can be set to `null` if the item is empty in the SIP message.
-`i` | string | Optional.
-`u` | string | Optional.
-`e` | string | Optional.
-`p` | string | Optional.
-`c` | string | Optional.
-`b` | string | Optional.
-**`t`** | Array | Timing for this block. Array of integer values representing the start and end time of the leg.
-`z` | string | Optional.
-`k` | string | Optional. Encryption key.
-**`m`** | string | Media descriptors
-**`a`** | array | Media-level a-line items. **Session-level a-line items are not supported.**
-
-- Elements with boolean value types are stored as JSON boolean.
-- Default storage type is string
-- When more than one item with the same name is found, it is stored in an array. `"a":{"rtpmap":""}` or `"a":{"rtpmap":["",""]}`.
-   ```json
-    "a": { "remote": "",
-           "rtpmap": [ "",
-                       ""],
-           "new_change": true }
-   ```
-- Attribute keys that are `a=new_change` are stored as `"a":{"new_change":true}`
-
 
 #### Request Sample
 The source for the following is this [sample SIP](test/samples/NOTIFY_generic_1.sip).
@@ -348,12 +365,6 @@ The source for the following is this [sample SIP](test/samples/NOTIFY_generic_1.
     }
 }
 ```
-
-
-## Tests
-
-- Clang-Tidy is used. VSTest throws warnings so the tag `//NOLINTNEXTLINE` per each `TEST_CLASS(xx)` and `TEST_METHOD(ddd)` instance.
-- VSTest is used instead of googletest. The later is cross-platform but lacks the level of integration and ability to log to Visual Studio intermediate output.
 
 ### External resources
 - [JSON for Modern C++](https://nlohmann.github.io/json/)
