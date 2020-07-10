@@ -3,7 +3,8 @@
 <small>Copyright &copy;2020 Abdelkareem Siddiq. All rights reserved.</small>
 
 [![Build Status](https://dev.azure.com/loopup/sys4/_apis/build/status/siddiqsoftware.sip2json?branchName=feature%2Fbootstrap)](https://dev.azure.com/loopup/sys4/_build/latest?definitionId=118&branchName=feature%2Fbootstrap)
-Build Version 0.2.0
+
+<version>0.2.0</version>
 
 ## Design goals
 
@@ -55,78 +56,255 @@ The library is provided as a nuget package but can also be used as a header-only
 
  Release | Notes
 ---------|---------
-v1.0.0   | Basic decoder for NOTIFY and encoder for REGISTER and SUBSCRIBE.
+v1.0.0   | Basic decoder and decoder with support for CloudEvent envelope.
 
 ## References
 
 ### Json Schema
 
-#### Request Sample
+The document contains single character entries: `z`, `s`, `h`, `b`.
+
+This approach acknowledges the fact that SIP messages are generated at a very high rate and processing size of data matters.
+Keeping the data compact and mapping the raw SIP and SDP means less intermediate processing is involved and keeps our container usage to a single model (map).
+
+#### Request Document
 ```json
 {
-  "type":"sip2json.request",
-  "version":"0.1.0",
-  "rl":{"method":"INVITE", "uri":"", "version":"SIP/2.0"},
-  "mh":[  {"Call-ID":null},
-          {"Content-Type":"application/sdp"}
-  ],
-  "mb":{  "sdp":[ { "v":0,
-                    "o":"",
-                    "s":"",
-                    "i":null,
-                    "u":null,
-                    "e":[],
-                    "p":[],
-                    "c":null,
-                    "b":[],
-                    "t":[],
-                    "z":null,
-                    "k":null,
-                    "sa":[],
-                    "m":[],
-                    "ma":[]
-                  }
-          ]
-  }
+    "z": 900000000,
+    "s": {
+        "type": "request",
+        "method": "INVITE",
+        "uri": "sip:hello@world.com",
+        "version": "SIP/.20"
+    },
+    "h": {},
+    "b": {
+        "sdp": [{
+            "v": 0,
+            "c": {
+                "type": "",
+                "subtype": "",
+                "dn": ""
+            },
+            "i": {},
+            "o": {
+                "user": "",
+                "t1": "",
+                "t2": "",
+                "type": "",
+                "subtype": "",
+                "host": ""
+            },
+            "m": "",
+            "t": [0, 0],
+            "a": {}
+        }]
+    }
 }
 ```
 
-**NOTE**
+#### Response Document
+```json
+{
+    "z": 900000000,
+    "s": {
+        "type": "response",
+        "status": 100,
+        "reason": "Trying",
+        "version": "SIP/.20"
+    },
+    "h": {}
+}
+```
 
-> The fields are listed as json pointer key names.
+##### Container
 
-Field | Type   | Description
-------|--------|--------------
-`/type` | string | One of the following: `sip2json.request` or `sip2json.response`
-`/version` | string | `0.1.0`
-`/rl/method` | string | Request Line: SIP Method (currently only one of the following: `REGISTER`, `SUBSCRIBE`, `NOTIFY` is supported.)
-`/rl/uri` | string | Request Line: Request URI.
-`/rl/version` | string | Request Line: Always `SIP/2.0` for this implementation.
-`/sl/status` | unsigned int | Status Line: unsigned integer representing one of the [error states](https://en.wikipedia.org/wiki/List_of_SIP_response_codes).
-`/sl/reason` | string | Reason phrase (see status)
-`/sl/version` | string | Status Line: Always `SIP/2.0` for this implementation.
-`/mh/*` | array | An array of key-value pairs representing the SIP message headers.
-`/mb/*` | object | Object containing the content. As of this implementation, we only support SDP message blocks
+Field | Type | Description
+-----:|:-----|--------------------
+**`s`**   | object | Represents the [SIP start line](#sip-start-line).
+**`z`**   | number | Number of ticks since 1900.
+**`h`**   | object | Contains the [SIP headers](#sip-headers).
+`b`   | object | Contains the [SIP body](#sip-body). Optional.<br/>Currently, only the `application/sdp` body encode/decode is supported.<br/>If the `Content-Length` is `0`, despite the value of the `Content-Type` this element is skipped.
 
-> The sdp is an array of objects.
+##### SIP Start Line
 
-`{attribute}` | Type | Description
+Field | Type | Description
+-----:|:-----|--------------------
+**`type`**   | string | One of `request` or `response`.
+`method`   | string | Present for `request` type. Represents the SIP method.
+`uri`   | string | Present when the type is `request`, this represents the SIP URI element of the SIP request line.
+`status` | string | Present when the type is `response` and represents the status code of the SIP response line.
+`reason` | string | Present when the type is `response` and represents the response phrase of the SIP response line.
+**`version`**   | string | Always `SIP/2.0`.
+
+##### SIP Headers
+
+The object contains key-value elements found in the SIP header section.
+
+- SIP headers with boolean value types are stored as JSON boolean.
+- Default storage type is string
+- The header field `Content-Length` is encoded as JSON number.
+- When more than one item with the same header name is found, it is stored in an array.
+   ```json
+    "h": { "Authorization": "",
+           "Via": [ "via-1",
+                    "via-2",
+                    "via-3"
+           ],
+           "Content-Length": 0 }
+   ```
+- For header elements that are "empty", the JSON value `null` is stored against that header key.
+
+##### SIP Body
+
+The object contains key-value elements found in the body section.
+
+Field | Type | Description
 ------|------|-------------
-`/v` | integer | Contant; Set to `0`. Do not modify! This tag is used to delimit a session descriptor block.
-`/o` | string |
-`/s` | string |
-`/i` | string | Optional.
-`/u` | string | Optional.
-`/e` | string | Optional.
-`/p` | string | Optional.
-`/c` | string | Optional.
-`/b` | string | Optional.
-`/t` | Array | Timing for this block. Array of integer values `/mb/sdp[x]/t[0]` -> start `/mb/sdp[x]/t[1]` -> end.
-`/z` | string | Optional.
-`/k` | string | Optional. Encryption key.
-`/sa` | array | Session-level a-line items; NOTE: This is not supported.
-`/m` | string | Media descriptors
-`/a` | array | Media-level a-line items
+**`v`** | integer | Contant; Set to `0`. Do not modify! This tag is used to delimit a session descriptor block.
+**`o`** | string |
+**`s`** | string | This can be set to `null` if the item is empty in the SIP message.
+`i` | string | Optional.
+`u` | string | Optional.
+`e` | string | Optional.
+`p` | string | Optional.
+`c` | string | Optional.
+`b` | string | Optional.
+**`t`** | Array | Timing for this block. Array of integer values representing the start and end time of the leg.
+`z` | string | Optional.
+`k` | string | Optional. Encryption key.
+**`m`** | string | Media descriptors
+**`a`** | array | Media-level a-line items. **Session-level a-line items are not supported.**
+
+- Elements with boolean value types are stored as JSON boolean.
+- Default storage type is string
+- When more than one item with the same name is found, it is stored in an array. `"a":{"rtpmap":""}` or `"a":{"rtpmap":["",""]}`.
+   ```json
+    "a": { "remote": "",
+           "rtpmap": [ "",
+                       ""],
+           "new_change": true }
+   ```
+- Attribute keys that are `a=new_change` are stored as `"a":{"new_change":true}`
+
+
+#### Request Sample
+The source for the following is this [sample SIP](test/samples/NOTIFY_generic_1.sip).
+
+```json
+{
+    "b": {
+        "sdp": [
+            {
+                "a": {
+                    "access_code": "0000000",
+                    "acs_guid": "001010000004",
+                    "audio_payload": "PCMU",
+                    "cdr_start_time": "1594555399.0",
+                    "cli-screening": "00",
+                    "clir": "false",
+                    "dial_once": "aaaa1-aaa13.aaaa2.com",
+                    "dialout": "click_in",
+                    "far_end": "10.254.254.33:12196",
+                    "flags": "1049122",
+                    "fmtp": "101 0-15",
+                    "ivr": "dialout",
+                    "legCallid": "1000000009@10.100.100.100",
+                    "leg_no": "3",
+                    "mediastatus": "nomedia",
+                    "new_change": true,
+                    "privs": "participant",
+                    "remote": "10.254.254.38:12224",
+                    "rtpmap": [
+                        "0 pcmu/8000/1",
+                        "101 telephone-event/8000"
+                    ],
+                    "server": "ukdc1-edm18.ring2.com",
+                    "sipphone": "usecallid_80000000000000aa-aa-aaaaaa-00@10.254.254.33;port=5060",
+                    "status": "(205) answered hold ",
+                    "trunk": "8:chan:0",
+                    "useforfrom": "hello@world.com",
+                    "user-agent": "LoopUp eDial ACS 9.1.0b8050"
+                },
+                "c": {
+                    "dn": "10.254.254.33",
+                    "subtype": "IP4",
+                    "type": "IN"
+                },
+                "i": {
+                    "dn": "usecallid-leg-3",
+                    "name": "usecallid-leg-3",
+                    "type": "CallByPhone"
+                },
+                "m": "audio 8766 RTP/AVP 0 101",
+                "o": {
+                    "host": "localhost",
+                    "subtype": "IP4",
+                    "t1": "1011084562",
+                    "t2": "804064065",
+                    "type": "IN",
+                    "user": "hello@world.com"
+                },
+                "s": null,
+                "t": [
+                    3803029099,
+                    0
+                ],
+                "v": 0
+            }
+        ]
+    },
+    "h": {
+        "CSeq": "9 NOTIFY",
+        "Call-ID": "80000000000000aa-aa-aaaaaa-00",
+        "Contact": "<sip:localhost:8443;transport=ssl>",
+        "Content-Length": 880,
+        "Content-Type": "application/sdp",
+        "From": "sip:hello@world.com;pool=uk-ed-thames;box=ukdc1-edm18.ring2.com;tag=12345678",
+        "To": "\"mmyers\" <sip:hello@world.com>",
+        "Via": [
+            "SIP/2.0/tcp localhost:8443",
+            "SIP/2.0/tcp localhost:8443;branch=hello@world.com__eDial_sep__hello@world.com"
+        ],
+        "X-Billing-code-required": false,
+        "X-Call-Instance-ID": "ODQ0NDMaNaU5MaaaOTa1aa1lZC10aGFtZXMtMDE6MTU5NDA0MDI3Naa2NjQ5Nja=",
+        "X-Call-Start-Time": "1594040277.665005",
+        "X-Call-URL": true,
+        "X-Conf_no": "236398",
+        "X-From": "hello@world.com",
+        "X-Route-ID": "1",
+        "X-Sticky": "1",
+        "X-Video-SingleView": "0",
+        "X-Video-UsingMCU": false,
+        "X-client-address": "10.44.200.95",
+        "X-control-master": "hello@world.com",
+        "X-dialout": "allowed",
+        "X-domain": "DEFAULT",
+        "X-last-change": "1594040299",
+        "X-leader-required": true,
+        "X-legs-on-server": "244",
+        "X-no-audio": false,
+        "X-no-unmute": false,
+        "X-no-video": false,
+        "X-notify-im": false,
+        "X-recording-enabled": true,
+        "X-restrict-notify": false,
+        "X-restrict-participants": false,
+        "X-rollcall": "disabled",
+        "X-rss-id": null,
+        "X-slave-site": "localhost",
+        "X-start-muted": false,
+        "X-subject": "Robin Myers' Meeting Room",
+        "X-suppress-system-im": false
+    },
+    "s": {
+        "method": "NOTIFY",
+        "type": "request",
+        "uri": "sip:hello@world.com",
+        "version": "SIP/2.0"
+    }
+}
+```
 
 
 ## Tests

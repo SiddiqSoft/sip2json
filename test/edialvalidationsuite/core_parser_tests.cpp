@@ -118,10 +118,10 @@ namespace test_suite
 			auto diagContents	 = registerMessage.flatten().dump(2);
 			std::cerr << diagContents << std::endl;
 			Assert::IsTrue(registerMessage.size() != 0);
-			Assert::IsTrue(!registerMessage.value("/mh/Date"_json_pointer, std::string {}).empty());
-			Assert::IsTrue(!registerMessage.value("/mh/Call-ID"_json_pointer, std::string {}).empty());
-			Assert::IsTrue(registerMessage.value("/mh/Call-ID"_json_pointer, std::string {}).length() == 44);
-			Assert::IsTrue(registerMessage.value("/type"_json_pointer, std::string {}).find("request") != std::string::npos);
+			Assert::IsTrue(!registerMessage.value("/h/Date"_json_pointer, std::string {}).empty());
+			Assert::IsTrue(!registerMessage.value("/h/Call-ID"_json_pointer, std::string {}).empty());
+			Assert::IsTrue(registerMessage.value("/h/Call-ID"_json_pointer, std::string {}).length() == 44);
+			Assert::IsTrue(registerMessage.value("/s/type"_json_pointer, std::string {}).find("request") != std::string::npos);
 		}
 
 		// NOLINTNEXTLINE
@@ -131,8 +131,8 @@ namespace test_suite
 			auto diagContents = dummyMessage.flatten().dump(2);
 			std::cerr << diagContents << std::endl;
 			Assert::IsTrue(dummyMessage.size() != 0);
-			Assert::IsTrue(!dummyMessage.value("/sl/reason"_json_pointer, std::string {}).empty());
-			Assert::IsTrue(dummyMessage.value("/type"_json_pointer, std::string {}).compare(sipmessage::MessageTypeResponse) == 0);
+			Assert::IsTrue(!dummyMessage.value("/s/reason"_json_pointer, std::string {}).empty());
+			Assert::IsTrue(dummyMessage.value("/s/type"_json_pointer, std::string {}).compare(sipmessage::MessageTypeResponse) == 0);
 		}
 
 
@@ -143,10 +143,10 @@ namespace test_suite
 			auto diagContents	 = registerMessage.flatten().dump(2);
 			std::cerr << diagContents << std::endl;
 			Assert::IsTrue(registerMessage.size() != 0);
-			Assert::IsTrue(!registerMessage.value("/mh/Date"_json_pointer, std::string {}).empty());
-			Assert::IsTrue(!registerMessage.value("/mh/Call-ID"_json_pointer, std::string {}).empty());
-			Assert::IsTrue(registerMessage.value("/mh/Call-ID"_json_pointer, std::string {}).length() == 44);
-			Assert::IsTrue(registerMessage.value("/type"_json_pointer, std::string {}).find("request") != std::string::npos);
+			Assert::IsTrue(!registerMessage.value("/h/Date"_json_pointer, std::string {}).empty());
+			Assert::IsTrue(!registerMessage.value("/h/Call-ID"_json_pointer, std::string {}).empty());
+			Assert::IsTrue(registerMessage.value("/h/Call-ID"_json_pointer, std::string {}).length() == 44);
+			Assert::IsTrue(registerMessage.value("/s/type"_json_pointer, std::string {}).find("request") != std::string::npos);
 
 			try
 			{
@@ -176,8 +176,8 @@ namespace test_suite
 			auto diagContents = dummyMessage.flatten().dump(2);
 			std::cerr << diagContents << std::endl;
 			Assert::IsTrue(dummyMessage.size() != 0);
-			Assert::IsTrue(!dummyMessage.value("/sl/reason"_json_pointer, std::string {}).empty());
-			Assert::IsTrue(dummyMessage.value("/type"_json_pointer, std::string {}).compare(sipmessage::MessageTypeResponse) == 0);
+			Assert::IsTrue(!dummyMessage.value("/s/reason"_json_pointer, std::string {}).empty());
+			Assert::IsTrue(dummyMessage.value("/s/type"_json_pointer, std::string {}).compare(sipmessage::MessageTypeResponse) == 0);
 
 			try
 			{
@@ -205,14 +205,14 @@ namespace test_suite
 		{
 			auto registerMessage = sipmessage::createRequest("REGISTER", "sip:hello@world.com", createCallId(), 1);
 			std::cerr << "POST createRequest(): registerMessage:" << registerMessage.flatten().dump(2) << std::endl;
-			Assert::IsTrue(!registerMessage.value("/mh/Date"_json_pointer, std::string {}).empty());
+			Assert::IsTrue(!registerMessage.value("/h/Date"_json_pointer, std::string {}).empty());
 
-			registerMessage["/mh/To"_json_pointer]		= "sip:hello@world.com";
-			registerMessage["/mh/Contact"_json_pointer] = "sip:hello@world.com";
+			registerMessage["/h/To"_json_pointer]		= "sip:hello@world.com";
+			registerMessage["/h/Contact"_json_pointer] = "sip:hello@world.com";
 
 			Assert::IsTrue(registerMessage.size() != 0);
-			Assert::IsTrue(registerMessage.value("/mh/Call-ID"_json_pointer, std::string {}).length() == 44);
-			Assert::AreEqual<std::string>(registerMessage.value("/type"_json_pointer, std::string {}),
+			Assert::IsTrue(registerMessage.value("/h/Call-ID"_json_pointer, std::string {}).length() == 44);
+			Assert::AreEqual<std::string>(registerMessage.value("/s/type"_json_pointer, std::string {}),
 										  sipmessage::MessageTypeRequest);
 
 			// WARNING
@@ -222,10 +222,10 @@ namespace test_suite
 			auto responseMessage = sipmessage::createResponse(200, registerMessage);
 
 			Assert::IsTrue(responseMessage.size() != 0);
-			Assert::IsTrue(responseMessage.value("/mh/Call-ID"_json_pointer, std::string {}).length() == 44);
-			Assert::AreEqual<std::string>(responseMessage.value("/type"_json_pointer, std::string {}),
+			Assert::IsTrue(responseMessage.value("/h/Call-ID"_json_pointer, std::string {}).length() == 44);
+			Assert::AreEqual<std::string>(responseMessage.value("/s/type"_json_pointer, std::string {}),
 										  sipmessage::MessageTypeResponse);
-			Assert::IsTrue(!responseMessage.value("/mh/Date"_json_pointer, std::string {}).empty());
+			Assert::IsTrue(!responseMessage.value("/h/Date"_json_pointer, std::string {}).empty());
 
 			std::cerr << "After response; registerMessage:" << registerMessage.flatten().dump(2) << std::endl;
 			std::cerr << "After response; registerMessage serialized:" << sip2json::serialize(registerMessage) << std::endl;
@@ -234,8 +234,8 @@ namespace test_suite
 			std::cerr << "After response; responseMessage serialized:" << sip2json::serialize(responseMessage) << std::endl;
 
 
-			Assert::AreEqual<std::string>(registerMessage.value("/mh/Call-ID"_json_pointer, "req"),
-										  responseMessage.value("/mh/Call-ID"_json_pointer, "resp"));
+			Assert::AreEqual<std::string>(registerMessage.value("/h/Call-ID"_json_pointer, "req"),
+										  responseMessage.value("/h/Call-ID"_json_pointer, "resp"));
 		}
 
 		// NOLINTNEXTLINE
@@ -244,8 +244,8 @@ namespace test_suite
 			auto myCallId		 = createCallId();
 			auto registerMessage = sipmessage::createRequest("REGISTER", "sip:hello@world.com", myCallId, 1);
 
-			registerMessage["/mh/To"_json_pointer]		= "sip:hello@world.com";
-			registerMessage["/mh/Contact"_json_pointer] = "sip:hello@world.com";
+			registerMessage["/h/To"_json_pointer]		= "sip:hello@world.com";
+			registerMessage["/h/Contact"_json_pointer] = "sip:hello@world.com";
 
 			auto strsipm = sip2json::serialize(registerMessage);
 			std::cerr << strsipm << std::endl;
@@ -271,10 +271,10 @@ namespace test_suite
 		{
 			auto registerMessage = sipmessage::createRequest("REGISTER", "sip:hello@world.com", createCallId(), 1);
 
-			registerMessage["/mh/To"_json_pointer]		= "sip:hello@world.com";
-			registerMessage["/mh/Contact"_json_pointer] = "sip:hello@world.com";
+			registerMessage["/h/To"_json_pointer]		= "sip:hello@world.com";
+			registerMessage["/h/Contact"_json_pointer] = "sip:hello@world.com";
 			// Set the content-type but fail to actually set the mb
-			registerMessage["/mh/Content-Type"_json_pointer] = "application/sdp";
+			registerMessage["/h/Content-Type"_json_pointer] = "application/sdp";
 			Assert::ExpectException<std::exception>([&]() { sip2json::serialize(registerMessage); });
 		}
 
@@ -447,10 +447,10 @@ namespace test_suite
 			auto sipm = sipmessage::createRequest("INVITE", "sip:hello@world.com", createCallId(), 1);
 
 			Assert::IsTrue(sipm.size() != 0);
-			Assert::IsTrue(!sipm.value("/mh/Date"_json_pointer, std::string {}).empty());
-			Assert::IsTrue(!sipm.value("/mh/Call-ID"_json_pointer, std::string {}).empty());
-			Assert::IsTrue(sipm.value("/mh/Call-ID"_json_pointer, std::string {}).length() == 44);
-			Assert::IsTrue(sipm.value("/type"_json_pointer, std::string {}).find("request") != std::string::npos);
+			Assert::IsTrue(!sipm.value("/h/Date"_json_pointer, std::string {}).empty());
+			Assert::IsTrue(!sipm.value("/h/Call-ID"_json_pointer, std::string {}).empty());
+			Assert::IsTrue(sipm.value("/h/Call-ID"_json_pointer, std::string {}).length() == 44);
+			Assert::IsTrue(sipm.value("/s/type"_json_pointer, std::string {}).find("request") != std::string::npos);
 
 			Assert::IsTrue(sipm.isMessageTypeRequest());
 		}
@@ -461,8 +461,8 @@ namespace test_suite
 			auto sipm = sipmessage::createResponse(608);
 
 			Assert::IsTrue(sipm.size() != 0);
-			Assert::IsTrue(!sipm.value("/sl/reason"_json_pointer, std::string {}).empty());
-			Assert::AreEqual(sipmessage::MessageTypeResponse, sipm.value("type", std::string {}));
+			Assert::IsTrue(!sipm.value("/s/reason"_json_pointer, std::string {}).empty());
+			Assert::AreEqual(sipmessage::MessageTypeResponse, sipm.value("/s/type"_json_pointer, std::string {}));
 			Assert::AreEqual<uint32_t>(608, sipm.getStatusCode());
 			Assert::IsTrue(sipm.isMessageTypeResponse());
 		}
@@ -473,20 +473,20 @@ namespace test_suite
 			auto sipm = sipmessage::createRequest("INVITE", "sip:hello@world.com", createCallId(), 1);
 
 			Assert::IsTrue(sipm.size() != 0);
-			Assert::IsTrue(!sipm.value("/mh/Date"_json_pointer, std::string {}).empty());
-			Assert::IsTrue(!sipm.value("/mh/Call-ID"_json_pointer, std::string {}).empty());
-			Assert::IsTrue(sipm.value("/mh/Call-ID"_json_pointer, std::string {}).length() == 44);
-			Assert::IsTrue(sipm.value("/type"_json_pointer, std::string {}).find("request") != std::string::npos);
+			Assert::IsTrue(!sipm.value("/h/Date"_json_pointer, std::string {}).empty());
+			Assert::IsTrue(!sipm.value("/h/Call-ID"_json_pointer, std::string {}).empty());
+			Assert::IsTrue(sipm.value("/h/Call-ID"_json_pointer, std::string {}).length() == 44);
+			Assert::IsTrue(sipm.value("/s/type"_json_pointer, std::string {}).find("request") != std::string::npos);
 
 			// Note the "Content-type" and "Content-Type"; either way the method should return the value.
-			sipm["mh"]["Content-type"] = "test/test";
+			sipm["h"]["Content-type"] = "test/test";
 			Assert::AreEqual<std::string>("test/test", sipm.getContentType());
 
-			sipm["mh"]["Content-Type"] = "test/test2";
+			sipm["h"]["Content-Type"] = "test/test2";
 			Assert::AreEqual<std::string>("test/test2", sipm.getContentType());
 
-			sipm["mh"].erase("Content-Type");
-			sipm["mh"].erase("Content-type");
+			sipm["h"].erase("Content-Type");
+			sipm["h"].erase("Content-type");
 			Assert::IsTrue(sipm.getContentType().empty());
 		}
 

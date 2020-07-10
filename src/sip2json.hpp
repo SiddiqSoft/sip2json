@@ -54,17 +54,17 @@ namespace siddiqsoftware
 			{
 				if (SIPVER_20.compare(matchStartLine[3]) == 0)
 				{
-					sipm["type"]					 = sipmessage::MessageTypeRequest;
-					sipm["/rl/method"_json_pointer]	 = matchStartLine[1];
-					sipm["/rl/uri"_json_pointer]	 = matchStartLine[2];
-					sipm["/rl/version"_json_pointer] = matchStartLine[3];
+					sipm["s"] = {{"type", sipmessage::MessageTypeRequest},
+								 {"method", matchStartLine[1]},
+								 {"uri", matchStartLine[2]},
+								 {"version", matchStartLine[3]}};
 				}
 				else if (SIPVER_20.compare(matchStartLine[1]) == 0)
 				{
-					sipm["type"]					 = sipmessage::MessageTypeResponse;
-					sipm["/sl/reason"_json_pointer]	 = matchStartLine[3];
-					sipm["/sl/status"_json_pointer]	 = std::stoi(matchStartLine[2].str());
-					sipm["/sl/version"_json_pointer] = matchStartLine[1];
+					sipm["s"] = {{"type", sipmessage::MessageTypeResponse},
+								 {"reason", matchStartLine[3]},
+								 {"status", std::stoi(matchStartLine[2].str())},
+								 {"version", matchStartLine[1]}};
 				}
 				else
 				{
@@ -94,41 +94,41 @@ namespace siddiqsoftware
 			if (key.find(HF_VIA) == 0)
 			{
 				// Via is an array
-				sipm["mh"][HF_VIA].push_back(value);
+				sipm["h"][HF_VIA].push_back(value);
 			}
 			else if (_stricmp(key.c_str(), "uthorization") == 0)
 			{
 				// Some encoders send "uthorization" instead of "Authorization"
-				sipm["mh"][HF_AUTHORIZATION] = value;
+				sipm["h"][HF_AUTHORIZATION] = value;
 			}
 			else if (_stricmp(key.c_str(), HF_CONTENT_TYPE.c_str()) == 0)
 			{
 				// Some encoders send Content-type instead of the standard Content-Type; here we need to normalize it.
-				sipm["mh"][HF_CONTENT_TYPE] = value;
+				sipm["h"][HF_CONTENT_TYPE] = value;
 			}
 			else if (key.find(HF_CONTENT_LENGTH) == 0)
 			{
-				sipm["mh"][key] = std::stoi(value);
+				sipm["h"][key] = std::stoi(value);
 			}
 			else if (key.find(HF_EXPIRES) == 0)
 			{
-				sipm["mh"][key] = std::stoi(value);
+				sipm["h"][key] = std::stoi(value);
 			}
 			else if (value.find("true") == 0)
 			{
-				sipm["mh"][key] = true;
+				sipm["h"][key] = true;
 			}
 			else if (value.find("false") == 0)
 			{
-				sipm["mh"][key] = false;
+				sipm["h"][key] = false;
 			}
 			else if (value.empty())
 			{
-				sipm["mh"][key] = nullptr;
+				sipm["h"][key] = nullptr;
 			}
 			else
 			{
-				sipm["mh"][key] = value;
+				sipm["h"][key] = value;
 			}
 
 			return true;
@@ -254,9 +254,9 @@ namespace siddiqsoftware
 						// First element; increment blockIndex.
 						// Add the next element to a new SDP object.
 						blockIndex++; // the first match will increment this to "0"
-						//nlohmann::json::json_pointer pkey(fmt::format("/mb/sdp/{}/{}", blockIndex, key));
+						//nlohmann::json::json_pointer pkey(fmt::format("/b/sdp/{}/{}", blockIndex, key));
 						//sipm[pkey]						   = 0;
-						sipm["mb"]["sdp"][blockIndex][key] = 0;
+						sipm["b"]["sdp"][blockIndex][key] = 0;
 					}
 					else if (key.compare("a") == 0)
 					{
@@ -268,14 +268,14 @@ namespace siddiqsoftware
 						{
 							// This is the form where a=attribute:value
 							nlohmann::json::json_pointer pkey(
-									fmt::format("/mb/sdp/{}/{}/{}", blockIndex, key, alineMatcher[1].str()));
+									fmt::format("/b/sdp/{}/{}/{}", blockIndex, key, alineMatcher[1].str()));
 
 							// We may get multiple items for the same "key" such as `a=rtpmap:x` and `a=rtpmap:y`
 							// In this case we should start an array
 							if (sipm.contains(pkey) && !sipm[pkey].is_array())
 							{
 								auto						 previousValue = sipm[pkey];
-								nlohmann::json::json_pointer pkeyUpOneLevel(fmt::format("/mb/sdp/{}/{}", blockIndex, key));
+								nlohmann::json::json_pointer pkeyUpOneLevel(fmt::format("/b/sdp/{}/{}", blockIndex, key));
 								if (sipm[pkeyUpOneLevel].erase(alineMatcher[1].str()) == 1)
 								{
 									// Push the first item
@@ -298,13 +298,13 @@ namespace siddiqsoftware
 						{
 							// This is the form where a=flag
 							// We matched a=key without the `:` or the "value" so we should store the value with nullptr
-							nlohmann::json::json_pointer pkey(fmt::format("/mb/sdp/{}/{}/{}", blockIndex, key, value));
+							nlohmann::json::json_pointer pkey(fmt::format("/b/sdp/{}/{}/{}", blockIndex, key, value));
 							sipm[pkey] = true;
 						}
 					}
 					else
 					{
-						nlohmann::json::json_pointer pkey(fmt::format("/mb/sdp/{}/{}", blockIndex, key));
+						nlohmann::json::json_pointer pkey(fmt::format("/b/sdp/{}/{}", blockIndex, key));
 
 						if (key.compare("c") == 0)
 						{
@@ -512,6 +512,7 @@ namespace siddiqsoftware
 				}
 			}
 
+			sipm["z"] = std::chrono::system_clock::now().time_since_epoch().count();
 			return sipm;
 		}
 
@@ -534,7 +535,7 @@ namespace siddiqsoftware
 													  __func__,
 													  sipm.getMethod());
 			// Assert: Header must exist
-			sip2json_throw_if<invalid_document_error>(!sipm.contains("mh"), "{}:sipm does not contain mh.", __func__);
+			sip2json_throw_if<invalid_document_error>(!sipm.contains("h"), "{}:sipm does not contain `h`eaders.", __func__);
 
 			if (sipm.isMessageTypeRequest())
 			{
@@ -555,8 +556,8 @@ namespace siddiqsoftware
 			}
 
 			// Encode the body first so we can get the content-length properly.
-			auto body					 = serializeSDP(sipm);
-			sipm["mh"]["Content-Length"] = body.length();
+			auto body					= serializeSDP(sipm);
+			sipm["h"]["Content-Length"] = body.length();
 
 			// Headers
 			auto mh = sipm.getHeaders();
@@ -631,12 +632,12 @@ namespace siddiqsoftware
 			// NOTE: we extract the contentType value during the header serialization.
 			if (contentType.compare(CONTENT_TYPE_APP_SDP) == 0)
 			{
-				if (sipm.contains("/mb"_json_pointer))
+				if (sipm.contains("/b"_json_pointer))
 				{
-					if (sipm.contains("/mb/sdp"_json_pointer))
+					if (sipm.contains("/b/sdp"_json_pointer))
 					{
 						// the sdp is stored as an array of objects
-						auto sdp = sipm.at("/mb/sdp"_json_pointer);
+						auto sdp = sipm.at("/b/sdp"_json_pointer);
 						for (auto& block : sdp)
 						{
 							buffer += fmt::format("v=0\r\no={}\r\ns={}\r\ni={}\r\nc={}\r\nt={}\r\nm={}\r\n{}",
@@ -651,14 +652,14 @@ namespace siddiqsoftware
 					}
 					else
 					{
-						sip2json_throw<invalid_document_error>("{}:sipm mb does not have sdp element.", __func__);
+						sip2json_throw<invalid_document_error>("{}:sipm `b`ody does not have sdp element.", __func__);
 					}
 				}
 				else
 				{
 					// This should not be an error; there are live SIP messages where the client sets the Content-Type
 					// but also sets the Content-Length to `0` so we should avoid encoding anything.
-					//sip2json_throw<invalid_document_error>("{}:sipm does not have mb.", __func__);
+					//sip2json_throw<invalid_document_error>("{}:sipm does not have b.", __func__);
 				}
 			}
 
