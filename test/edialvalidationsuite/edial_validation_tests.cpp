@@ -610,6 +610,63 @@ namespace test_suite
 		}
 
 		// NOLINTNEXTLINE
+		TEST_METHOD(NOTIFY_playbacklegs_1)
+		{
+			std::string debugBuffer	   = "[";
+			size_t		countOfMessage = 0;
+			auto		buffer		   = loadSampleFile(__func__); // NOLINT
+			auto		bufferStart	   = buffer.begin();
+			auto		msgs		   = sip2json::parseAllFromBuffer(bufferStart, buffer.end(), [&](sipmessage& sipm) {
+				 ++countOfMessage;
+				 debugBuffer += sipm.dump(4);
+				 debugBuffer += ",";
+				 Logger::WriteMessage(sipm.flatten().dump(4).c_str());
+				 if (countOfMessage == 1)
+				 {
+					 Assert::AreEqual<std::string>("LegAdd", sipm.value("/h/X-CallEvent"_json_pointer, ""));
+					 Assert::AreEqual<uint32_t>(741, sipm.getContentLength());
+					 Assert::AreEqual<std::string>("1445714364", sipm.value("/b/sdp/0/o/t2"_json_pointer, ""));
+				 }
+				 if (countOfMessage == 2)
+				 {
+					 Assert::AreEqual<std::string>("LegDrop", sipm.value("/h/X-CallEvent"_json_pointer, ""));
+					 Assert::AreEqual<uint32_t>(784, sipm.getContentLength());
+					 //t = 3802711133 3802711134
+					 Assert::AreEqual<uint32_t>(3802711134, sipm.value("/b/sdp/0/t/1"_json_pointer, 0));
+					 Assert::AreEqual<std::string>("1445714375", sipm.value("/b/sdp/0/o/t2"_json_pointer, ""));
+				 }
+
+				 // Both cases should have same values..
+				 // Check o-line: o=sip:nm@ring2.com 1445714250 1445714364 IN IP4 il-ed-mara-01.ring2.com
+				 Assert::AreEqual<std::string>("sip:nm@ring2.com", sipm.value("/b/sdp/0/o/user"_json_pointer, ""));
+				 Assert::AreEqual<std::string>("1445714250", sipm.value("/b/sdp/0/o/t1"_json_pointer, ""));
+				 Assert::AreEqual<std::string>("IN", sipm.value("/b/sdp/0/o/type"_json_pointer, ""));
+				 Assert::AreEqual<std::string>("IP4", sipm.value("/b/sdp/0/o/subtype"_json_pointer, ""));
+				 Assert::AreEqual<std::string>("il-ed-mara-01.ring2.com", sipm.value("/b/sdp/0/o/host"_json_pointer, ""));
+				 // Check s-line: s=Playback-46570689829320il-ed-mara-01
+				 Assert::AreEqual<std::string>("Playback-46570689829320il-ed-mara-01", sipm.value("/b/sdp/0/s"_json_pointer, ""));
+				 // Check i-line: i=PlaybackLeg (target-legid 1) CallByPhone
+				 Assert::AreEqual<std::string>("PlaybackLeg", sipm.value("/b/sdp/0/i/name"_json_pointer, ""));
+				 Assert::AreEqual<std::string>("target-legid 1", sipm.value("/b/sdp/0/i/dn"_json_pointer, ""));
+				 Assert::AreEqual<std::string>("CallByPhone", sipm.value("/b/sdp/0/i/type"_json_pointer, ""));
+				 // Check c-line: c=IN IP4 127.0.0.1
+				 Assert::AreEqual<std::string>("IN", sipm.value("/b/sdp/0/c/type"_json_pointer, ""));
+				 Assert::AreEqual<std::string>("IP4", sipm.value("/b/sdp/0/c/subtype"_json_pointer, ""));
+				 Assert::AreEqual<std::string>("127.0.0.1", sipm.value("/b/sdp/0/c/dn"_json_pointer, ""));
+				 // a=fmtp:x-play uri:http://10.254.254.2/slides/ring2sys_USA_msg_DialinDropParticipant_403/recording.wav
+				 Assert::AreEqual<std::string>(
+						 "x-play uri:http://10.254.254.2/slides/ring2sys_USA_msg_DialinDropParticipant_403/recording.wav",
+						 sipm.value("/b/sdp/0/a/fmtp"_json_pointer, ""));
+				 Assert::AreEqual<uint32_t>(3802711133, sipm.value("/b/sdp/0/t/0"_json_pointer, 0));
+				 Assert::AreEqual<std::string>("2", sipm.value("/b/sdp/0/a/leg_no"_json_pointer, ""));
+			 });
+
+			Assert::AreEqual<size_t>(2, countOfMessage);
+			debugBuffer += "]";
+			writeSampleFile(__func__, debugBuffer);
+		}
+
+		// NOLINTNEXTLINE
 		TEST_METHOD(NOTIFY_LegDrop)
 		{
 			auto buffer		 = loadSampleFile(__func__); // NOLINT

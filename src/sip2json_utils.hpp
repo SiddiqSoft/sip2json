@@ -209,7 +209,7 @@ namespace siddiqsoftware
 
 	static const std::regex SIP_PATTERN_BODY("([vosictma]{1})=([^\\r\\n]*)");
 	static const std::regex SIP_PATTERN_BODY_ALINE("^([^:|\\r\\n]*)[:]{1}(.*$)[\\r\\n]?|(.*)[\\r\\n]");
-	static const std::regex SIP_PATTERN_BODY_ILINE("^(.*) \\(([^\\s]*)\\) ([^\\s|\\r\\n]*)");
+	static const std::regex SIP_PATTERN_BODY_ILINE("^(.*) \\(([^\\)]*)\\) ([^\\s|\\r\\n]*)");
 	static const std::regex SIP_PATTERN_BODY_CLINE("(\\w*) (\\w*) ([+\\-\\(\\)0-9\\.a-zA-Z]*)");
 	static const std::regex SIP_PATTERN_BODY_OLINE("([^\\s]*) (\\d*) (\\d*) (\\w*) (\\w*) ([^\\s]*)");
 

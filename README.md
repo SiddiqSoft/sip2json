@@ -81,12 +81,16 @@ Keeping the data compact and mapping the raw SIP and SDP means less intermediate
     "b": {
         "sdp": [{
             "v": 0,
+            "s": "",
             "c": {
                 "type": "",
                 "subtype": "",
                 "dn": ""
             },
-            "i": {},
+            "i": { "dn": "",
+                   "name": "",
+                   "type": ""
+            },
             "o": {
                 "user": "",
                 "t1": "",
