@@ -568,7 +568,10 @@ namespace test_suite
 			{
 				auto sipm = sip2json::parseFromBuffer(bufferStart, buffer.end());
 
-				Assert::AreEqual<std::string>("T-N RFC/2543 +12124553521", sipm.value("/b/sdp/0/c"_json_pointer, ""));
+				// c=T-N RFC/2543 +12124553521(hi)
+				Assert::AreEqual<std::string>("T-N", sipm.value("/b/sdp/0/c/type"_json_pointer, ""));
+				Assert::AreEqual<std::string>("RFC/2543", sipm.value("/b/sdp/0/c/subtype"_json_pointer, ""));
+				Assert::AreEqual<std::string>("+12124553521(hi)", sipm.value("/b/sdp/0/c/dn"_json_pointer, ""));
 				Logger::WriteMessage(sipm.dump(4).c_str());
 			}
 			catch (std::runtime_error& e)
