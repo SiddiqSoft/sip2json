@@ -1,0 +1,93 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30204.135
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{0833CF10-6FB8-4734-9619-7E657E41CC84}"
+	ProjectSection(SolutionItems) = preProject
+		build\sip2json.nuspec = build\sip2json.nuspec
+		build\sip2json.symbols.nuspec = build\sip2json.symbols.nuspec
+		build\sip2json.symbols.targets = build\sip2json.symbols.targets
+		build\sip2json.targets = build\sip2json.targets
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{E3DA636E-8C31-4F79-8942-BFCD04F22CE5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{BE17724B-F2AA-40B9-94E0-0B2EFCAA5768}"
+	ProjectSection(SolutionItems) = preProject
+		src\sip2json.hpp = src\sip2json.hpp
+		src\sip2json_exception.hpp = src\sip2json_exception.hpp
+		src\sip2json_response_codes.hpp = src\sip2json_response_codes.hpp
+		src\sip2json_utils.hpp = src\sip2json_utils.hpp
+		src\sipmessage.hpp = src\sipmessage.hpp
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DB1C31B9-F77C-4B8B-9B97-1910126B8A8C}"
+	ProjectSection(SolutionItems) = preProject
+		.clang-format = .clang-format
+		.clang-tidy = .clang-tidy
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		.vsconfig = .vsconfig
+		azure-pipelines.yml = azure-pipelines.yml
+		LICENSE = LICENSE
+		README.md = README.md
+		sip2json.runsettings = sip2json.runsettings
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "edial_validation_tests", "test\edialvalidationsuite\edialvalidationsuite.vcxproj", "{21BF02FD-4390-483A-9904-EB09D033F182}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{6C56536E-7471-46FF-8625-1E38ED2424B2}"
+	ProjectSection(SolutionItems) = preProject
+		test\samples\Mixed_Stream_1.sip = test\samples\Mixed_Stream_1.sip
+		test\samples\NOTIFY_CallEnd.sip = test\samples\NOTIFY_CallEnd.sip
+		test\samples\NOTIFY_connectorleg_1.sip = test\samples\NOTIFY_connectorleg_1.sip
+		test\samples\NOTIFY_EmptyHeaderKey_1.sip = test\samples\NOTIFY_EmptyHeaderKey_1.sip
+		test\samples\NOTIFY_generic_1.sip = test\samples\NOTIFY_generic_1.sip
+		test\samples\NOTIFY_invalid_cline_1.sip = test\samples\NOTIFY_invalid_cline_1.sip
+		test\samples\NOTIFY_LegAdd.sip = test\samples\NOTIFY_LegAdd.sip
+		test\samples\NOTIFY_LegDrop.sip = test\samples\NOTIFY_LegDrop.sip
+		test\samples\NOTIFY_playbacklegs_1.sip = test\samples\NOTIFY_playbacklegs_1.sip
+		test\samples\NOTIFY_playbacklegs_1.sip.out = test\samples\NOTIFY_playbacklegs_1.sip.out
+		test\samples\NOTIFY_SDP_multi_1.sip = test\samples\NOTIFY_SDP_multi_1.sip
+		test\samples\OK_REGISTER_Multiline_ContactHeader_1.sip = test\samples\OK_REGISTER_Multiline_ContactHeader_1.sip
+		test\samples\RandomStream_Recv_File_1.sip = test\samples\RandomStream_Recv_File_1.sip
+		test\samples\REGISTER_1.sip = test\samples\REGISTER_1.sip
+		test\samples\REGISTER_200_OK.sip = test\samples\REGISTER_200_OK.sip
+		test\samples\Test_incomplete_buffer_for_content.sip = test\samples\Test_incomplete_buffer_for_content.sip
+		test\samples\Test_incomplete_buffer_for_header.sip = test\samples\Test_incomplete_buffer_for_header.sip
+		test\samples\Test_incomplete_buffer_for_parse.sip = test\samples\Test_incomplete_buffer_for_parse.sip
+		test\samples\Test_invalid_document.sip = test\samples\Test_invalid_document.sip
+		test\samples\Test_invalid_startline.sip = test\samples\Test_invalid_startline.sip
+		test\samples\Test_unsupported_contenttype.sip = test\samples\Test_unsupported_contenttype.sip
+		test\samples\Trying_INVITE_1.sip = test\samples\Trying_INVITE_1.sip
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{21BF02FD-4390-483A-9904-EB09D033F182}.Debug|x64.ActiveCfg = Debug|x64
+		{21BF02FD-4390-483A-9904-EB09D033F182}.Debug|x64.Build.0 = Debug|x64
+		{21BF02FD-4390-483A-9904-EB09D033F182}.Debug|x86.ActiveCfg = Debug|Win32
+		{21BF02FD-4390-483A-9904-EB09D033F182}.Debug|x86.Build.0 = Debug|Win32
+		{21BF02FD-4390-483A-9904-EB09D033F182}.Release|x64.ActiveCfg = Release|x64
+		{21BF02FD-4390-483A-9904-EB09D033F182}.Release|x64.Build.0 = Release|x64
+		{21BF02FD-4390-483A-9904-EB09D033F182}.Release|x86.ActiveCfg = Release|Win32
+		{21BF02FD-4390-483A-9904-EB09D033F182}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{21BF02FD-4390-483A-9904-EB09D033F182} = {E3DA636E-8C31-4F79-8942-BFCD04F22CE5}
+		{6C56536E-7471-46FF-8625-1E38ED2424B2} = {E3DA636E-8C31-4F79-8942-BFCD04F22CE5}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {25E6134F-7578-47C5-930A-4035E716747D}
+	EndGlobalSection
+EndGlobal
