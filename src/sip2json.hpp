@@ -52,6 +52,8 @@ namespace siddiqsoftware
 			found = std::regex_search(bufferStart, bufferEnd, matchStartLine, SIP_PATTERN_STARTLINE);
 			if (found && matchStartLine.size() >= 3)
 			{
+				// The regex is very precise and there is no chance we will end up here
+				// with an ill-formed (or unsupported) start-line.
 				if (SIPVER_20.compare(matchStartLine[3]) == 0)
 				{
 					sipm["s"] = {{"type", sipmessage::MessageTypeRequest},
@@ -65,10 +67,6 @@ namespace siddiqsoftware
 								 {"reason", matchStartLine[3]},
 								 {"status", std::stoi(matchStartLine[2].str())},
 								 {"version", matchStartLine[1]}};
-				}
-				else
-				{
-					sip2json_throw<invalid_startline_error>("{} - Illformed start-line:{}.", __func__, matchStartLine[0].str());
 				}
 
 				// Offset the start to the point after the start-line. Make sure to skip over any prefix!
@@ -124,7 +122,7 @@ namespace siddiqsoftware
 			}
 			else if (value.empty())
 			{
-				sipm["h"][key] = nullptr;
+				sipm["h"][key] = "";
 			}
 			else
 			{
@@ -241,7 +239,7 @@ namespace siddiqsoftware
 			// of the body. Therefore, we start with blockIndex = 0 and then increment everytime we encounter next v=0
 			int32_t blockIndex = -1;
 
-			while (std::regex_search(bufferStart, bufferEnd, matcher, SIP_PATTERN_BODY))
+			while ((bufferStart < bufferEnd) && std::regex_search(bufferStart, bufferEnd, matcher, SIP_PATTERN_BODY))
 			{
 				if (matcher.size() == 3)
 				{
@@ -354,7 +352,7 @@ namespace siddiqsoftware
 							}
 							else
 							{
-								sipm[pkey] = nullptr;
+								sipm[pkey] = "";
 							}
 						}
 						else if (key.compare("t") == 0)
@@ -369,7 +367,7 @@ namespace siddiqsoftware
 						}
 						else if (!key.empty() && value.empty())
 						{
-							sipm[pkey] = nullptr;
+							sipm[pkey] = "";
 						}
 						else if (!key.empty())
 						{

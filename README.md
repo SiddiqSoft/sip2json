@@ -157,7 +157,7 @@ The object contains key-value elements found in the SIP header section.
            ],
            "Content-Length": 0 }
    ```
-- For header elements that are "empty", the JSON value `null` is stored against that header key.
+- For header elements that are "empty", the JSON value `""` is stored against that header key instead of `null`.
 
 ##### SIP Body
 
@@ -249,7 +249,7 @@ The source for the following is this [sample SIP](test/samples/NOTIFY_generic_1.
                     "type": "IN",
                     "user": "hello@world.com"
                 },
-                "s": null,
+                "s": "",
                 "t": [
                     3803029099,
                     0
@@ -295,7 +295,7 @@ The source for the following is this [sample SIP](test/samples/NOTIFY_generic_1.
         "X-restrict-notify": false,
         "X-restrict-participants": false,
         "X-rollcall": "disabled",
-        "X-rss-id": null,
+        "X-rss-id": "",
         "X-slave-site": "localhost",
         "X-start-muted": false,
         "X-subject": "Robin Myers' Meeting Room",
