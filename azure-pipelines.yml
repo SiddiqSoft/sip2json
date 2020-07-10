@@ -90,14 +90,6 @@ steps:
     buildConfiguration: release
   continueOnError: true
 
-- task: PowerShell@2
-  inputs:
-    targetType: 'inline'
-    script: |
-      Write-Host "Current directory"
-      get-childitem "$(System.DefaultWorkingDirectory)"
-      get-childitem "$(System.DefaultWorkingDirectory)\Release"
-
 - task: NuGetCommand@2
   displayName: 'NuGet push'
   inputs:
