@@ -12,15 +12,12 @@
     <version>$VERSION$</version>
     <authors>Abdulkareem Siddiq</authors>
     <description>SIP Parser for Modern C++</description>
-    <!-- encouraged: should include `native` and `nativepackage` -->
-    <tags>sip sdp pint native cpp</tags>
-    <!-- Add additional optional tags here. -->
-    <!--<license type="expression">MIT</license>-->
+    <tags>sip json sdp pint native nativepackage cpp</tags>
     <projectUrl>https://github.com/siddiqsoftware/sip2json</projectUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <licenseUrl>https://github.com/siddiqsoftware/sip2json/blob/master/LICENSE</licenseUrl>
     <releaseNotes></releaseNotes>
-    <copyright>Copyright (c) 2020 Abdelkareem Siddiq</copyright>
+    <copyright>Copyright (c) 2003-2020 Abdelkareem Siddiq</copyright>
     <!-- Dependencies -->
     <dependencies>
       <dependency id="fmt" version="6.2.1"/>
@@ -36,7 +33,7 @@
 	-->
   <files>
     <!-- includes -->
-    <file src="..\src\*.hpp" target="build\native\include" />
+    <file src="..\src\*.hpp" target="build\native\include\siddiqsoftware\" />
 
     <!--
     <file src="..\output\Debug\sip2json.lib" target="build\native\lib\Debug" />

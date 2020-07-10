@@ -12,12 +12,10 @@
     <version>$VERSION$</version>
     <authors>Abdulkareem Siddiq</authors>
     <description>SIP Parser for Modern C++</description>
-    <!-- encouraged: should include `native` and `nativepackage` -->
-    <tags>sip sdp pint native cpp</tags>
-    <!-- Add additional optional tags here. -->
-    <!--<license type="expression">MIT</license>-->
-    <projectUrl>https://dev.azure.com/loopup/sys4</projectUrl>
-    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <tags>sip json sdp pint native nativepackage cpp</tags>
+    <projectUrl>https://github.com/siddiqsoftware/sip2json</projectUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <licenseUrl>https://github.com/siddiqsoftware/sip2json/blob/master/LICENSE</licenseUrl>
     <releaseNotes></releaseNotes>
     <copyright>Copyright (c) 2003-2020 Abdelkareem Siddiq</copyright>
   </metadata>

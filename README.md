@@ -53,11 +53,49 @@ This library is intendended to be used as a basis for you application and does n
 
 The library is provided as a nuget package but can also be used as a header-only dependency.
 
+```c
+#include "siddiqsoftware/sip2json.hpp"
+
+// Assume a method invoked by the IO system on each "frame" read
+// from the tcp stream.
+void onReadCompleted(std::string& readBuffer)
+{
+  auto bufferStart= readBuffer.begin();
+  
+  // Invokes the callback per each decoded sipmessage from the buffer
+  // Keep track of the bufferStart as it is advanced to reach the readBuffer.end()
+  // as objects are parsed.
+  processAllFromBuffer(bufferStart, readBuffer.end(), [](sipmessage& msg){
+      // Got a valid sipmessage object..
+      if(msg.empty()) {
+         // Do something..
+      }
+  },
+  [](sip2jsonErrors& errCode){
+      // Invoked for an error during the processing of the buffer.
+  };
+
+  // Client is responsible for managing the state of the readBuffer
+  // the library uses an iterator to parse the stream and advances
+  // as each SIP frame is processed.
+  readBuffer.erase(readBuffer.begin(), bufferStart); // what remains can be processed as more data arrives
+}
+```
+
 ## Roadmap
 
  Release | Notes
 ---------|---------
 v1.0.0   | Basic decoder and decoder with support for CloudEvent envelope.
+
+## Tests
+
+- There is a single C++ Native Unit Test using the Microsoft C++ Framework under vstest.
+- Code Coverage is enabled (only if you're using Visual Studio Enterprise).
+- Azure pipelines CI reports on the test results and the coverage results.
+- There are to date `64` tests covering parsing and serialization.
+- Use live SIP data found under the `test\samples` folder.
+- Clang-Tidy is used as a linter to highlight issues with best-practices and static code analysis.
 
 ## References
 

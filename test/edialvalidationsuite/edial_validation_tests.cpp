@@ -13,6 +13,7 @@
 #include "nlohmann/json.hpp"
 #include "fmt/chrono.h"
 
+#include "../../src/sip2json_utils.hpp"
 #include "../../src/sip2json.hpp"
 
 #include "CppUnitTest.h"
@@ -54,7 +55,7 @@ namespace test_suite
 	TEST_CLASS(serialize)
 	{
 		void roundTripVerify(
-				const std::string& funcName, std::string& buffer, sipmessage& sipm, std::function<void(sipmessage&)> verify)
+				const std::string& funcName, const std::string& buffer, sipmessage& sipm, std::function<void(sipmessage&)> verify)
 		{
 			try
 			{
@@ -188,9 +189,9 @@ namespace test_suite
 			};
 
 			countOfMessage = 1;
-			roundTripVerify(__func__, std::string(""), msgs[0], verify);   
+			roundTripVerify(__func__, EMPTY_STD_STRING_VALUE, msgs[0], verify);   
 			countOfMessage = 2;
-			roundTripVerify(__func__, std::string(""), msgs[1], verify);
+			roundTripVerify(__func__, EMPTY_STD_STRING_VALUE, msgs[1], verify);
 
 			Assert::AreEqual<size_t>(2, countOfMessage);
 		}
