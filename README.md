@@ -50,7 +50,6 @@ This library is intendended to be used as a basis for you application and does n
 - Encryption
 - Managing CSeq
 - Thread safety is your responsibility
-  - The functions do not use shared data, however, any paramter provided must be protected/available for the duration of the call.
 - No statemachine is provided and the `sipmessage` class as well as the `sip2json` class are stateless.
 
 ## Usage
