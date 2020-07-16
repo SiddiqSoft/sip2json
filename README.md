@@ -109,8 +109,8 @@ void createINVITE()
   // object directly and perform an add to the array.
   sipm.headers()["Via"].push_back("SIP/2.0/TCP callcontrolserver.com");
   // Next, we set the body
-  sipm.body()["sdp"][0]["v"]= 0;
-  sipm.body()["sdp"][0]["t"]= {999999, 0};
+  sipm.body("/sdp/0/v"_json_pointer, 0)
+      .body("/sdp/0/t"_json_pointer, {999999, 0});
   .
   .
 }
