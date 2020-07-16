@@ -46,6 +46,14 @@ namespace test_suite
 		bool dummy;
 
 		// NOLINTNEXTLINE
+		TEST_METHOD(Test_sip2jsonErrors_ok)
+		{
+			auto eOk = sip2jsonErrors::ok;
+
+			Logger::WriteMessage(fmt::format("{} - {} --> {}", __func__, eOk, nlohmann::json(eOk).dump()).c_str());
+		}
+
+		// NOLINTNEXTLINE
 		TEST_METHOD(Test_createCallId)
 		{
 			auto ci = createCallId();
