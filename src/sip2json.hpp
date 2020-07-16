@@ -586,7 +586,7 @@ namespace siddiqsoftware
 			sipm["h"]["Content-Length"] = body.length();
 
 			// Headers
-			auto mh = sipm.getHeaders();
+			auto mh = sipm.headers();
 			if (mh.size() > 0)
 			{
 				//TODO: This will not care about the order of the serialized headers. The json library does not care about order.

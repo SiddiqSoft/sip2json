@@ -189,7 +189,7 @@ namespace test_suite
 			};
 
 			countOfMessage = 1;
-			roundTripVerify(__func__, EMPTY_STD_STRING_VALUE, msgs[0], verify);   
+			roundTripVerify(__func__, EMPTY_STD_STRING_VALUE, msgs[0], verify);
 			countOfMessage = 2;
 			roundTripVerify(__func__, EMPTY_STD_STRING_VALUE, msgs[1], verify);
 
@@ -839,20 +839,20 @@ namespace test_suite
 											  sipm.value("/s/uri"_json_pointer, ""));
 				// Via is an array
 				Assert::IsTrue(sipm.value("/h/Via"_json_pointer, nlohmann::json {}).is_array());
-				Assert::AreEqual<size_t>(sipm.value("/h/Via"_json_pointer, nlohmann::json {}).size(), 3);
+				Assert::AreEqual<size_t>(3, sipm.value("/h/Via"_json_pointer, nlohmann::json {}).size());
 				// Call-ID
-				Assert::AreEqual<std::string>(sipm.getCallID(), "119035121230567il-ed-mara-01");
+				Assert::AreEqual<std::string>("119035121230567il-ed-mara-01", sipm.getCallID());
 				// Content-Type
 				Assert::AreEqual<std::string>(CONTENT_TYPE_APP_SDP, sipm.getContentType());
 				// Content-Length
 				Assert::AreEqual<uint32_t>(1326, sipm.getContentLength());
 
-				Assert::AreEqual<std::string>("matthew.gabbard@stblaw.com", sipm.value("/h/X-control-master"_json_pointer, ""));
+				Assert::AreEqual<std::string>("matthew.gabbard@stblaw.com", sipm.header<std::string>("X-control-master"));
 				Assert::AreEqual<std::string>("", sipm.value("/h/X-rss-id"_json_pointer, "-"));
-				Assert::AreEqual<std::string>("49 NOTIFY", sipm.value("/h/CSeq"_json_pointer, ""));
-				Assert::AreEqual<bool>(true, sipm.value("/h/X-Billing-code-required"_json_pointer, false));
+				Assert::AreEqual<std::string>("49 NOTIFY", sipm.header<std::string>("CSeq"));
+				Assert::AreEqual<bool>(true, sipm.header<bool>("X-Billing-code-required"));
 				Assert::AreEqual<std::string>("MTE5MDM1MTIxMjMwNTY3aWwtZWQtbWFyYS0wMToxNTkzNjM3MTcwOjE1Njc0Ng==",
-											  sipm.value("/h/X-Call-Instance-ID"_json_pointer, ""));
+											  sipm.header<std::string>("X-Call-Instance-ID"));
 
 				// Check the body
 				Assert::IsTrue(!sipm.value("/b"_json_pointer, nlohmann::json {}).empty());
@@ -938,16 +938,16 @@ namespace test_suite
 			Assert::AreEqual<std::string>(METHOD_REGISTER, sipm.value("/s/method"_json_pointer, ""));
 			Assert::IsTrue(sipm.value("/h/Via"_json_pointer, nlohmann::json {}).is_array());
 			Assert::IsTrue(sipm.value("/h/Via"_json_pointer, nlohmann::json {}).size() == 1);
-			Assert::AreEqual<std::string>(sipm.value("/h/Via/0"_json_pointer, nlohmann::json {}),
-										  "SIP/2.0/TCP il-ed-mara-01.ring2.com:8443");
+			Assert::AreEqual<std::string>("SIP/2.0/TCP il-ed-mara-01.ring2.com:8443",
+										  sipm.value("/h/Via/0"_json_pointer, nlohmann::json {}));
 			// Call-ID
-			Assert::AreEqual<std::string>(sipm.getCallID(), "8DC1AF9E-8C37-4463-B8C9-1959A1428116");
+			Assert::AreEqual<std::string>("8DC1AF9E-8C37-4463-B8C9-1959A1428116", sipm.getCallID());
 			// Content-Type
 			//Assert::AreEqual<>(CONTENT_TYPE_APP_SDP, sipm.getContentType());
 			// Content-Length
 			Assert::AreEqual<uint32_t>(0, sipm.getContentLength());
 			Assert::AreEqual<uint32_t>(300, sipm.getExpires());
-			Assert::AreEqual<bool>(true, sipm.value("/h/X-subscribe-to-leg-events"_json_pointer, false));
+			Assert::AreEqual<bool>(true, sipm.header<bool>("X-subscribe-to-leg-events"));
 		}
 
 
@@ -1017,14 +1017,14 @@ namespace test_suite
 
 			auto msgs = sip2json::parseAllFromBuffer(bufferStart, buffer.end(), [&](sipmessage& sipm) {
 				Assert::IsTrue(!sipm.empty(), L"Expect valid one message parsed.");
-				Assert::AreEqual<std::string>("1593721670540996", sipm.getHeaders().value("X-Message-Time", ""));
-				Assert::AreEqual<std::string>("3 INVITE", sipm.getHeaders().value("CSeq", ""));
+				Assert::AreEqual<std::string>("1593721670540996", sipm.headers().value("X-Message-Time", ""));
+				Assert::AreEqual<std::string>("3 INVITE", sipm.headers().value("CSeq", ""));
 				Assert::AreEqual<uint32_t>(100, sipm.getStatusCode());
 				Assert::AreEqual<std::string>("Trying", sipm.getReason());
 				Assert::AreEqual<std::string>(
 						"X-Signed start=\"1593721669\",expire=\"1593725269\",user=\"jaaaaaaa@aaaaaaaaaaaaaaaa.com\",confwiz=\"my "
 						"string\",nsadrs=\"aa-aa-aaaa-00.ring2.com\",signed=\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa7\"",
-						sipm.getHeaders().value("Authorization", ""));
+						sipm.headers().value("Authorization", ""));
 				passTest = true;
 			});
 
@@ -1579,7 +1579,7 @@ namespace test_suite
 				debugBuffer += ",";
 
 				// Check for each item; match the CSeq
-				Assert::AreEqual<std::string>(matchTarget[item], i.value("/h/CSeq"_json_pointer, ""));
+				Assert::AreEqual<std::string>(matchTarget[item], i.header<std::string>("CSeq"));
 			}
 
 			debugBuffer += "]";
@@ -1608,7 +1608,7 @@ namespace test_suite
 			}
 
 			// Affirm that the first frame has a Contact that has been unfolded properly!
-			Assert::AreEqual<std::string>(msgs[0].value("/h/Contact"_json_pointer, ""), "<sip:localhost:8443;transport=ssl>");
+			Assert::AreEqual<std::string>("<sip:localhost:8443;transport=ssl>", msgs[0].header<std::string>("Contact"));
 			Assert::AreEqual<size_t>(1, msgs[0].value("/b/sdp"_json_pointer, nlohmann::json {}).size());
 			Assert::AreEqual<size_t>(729, msgs[0].getContentLength());
 
@@ -1691,8 +1691,8 @@ namespace test_suite
 			auto msgs = sip2json::parseAllFromBuffer(bufferStart, buffer.end(), [&](sipmessage& sipm) {
 				Assert::IsTrue(!sipm.empty(), L"Expect valid one message parsed.");
 				writeSampleFile("Trying_INVITE_1", sipm.dump(4));
-				Assert::AreEqual<std::string>("1593721670540996", sipm.getHeaders().value("X-Message-Time", ""));
-				Assert::AreEqual<std::string>("3 INVITE", sipm.getHeaders().value("CSeq", ""));
+				Assert::AreEqual<std::string>("1593721670540996", sipm.headers().value("X-Message-Time", ""));
+				Assert::AreEqual<std::string>("3 INVITE", sipm.headers().value("CSeq", ""));
 				Assert::AreEqual<uint32_t>(100, sipm.getStatusCode());
 				Assert::AreEqual<std::string>("Trying", sipm.getReason());
 				passTest = true;
@@ -1907,7 +1907,7 @@ namespace test_suite
 				Assert::IsTrue(sipm.value("/h/Via"_json_pointer, nlohmann::json {}).is_array());
 				Assert::AreEqual<size_t>(sipm.value("/h/Via"_json_pointer, nlohmann::json {}).size(), 3);
 				// Call-ID
-				Assert::AreEqual<std::string>(sipm.getCallID(), "119035121230567il-ed-mara-01");
+				Assert::AreEqual<std::string>("119035121230567il-ed-mara-01", sipm.getCallID());
 				// Content-Type
 				Assert::AreEqual<std::string>(CONTENT_TYPE_APP_SDP, sipm.getContentType());
 				// Content-Length

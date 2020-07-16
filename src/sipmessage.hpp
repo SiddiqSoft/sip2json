@@ -38,6 +38,7 @@
 
 #include <algorithm>
 #include <string>
+#include <variant>
 #include <regex>
 #include <memory>
 #include <iterator>
@@ -76,53 +77,6 @@ namespace siddiqsoftware
 		}
 
 	public:
-		/// @brief Create a skeleton request message
-		/// @param method One of the SIP method
-		/// @param uri SIP URI
-		/// @param callId Optional Call-ID
-		/// @param cseq Optional CSeq
-		/// @param src Optional base sipmessage
-		/// @return sipmessage
-		static sipmessage
-		createRequest(const std::string& method, const std::string& uri, const std::string& callId = {}, uint32_t cseq = 0)
-		{
-			auto sipm = createRawMessage(sipmessage::MessageTypeRequest);
-
-			// start-line: may either be a request-line or a status-line
-			// request-line: METHOD Request-URI SIP/2.0
-			// rl ==> "request-line" (request message type) and sl ==> "status-line" (response message type)
-			sipm["s"] = {{"type", sipmessage::MessageTypeRequest}, {"method", method}, {"uri", uri}, {"version", SIPVER_20}};
-			// message-headers
-			if (!callId.empty()) sipm["/h/Call-ID"_json_pointer] = callId;
-			if (cseq > 0) sipm["/h/CSeq"_json_pointer] = fmt::format("{} {}", cseq, method);
-			sipm["/h/Date"_json_pointer] = getRFC1123();
-
-			return sipm;
-		}
-
-
-		/// @brief Create a skeleton response/status message
-		/// @param statusCode Unsigned integer representing status code of the messages
-		/// @param src Optional. Base sipmessage
-		/// @return sipmessage
-		static sipmessage createResponse(uint32_t statusCode, std::optional<sipmessage> src = {})
-		{
-			auto sipm = src.value_or(createRawMessage(sipmessage::MessageTypeResponse));
-
-			// We must clear these values in case we are updating an existing object.
-			// start-line: may either be a request-line or a status-line
-			// request-line: METHOD Request-URI SIP/2.0
-			// sl ==> "status-line" (response message type)
-			sipm["s"]					 = {{"type", sipmessage::MessageTypeResponse},
-							{"status", statusCode},
-							{"reason", getReasonPhrase(statusCode)},
-							{"version", SIPVER_20}};
-			sipm["/h/Date"_json_pointer] = getRFC1123();
-
-			return sipm;
-		}
-
-	public:
 		sipmessage() = default;
 		sipmessage(const nlohmann::json& src)
 		{
@@ -135,31 +89,9 @@ namespace siddiqsoftware
 			return *this;
 		}
 
-		/// @brief Returns an envelope conforming to the CloudEvent spec. https://github.com/cloudevents/spec/blob/v1.0/spec.md
-		/// @return json containing the CloudEvent spec.
-		nlohmann::json to_cloudEvent()
-		{
-			sip2json_throw_if<invalid_document_error>((!this->contains("/h/Call-ID") && !this->contains("z")),
-													  "{}:Missing Call-ID and ticks. Required elements.",
-													  __func__);
-
-			return nlohmann::json {
-					{"specversion", "1.0"},
-					{"source", "sip2json"},
-					{"datacontenttype", "application/json+sip2json"},
-					{"time", getISO8601()},
-					{"subject", this->value("/s/type"_json_pointer, "")},
-					{"data", *this},
-					{"type", fmt::format("com.siddiqsoftware.sip2json.{}", this->value("/s/type"_json_pointer, ""))},
-					{"id", fmt::format("{}.{}", this->value("/h/Call-ID"_json_pointer, ""), this->value("z", 0I64))}};
-		}
-
 	public:
-		void setUser(const std::string& userName) {};
-
-	public:
-		inline const uint32_t getContentLength() { return this->value("/h/Content-Length"_json_pointer, 0); };
-		inline const uint32_t getExpires() { return this->value("/h/Expires"_json_pointer, 0); };
+		inline const uint32_t getContentLength() { return header<uint32_t>("Content-Length"); };
+		inline const uint32_t getExpires() { return header<uint32_t>("Expires"); };
 		inline const auto	  getContentType()
 		{
 			// Special concession for some SIP servers which incorrectly encode this field.
@@ -177,14 +109,102 @@ namespace siddiqsoftware
 
 			return std::string {};
 		};
-		inline const auto getCallID() { return this->value("/h/Call-ID"_json_pointer, ""); };
+		inline const auto getCallID() { return header<std::string>("Call-ID"); };
 		inline const auto getMethod() { return this->value("/s/method"_json_pointer, ""); };
 		inline const auto getUri() { return this->value("/s/uri"_json_pointer, ""); };
 		inline const auto getStatusCode() { return this->value("/s/status"_json_pointer, 0); };
 		inline const auto getReason() { return this->value("/s/reason"_json_pointer, ""); };
-		inline auto		  getHeaders() { return this->at("h"); };
-		inline auto		  getBody() { return this->at("b"); };
+		inline auto&	  headers()
+		{
+			static const nlohmann::json EMPTY_OBJECT;
+			return this->contains("h") ? this->at("h") : EMPTY_OBJECT;
+		};
+		inline auto& body()
+		{
+			static const nlohmann::json EMPTY_OBJECT;
+			return this->contains("b") ? this->at("b") : EMPTY_OBJECT;
+		};
 		inline auto isMessageTypeRequest() { return (this->value("/s/type"_json_pointer, "").compare(MessageTypeRequest) == 0); };
 		inline auto isMessageTypeResponse() { return (this->value("/s/type"_json_pointer, "").compare(MessageTypeResponse) == 0); };
+
+		template <class T> auto header(const std::string& key, std::optional<T> defaultValue = {})
+		{
+			// Return the value or the default for the object.
+			return (*this)["h"].value(key, defaultValue.value_or(T {}));
+		}
+		// mutators
+	public:
+		template <typename T> inline sipmessage& header(const std::string& key, const T& v)
+		{
+			(*this)["h"][key] = v;
+
+			return *this;
+		};
+
+	public:
+		/// @brief Create a skeleton request message
+		/// @param method One of the SIP method
+		/// @param uri SIP URI
+		/// @param callId Optional Call-ID
+		/// @param cseq Optional CSeq
+		/// @param src Optional base sipmessage
+		/// @return sipmessage
+		static sipmessage
+		create(const std::string& method, const std::string& uri, const std::string& callId = {}, uint32_t cseq = 0)
+		{
+			auto sipm = createRawMessage(sipmessage::MessageTypeRequest);
+
+			// start-line: may either be a request-line or a status-line
+			// request-line: METHOD Request-URI SIP/2.0
+			// rl ==> "request-line" (request message type) and sl ==> "status-line" (response message type)
+			sipm["s"] = {{"type", sipmessage::MessageTypeRequest}, {"method", method}, {"uri", uri}, {"version", SIPVER_20}};
+			// message-headers
+			if (!callId.empty()) sipm.header("Call-ID", callId);
+			if (cseq > 0) sipm.header("CSeq", fmt::format("{} {}", cseq, method));
+			sipm.header("Date", getRFC1123());
+
+			return sipm;
+		}
+
+
+		/// @brief Create a skeleton response/status message
+		/// @param statusCode Unsigned integer representing status code of the messages
+		/// @param src Optional. Base sipmessage
+		/// @return sipmessage
+		static sipmessage create(uint32_t statusCode, std::optional<sipmessage> src = {})
+		{
+			auto sipm = src.value_or(createRawMessage(sipmessage::MessageTypeResponse));
+
+			// We must clear these values in case we are updating an existing object.
+			// start-line: may either be a request-line or a status-line
+			// request-line: METHOD Request-URI SIP/2.0
+			// sl ==> "status-line" (response message type)
+			sipm["s"] = {{"type", sipmessage::MessageTypeResponse},
+						 {"status", statusCode},
+						 {"reason", getReasonPhrase(statusCode)},
+						 {"version", SIPVER_20}};
+			sipm.header("Date", getRFC1123());
+
+			return sipm;
+		}
+
+	public:
+		/// @brief Returns an envelope conforming to the CloudEvent spec. https://github.com/cloudevents/spec/blob/v1.0/spec.md
+		/// @return json containing the CloudEvent spec.
+		nlohmann::json to_cloudEvent()
+		{
+			sip2json_throw_if<invalid_document_error>((!this->contains("/h/Call-ID") && !this->contains("z")),
+													  "{}:Missing Call-ID and ticks. Required elements.",
+													  __func__);
+
+			return nlohmann::json {{"specversion", "1.0"},
+								   {"source", "sip2json"},
+								   {"datacontenttype", "application/json+sip2json"},
+								   {"time", getISO8601()},
+								   {"subject", this->value("/s/type"_json_pointer, "")},
+								   {"data", *this},
+								   {"type", fmt::format("com.siddiqsoftware.sip2json.{}", this->value("/s/type"_json_pointer, ""))},
+								   {"id", fmt::format("{}.{}", getCallID(), this->value("z", 0I64))}};
+		}
 	}; // class sipmessage
 } // namespace siddiqsoftware
