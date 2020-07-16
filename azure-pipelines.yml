@@ -52,6 +52,36 @@ steps:
     msbuildArchitecture: 'x64'
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
+- task: VSTest@2
+  displayName: 'VsTest - Debug'
+  inputs:
+    testSelector: 'testAssemblies'
+    testAssemblyVer2: |
+      **\*test*.exe
+      **\*test*.dll
+      !**\*TestAdapter.dll
+      !**\obj\**
+      !**\Release\**
+    searchFolder: '$(System.DefaultWorkingDirectory)'
+    runSettingsFile: '.runsettings'
+    runInParallel: true
+    codeCoverageEnabled: true
+    platform: 'x64'
+    configuration: 'debug'
+    diagnosticsEnabled: true
+    rerunFailedTests: true
+  continueOnError: true
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+
+- task: PublishTestResults@2
+  displayName: 'Publish DEBUG Test Results **/TEST-*.xml'
+  inputs:
+    testResultsFormat: 'VSTest'
+    testResultsFiles: '**/TEST-*.xml'
+    buildPlatform: 'x64'
+    buildConfiguration: 'debug'
+  continueOnError: true
+
 - task: VSBuild@1
   displayName: 'Build solution sip2json.sln RELEASE'
   inputs:
@@ -82,45 +112,14 @@ steps:
   continueOnError: true
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
-- task: VSTest@2
-  displayName: 'VsTest - Debug'
-  inputs:
-    testSelector: 'testAssemblies'
-    testAssemblyVer2: |
-      **\*test*.exe
-      **\*test*.dll
-      !**\*TestAdapter.dll
-      !**\obj\**
-      !**\Release\**
-    searchFolder: '$(System.DefaultWorkingDirectory)'
-    runSettingsFile: '.runsettings'
-    runInParallel: true
-    codeCoverageEnabled: true
-    platform: 'x64'
-    configuration: 'debug'
-    diagnosticsEnabled: true
-    rerunFailedTests: true
-  continueOnError: true
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-
 - task: PublishTestResults@2
-  displayName: 'Publish Test Results **/TEST-*.xml'
+  displayName: 'Publish Release Test Results **/TEST-*.xml'
   inputs:
     testResultsFormat: 'VSTest'
     testResultsFiles: '**/TEST-*.xml'
     buildPlatform: 'x64'
     buildConfiguration: 'release'
   continueOnError: true
-
-- task: NuGetCommand@2
-  displayName: 'NuGet push'
-  inputs:
-    command: push
-    packagesToPush: 'build\*.nupkg;build\*symbols*.nupkg'
-    publishVstsFeed: 'a0302836-2c67-4470-bcb5-10149e5447f9'
-    allowPackageConflicts: true
-  enabled: false
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
 - task: NuGetCommand@2
   displayName: 'NuGet pack'
@@ -138,4 +137,3 @@ steps:
     publishVstsFeed: 'a0302836-2c67-4470-bcb5-10149e5447f9'
     allowPackageConflicts: true
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-
