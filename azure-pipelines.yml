@@ -62,7 +62,7 @@ steps:
     msbuildArchitecture: 'x64'
 
 - task: VSTest@2
-  displayName: 'VsTest - testAssemblies'
+  displayName: 'VsTest - Release'
   inputs:
     testSelector: 'testAssemblies'
     testAssemblyVer2: |
@@ -74,12 +74,34 @@ steps:
     searchFolder: '$(System.DefaultWorkingDirectory)'
     runSettingsFile: '.runsettings'
     runInParallel: true
-    codeCoverageEnabled: true
+    codeCoverageEnabled: false
     platform: 'x64'
     configuration: 'release'
     diagnosticsEnabled: true
     rerunFailedTests: true
   continueOnError: true
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+
+- task: VSTest@2
+  displayName: 'VsTest - Debug'
+  inputs:
+    testSelector: 'testAssemblies'
+    testAssemblyVer2: |
+      **\*test*.exe
+      **\*test*.dll
+      !**\*TestAdapter.dll
+      !**\obj\**
+      !**\Release\**
+    searchFolder: '$(System.DefaultWorkingDirectory)'
+    runSettingsFile: '.runsettings'
+    runInParallel: true
+    codeCoverageEnabled: true
+    platform: 'x64'
+    configuration: 'debug'
+    diagnosticsEnabled: true
+    rerunFailedTests: true
+  continueOnError: true
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
 - task: PublishTestResults@2
   displayName: 'Publish Test Results **/TEST-*.xml'

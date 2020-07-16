@@ -48,6 +48,7 @@
 
 #include "sip2json_response_codes.hpp"
 #include "sip2json_utils.hpp"
+#include "sip2json_exception.hpp"
 
 #include "nlohmann/json.hpp"
 #include "fmt/chrono.h"
@@ -90,56 +91,65 @@ namespace siddiqsoftware
 		}
 
 	public:
-		inline const uint32_t getContentLength() { return header<uint32_t>("Content-Length"); };
-		inline const uint32_t getExpires() { return header<uint32_t>("Expires"); };
-		inline const auto	  getContentType()
+		/// @brief Returns the header object reference
+		/// @return Return the header object reference
+		inline auto&			headers() { return this->at("h"); };
+		template <class T> auto header(const std::string& key, std::optional<T> defaultValue = {})
+		{
+			// Return the value or the default for the object.
+			return headers().value(key, defaultValue.value_or(T {}));
+		}
+
+		inline uint32_t getContentLength() { return header<uint32_t>("Content-Length"); };
+		inline uint32_t getExpires() { return header<uint32_t>("Expires"); };
+		inline auto		getContentType()
 		{
 			// Special concession for some SIP servers which incorrectly encode this field.
 			// First we try the Content-Type and default to looking up Content-type else return empty string.
-			if (this->at("h").contains("Content-Type"))
+			if (headers().contains("Content-Type"))
 			{
-				auto ct = this->at("h").at("Content-Type");
+				auto ct = headers().at("Content-Type");
 				return ct.is_null() ? std::string {} : ct.get<std::string>();
 			}
-			else if (this->at("h").contains("Content-type"))
+			else if (headers().contains("Content-type"))
 			{
-				auto ct = this->at("h").at("Content-type");
+				auto ct = headers().at("Content-type");
 				return ct.is_null() ? std::string {} : ct.get<std::string>();
 			}
 
 			return std::string {};
 		};
-		inline const auto getCallID() { return header<std::string>("Call-ID"); };
-		inline const auto getMethod() { return this->value("/s/method"_json_pointer, ""); };
-		inline const auto getUri() { return this->value("/s/uri"_json_pointer, ""); };
-		inline const auto getStatusCode() { return this->value("/s/status"_json_pointer, 0); };
-		inline const auto getReason() { return this->value("/s/reason"_json_pointer, ""); };
-		inline auto&	  headers()
-		{
-			static const nlohmann::json EMPTY_OBJECT;
-			return this->contains("h") ? this->at("h") : EMPTY_OBJECT;
-		};
-		inline auto& body()
-		{
-			static const nlohmann::json EMPTY_OBJECT;
-			return this->contains("b") ? this->at("b") : EMPTY_OBJECT;
-		};
-		inline auto isMessageTypeRequest() { return (this->value("/s/type"_json_pointer, "").compare(MessageTypeRequest) == 0); };
-		inline auto isMessageTypeResponse() { return (this->value("/s/type"_json_pointer, "").compare(MessageTypeResponse) == 0); };
+		inline auto getCallID() { return header<std::string>("Call-ID"); };
+		inline auto getMethod() { return this->value("/s/method"_json_pointer, ""); };
+		inline auto getUri() { return this->value("/s/uri"_json_pointer, ""); };
+		inline auto getStatusCode() { return this->value("/s/status"_json_pointer, 0); };
+		inline auto getReason() { return this->value("/s/reason"_json_pointer, ""); };
+		/// @brief Returns a reference to the body object
+		/// @return Returns reference to the body element b
+		inline auto& body() { return this->at("b"); };
+		inline auto	 isMessageRequest() { return (this->value("/s/type"_json_pointer, "").compare(MessageTypeRequest) == 0); };
+		inline auto	 isMessageResponse() { return (this->value("/s/type"_json_pointer, "").compare(MessageTypeResponse) == 0); };
 
-		template <class T> auto header(const std::string& key, std::optional<T> defaultValue = {})
-		{
-			// Return the value or the default for the object.
-			return (*this)["h"].value(key, defaultValue.value_or(T {}));
-		}
 		// mutators
 	public:
 		template <typename T> inline sipmessage& header(const std::string& key, const T& v)
 		{
-			(*this)["h"][key] = v;
-
+			headers()[key] = v;
 			return *this;
 		};
+
+		template <typename T> inline sipmessage& header(const json_pointer& key, const T& v)
+		{
+			headers()[key] = v;
+			return *this;
+		};
+
+		template <typename T> inline sipmessage& body(const json_pointer& key, const T& v)
+		{
+			body()[key] = v;
+			return *this;
+		};
+
 
 	public:
 		/// @brief Create a skeleton request message
@@ -195,7 +205,7 @@ namespace siddiqsoftware
 		{
 			sip2json_throw_if<invalid_document_error>((!this->contains("/h/Call-ID") && !this->contains("z")),
 													  "{}:Missing Call-ID and ticks. Required elements.",
-													  __func__);
+													  std::string_view(__func__));
 
 			return nlohmann::json {{"specversion", "1.0"},
 								   {"source", "sip2json"},
@@ -204,7 +214,7 @@ namespace siddiqsoftware
 								   {"subject", this->value("/s/type"_json_pointer, "")},
 								   {"data", *this},
 								   {"type", fmt::format("com.siddiqsoftware.sip2json.{}", this->value("/s/type"_json_pointer, ""))},
-								   {"id", fmt::format("{}.{}", getCallID(), this->value("z", 0I64))}};
+								   {"id", fmt::format("{}.{}", getCallID(), this->value("z", 0))}};
 		}
 	}; // class sipmessage
 } // namespace siddiqsoftware

@@ -64,7 +64,7 @@
                 <ModulePath>.*CPPUnitTestFramework.*</ModulePath>
                 <ModulePath>.*TestAdapter.*</ModulePath>
                 <ModulePath>.*nunit.*</ModulePath>
-                <!--<ModulePath>.*json.*</ModulePath>-->
+                <ModulePath>.*packages.*</ModulePath>
                 <ModulePath>.*fmt.*</ModulePath>
               </Exclude>
             </ModulePaths>

@@ -1971,23 +1971,19 @@ namespace test_suite
 			auto msgs		 = sip2json::parseAllFromBuffer(bufferStart, buffer.end());
 			auto sipm		 = msgs[0];
 
-			std::cerr << "Decoded SIPMessage document" << sipm.dump(2);
-
 			// Start checking if we decoded properly..
 			// Start-Line (response): SIP/2.0 200 OK
 			Assert::AreEqual<uint32_t>(200, sipm.getStatusCode());
 			// Via is an array
-			Assert::IsTrue(sipm.value("/h/Via"_json_pointer, nlohmann::json {}).is_array());
-			Assert::AreEqual<size_t>(sipm.value("/h/Via"_json_pointer, nlohmann::json {}).size(), 1);
-			Assert::AreEqual<std::string>(sipm.value("/h/Via/0"_json_pointer, ""), "SIP/2.0/TCP il-ed-mara-01.ring2.com:8443");
+			Assert::IsTrue(sipm.headers()["Via"].is_array());
+			Assert::AreEqual<size_t>(1, sipm.headers()["Via"].size());
+			Assert::AreEqual<std::string>("SIP/2.0/TCP il-ed-mara-01.ring2.com:8443", sipm.headers()["Via"][0]);
 			// Call-ID
-			Assert::AreEqual<std::string>(sipm.getCallID(), "8DC1AF9E-8C37-4463-B8C9-1959A1428116");
-			// Content-Type
-			//Assert::AreEqual<>(CONTENT_TYPE_APP_SDP, sipm.getContentType());
+			Assert::AreEqual<std::string>("8DC1AF9E-8C37-4463-B8C9-1959A1428116", sipm.getCallID());
 			// Content-Length
 			Assert::AreEqual<uint32_t>(0, sipm.getContentLength());
 			Assert::AreEqual<uint32_t>(300, sipm.getExpires());
-			Assert::AreEqual<bool>(true, sipm.value("/h/X-subscribe-to-leg-events"_json_pointer, false));
+			Assert::AreEqual<bool>(true, sipm.header<bool>("X-subscribe-to-leg-events"));
 		}
 
 

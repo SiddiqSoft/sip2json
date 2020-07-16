@@ -85,6 +85,37 @@ void onReadCompleted(std::string& readBuffer)
 }
 ```
 
+## API
+
+There are two primary objects: `sipmessage` and the factory `sip2json` objects.
+
+```cpp
+#include "sip2json.hpp"
+#include "sipmessage.hpp"
+
+using namespace siddiqsoftware;
+
+void createINVITE()
+{
+  auto sipm= sipmessage::create(METHOD_INVITE, "sip:user@mail.com");
+  // Chain additional header values
+  sipm.header("To", "sip:user@mail.com")
+      .header("From", "sip:user@mail.com")
+      .header("Contact", "sip:user@mail.com;tel=14155551212")
+      .header("From", "sip:user@mail.com")
+      .header("Content-Type", CONTENT_TYPE_APPLICATION_SDP)
+      .header("Content-Length", 0);
+  // Alternatively, you can use the headers() method to get access to the
+  // object directly and perform an add to the array.
+  sipm.headers()["Via"].push_back("SIP/2.0/TCP callcontrolserver.com");
+  // Next, we set the body
+  sipm.body()["sdp"][0]["v"]= 0;
+  sipm.body()["sdp"][0]["t"]= {999999, 0};
+  .
+  .
+}
+```
+
 ## Roadmap
 
  Release | Notes

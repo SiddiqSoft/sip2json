@@ -563,12 +563,12 @@ namespace siddiqsoftware
 			// Assert: Header must exist
 			sip2json_throw_if<invalid_document_error>(!sipm.contains("h"), "{}:sipm does not contain `h`eaders.", __func__);
 
-			if (sipm.isMessageTypeRequest())
+			if (sipm.isMessageRequest())
 			{
 				// Request Line
 				buffer = fmt::format("{} {} SIP/2.0\r\n", sipm.getMethod(), sipm.getUri());
 			}
-			else if (sipm.isMessageTypeResponse())
+			else if (sipm.isMessageResponse())
 			{
 				// Status Line
 				buffer = fmt::format("SIP/2.0 {} {}\r\n", sipm.getStatusCode(), sipm.getReason());
@@ -582,12 +582,11 @@ namespace siddiqsoftware
 			}
 
 			// Encode the body first so we can get the content-length properly.
-			auto body					= serializeSDP(sipm);
-			sipm["h"]["Content-Length"] = body.length();
+			auto body = serializeSDP(sipm);
+			sipm.header("Content-Length", body.length());
 
 			// Headers
-			auto mh = sipm.headers();
-			if (mh.size() > 0)
+			if (auto mh = sipm.headers(); mh.size() > 0)
 			{
 				//TODO: This will not care about the order of the serialized headers. The json library does not care about order.
 				for (auto& [key, val] : mh.items())
