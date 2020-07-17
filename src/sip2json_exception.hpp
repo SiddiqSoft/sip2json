@@ -38,7 +38,6 @@
 
 #include <exception>
 #include <string>
-#include <limits>
 
 #include "nlohmann/json.hpp"
 #include "fmt/format.h"
@@ -47,7 +46,7 @@ namespace siddiqsoftware
 {
 	enum class sip2jsonErrors : uint32_t
 	{
-		ok = std::numeric_limits<uint32_t>::min(),
+		ok = 0,
 		/* parse errors */
 		incomplete_buffer_for_parse,
 		incomplete_buffer_for_content,
@@ -59,7 +58,7 @@ namespace siddiqsoftware
 		invalid_document_unsupported_method,
 		invalid_document_unsupported_content,
 		empty_message,
-		unknown = std::numeric_limits<uint32_t>::max()
+		unknown = 0xFFFFFFFF
 	};
 
 	NLOHMANN_JSON_SERIALIZE_ENUM(sip2jsonErrors,
