@@ -38,6 +38,7 @@
 
 #include <exception>
 #include <string>
+#include <limits>
 
 #include "nlohmann/json.hpp"
 #include "fmt/format.h"
@@ -61,6 +62,18 @@ namespace siddiqsoftware
 		unknown = std::numeric_limits<uint32_t>::max()
 	};
 
+	NLOHMANN_JSON_SERIALIZE_ENUM(sip2jsonErrors,
+								 {{sip2jsonErrors::ok, "ok"},
+								  {sip2jsonErrors::incomplete_buffer_for_parse, "incomplete_buffer_for_parse"},
+								  {sip2jsonErrors::incomplete_buffer_for_content, "incomplete_buffer_for_content"},
+								  {sip2jsonErrors::incomplete_buffer_for_header, "incomplete_buffer_for_header"},
+								  {sip2jsonErrors::invalid_startline, "invalid_startline"},
+								  {sip2jsonErrors::unsupported_contenttype, "unsupported_contenttype"},
+								  {sip2jsonErrors::invalid_document, "invalid_document"},
+								  {sip2jsonErrors::invalid_document_unsupported_method, "invalid_document_unsupported_method"},
+								  {sip2jsonErrors::invalid_document_unsupported_content, "invalid_document_unsupported_content"},
+								  {sip2jsonErrors::empty_message, "empty_message"},
+								  {sip2jsonErrors::unknown, "unknown"}});
 
 	class incomplete_buffer_for_parse_error : public std::runtime_error
 	{

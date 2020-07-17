@@ -1654,7 +1654,6 @@ namespace test_suite
 		TEST_METHOD(NOTIFY_generic_1)
 		{
 			auto buffer		 = loadSampleFile(__func__); // NOLINT
-			auto item		 = 0;
 			auto bufferStart = buffer.begin();
 
 			auto msgs = sip2json::parseAllFromBuffer(bufferStart, buffer.end());
