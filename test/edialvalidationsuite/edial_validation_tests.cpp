@@ -204,7 +204,6 @@ namespace test_suite
 			auto msgs		 = sip2json::parseAllFromBuffer(bufferStart, buffer.end());
 			auto sipm		 = msgs[0];
 
-			//std::cerr << "Decoded SIPMessage document" << sipm.dump(2);
 			//Logger::WriteMessage(sipm.dump(2).c_str());
 
 			// Start checking if we decoded properly..
@@ -234,7 +233,6 @@ namespace test_suite
 
 				writeSampleFile("NOTIFY_LegDrop", serializedFromDecoded);
 
-				std::cerr << "Serialized from decoded SIPMessage\n" << serializedFromDecoded;
 				Logger::WriteMessage(serializedFromDecoded.c_str());
 
 				// So we can decode it again and ensure that we can round-trip!
@@ -272,8 +270,6 @@ namespace test_suite
 			auto bufferStart = buffer.begin();
 			auto msgs		 = sip2json::parseAllFromBuffer(bufferStart, buffer.end());
 			auto sipm		 = msgs[0];
-
-			std::cerr << "Decoded SIPMessage document" << sipm.flatten().dump(2);
 
 			roundTripVerify(__func__, buffer, sipm, [&](sipmessage& sipm) {
 				// Start checking if we decoded properly..
@@ -346,8 +342,6 @@ namespace test_suite
 			auto msgs		 = sip2json::parseAllFromBuffer(bufferStart, buffer.end());
 			auto sipm		 = msgs[0];
 
-			std::cerr << "Decoded SIPMessage document" << sipm.flatten().dump(2);
-
 			roundTripVerify(__func__, buffer, sipm, [&](sipmessage& sipm) {
 				// Start checking if we decoded properly..
 				// METHOD: NOTIFY
@@ -414,8 +408,6 @@ namespace test_suite
 			auto bufferStart = buffer.begin();
 			auto msgs		 = sip2json::parseAllFromBuffer(bufferStart, buffer.end());
 			auto sipm		 = msgs[0];
-
-			std::cerr << "Decoded SIPMessage document" << sipm.flatten().dump(2);
 
 			auto verifyItems = [](sipmessage& sipm) {
 				// Start checking if we decoded properly..
@@ -512,6 +504,42 @@ namespace test_suite
 		}
 
 		// NOLINTNEXTLINE
+		TEST_METHOD(REGISTER_401_Unauthorized)
+		{
+			using namespace std;
+			auto buffer		 = loadSampleFile(__func__); // NOLINT
+			auto bufferStart = buffer.begin();
+
+			try
+			{
+				auto sipm = sip2json::parseFromBuffer(bufferStart, buffer.end());
+				roundTripVerify(__func__, buffer, sipm, [&](auto sipm) {
+					Logger::WriteMessage(sipm.flatten().dump().c_str());
+					// Start checking if we decoded properly..
+					Assert::AreEqual<uint32_t>(401, sipm.getStatusCode());
+					// Via is an array
+					Assert::IsTrue(sipm.value("/h/Via"_json_pointer, nlohmann::json {}).is_array());
+					Assert::AreEqual<size_t>(1, sipm.value("/h/Via"_json_pointer, nlohmann::json {}).size());
+					Assert::AreEqual<std::string>("SIP/2.0/TCP il-ed-aras-01.ring2-corp.com:8443",
+												  sipm.value("/h/Via/0"_json_pointer, ""));
+					// Call-ID
+					Assert::AreEqual<std::string>("755a8c07-ee3c-43fd-bfb-7f93ade4-89aaab98a8bb", sipm.getCallID());
+					// Content-Type
+					Assert::AreEqual<std::string>("<sip:no_such_user_exists@loopup.com>;tag=12345678",
+												  sipm.header<std::string>("To"s));
+					// Content-Length
+					Assert::AreEqual<uint32_t>(0, sipm.getContentLength());
+					Assert::AreEqual<uint32_t>(360, sipm.getExpires());
+					Assert::AreEqual<std::string>("Basic realm=eDial", sipm.header<std::string>("WWW-Authenticate"));
+				});
+			}
+			catch (const std::exception& e)
+			{
+				Logger::WriteMessage(e.what());
+			}
+		}
+
+		// NOLINTNEXTLINE
 		TEST_METHOD(REGISTER_1)
 		{
 			auto buffer		 = loadSampleFile(__func__); // NOLINT
@@ -519,8 +547,6 @@ namespace test_suite
 			auto msgs		 = sip2json::parseAllFromBuffer(bufferStart, buffer.end());
 			auto sipm		 = msgs[0];
 
-
-			std::cerr << "Decoded SIPMessage document" << sipm.dump(2);
 
 			// NOLINTNEXTLINE
 			roundTripVerify(__func__, buffer, sipm, [&](sipmessage& sipm) {
@@ -550,9 +576,6 @@ namespace test_suite
 			auto bufferStart = buffer.begin();
 			auto msgs		 = sip2json::parseAllFromBuffer(bufferStart, buffer.end());
 			auto sipm		 = msgs[0];
-
-
-			std::cerr << "Decoded SIPMessage document" << sipm.dump(2);
 
 			// Deliberately poison the message type
 			sipm["/s/type"_json_pointer] = SIPMessageType::notspecified;
@@ -597,8 +620,6 @@ namespace test_suite
 			auto bufferStart = buffer.begin();
 			auto sipm		 = sip2json::parseFromBuffer(bufferStart, buffer.end());
 
-			std::cerr << "Decoded SIPMessage document" << sipm.dump(2);
-
 			// Start checking if we decoded properly..
 			// METHOD: NOTIFY
 			Assert::AreEqual<std::string>(siddiqsoftware::METHOD_NOTIFY, sipm.getMethod());
@@ -611,8 +632,6 @@ namespace test_suite
 			auto buffer		 = loadSampleFile("NOTIFY_LegDrop");
 			auto bufferStart = buffer.begin();
 			auto sipm		 = sip2json::parseFromBuffer(bufferStart, buffer.end());
-
-			std::cerr << "Decoded SIPMessage document" << sipm.dump(2);
 
 			// Start checking if we decoded properly..
 			// METHOD: NOTIFY
@@ -635,8 +654,6 @@ namespace test_suite
 			auto buffer		 = loadSampleFile(__func__); // NOLINT
 			auto bufferStart = buffer.begin();
 			auto sipm		 = sip2json::parseFromBuffer(bufferStart, buffer.end());
-
-			std::cerr << "Decoded SIPMessage document" << sipm.flatten().dump(2);
 
 			// Start checking if we decoded properly..
 			// METHOD: NOTIFY
@@ -763,8 +780,6 @@ namespace test_suite
 			auto bufferStart = buffer.begin();
 			auto sipm		 = sip2json::parseFromBuffer(bufferStart, buffer.end());
 
-			std::cerr << "Decoded SIPMessage document" << sipm.flatten().dump(2);
-
 			// Start checking if we decoded properly..
 			// METHOD: NOTIFY
 			Assert::AreEqual<std::string>(METHOD_NOTIFY, sipm.getMethod());
@@ -829,8 +844,6 @@ namespace test_suite
 			auto buffer		 = loadSampleFile(__func__); // NOLINT
 			auto bufferStart = buffer.begin();
 			auto sipm		 = sip2json::parseFromBuffer(bufferStart, buffer.end());
-
-			std::cerr << "Decoded SIPMessage document" << sipm.flatten().dump(2);
 
 			auto verifyItems = [](sipmessage& sipm) {
 				// Start checking if we decoded properly..
@@ -905,8 +918,6 @@ namespace test_suite
 			auto bufferStart = buffer.begin();
 			auto sipm		 = sip2json::parseFromBuffer(bufferStart, buffer.end());
 
-			std::cerr << "Decoded SIPMessage document" << sipm.dump(2);
-
 			// Start checking if we decoded properly..
 			// Start-Line (response): SIP/2.0 200 OK
 			Assert::AreEqual<uint32_t>(200, sipm.getStatusCode());
@@ -924,15 +935,12 @@ namespace test_suite
 			Assert::AreEqual<bool>(true, sipm.value("/h/X-subscribe-to-leg-events"_json_pointer, false));
 		}
 
-
 		// NOLINTNEXTLINE
 		TEST_METHOD(REGISTER_1)
 		{
 			auto buffer		 = loadSampleFile("REGISTER_1");
 			auto bufferStart = buffer.begin();
 			auto sipm		 = sip2json::parseFromBuffer(bufferStart, buffer.end());
-
-			std::cerr << "Decoded SIPMessage document" << sipm.dump(2);
 
 			// Start checking if we decoded properly..
 			// Start-Line (response): SIP/2.0 200 OK
@@ -1716,8 +1724,6 @@ namespace test_suite
 			auto msgs		 = sip2json::parseAllFromBuffer(bufferStart, buffer.end());
 			auto sipm		 = msgs[0];
 
-			std::cerr << "Decoded SIPMessage document" << sipm.dump(2);
-
 			// Start checking if we decoded properly..
 			// METHOD: NOTIFY
 			Assert::AreEqual<std::string>(siddiqsoftware::METHOD_NOTIFY, sipm.getMethod());
@@ -1731,8 +1737,6 @@ namespace test_suite
 			auto bufferStart = buffer.begin();
 			auto msgs		 = sip2json::parseAllFromBuffer(bufferStart, buffer.end());
 			auto sipm		 = msgs[0];
-
-			std::cerr << "Decoded SIPMessage document" << sipm.dump(2);
 
 			// Start checking if we decoded properly..
 			// METHOD: NOTIFY
@@ -1756,8 +1760,6 @@ namespace test_suite
 			auto bufferStart = buffer.begin();
 			auto msgs		 = sip2json::parseAllFromBuffer(bufferStart, buffer.end());
 			auto sipm		 = msgs[0];
-
-			std::cerr << "Decoded SIPMessage document" << sipm.flatten().dump(2);
 
 			// Start checking if we decoded properly..
 			// METHOD: NOTIFY
@@ -1827,8 +1829,6 @@ namespace test_suite
 			auto msgs		 = sip2json::parseAllFromBuffer(bufferStart, buffer.end());
 			auto sipm		 = msgs[0];
 
-			std::cerr << "Decoded SIPMessage document" << sipm.flatten().dump(2);
-
 			// Start checking if we decoded properly..
 			// METHOD: NOTIFY
 			Assert::AreEqual<std::string>(METHOD_NOTIFY, sipm.getMethod());
@@ -1894,8 +1894,6 @@ namespace test_suite
 			auto bufferStart = buffer.begin();
 			auto msgs		 = sip2json::parseAllFromBuffer(bufferStart, buffer.end());
 			auto sipm		 = msgs[0];
-
-			std::cerr << "Decoded SIPMessage document" << sipm.flatten().dump(2);
 
 			auto verifyItems = [](sipmessage& sipm) {
 				// Start checking if we decoded properly..
@@ -1994,8 +1992,6 @@ namespace test_suite
 			auto bufferStart = buffer.begin();
 			auto msgs		 = sip2json::parseAllFromBuffer(bufferStart, buffer.end());
 			auto sipm		 = msgs[0];
-
-			std::cerr << "Decoded SIPMessage document" << sipm.dump(2);
 
 			// Start checking if we decoded properly..
 			// Start-Line (response): SIP/2.0 200 OK
