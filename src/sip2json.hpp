@@ -60,7 +60,7 @@ namespace siddiqsoftware
 #pragma region SIP match patterns
 #pragma endregion
 
-
+	/// @brief SIP message encoder and decoder utility class
 	class sip2json
 	{
 	public:

@@ -46,11 +46,35 @@ namespace test_suite
 		bool dummy;
 
 		// NOLINTNEXTLINE
-		TEST_METHOD(Test_sip2jsonErrors_ok)
+		TEST_METHOD(Test_sip2jsonErrors)
 		{
-			auto eOk = sip2jsonErrors::ok;
+			auto ee = sip2jsonErrors::ok;
 
-			Logger::WriteMessage(fmt::format("{} - {} --> {}", __func__, eOk, nlohmann::json(eOk).dump()).c_str());
+			Logger::WriteMessage(fmt::format("{} - {} --> {}\n", __func__, ee, nlohmann::json(ee).dump()).c_str());
+			
+			ee = sip2jsonErrors::empty_message;
+			Logger::WriteMessage(fmt::format("{} - {} --> {}\n", __func__, ee, nlohmann::json(ee).dump()).c_str());
+
+			ee = sip2jsonErrors::incomplete_buffer_for_content;
+			Logger::WriteMessage(fmt::format("{} - {} --> {}\n", __func__, ee, nlohmann::json(ee).dump()).c_str());
+
+			ee = sip2jsonErrors::incomplete_buffer_for_header;
+			Logger::WriteMessage(fmt::format("{} - {} --> {}\n", __func__, ee, nlohmann::json(ee).dump()).c_str());
+
+			ee = sip2jsonErrors::incomplete_buffer_for_parse;
+			Logger::WriteMessage(fmt::format("{} - {} --> {}\n", __func__, ee, nlohmann::json(ee).dump()).c_str());
+
+			ee = sip2jsonErrors::invalid_document;
+			Logger::WriteMessage(fmt::format("{} - {} --> {}\n", __func__, ee, nlohmann::json(ee).dump()).c_str());
+
+			ee = sip2jsonErrors::invalid_document_unsupported_content;
+			Logger::WriteMessage(fmt::format("{} - {} --> {}\n", __func__, ee, nlohmann::json(ee).dump()).c_str());
+
+			ee = sip2jsonErrors::invalid_document_unsupported_method;
+			Logger::WriteMessage(fmt::format("{} - {} --> {}\n", __func__, ee, nlohmann::json(ee).dump()).c_str());
+
+			ee = sip2jsonErrors::invalid_startline;
+			Logger::WriteMessage(fmt::format("{} - {} --> {}\n", __func__, ee, nlohmann::json(ee).dump()).c_str());
 		}
 
 		// NOLINTNEXTLINE
