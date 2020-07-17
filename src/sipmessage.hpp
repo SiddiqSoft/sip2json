@@ -55,6 +55,18 @@
 
 namespace siddiqsoftware
 {
+	enum class SIPMessageType
+	{
+		notspecified,
+		request	 = 1,
+		response = 2
+	};
+
+	NLOHMANN_JSON_SERIALIZE_ENUM(SIPMessageType,
+								 {{SIPMessageType::request, "request"},
+								  {SIPMessageType::response, "response"},
+								  {SIPMessageType::notspecified, "notspecified"}});
+
 	class sipmessage : public nlohmann::json
 	{
 		static const inline std::string MetaLibName		  = "sip2json";
@@ -62,28 +74,65 @@ namespace siddiqsoftware
 		static const inline std::string MetaParserVersion = "1.0.0";
 
 	public:
-		static const inline std::string MessageTypeRequest	= "request";
-		static const inline std::string MessageTypeResponse = "response";
+		sipmessage() = default;
 
-	private:
-		/// @brief Creates a basic SIP Message content in json. This method is used by the createRequest and createResponse methods
-		/// @param messageType Must be one of MessageTypeRequest or MessageTypeResponse
-		/// @return json document with basic sections
-		static sipmessage createRawMessage(const std::string& messageType)
+		/// @brief Instantiates request message given method and uri with option callId and cseq
+		/// @param method One of the supported SIP methods
+		/// @param uri Request URI
+		/// @param callId Optional CallId
+		/// @param cseq Optional Cseq; the string value is build using this parameter and the method
+		/// @return
+		sipmessage(const std::string& method, const std::string& uri, const std::string& callId = {}, uint32_t cseq = 0)
 		{
-			return nlohmann::json {{"v", MetaSchemaVersion},
-								   {"b", nullptr},
-								   {"z", std::chrono::system_clock::now().time_since_epoch().count()},
-								   {"h", nullptr}};
+			update({{"s", {{"type", SIPMessageType::request}, {"method", method}, {"uri", uri}, {"version", SIPVER_20}}},
+					{"v", MetaSchemaVersion},
+					{"b", nullptr},
+					{"z", std::chrono::system_clock::now().time_since_epoch().count()},
+					{"h", {{"Date", getRFC1123()}}}});
+
+			// request-line: METHOD Request-URI SIP/2.0
+			// message-headers
+			if (!callId.empty()) header("Call-ID", callId);
+			if (cseq > 0) header("CSeq", fmt::format("{} {}", cseq, method));
 		}
 
-	public:
-		sipmessage() = default;
+		/// @brief Instantiates a response message from scratch or optionally from existing sipmessage request
+		/// @param statusCode Status Code for this message, the reason is built using map
+		/// @param src Optional sipmessage object of type request
+		/// @return
+		sipmessage(uint32_t statusCode, std::optional<sipmessage> src = {})
+		{
+			update(src.value_or(nlohmann::json {{"s",
+												 {{"type", SIPMessageType::response},
+												  {"status", statusCode},
+												  {"reason", getReasonPhrase(statusCode)},
+												  {"version", SIPVER_20}}},
+												{"v", MetaSchemaVersion},
+												{"b", nullptr},
+												{"z", std::chrono::system_clock::now().time_since_epoch().count()},
+												{"h", {{"Date", getRFC1123()}}}}));
+
+			// We must clear these values in case we are updating an existing object.
+			erase("s");
+			// "status-line" (Status Reason Version)
+			(*this)["s"] = {{"type", SIPMessageType::response},
+							{"status", statusCode},
+							{"reason", getReasonPhrase(statusCode)},
+							{"version", SIPVER_20}};
+			header("Date", getRFC1123());
+		}
+
+		/// @brief Copy constructor from json
+		/// @param src Json object
+		/// @return
 		sipmessage(const nlohmann::json& src)
 		{
 			if (!src.empty()) this->update(src);
 		}
 
+		/// @brief Assignment constructor
+		/// @param src Json object
+		/// @return
 		sipmessage& operator=(const nlohmann::json& src)
 		{
 			if (!src.empty()) this->update(src);
@@ -127,8 +176,14 @@ namespace siddiqsoftware
 		/// @brief Returns a reference to the body object
 		/// @return Returns reference to the body element b
 		inline auto& body() { return this->at("b"); };
-		inline auto	 isMessageRequest() { return (this->value("/s/type"_json_pointer, "").compare(MessageTypeRequest) == 0); };
-		inline auto	 isMessageResponse() { return (this->value("/s/type"_json_pointer, "").compare(MessageTypeResponse) == 0); };
+		inline auto	 isMessageRequest()
+		{
+			return (this->value("/s/type"_json_pointer, SIPMessageType::notspecified) == SIPMessageType::request);
+		};
+		inline auto isMessageResponse()
+		{
+			return (this->value("/s/type"_json_pointer, SIPMessageType::notspecified) == SIPMessageType::response);
+		};
 
 		// mutators
 	public:
@@ -146,57 +201,10 @@ namespace siddiqsoftware
 
 		template <typename T> inline sipmessage& body(const json_pointer& key, const T& v)
 		{
-			body()[key] = v;
+			(*this)["b"][key] = v;
 			return *this;
 		};
 
-
-	public:
-		/// @brief Create a skeleton request message
-		/// @param method One of the SIP method
-		/// @param uri SIP URI
-		/// @param callId Optional Call-ID
-		/// @param cseq Optional CSeq
-		/// @param src Optional base sipmessage
-		/// @return sipmessage
-		static sipmessage
-		create(const std::string& method, const std::string& uri, const std::string& callId = {}, uint32_t cseq = 0)
-		{
-			auto sipm = createRawMessage(sipmessage::MessageTypeRequest);
-
-			// start-line: may either be a request-line or a status-line
-			// request-line: METHOD Request-URI SIP/2.0
-			// rl ==> "request-line" (request message type) and sl ==> "status-line" (response message type)
-			sipm["s"] = {{"type", sipmessage::MessageTypeRequest}, {"method", method}, {"uri", uri}, {"version", SIPVER_20}};
-			// message-headers
-			if (!callId.empty()) sipm.header("Call-ID", callId);
-			if (cseq > 0) sipm.header("CSeq", fmt::format("{} {}", cseq, method));
-			sipm.header("Date", getRFC1123());
-
-			return sipm;
-		}
-
-
-		/// @brief Create a skeleton response/status message
-		/// @param statusCode Unsigned integer representing status code of the messages
-		/// @param src Optional. Base sipmessage
-		/// @return sipmessage
-		static sipmessage create(uint32_t statusCode, std::optional<sipmessage> src = {})
-		{
-			auto sipm = src.value_or(createRawMessage(sipmessage::MessageTypeResponse));
-
-			// We must clear these values in case we are updating an existing object.
-			// start-line: may either be a request-line or a status-line
-			// request-line: METHOD Request-URI SIP/2.0
-			// sl ==> "status-line" (response message type)
-			sipm["s"] = {{"type", sipmessage::MessageTypeResponse},
-						 {"status", statusCode},
-						 {"reason", getReasonPhrase(statusCode)},
-						 {"version", SIPVER_20}};
-			sipm.header("Date", getRFC1123());
-
-			return sipm;
-		}
 
 	public:
 		/// @brief Returns an envelope conforming to the CloudEvent spec. https://github.com/cloudevents/spec/blob/v1.0/spec.md

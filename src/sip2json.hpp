@@ -84,14 +84,14 @@ namespace siddiqsoftware
 				// with an ill-formed (or unsupported) start-line.
 				if (SIPVER_20.compare(matchStartLine[3]) == 0)
 				{
-					sipm["s"] = {{"type", sipmessage::MessageTypeRequest},
+					sipm["s"] = {{"type", SIPMessageType::request},
 								 {"method", matchStartLine[1]},
 								 {"uri", matchStartLine[2]},
 								 {"version", matchStartLine[3]}};
 				}
 				else if (SIPVER_20.compare(matchStartLine[1]) == 0)
 				{
-					sipm["s"] = {{"type", sipmessage::MessageTypeResponse},
+					sipm["s"] = {{"type", SIPMessageType::response},
 								 {"reason", matchStartLine[3]},
 								 {"status", std::stoi(matchStartLine[2].str())},
 								 {"version", matchStartLine[1]}};
@@ -575,10 +575,8 @@ namespace siddiqsoftware
 			}
 			else
 			{
-				sip2json_throw<invalid_document_error>("{}:sipm /type is neither `{}` nor `{}`.",
-													   __func__,
-													   sipmessage::MessageTypeRequest,
-													   sipmessage::MessageTypeResponse);
+				sip2json_throw<invalid_document_error>(
+						"{}:sipm /type is neither `{}` nor `{}`.", __func__, SIPMessageType::request, SIPMessageType::response);
 			}
 
 			// Encode the body first so we can get the content-length properly.
@@ -589,7 +587,7 @@ namespace siddiqsoftware
 			if (auto mh = sipm.headers(); mh.size() > 0)
 			{
 				//TODO: This will not care about the order of the serialized headers. The json library does not care about order.
-				for (auto& [key, val] : mh.items())
+				for (auto& [key, val] : sipm.headers().items())
 				{
 					if (contentType.empty() && (key.compare(HF_CONTENT_TYPE) == 0) && val.is_string()) contentType = val;
 
@@ -653,11 +651,20 @@ namespace siddiqsoftware
 			std::string buffer {};
 			auto		contentType = sipm.getContentType();
 
+			// If content-type is not set, then just return regardless of the body element contents.
+			if (contentType.empty()) return buffer;
+
+			sip2json_throw_if<invalid_document_error>((contentType.compare(CONTENT_TYPE_APP_SDP) == std::string::npos) &&
+															  (contentType.compare(CONTENT_TYPE_TEXT_PLAIN) == std::string::npos),
+													  "{}:Unsupported content-type:{}",
+													  __func__,
+													  contentType);
+
 			// Body
 			// NOTE: we extract the contentType value during the header serialization.
 			if (contentType.compare(CONTENT_TYPE_APP_SDP) == 0)
 			{
-				if (sipm.contains("/b"_json_pointer))
+				if (sipm.contains("/b"_json_pointer) && !sipm.body().is_null())
 				{
 					if (sipm.contains("/b/sdp"_json_pointer))
 					{
@@ -665,6 +672,7 @@ namespace siddiqsoftware
 						auto sdp = sipm.at("/b/sdp"_json_pointer);
 						for (auto& block : sdp)
 						{
+							// Build each block; order is critical. We do not support session-level attributes (only media-level attributes)
 							buffer += fmt::format("v=0\r\no={}\r\ns={}\r\ni={}\r\nc={}\r\nt={}\r\nm={}\r\n{}",
 												  serializeSDPelement(block, "o"),
 												  serializeSDPelement(block, "s"),
@@ -687,6 +695,10 @@ namespace siddiqsoftware
 					//sip2json_throw<invalid_document_error>("{}:sipm does not have b.", __func__);
 				}
 			}
+			else if ((contentType.compare(CONTENT_TYPE_TEXT_PLAIN) == 0) && (sipm.contains("b") && sipm.body().is_string()))
+			{
+				buffer += sipm.body();
+			}
 
 			return buffer;
 		}
@@ -698,56 +710,67 @@ namespace siddiqsoftware
 		/// @return Returns the sdp element as string.
 		static std::string serializeSDPelement(nlohmann::json& sdpBlock, const std::string& element)
 		{
-			if (auto item = sdpBlock.at(element); item.is_object())
+			sip2json_throw_if<missing_required_element>(!sdpBlock.contains("v") && !sdpBlock.contains("o") &&
+																!sdpBlock.contains("s") && !sdpBlock.contains("t") &&
+																!sdpBlock.contains("m"),
+														"{}:Required Element {} not present.",
+														__func__,
+														element);
+			// If we donot have it then just return..
+			if (sdpBlock.contains(element))
 			{
-				if (element == "a")
+				// Continue to build
+				if (auto item = sdpBlock.at(element); item.is_object())
 				{
-					std::string ret;
-
-					for (auto& kv : item.items())
+					if (element == "a")
 					{
-						auto v = kv.value();
-						if (v.is_array())
-						{
-							for (auto& i : v.items())
-							{
-								ret += fmt::format("a={}:{}\r\n", kv.key(), i.value());
-							}
-						}
-						else if (v.is_string())
-							ret += fmt::format("a={}:{}\r\n", kv.key(), v);
-						else if (v.is_boolean() && v == true)
-							ret += fmt::format("a={}\r\n", kv.key());
-						else
-							ret += fmt::format("a={}\r\n", kv.key());
-					}
+						std::string ret;
 
-					return ret;
+						for (auto& kv : item.items())
+						{
+							auto v = kv.value();
+							if (v.is_array())
+							{
+								for (auto& i : v.items())
+								{
+									ret += fmt::format("a={}:{}\r\n", kv.key(), i.value());
+								}
+							}
+							else if (v.is_string())
+								ret += fmt::format("a={}:{}\r\n", kv.key(), v);
+							else if (v.is_boolean() && v == true)
+								ret += fmt::format("a={}\r\n", kv.key());
+							else
+								ret += fmt::format("a={}\r\n", kv.key());
+						}
+
+						return ret;
+					}
+					if (element == "o")
+					{
+						return fmt::format("{} {} {} {} {} {}",
+										   item.value("user", ""),
+										   item.value("t1", ""),
+										   item.value("t2", ""),
+										   item.value("type", ""),
+										   item.value("subtype", ""),
+										   item.value("host", ""));
+					}
+					if (element == "i")
+					{ return fmt::format("{} ({}) {}", item.value("name", ""), item.value("dn", ""), item.value("type", "")); }
+					if (element == "c")
+					{ return fmt::format("{} {} {}", item.value("type", ""), item.value("subtype", ""), item.value("dn", "")); }
 				}
-				if (element == "o")
+				else if (item.is_array())
 				{
-					return fmt::format("{} {} {} {} {} {}",
-									   item.value("user", ""),
-									   item.value("t1", ""),
-									   item.value("t2", ""),
-									   item.value("type", ""),
-									   item.value("subtype", ""),
-									   item.value("host", ""));
+					if (element == "t") { return fmt::format("{} {}", item[0].get<uint32_t>(), item[1].get<uint32_t>()); }
 				}
-				if (element == "i")
-				{ return fmt::format("{} ({}) {}", item.value("name", ""), item.value("dn", ""), item.value("type", "")); }
-				if (element == "c")
-				{ return fmt::format("{} {} {}", item.value("type", ""), item.value("subtype", ""), item.value("dn", "")); }
-			}
-			else if (item.is_array())
-			{
-				if (element == "t") { return fmt::format("{} {}", item[0].get<uint32_t>(), item[1].get<uint32_t>()); }
-			}
-			else if (item.is_string())
-			{
-				// In case the parse wasn't able to split properly, it will store it as a string value.
-				// Serialize the as-is case.
-				return item.get<std::string>();
+				else if (item.is_string())
+				{
+					// In case the parse wasn't able to split properly, it will store it as a string value.
+					// Serialize the as-is case.
+					return item.get<std::string>();
+				}
 			}
 
 			return std::string {};

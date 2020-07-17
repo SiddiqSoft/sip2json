@@ -261,6 +261,7 @@ namespace test_suite
 			catch (std::runtime_error& e)
 			{
 				Logger::WriteMessage(e.what());
+				Assert::Fail(L"Unexpected error");
 			}
 		}
 
@@ -489,7 +490,7 @@ namespace test_suite
 			auto msgs		 = sip2json::parseAllFromBuffer(bufferStart, buffer.end());
 			auto sipm		 = msgs[0];
 
-			std::cerr << "Decoded SIPMessage document" << sipm.dump(2);
+			Logger::WriteMessage(fmt::format("{} - Decoded SIPMessage document\n{}\n", __func__, sipm.dump(2)).c_str());
 
 			roundTripVerify(__func__, buffer, sipm, [&](sipmessage& sipm) {
 				// Start checking if we decoded properly..
@@ -554,7 +555,7 @@ namespace test_suite
 			std::cerr << "Decoded SIPMessage document" << sipm.dump(2);
 
 			// Deliberately poison the message type
-			sipm["/s/type"_json_pointer] = "invalid-message-type";
+			sipm["/s/type"_json_pointer] = SIPMessageType::notspecified;
 			// We should get the desired exception.
 			Assert::ExpectException<invalid_document_error>([&]() { sip2json::serialize(sipm); });
 		}

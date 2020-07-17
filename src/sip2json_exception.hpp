@@ -53,6 +53,7 @@ namespace siddiqsoftware
 		incomplete_buffer_for_header,
 		invalid_startline,
 		unsupported_contenttype,
+		missing_required_element,
 		/* serialization errors */
 		invalid_document,
 		invalid_document_unsupported_method,
@@ -68,11 +69,25 @@ namespace siddiqsoftware
 								  {sip2jsonErrors::incomplete_buffer_for_header, "incomplete_buffer_for_header"},
 								  {sip2jsonErrors::invalid_startline, "invalid_startline"},
 								  {sip2jsonErrors::unsupported_contenttype, "unsupported_contenttype"},
+								  {sip2jsonErrors::missing_required_element, "missing_required_element"},
 								  {sip2jsonErrors::invalid_document, "invalid_document"},
 								  {sip2jsonErrors::invalid_document_unsupported_method, "invalid_document_unsupported_method"},
 								  {sip2jsonErrors::invalid_document_unsupported_content, "invalid_document_unsupported_content"},
 								  {sip2jsonErrors::empty_message, "empty_message"},
 								  {sip2jsonErrors::unknown, "unknown"}});
+
+
+	class missing_required_element : public std::invalid_argument
+	{
+	public:
+		sip2jsonErrors errCode = sip2jsonErrors::missing_required_element;
+
+		missing_required_element(const std::string& msg)
+			: std::invalid_argument(msg)
+		{
+		}
+	};
+
 
 	class incomplete_buffer_for_parse_error : public std::runtime_error
 	{

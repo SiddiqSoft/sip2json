@@ -22,6 +22,19 @@
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace siddiqsoftware;
 
+namespace Microsoft::VisualStudio::CppUnitTestFramework
+{
+	std::wstring ToString(const siddiqsoftware::SIPMessageType& v)
+	{
+		switch (v)
+		{
+		case siddiqsoftware::SIPMessageType::request: return L"request";
+		case siddiqsoftware::SIPMessageType::response: return L"response";
+		default: return L"notspecified";
+		}
+	}
+} // namespace Microsoft::VisualStudio::CppUnitTestFramework
+
 namespace test_suite
 {
 	static std::string loadSampleFile(const std::string_view& fileName)
@@ -51,7 +64,7 @@ namespace test_suite
 			auto ee = sip2jsonErrors::ok;
 
 			Logger::WriteMessage(fmt::format("{} - {} --> {}\n", __func__, ee, nlohmann::json(ee).dump()).c_str());
-			
+
 			ee = sip2jsonErrors::empty_message;
 			Logger::WriteMessage(fmt::format("{} - {} --> {}\n", __func__, ee, nlohmann::json(ee).dump()).c_str());
 
@@ -146,40 +159,39 @@ namespace test_suite
 		// NOLINTNEXTLINE
 		TEST_METHOD(Test_createRequest)
 		{
-			auto registerMessage = sipmessage::create("REGISTER", "sip:hello@world.com", createCallId(), 1);
-			auto diagContents	 = registerMessage.flatten().dump(2);
+			sipmessage registerMessage("REGISTER", "sip:hello@world.com", createCallId(), 1);
+			auto	   diagContents = registerMessage.flatten().dump(2);
 			std::cerr << diagContents << std::endl;
 			Assert::IsTrue(registerMessage.size() != 0);
 			Assert::IsTrue(!registerMessage.value("/h/Date"_json_pointer, std::string {}).empty());
 			Assert::IsTrue(!registerMessage.value("/h/Call-ID"_json_pointer, std::string {}).empty());
 			Assert::IsTrue(registerMessage.value("/h/Call-ID"_json_pointer, std::string {}).length() == 44);
-			Assert::IsTrue(registerMessage.value("/s/type"_json_pointer, std::string {}).find("request") != std::string::npos);
+			Assert::IsTrue(registerMessage.isMessageRequest());
 		}
 
 		// NOLINTNEXTLINE
 		TEST_METHOD(Test_createResponse)
 		{
-			auto dummyMessage = sipmessage::create(500);
-			auto diagContents = dummyMessage.flatten().dump(2);
+			sipmessage dummyMessage(500);
+			auto	   diagContents = dummyMessage.flatten().dump(2);
 			std::cerr << diagContents << std::endl;
 			Assert::IsTrue(dummyMessage.size() != 0);
 			Assert::IsTrue(!dummyMessage.value("/s/reason"_json_pointer, std::string {}).empty());
-			Assert::IsTrue(dummyMessage.value("/s/type"_json_pointer, std::string {}).compare(sipmessage::MessageTypeResponse) ==
-						   0);
+			Assert::IsTrue(dummyMessage.isMessageResponse());
 		}
 
 
 		// NOLINTNEXTLINE
 		TEST_METHOD(createRequest_toCloudEvent)
 		{
-			auto registerMessage = sipmessage::create("REGISTER", "sip:hello@world.com", createCallId(), 1);
-			auto diagContents	 = registerMessage.flatten().dump(2);
+			sipmessage registerMessage("REGISTER", "sip:hello@world.com", createCallId(), 1);
+			auto	   diagContents = registerMessage.flatten().dump(2);
 			std::cerr << diagContents << std::endl;
 			Assert::IsTrue(registerMessage.size() != 0);
 			Assert::IsTrue(!registerMessage.value("/h/Date"_json_pointer, std::string {}).empty());
 			Assert::IsTrue(!registerMessage.value("/h/Call-ID"_json_pointer, std::string {}).empty());
 			Assert::IsTrue(registerMessage.value("/h/Call-ID"_json_pointer, std::string {}).length() == 44);
-			Assert::IsTrue(registerMessage.value("/s/type"_json_pointer, std::string {}).find("request") != std::string::npos);
+			Assert::IsTrue(registerMessage.isMessageRequest());
 
 			try
 			{
@@ -205,13 +217,12 @@ namespace test_suite
 		// NOLINTNEXTLINE
 		TEST_METHOD(createResponse_toCloudEvent)
 		{
-			auto dummyMessage = sipmessage::create(500);
-			auto diagContents = dummyMessage.flatten().dump(2);
+			sipmessage dummyMessage(500);
+			auto	   diagContents = dummyMessage.flatten().dump(2);
 			std::cerr << diagContents << std::endl;
 			Assert::IsTrue(dummyMessage.size() != 0);
 			Assert::IsTrue(!dummyMessage.value("/s/reason"_json_pointer, std::string {}).empty());
-			Assert::IsTrue(dummyMessage.value("/s/type"_json_pointer, std::string {}).compare(sipmessage::MessageTypeResponse) ==
-						   0);
+			Assert::IsTrue(dummyMessage.isMessageResponse());
 
 			try
 			{
@@ -237,7 +248,7 @@ namespace test_suite
 		// NOLINTNEXTLINE
 		TEST_METHOD(Test_createRequest_then_response)
 		{
-			auto registerMessage = sipmessage::create("REGISTER", "sip:hello@world.com", createCallId(), 1);
+			sipmessage registerMessage("REGISTER", "sip:hello@world.com", createCallId(), 1);
 			std::cerr << "POST create(): registerMessage:" << registerMessage.flatten().dump(2) << std::endl;
 			Assert::IsTrue(!registerMessage.value("/h/Date"_json_pointer, std::string {}).empty());
 
@@ -246,19 +257,19 @@ namespace test_suite
 
 			Assert::IsTrue(registerMessage.size() != 0);
 			Assert::IsTrue(registerMessage.value("/h/Call-ID"_json_pointer, std::string {}).length() == 44);
-			Assert::AreEqual<std::string>(registerMessage.value("/s/type"_json_pointer, std::string {}),
-										  sipmessage::MessageTypeRequest);
+			Assert::AreEqual<SIPMessageType>(SIPMessageType::request,
+											 registerMessage.value("/s/type"_json_pointer, SIPMessageType::notspecified));
 
 			// WARNING
 			// As we're passing the registerMessage as parameter to create an inplace response message
 			// the original registerMessage object will be clobbered with the items from the
 			// response message create function.
-			auto responseMessage = sipmessage::create(200, registerMessage);
+			sipmessage responseMessage(200, registerMessage);
 
 			Assert::IsTrue(responseMessage.size() != 0);
 			Assert::IsTrue(responseMessage.value("/h/Call-ID"_json_pointer, std::string {}).length() == 44);
-			Assert::AreEqual<std::string>(responseMessage.value("/s/type"_json_pointer, std::string {}),
-										  sipmessage::MessageTypeResponse);
+			Assert::AreEqual<SIPMessageType>(SIPMessageType::response,
+											 responseMessage.value("/s/type"_json_pointer, SIPMessageType::notspecified));
 			Assert::IsTrue(!responseMessage.value("/h/Date"_json_pointer, std::string {}).empty());
 
 			std::cerr << "After response; registerMessage:" << registerMessage.flatten().dump(2) << std::endl;
@@ -275,41 +286,69 @@ namespace test_suite
 		// NOLINTNEXTLINE
 		TEST_METHOD(Test_serialize)
 		{
-			auto myCallId		 = createCallId();
-			auto registerMessage = sipmessage::create("REGISTER", "sip:hello@world.com", myCallId, 1);
+			auto ll		  = __LINE__;
+			auto myCallId = createCallId();
+			ll			  = __LINE__;
+			sipmessage registerMessage("REGISTER", "sip:hello@world.com", myCallId, 1);
 
-			registerMessage["/h/To"_json_pointer]	   = "sip:hello@world.com";
-			registerMessage["/h/Contact"_json_pointer] = "sip:hello@world.com";
+			ll = __LINE__;
+			registerMessage.header("To", "sip:hello@world.com").header("Contact", "sip:hello@world.com");
 
-			auto strsipm = sip2json::serialize(registerMessage);
-			std::cerr << strsipm << std::endl;
-			Assert::IsTrue(strsipm.length() != 0);
+			try
+			{
+				ll			 = __LINE__;
+				auto strsipm = sip2json::serialize(registerMessage);
 
-			auto bufferStart = strsipm.begin();
-			auto sipm2		 = sip2json::parseFromBuffer(bufferStart, strsipm.end());
-			Assert::IsTrue(!sipm2.empty());
-			Assert::AreEqual(registerMessage.getContentLength(), sipm2.getContentLength());
-			Assert::AreEqual(registerMessage.getCallID(), sipm2.getCallID());
+				ll = __LINE__;
+				Assert::IsTrue(strsipm.length() != 0);
 
-			Logger::WriteMessage("\n============vvv=\n");
-			Logger::WriteMessage(strsipm.c_str());
-			Logger::WriteMessage("\n============   =\n");
-			Logger::WriteMessage(sip2json::serialize(sipm2).c_str());
-			Logger::WriteMessage("\n============^^^=\n");
+				ll				 = __LINE__;
+				auto bufferStart = strsipm.begin();
+				ll				 = __LINE__;
+				auto sipm2		 = sip2json::parseFromBuffer(bufferStart, strsipm.end());
+				Assert::IsTrue(!sipm2.empty());
+				Assert::AreEqual(registerMessage.getContentLength(), sipm2.getContentLength());
+				Assert::AreEqual(registerMessage.getCallID(), sipm2.getCallID());
 
-			Assert::AreEqual(strsipm.length(), sip2json::serialize(sipm2).length());
+				Logger::WriteMessage("\n============vvv=\n");
+				Logger::WriteMessage(strsipm.c_str());
+				Logger::WriteMessage("\n============   =\n");
+				Logger::WriteMessage(sip2json::serialize(sipm2).c_str());
+				Logger::WriteMessage("\n============^^^=\n");
+
+				Assert::AreEqual(strsipm.length(), sip2json::serialize(sipm2).length());
+			}
+			catch (const std::exception& e)
+			{
+				Logger::WriteMessage(fmt::format("{}:Exception lastline:{} --> {}\n", __func__, ll, e.what()).c_str());
+				Assert::Fail(L"Unexpected exception.");
+			}
 		}
 
 		// NOLINTNEXTLINE
-		TEST_METHOD(Test_serialize_empty_mb)
+		TEST_METHOD(Test_serialize_empty_mb_fail)
 		{
-			auto registerMessage = sipmessage::create("REGISTER", "sip:hello@world.com", createCallId(), 1);
+			sipmessage registerMessage("REGISTER", "sip:hello@world.com", createCallId(), 1);
 
-			registerMessage["/h/To"_json_pointer]	   = "sip:hello@world.com";
-			registerMessage["/h/Contact"_json_pointer] = "sip:hello@world.com";
-			// Set the content-type but fail to actually set the mb
-			registerMessage["/h/Content-Type"_json_pointer] = "application/sdp";
+			registerMessage.header("To", "sip:hello@world.com")
+					.header("Contact", "sip:hello@world.com")
+					.header("Content-Type", "application/dummy");
+			// This will cause serialize to throw!
+			registerMessage["b"] = 0;
 			Assert::ExpectException<std::exception>([&]() { sip2json::serialize(registerMessage); });
+		}
+
+		// NOLINTNEXTLINE
+		TEST_METHOD(Test_serialize_empty_mb_valid)
+		{
+			sipmessage registerMessage("REGISTER", "sip:hello@world.com", createCallId(), 1);
+
+			registerMessage.header("To", "sip:hello@world.com")
+					.header("Contact", "sip:hello@world.com")
+					.header("Content-Type", CONTENT_TYPE_APP_SDP);
+			// Should not throw; body is null despite the header being SDP there is no body element set.
+			// This is a supported use-case
+			sip2json::serialize(registerMessage);
 		}
 
 		// NOLINTNEXTLINE
@@ -425,7 +464,7 @@ namespace test_suite
 		// NOLINTNEXTLINE
 		TEST_METHOD(Test_invalid_document_startline)
 		{
-			sipmessage sipm = sipmessage::create("ROR", "sip:dummy@world.com");
+			sipmessage sipm("ROR", "sip:dummy@world.com");
 
 			try
 			{
@@ -443,39 +482,31 @@ namespace test_suite
 		// NOLINTNEXTLINE
 		TEST_METHOD(Test_empty_mb)
 		{
-			auto sipm = sipmessage::create("REGISTER", "sip:hello@world.com", createCallId(), 1);
+			sipmessage sipm("REGISTER", "sip:hello@world.com", createCallId(), 1);
 
 			sipm.header("To", "sip:hello@world.com")
 					.header("Contact", "sip:hello@world.com")
 					.header("Content-Type", CONTENT_TYPE_APP_SDP);
 
+			// By default the body is null
 			Assert::IsTrue(sipm.body().empty());
-			Assert::ExpectException<std::exception>([&]() {
+
+			// Force an error by setting the body to something non-SDP
+			sipm.body() = "<root></root>";
+			Assert::ExpectException<siddiqsoftware::invalid_document_error>([&]() {
 				try
 				{
 					Logger::WriteMessage(sip2json::serialize(sipm).c_str());
 				}
-				catch (std::exception& e)
+				catch (siddiqsoftware::invalid_document_error& e)
 				{
 					Logger::WriteMessage(e.what());
 					throw;
 				}
 			});
 
-			Assert::ExpectException<std::exception>([&]() {
-				try
-				{
-					Logger::WriteMessage("\n");
-					Logger::WriteMessage(sip2json::serialize(sipm).c_str());
-				}
-				catch (std::exception& e)
-				{
-					Logger::WriteMessage("\n");
-					Logger::WriteMessage(e.what());
-					throw;
-				}
-			});
-
+			// Reset the invalid body so we can set it to SDP and recheck
+			sipm.body() = nullptr; // dont' erase()
 			// Set some dummy value..
 			sipm.body("/sdp/0/v"_json_pointer, 0)
 					.body("/sdp/0/s"_json_pointer, "subject")
@@ -504,9 +535,8 @@ namespace test_suite
 		{
 			auto		callId = createCallId();
 			std::string cSeq {};
-			auto		sipm = sipmessage::create("REGISTER", "sip:hello@world.com", callId, 1);
+			sipmessage	sipm("REGISTER", "sip:hello@world.com", callId, 1);
 
-			// Use chained set header values..
 			sipm.header("To", "sip:hello@world.com")
 					.header("Contact", "sip:hello@world.com")
 					.header("Content-Type", CONTENT_TYPE_TEXT_PLAIN)
@@ -573,25 +603,24 @@ namespace test_suite
 		// NOLINTNEXTLINE
 		TEST_METHOD(Test_check_isMessageTypeRequest)
 		{
-			auto sipm = sipmessage::create("INVITE", "sip:hello@world.com", createCallId(), 1);
+			sipmessage sipm("INVITE", "sip:hello@world.com", createCallId(), 1);
 
 			Assert::IsTrue(sipm.size() != 0);
 			Assert::IsTrue(!sipm.value("/h/Date"_json_pointer, std::string {}).empty());
 			Assert::IsTrue(!sipm.value("/h/Call-ID"_json_pointer, std::string {}).empty());
 			Assert::IsTrue(sipm.value("/h/Call-ID"_json_pointer, std::string {}).length() == 44);
-			Assert::IsTrue(sipm.value("/s/type"_json_pointer, std::string {}).find("request") != std::string::npos);
-
 			Assert::IsTrue(sipm.isMessageRequest());
 		}
 
 		// NOLINTNEXTLINE
 		TEST_METHOD(Test_check_isMessageTypeResponse)
 		{
-			auto sipm = sipmessage::create(608);
+			sipmessage sipm(608);
 
 			Assert::IsTrue(sipm.size() != 0);
 			Assert::IsTrue(!sipm.value("/s/reason"_json_pointer, std::string {}).empty());
-			Assert::AreEqual(sipmessage::MessageTypeResponse, sipm.value("/s/type"_json_pointer, std::string {}));
+			Assert::AreEqual<SIPMessageType>(SIPMessageType::response,
+											 sipm.value("/s/type"_json_pointer, SIPMessageType::notspecified));
 			Assert::AreEqual<uint32_t>(608, sipm.getStatusCode());
 			Assert::IsTrue(sipm.isMessageResponse());
 		}
@@ -599,13 +628,13 @@ namespace test_suite
 		// NOLINTNEXTLINE
 		TEST_METHOD(Test_check_getContentType)
 		{
-			auto sipm = sipmessage::create("INVITE", "sip:hello@world.com", createCallId(), 1);
+			sipmessage sipm("INVITE", "sip:hello@world.com", createCallId(), 1);
 
 			Assert::IsTrue(sipm.size() != 0);
 			Assert::IsTrue(!sipm.value("/h/Date"_json_pointer, std::string {}).empty());
 			Assert::IsTrue(!sipm.value("/h/Call-ID"_json_pointer, std::string {}).empty());
 			Assert::IsTrue(sipm.value("/h/Call-ID"_json_pointer, std::string {}).length() == 44);
-			Assert::IsTrue(sipm.value("/s/type"_json_pointer, std::string {}).find("request") != std::string::npos);
+			Assert::IsTrue(sipm.isMessageRequest());
 
 			// Note the "Content-type" and "Content-Type"; either way the method should return the value.
 			sipm["h"]["Content-type"] = "test/test";
@@ -623,44 +652,38 @@ namespace test_suite
 		// NOLINTNEXTLINE
 		TEST_METHOD(Test_header_method)
 		{
-			auto sipm = sipmessage::create("REGISTER", "sip:hello@world.com", createCallId(), 1);
+			sipmessage sipm("REGISTER", "sip:hello@world.com", createCallId(), 1);
 
 			sipm.header("To", "sip:hello@world.com")
 					.header("Contact", "sip:hello@world.com")
 					.header("Content-Type", CONTENT_TYPE_APP_SDP);
 
-			// No body
-			Assert::IsTrue(sipm.body().empty());
-			Assert::ExpectException<std::exception>([&]() {
-				try
-				{
-					// Should throw; no body found.
-					Logger::WriteMessage(sip2json::serialize(sipm).c_str());
-				}
-				catch (std::exception& e)
-				{
-					Logger::WriteMessage(e.what());
-					throw;
-				}
-			});
-
-			sipm.header("Content-Type", CONTENT_TYPE_TEXT_PLAIN);
-			Logger::WriteMessage("\n");
-			Logger::WriteMessage(sip2json::serialize(sipm).c_str());
+			Assert::AreEqual<std::string>("sip:hello@world.com", sipm.header<std::string>("Contact"));
+			Assert::AreEqual<std::string>(CONTENT_TYPE_APP_SDP, sipm.getContentType());
 		}
 
 		// NOLINTNEXTLINE
 		TEST_METHOD(Test_body_method)
 		{
-			auto sipm = sipmessage::create("REGISTER", "sip:hello@world.com", createCallId(), 1);
+			sipmessage sipm("REGISTER", "sip:hello@world.com", createCallId(), 1);
+
+			sipm.header("Content-Type", CONTENT_TYPE_APP_SDP);
 
 			Assert::IsTrue(sipm.body().empty());
 
-			// Set some dummy value..
+			// Set dummy but all required values! v, 0, s, t, m
 			sipm.body("/sdp/0/v"_json_pointer, 0)
+					.body<nlohmann::json>("/sdp/0/o"_json_pointer,
+										  {{"user", "sip:hello@world.com"},
+										   {"type", "IN"},
+										   {"subtype", "IP4"},
+										   {"host", "host.name.com"},
+										   {"t1", "900001"},  // these must be string
+										   {"t2", "900009"}}) // must be string
 					.body("/sdp/0/s"_json_pointer, "subject")
 					.body("/sdp/0/a/access_code"_json_pointer, "0277777")
-					.body("/sdp/0/t"_json_pointer, nlohmann::json {100001, 200002});
+					.body("/sdp/0/t"_json_pointer, nlohmann::json {100001, 200002})
+					.body("/sdp/0/m"_json_pointer, "audio voice");
 
 			// Check again for the body. it should be non-null
 			Assert::IsTrue(sipm.body().is_object());
@@ -672,11 +695,19 @@ namespace test_suite
 			Assert::AreEqual<uint32_t>(100001, sipm.body()["sdp"][0]["t"][0].get<uint32_t>());
 			Assert::AreEqual<uint32_t>(200002, sipm.body()["sdp"][0]["t"][1].get<uint32_t>());
 
-			Logger::WriteMessage(sip2json::serialize(sipm).c_str());
+			try
+			{
+				Logger::WriteMessage(sip2json::serialize(sipm).c_str());
+			}
+			catch (const std::exception& e)
+			{
+				Logger::WriteMessage(fmt::format("{}:Exception: {}\n", __func__, e.what()).c_str());
+				Assert::Fail(L"Unexpected exception.");
+			}
 		}
 
 
-	}; // SIPHelpers
+	}; // namespace test_suite
 
 	// NOLINTNEXTLINE
 	TEST_CLASS(parseAllFromBuffer)
