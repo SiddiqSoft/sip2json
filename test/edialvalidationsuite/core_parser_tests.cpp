@@ -21,6 +21,8 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace siddiqsoftware;
+using namespace std;
+
 
 namespace Microsoft::VisualStudio::CppUnitTestFramework
 {
@@ -57,6 +59,27 @@ namespace test_suite
 	{
 	public:
 		bool dummy;
+
+		// NOLINTNEXTLINE
+		TEST_METHOD(Test_UserAgent)
+		{
+			auto	   ua = __func__;
+			sipmessage sipm(METHOD_REGISTER, "sip:hello@world.com");
+
+			try
+			{
+				sipm.setUserAgent(ua);
+				Logger::WriteMessage( sip2json::serialize(sipm).c_str() );
+				Assert::IsTrue(sipm.getUserAgent().find(ua) != std::string::npos);
+				Assert::IsTrue(sipm.getUserAgent().find("sip2json"s) != std::string::npos);
+			}
+			catch (const std::exception& e)
+			{
+				Logger::WriteMessage(e.what());
+				Assert::Fail(L"Got exception.");
+			}
+		}
+
 
 		// NOLINTNEXTLINE
 		TEST_METHOD(Test_sip2jsonErrors)

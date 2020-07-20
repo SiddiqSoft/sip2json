@@ -70,8 +70,8 @@ namespace siddiqsoftware
 	class sipmessage : public nlohmann::json
 	{
 		static const inline std::string MetaLibName		  = "sip2json";
-		static const inline std::string MetaSchemaVersion = "0.1.0";
-		static const inline std::string MetaParserVersion = "1.0.0";
+		static const inline std::string MetaSchemaVersion = "0.3.0";
+		static const inline std::string MetaParserVersion = "1.3.3";
 
 	public:
 		sipmessage() = default;
@@ -88,7 +88,9 @@ namespace siddiqsoftware
 					{"v", MetaSchemaVersion},
 					{"b", nullptr},
 					{"z", std::chrono::system_clock::now().time_since_epoch().count()},
-					{"h", {{"Date", getRFC1123()}}}});
+					{"h",
+					 {{"User-Agent", fmt::format("{}/{} (schema:{})", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
+					  {"Date", getRFC1123()}}}});
 
 			// request-line: METHOD Request-URI SIP/2.0
 			// message-headers
@@ -102,15 +104,18 @@ namespace siddiqsoftware
 		/// @return
 		sipmessage(uint32_t statusCode, std::optional<sipmessage> src = {})
 		{
-			update(src.value_or(nlohmann::json {{"s",
-												 {{"type", SIPMessageType::response},
-												  {"status", statusCode},
-												  {"reason", getReasonPhrase(statusCode)},
-												  {"version", SIPVER_20}}},
-												{"v", MetaSchemaVersion},
-												{"b", nullptr},
-												{"z", std::chrono::system_clock::now().time_since_epoch().count()},
-												{"h", {{"Date", getRFC1123()}}}}));
+			update(src.value_or(nlohmann::json {
+					{"s",
+					 {{"type", SIPMessageType::response},
+					  {"status", statusCode},
+					  {"reason", getReasonPhrase(statusCode)},
+					  {"version", SIPVER_20}}},
+					{"v", MetaSchemaVersion},
+					{"b", nullptr},
+					{"z", std::chrono::system_clock::now().time_since_epoch().count()},
+					{"h",
+					 {{"User-Agent", fmt::format("{}/{} (schema:{})", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
+					  {"Date", getRFC1123()}}}}));
 
 			// We must clear these values in case we are updating an existing object.
 			erase("s");
@@ -119,7 +124,9 @@ namespace siddiqsoftware
 							{"status", statusCode},
 							{"reason", getReasonPhrase(statusCode)},
 							{"version", SIPVER_20}};
-			header("Date", getRFC1123());
+
+			(*this)["h"]["User-Agent"] = fmt::format("{}/{} (schema:{})", MetaLibName, MetaParserVersion, MetaSchemaVersion);
+			this->header("Date", getRFC1123());
 		}
 
 		/// @brief Copy constructor from json
@@ -146,9 +153,17 @@ namespace siddiqsoftware
 		template <class T> auto header(const std::string& key, std::optional<T> defaultValue = {})
 		{
 			// Return the value or the default for the object.
-			return headers().value(key, defaultValue.value_or(T {}));
-		}
-
+			return (*this)["h"].value(key, defaultValue.value_or(T {}));
+		};
+		inline auto& setUserAgent(const std::string& ua)
+		{
+			if (!ua.empty())
+				header("User-Agent", fmt::format("{}/{} (schema:{}) {}", MetaLibName, MetaParserVersion, MetaSchemaVersion, ua));
+			else
+				header("User-Agent", fmt::format("{}/{} (schema:{})", MetaLibName, MetaParserVersion, MetaSchemaVersion));
+			return *this;
+		};
+		inline auto		getUserAgent() { return header<std::string>("User-Agent"); };
 		inline uint32_t getContentLength() { return header<uint32_t>("Content-Length"); };
 		inline uint32_t getExpires() { return header<uint32_t>("Expires"); };
 		inline auto		getContentType()
@@ -193,11 +208,6 @@ namespace siddiqsoftware
 			return *this;
 		};
 
-		template <typename T> inline sipmessage& header(const json_pointer& key, const T& v)
-		{
-			headers()[key] = v;
-			return *this;
-		};
 
 		template <typename T> inline sipmessage& body(const json_pointer& key, const T& v)
 		{
@@ -211,7 +221,7 @@ namespace siddiqsoftware
 		/// @return json containing the CloudEvent spec.
 		nlohmann::json to_cloudEvent()
 		{
-			sip2json_throw_if<invalid_document_error>((!this->contains("/h/Call-ID") && !this->contains("z")),
+			sip2json_throw_if<invalid_document_error>((!this->contains("/h/Call-ID"_json_pointer) && !this->contains("z")),
 													  "{}:Missing Call-ID and ticks. Required elements.",
 													  std::string_view(__func__));
 
