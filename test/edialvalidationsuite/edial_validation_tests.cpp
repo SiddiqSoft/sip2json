@@ -402,6 +402,78 @@ namespace test_suite
 		}
 
 		// NOLINTNEXTLINE
+		TEST_METHOD(NOTIFY_CallStart_1)
+		{
+			auto buffer		 = loadSampleFile(__func__); // NOLINT
+			auto bufferStart = buffer.begin();
+			auto msgs		 = sip2json::parseAllFromBuffer(bufferStart, buffer.end());
+			auto sipm		 = msgs[0];
+
+			auto verifyItems = [](sipmessage& sipm) {
+				// Start checking if we decoded properly..
+				// METHOD: NOTIFY
+				Assert::AreEqual<std::string>(METHOD_NOTIFY, sipm.value("/s/method"_json_pointer, ""));
+				Assert::AreEqual<std::string>("sip:subscribe_to_call_events@loopup.com;machine",
+											  sipm.value("/s/uri"_json_pointer, ""));
+				// Via is an array
+				Assert::IsTrue(sipm.value("/h/Via"_json_pointer, nlohmann::json {}).is_array());
+				Assert::AreEqual<size_t>(4, sipm.value("/h/Via"_json_pointer, nlohmann::json {}).size());
+				// Call-ID
+				Assert::AreEqual<std::string>("777447022768721366.il-ed-mara-01.ring2.com", sipm.getCallID());
+				// Content-Type
+				Assert::AreEqual<std::string>(CONTENT_TYPE_APP_SDP, sipm.getContentType());
+				// Content-Length
+				Assert::AreEqual<uint32_t>(1081, sipm.getContentLength());
+
+				Assert::AreEqual<std::string>("denver.peterson@loopup.com", sipm.value("/h/X-control-master"_json_pointer, ""));
+				Assert::AreEqual<std::string>("1 NOTIFY", sipm.value("/h/CSeq"_json_pointer, ""));
+
+				Assert::AreEqual<std::string>("Nzc3NDQ3MDIyNzY4NzIxMzY2LmlsLWVkLW1hcmEtMDEucmluZzIuY29tOjE1OTUwNTI4NTQ6Mjk4NDQy",
+											  sipm.value("/h/X-Call-Instance-ID"_json_pointer, ""));
+
+				// Check the body
+				Assert::IsTrue(!sipm.value("/b"_json_pointer, nlohmann::json {}).empty());
+				Assert::IsTrue(sipm.value("/b/sdp"_json_pointer, nlohmann::json {}).is_array());
+				Assert::IsTrue(sipm.value("/b/sdp/0/a"_json_pointer, nlohmann::json {}).is_object());
+				// Check access_code is parsed
+				Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/a/access_code"_json_pointer, ""), "2719318");
+				//// Check leg_no is parsed
+				//Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/a/leg_no"_json_pointer, ""), "1");
+				//// Check status is parsed
+				//Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/a/status"_json_pointer, ""), "(4) dropped");
+				// Check timing is parsed into array
+				Assert::AreEqual<unsigned long>(sipm.value("/b/sdp/0/t/0"_json_pointer, 0L), 3804041654L);
+				Assert::AreEqual<unsigned long>(sipm.value("/b/sdp/0/t/1"_json_pointer, 0L), 0L);
+
+				Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/c/dn"_json_pointer, ""), "+19253230928");
+				Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/c/type"_json_pointer, ""), "TN");
+				Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/c/subtype"_json_pointer, ""), "RFC2543");
+
+				Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/i/dn"_json_pointer, ""), "+19253230928");
+				Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/i/name"_json_pointer, ""), "\"Ring2QA%20Cingular\"");
+				Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/i/type"_json_pointer, ""), "CallByPhone-URL");
+
+				//Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/o/host"_json_pointer, ""), "il-ed-mara-01.ring2.com");
+				//Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/o/subtype"_json_pointer, ""), "IP4");
+				//Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/o/t1"_json_pointer, ""), "3598380125");
+				//Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/o/t2"_json_pointer, ""), "241");
+				//Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/o/type"_json_pointer, ""), "IN");
+				//Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/o/user"_json_pointer, ""), "matthew.gabbard@stblaw.com");
+
+				//Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/a/cli-screening"_json_pointer, ""), "00");
+				//Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/a/user-agent"_json_pointer, ""), "Cisco-SIPGateway/IOS-16.3.3");
+				//Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/a/x-ring2-smartproxy"_json_pointer, ""),
+				//							  "usaze-asalt01.ring2.com");
+				//Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/a/trunk"_json_pointer, ""), "8:chan:0");
+				//Assert::AreEqual<bool>(sipm.value("/b/sdp/0/a/new_change"_json_pointer, false), true);
+				//Assert::IsTrue(sipm.contains("/b/sdp/0/a/far_end"_json_pointer));
+				//Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/a/clir"_json_pointer, ""), "false:18777464263");
+			};
+
+			roundTripVerify(__func__, buffer, sipm, verifyItems); // NOLINT
+		}
+
+		// NOLINTNEXTLINE
 		TEST_METHOD(NOTIFY_CallEnd)
 		{
 			auto buffer		 = loadSampleFile(__func__); // NOLINT
