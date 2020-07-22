@@ -79,7 +79,7 @@ steps:
     targetType: 'inline'
     script: |
       echo 'Upload CodeCoverage to CodeCov.io'
-      bash <(curl -s https://codecov.io/bash)
+      bash <(curl -s https://codecov.io/bash) -s TestResults
 
 - task: PublishTestResults@2
   displayName: 'Publish DEBUG Test Results **/TEST-*.xml'
