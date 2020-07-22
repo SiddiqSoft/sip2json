@@ -63,6 +63,7 @@ steps:
       !**\obj\**
       !**\Release\**
     searchFolder: '$(System.DefaultWorkingDirectory)'
+    resultsFolder: '$(System.DefaultWorkingDirectory)\TestResults'
     runSettingsFile: '.runsettings'
     runInParallel: true
     codeCoverageEnabled: true
@@ -109,6 +110,7 @@ steps:
       !**\obj\**
       !**\Debug\**
     searchFolder: '$(System.DefaultWorkingDirectory)'
+    resultsFolder: '$(System.DefaultWorkingDirectory)\TestResults'
     runSettingsFile: '.runsettings'
     runInParallel: true
     codeCoverageEnabled: false
