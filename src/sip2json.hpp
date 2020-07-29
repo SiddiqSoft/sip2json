@@ -498,7 +498,7 @@ namespace siddiqsoftware
 						auto foundHeaders = parseHeaders(sipm, bufferStart, bufferEnd);
 						if (foundHeaders)
 						{
-							if (sipm.getContentType().compare(CONTENT_TYPE_APP_SDP) == 0)
+							if (sipm.getContentType() == CONTENT_TYPE_APP_SDP)
 							{
 								if (sipm.getContentLength() > 0)
 								{

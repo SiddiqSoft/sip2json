@@ -1116,10 +1116,10 @@ namespace test_suite
 		// NOLINTNEXTLINE
 		TEST_METHOD(Mixed_Stream_1)
 		{
-			auto							buffer		= loadSampleFile(__func__); // NOLINT
-			auto							item		= 0;
-			auto							bufferStart = buffer.begin();
-			std::vector						matchTarget {"", // 0 element is dud.
+			auto		buffer		= loadSampleFile(__func__); // NOLINT
+			auto		item		= 0;
+			auto		bufferStart = buffer.begin();
+			std::vector matchTarget {"", // 0 element is dud.
 									 "2 SUBSCRIBE",
 									 "1 NOTIFY",
 									 "3 INVITE",
@@ -1138,6 +1138,7 @@ namespace test_suite
 									 "43 NOTIFY",
 									 "44 NOTIFY",
 									 "45 NOTIFY"};
+
 			std::map<std::string, uint32_t> counters;
 
 			auto msgs = sip2json::parseAllFromBuffer(bufferStart, buffer.end());
@@ -1167,6 +1168,59 @@ namespace test_suite
 			Assert::AreEqual<size_t>(matchTarget.size() - 1, msgs.size(), L"Expect 18 messages parsed.");
 		}
 
+		// NOLINTNEXTLINE
+		TEST_METHOD(Mixed_Stream_2)
+		{
+			auto buffer		 = loadSampleFile(__func__); // NOLINT
+			auto item		 = 0;
+			auto bufferStart = buffer.begin();
+			// CSEQ, Content-Length, No items in sdp
+			std::vector<std::tuple<std::string, size_t, size_t>> matchTarget {{"", 0, 0}, // 0 element is dud.
+																			  {"1 NOTIFY", 1999, 2},
+																			  {"2 NOTIFY", 1099, 1},
+																			  {"5 NOTIFY", 1219, 1},
+																			  {"6 NOTIFY", 1197, 1},
+																			  {"8 NOTIFY", 1326, 1},
+																			  {"1 NOTIFY", 615, 1},
+																			  {"9 NOTIFY", 1081, 1},
+																			  {"10 NOTIFY", 1201, 1},
+																			  {"12 NOTIFY", 1326, 1}};
+
+			std::map<std::string, uint32_t> counters;
+
+			auto msgs = sip2json::parseAllFromBuffer(bufferStart, buffer.end());
+
+			for (auto& i : msgs)
+			{
+				item++;
+				auto str = fmt::format("{} - document {} -> found:{}.....expected:{}; CL:{}-->{}\n",
+									   __func__,
+									   item,
+									   i.value("/h/CSeq"_json_pointer, ""),
+									   std::get<0>(matchTarget[item]),
+									   i.getContentLength(),
+									   std::get<1>(matchTarget[item])
+
+
+				);
+				Logger::WriteMessage(str.c_str());
+
+				counters[i.value("/h/CSeq"_json_pointer, "")]++;
+
+				if (i.getStatusCode() != 0)
+					counters[i.value("/s/reason"_json_pointer, "")]++;
+				else
+					counters[i.value("/h/method"_json_pointer, "")]++;
+
+				// Check for each item; match the CSeq
+				Assert::AreEqual<std::string>(std::get<0>(matchTarget[item]), i.value("/h/CSeq"_json_pointer, ""));
+				Assert::AreEqual<size_t>(std::get<1>(matchTarget[item]), i.getContentLength());
+				Assert::AreEqual<size_t>(std::get<2>(matchTarget[item]), i["b"]["sdp"].size());
+			}
+
+			Logger::WriteMessage(fmt::format("{} - Found: {} messages\n", __func__, msgs.size()).c_str());
+			Assert::AreEqual<size_t>(matchTarget.size() - 1, msgs.size(), L"Expect 9 messages parsed.");
+		}
 
 		// NOLINTNEXTLINE
 		TEST_METHOD(RandomStream_Recv_File_1)
@@ -1780,7 +1834,7 @@ namespace test_suite
 
 			Assert::IsTrue(passTest);
 		}
-	};
+	}; // namespace test_suite
 
 
 	// NOLINTNEXTLINE
