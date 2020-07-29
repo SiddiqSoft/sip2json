@@ -21,7 +21,7 @@
     <!-- Dependencies -->
     <dependencies>
       <dependency id="fmt" version="7.0.1"/>
-      <dependency id="nlohmann.json" version="3.8.0"/>
+      <dependency id="nlohmann.json" version="3.9.0"/>
     </dependencies>
   </metadata>
 
