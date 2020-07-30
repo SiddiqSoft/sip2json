@@ -984,6 +984,76 @@ namespace test_suite
 			verifyItems(sipm);
 		}
 
+		// NOLINTNEXTLINE
+		TEST_METHOD(NOTIFY_CallStart_2)
+		{
+			using namespace std;
+
+			auto buffer		 = loadSampleFile(__func__); // NOLINT
+			auto bufferStart = buffer.begin();
+			auto sipm		 = sip2json::parseFromBuffer(bufferStart, buffer.end());
+
+			auto verifyItems = [](sipmessage& sipm) {
+				// Start checking if we decoded properly..
+				// METHOD: NOTIFY
+				Assert::AreEqual<std::string>(METHOD_NOTIFY, sipm.value("/s/method"_json_pointer, ""));
+				Assert::AreEqual<std::string>("sip:subscribe_to_call_events@loopup.com;machine",
+											  sipm.value("/s/uri"_json_pointer, ""));
+				// Via is an array
+				Assert::IsTrue(sipm.value("/h/Via"_json_pointer, nlohmann::json {}).is_array());
+				Assert::AreEqual<size_t>(4, sipm.value("/h/Via"_json_pointer, nlohmann::json {}).size());
+				// Call-ID
+				Assert::AreEqual<std::string>("7241263816357il-ed-aras-01", sipm.getCallID());
+				// Content-Type
+				Assert::AreEqual<std::string>(CONTENT_TYPE_APP_SDP, sipm.getContentType());
+				// Content-Length
+				Assert::AreEqual<uint32_t>(790, sipm.getContentLength());
+
+				Assert::AreEqual<std::string>("1 NOTIFY", sipm.header<std::string>("CSeq"));
+				Assert::AreEqual<std::string>("NzI0MTI2MzgxNjM1N2lsLWVkLWFyYXMtMDE6MTU5NjA5OTQ3NDo2NDE0NTM=",
+											  sipm.header<std::string>("X-Call-Instance-ID"));
+
+				// Check the body
+				Assert::IsTrue(!sipm.value("/b"_json_pointer, nlohmann::json {}).empty());
+				Assert::IsTrue(sipm.value("/b/sdp"_json_pointer, nlohmann::json {}).is_array());
+				Assert::IsTrue(sipm.value("/b/sdp/0/a"_json_pointer, nlohmann::json {}).is_object());
+				// Check access_code is parsed
+				Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/a/access_code"_json_pointer, ""), "2331231");
+				// Check leg_no is parsed
+				Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/a/leg_no"_json_pointer, ""), "1");
+				// Check status is parsed
+				Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/a/status"_json_pointer, ""), "(2) starting");
+				// Check timing is parsed into array
+				Assert::AreEqual<unsigned long>(sipm.value("/b/sdp/0/t/0"_json_pointer, 0L), 3805088241L);
+				Assert::AreEqual<unsigned long>(sipm.value("/b/sdp/0/t/1"_json_pointer, 1L), 0L);
+
+				Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/c/dn"_json_pointer, ""), "+19253230928");
+				Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/c/type"_json_pointer, ""), "TN");
+				Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/c/subtype"_json_pointer, ""), "RFC2543");
+
+				Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/i/dn"_json_pointer, ""), "+19253230928");
+				Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/i/name"_json_pointer, ""), "+19253230928");
+				Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/i/type"_json_pointer, ""), "CallByPhone-URL");
+
+				Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/o/host"_json_pointer, ""), "il-ed-aras-01.ring2-corp.com");
+				Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/o/subtype"_json_pointer, ""), "IP4");
+				Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/o/t1"_json_pointer, ""), "95023660363472");
+				Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/o/t2"_json_pointer, ""), "846985136");
+				Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/o/type"_json_pointer, ""), "IN");
+				Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/o/user"_json_pointer, ""), "hbcdhvbdfh67@loopup.co");
+
+				Assert::AreEqual<std::string>("14154498508"s, sipm.value("/b/sdp/0/a/dest_phone"_json_pointer, ""));
+
+				Assert::AreEqual<std::string>("00"s, sipm.value("/b/sdp/0/a/cli-screening"_json_pointer, ""));
+				Assert::AreEqual<bool>(true, sipm.value("/b/sdp/0/a/new_change"_json_pointer, false));
+				Assert::IsTrue(sipm.contains("/b/sdp/0/a/far_end"_json_pointer));
+				Assert::AreEqual<std::string>("false"s, sipm.value("/b/sdp/0/a/clir"_json_pointer, ""));
+			};
+
+			verifyItems(sipm);
+
+			Logger::WriteMessage( sipm.dump(4).c_str() );
+		}
 
 		// NOLINTNEXTLINE
 		TEST_METHOD(REGISTER_200_OK)
