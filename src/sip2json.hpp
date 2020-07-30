@@ -189,7 +189,7 @@ namespace siddiqsoftware
 			while (!done)
 			{
 				// Scan for the first `:`
-				auto hsep = std::search(bufferStart, headerEnd, ELEM_PADDEDSEPERATOR.begin(), ELEM_PADDEDSEPERATOR.end());
+				auto hsep = std::search(bufferStart, headerEnd, ELEM_SEPERATOR.begin(), ELEM_SEPERATOR.end());
 				if (hsep != headerEnd)
 				{
 					// Found the separator element.
@@ -200,7 +200,11 @@ namespace siddiqsoftware
 						auto		hval = hsep; // Store the location of the value part of the header element.
 
 						// Next, let's look for the end of element
-						bufferStart = hsep += ELEM_PADDEDSEPERATOR.size();
+						bufferStart = hsep += ELEM_SEPERATOR.size();
+
+						// Skip over the leading "space" if found.
+						if (*bufferStart == ' ') bufferStart = ++hsep;
+
 					label_recummulate_to_unfold_buffer:
 						auto hend = search(hsep, headerEnd, ELEM_NEWLINE.begin(), ELEM_NEWLINE.end());
 						if (hend != headerEnd)
@@ -260,6 +264,8 @@ namespace siddiqsoftware
 		static bool
 		parseBodySDP(sipmessage& sipm, std::string::iterator& bufferStart, const std::string::iterator& bufferEnd) noexcept(false)
 		{
+			using namespace std;
+
 			std::match_results<std::string::iterator> matcher;
 			bool									  found = false;
 
@@ -275,16 +281,16 @@ namespace siddiqsoftware
 					auto value = matcher[2].str();
 
 					found = true;
-					if (key.compare("v") == 0)
+					if (key == "v"s)
 					{
 						// First element; increment blockIndex.
 						// Add the next element to a new SDP object.
 						blockIndex++; // the first match will increment this to "0"
 						//nlohmann::json::json_pointer pkey(fmt::format("/b/sdp/{}/{}", blockIndex, key));
 						//sipm[pkey]						   = 0;
-						sipm["b"]["sdp"][blockIndex][key] = 0;
+						sipm["b"s]["sdp"s][blockIndex][key] = 0;
 					}
-					else if (key.compare("a") == 0)
+					else if (key == "a"s)
 					{
 						// attribute lines: https://en.wikipedia.org/wiki/Session_Description_Protocol#Attributes
 						//sipm[pkey].push_back(matcher[2].str());
@@ -332,32 +338,32 @@ namespace siddiqsoftware
 					{
 						nlohmann::json::json_pointer pkey(fmt::format("/b/sdp/{}/{}", blockIndex, key));
 
-						if (key.compare("c") == 0)
+						if (key == "c"s)
 						{
 							std::match_results<std::string::iterator> clineMatcher;
 							if (std::regex_search(value.begin(), value.end(), clineMatcher, SIP_PATTERN_BODY_CLINE) &&
 								clineMatcher.size() >= 3)
 							{
 								sipm[pkey] = nlohmann::json {
-										{"type", clineMatcher[1]}, {"subtype", clineMatcher[2]}, {"dn", clineMatcher[3]}};
+										{"type"s, clineMatcher[1]}, {"subtype"s, clineMatcher[2]}, {"dn"s, clineMatcher[3]}};
 							}
 							else
 							{
 								sipm[pkey] = !value.empty() ? value : nullptr;
 							}
 						}
-						else if (key.compare("o") == 0)
+						else if (key == "o"s)
 						{
 							std::match_results<std::string::iterator> olineMatcher;
 							if (std::regex_search(value.begin(), value.end(), olineMatcher, SIP_PATTERN_BODY_OLINE) &&
 								olineMatcher.size() >= 6)
 							{
-								sipm[pkey] = nlohmann::json {{"user", olineMatcher[1]},
-															 {"t1", olineMatcher[2]},
-															 {"t2", olineMatcher[3]},
-															 {"type", olineMatcher[4]},
-															 {"subtype", olineMatcher[5]},
-															 {"host", olineMatcher[6]}};
+								sipm[pkey] = nlohmann::json {{"user"s, olineMatcher[1]},
+															 {"t1"s, olineMatcher[2]},
+															 {"t2"s, olineMatcher[3]},
+															 {"type"s, olineMatcher[4]},
+															 {"subtype"s, olineMatcher[5]},
+															 {"host"s, olineMatcher[6]}};
 							}
 							else
 							{
@@ -383,7 +389,7 @@ namespace siddiqsoftware
 								sipm[pkey] = "";
 							}
 						}
-						else if (key.compare("t") == 0)
+						else if (key == "t"s)
 						{
 							uint32_t ts = 0, te = 0;
 							// timing
@@ -648,6 +654,8 @@ namespace siddiqsoftware
 		/// @return string representing the sdp
 		static std::string serializeSDP(sipmessage& sipm) noexcept(false)
 		{
+			using namespace std;
+
 			std::string buffer {};
 			auto		contentType = sipm.getContentType();
 
@@ -656,15 +664,15 @@ namespace siddiqsoftware
 
 			sip2json_throw_if<invalid_document_error>((contentType.compare(CONTENT_TYPE_APP_SDP) == std::string::npos) &&
 															  (contentType.compare(CONTENT_TYPE_TEXT_PLAIN) == std::string::npos),
-													  "{}:Unsupported content-type:{}",
+													  "{}:Unsupported content-type:{}"s,
 													  __func__,
 													  contentType);
 
 			// Body
 			// NOTE: we extract the contentType value during the header serialization.
-			if (contentType.compare(CONTENT_TYPE_APP_SDP) == 0)
+			if (contentType == CONTENT_TYPE_APP_SDP)
 			{
-				if (sipm.contains("/b"_json_pointer) && !sipm.body().is_null())
+				if (sipm.contains("b"s) && !sipm.body().is_null())
 				{
 					if (sipm.contains("/b/sdp"_json_pointer))
 					{
@@ -673,19 +681,28 @@ namespace siddiqsoftware
 						for (auto& block : sdp)
 						{
 							// Build each block; order is critical. We do not support session-level attributes (only media-level attributes)
-							buffer += fmt::format("v=0\r\no={}\r\ns={}\r\ni={}\r\nc={}\r\nt={}\r\nm={}\r\n{}",
-												  serializeSDPelement(block, "o"),
-												  serializeSDPelement(block, "s"),
-												  serializeSDPelement(block, "i"),
-												  serializeSDPelement(block, "c"),
-												  serializeSDPelement(block, "t"),
-												  serializeSDPelement(block, "m"),
-												  serializeSDPelement(block, "a"));
+							buffer += fmt::format("v=0\r\no={}\r\ns={}\r\ni={}\r\n"s,
+												  serializeSDPelement(block, "o"s),
+												  serializeSDPelement(block, "s"s),
+												  serializeSDPelement(block, "i"s));
+							// Optional..
+							if (block.contains("u")) buffer += fmt::format("u={}\r\n"s, serializeSDPelement(block, "u"s));
+							// Optional..
+							if (block.contains("e")) buffer += fmt::format("e={}\r\n"s, serializeSDPelement(block, "e"s));
+							// Optional..
+							if (block.contains("p")) buffer += fmt::format("p={}\r\n"s, serializeSDPelement(block, "p"s));
+							// Mandatory (typical); No support for session a-lines.
+							buffer += fmt::format("c={}\r\nt={}\r\nm={}\r\n"s,
+												  serializeSDPelement(block, "c"s),
+												  serializeSDPelement(block, "t"s),
+												  serializeSDPelement(block, "m"s));
+							// Media a-lines
+							buffer += serializeSDPelement(block, "a"s);
 						}
 					}
 					else
 					{
-						sip2json_throw<invalid_document_error>("{}:sipm `b`ody does not have sdp element.", __func__);
+						sip2json_throw<invalid_document_error>("{}:sipm `b`ody does not have sdp element."s, __func__);
 					}
 				}
 				else
@@ -695,7 +712,7 @@ namespace siddiqsoftware
 					//sip2json_throw<invalid_document_error>("{}:sipm does not have b.", __func__);
 				}
 			}
-			else if ((contentType.compare(CONTENT_TYPE_TEXT_PLAIN) == 0) && (sipm.contains("b") && sipm.body().is_string()))
+			else if ((contentType.compare(CONTENT_TYPE_TEXT_PLAIN) == 0) && (sipm.contains("b"s) && sipm.body().is_string()))
 			{
 				buffer += sipm.body();
 			}
@@ -710,10 +727,12 @@ namespace siddiqsoftware
 		/// @return Returns the sdp element as string.
 		static std::string serializeSDPelement(nlohmann::json& sdpBlock, const std::string& element)
 		{
-			sip2json_throw_if<missing_required_element>(!sdpBlock.contains("v") && !sdpBlock.contains("o") &&
-																!sdpBlock.contains("s") && !sdpBlock.contains("t") &&
-																!sdpBlock.contains("m"),
-														"{}:Required Element {} not present.",
+			using namespace std;
+
+			sip2json_throw_if<missing_required_element>(!sdpBlock.contains("v"s) && !sdpBlock.contains("o"s) &&
+																!sdpBlock.contains("s"s) && !sdpBlock.contains("t"s) &&
+																!sdpBlock.contains("m"s),
+														"{}:Required Element {} not present."s,
 														__func__,
 														element);
 			// If we donot have it then just return..
@@ -722,7 +741,7 @@ namespace siddiqsoftware
 				// Continue to build
 				if (auto item = sdpBlock.at(element); item.is_object())
 				{
-					if (element == "a")
+					if (element == "a"s)
 					{
 						std::string ret;
 
@@ -733,37 +752,41 @@ namespace siddiqsoftware
 							{
 								for (auto& i : v.items())
 								{
-									ret += fmt::format("a={}:{}\r\n", kv.key(), i.value());
+									ret += fmt::format("a={}:{}\r\n"s, kv.key(), i.value());
 								}
 							}
 							else if (v.is_string())
-								ret += fmt::format("a={}:{}\r\n", kv.key(), v);
+								ret += fmt::format("a={}:{}\r\n"s, kv.key(), v);
 							else if (v.is_boolean() && v == true)
-								ret += fmt::format("a={}\r\n", kv.key());
+								ret += fmt::format("a={}\r\n"s, kv.key());
 							else
-								ret += fmt::format("a={}\r\n", kv.key());
+								ret += fmt::format("a={}\r\n"s, kv.key());
 						}
 
 						return ret;
 					}
-					if (element == "o")
+					if (element == "o"s)
 					{
-						return fmt::format("{} {} {} {} {} {}",
-										   item.value("user", ""),
-										   item.value("t1", ""),
-										   item.value("t2", ""),
-										   item.value("type", ""),
-										   item.value("subtype", ""),
-										   item.value("host", ""));
+						return fmt::format("{} {} {} {} {} {}"s,
+										   item.value("user"s, ""s),
+										   item.value("t1"s, ""s),
+										   item.value("t2"s, ""s),
+										   item.value("type"s, ""s),
+										   item.value("subtype"s, ""s),
+										   item.value("host"s, ""s));
 					}
-					if (element == "i")
-					{ return fmt::format("{} ({}) {}", item.value("name", ""), item.value("dn", ""), item.value("type", "")); }
-					if (element == "c")
-					{ return fmt::format("{} {} {}", item.value("type", ""), item.value("subtype", ""), item.value("dn", "")); }
+					if (element == "i"s)
+					{
+						return fmt::format("{} ({}) {}"s, item.value("name"s, ""), item.value("dn"s, ""), item.value("type"s, ""));
+					}
+					if (element == "c"s)
+					{
+						return fmt::format("{} {} {}"s, item.value("type"s, ""), item.value("subtype"s, ""), item.value("dn"s, ""));
+					}
 				}
 				else if (item.is_array())
 				{
-					if (element == "t") { return fmt::format("{} {}", item[0].get<uint32_t>(), item[1].get<uint32_t>()); }
+					if (element == "t"s) { return fmt::format("{} {}"s, item[0].get<uint32_t>(), item[1].get<uint32_t>()); }
 				}
 				else if (item.is_string())
 				{

@@ -76,7 +76,7 @@ namespace test_suite
 					Logger::WriteMessage(
 							fmt::format("{}: buffer:{}  serialized:{}\n", funcName, buffer.length(), sipmSerialized.length())
 									.c_str());
-					Assert::AreEqual(buffer.length(), sipmSerialized.length());
+					Assert::AreEqual(buffer.length(), sipmSerialized.length(), L"original buffer and serialized must match");
 				}
 			}
 			catch (std::runtime_error& e)
@@ -102,8 +102,8 @@ namespace test_suite
 
 			for (auto& i : msgs)
 			{
-				auto str = fmt::format("{} - document {} -> {}\n", __func__, ++item, i.flatten().dump(2));
-				//Logger::WriteMessage(str.c_str());
+				auto str = fmt::format("{} - document {} -> {}\n", __func__, ++item, i.dump(2));
+				Logger::WriteMessage(str.c_str());
 			}
 
 			auto verify = [](sipmessage& sipm) {
@@ -1223,6 +1223,73 @@ namespace test_suite
 		}
 
 		// NOLINTNEXTLINE
+		TEST_METHOD(Mixed_Stream_3)
+		{
+			auto buffer		 = loadSampleFile(__func__); // NOLINT
+			auto item		 = 0;
+			auto bufferStart = buffer.begin();
+			// CSEQ, Content-Length, No items in sdp
+			std::vector<std::tuple<std::string, size_t, size_t>> matchTarget {{"", 0, 0}, // 0 element is dud.
+																			  {"1 NOTIFY", 779, 1},
+																			  {"3 NOTIFY", 783, 1},
+																			  {"5 NOTIFY", 786, 1},
+																			  {"6 NOTIFY", 779, 1},
+																			  {"7 NOTIFY", 799, 1},
+																			  {"10 NOTIFY", 786, 1},
+																			  {"1 NOTIFY", 1061, 1},
+																			  {"5 NOTIFY", 1195, 1},
+																			  {"7 NOTIFY", 1198, 1},
+																			  {"8 NOTIFY", 1064, 1},
+																			  {"9 NOTIFY", 1198, 1},
+																			  {"10 NOTIFY", 1195, 1},
+																			  {"15 NOTIFY", 783, 1},
+																			  {"16 NOTIFY", 783, 1},
+																			  {"51 NOTIFY", 1716, 2}, // hmm..
+																			  {"52 NOTIFY", 1058, 1},
+																			  {"107 NOTIFY", 1319, 1},
+																			  {"115 NOTIFY", 908, 1},
+																			  {"109 NOTIFY", 1322, 1},
+																			  {"116 NOTIFY", 1872, 2}, // hmm..
+																			  {"118 NOTIFY", 1133, 1}};
+
+			std::map<std::string, uint32_t> counters;
+
+			auto msgs = sip2json::parseAllFromBuffer(bufferStart, buffer.end());
+
+			for (auto& i : msgs)
+			{
+				item++;
+				auto str = fmt::format("{} - document {} -> found:{}.....expected:{}; CL:{}-->{}\n",
+									   __func__,
+									   item,
+									   i.value("/h/CSeq"_json_pointer, ""),
+									   std::get<0>(matchTarget[item]),
+									   i.getContentLength(),
+									   std::get<1>(matchTarget[item])
+
+
+				);
+				Logger::WriteMessage(str.c_str());
+
+				counters[i.value("/h/CSeq"_json_pointer, "")]++;
+
+				if (i.getStatusCode() != 0)
+					counters[i.value("/s/reason"_json_pointer, "")]++;
+				else
+					counters[i.value("/h/method"_json_pointer, "")]++;
+
+				// Check for each item; match the CSeq
+				Assert::AreEqual<std::string>(std::get<0>(matchTarget[item]), i.value("/h/CSeq"_json_pointer, ""));
+				Assert::AreEqual<size_t>(std::get<1>(matchTarget[item]), i.getContentLength());
+				Assert::AreEqual<size_t>(std::get<2>(matchTarget[item]), i["b"]["sdp"].size());
+			}
+
+			Logger::WriteMessage(fmt::format("{} - Found: {} messages\n", __func__, msgs.size()).c_str());
+			Assert::AreEqual<size_t>(matchTarget.size() - 1, msgs.size(), L"Expect 21 messages parsed.");
+		}
+
+
+		// NOLINTNEXTLINE
 		TEST_METHOD(RandomStream_Recv_File_1)
 		{
 			auto							buffer		= loadSampleFile(__func__); // NOLINT
@@ -1833,6 +1900,66 @@ namespace test_suite
 			});
 
 			Assert::IsTrue(passTest);
+		}
+
+		// NOLINTNEXTLINE
+		TEST_METHOD(NOTIFY_single_1)
+		{
+			using namespace std;
+
+			auto		buffer		= loadSampleFile(__func__); // NOLINT
+			auto		bufferStart = buffer.begin();
+			std::string ciid		= "MDcwMjg4MjU3OTQ0NDUyNjI5NS51ay1lZC10aGFtZXMtMDEucmluZzIuY29tOjE1OTU5MTIyMDY6NzMwMjU2"s;
+
+			auto msgs = sip2json::parseAllFromBuffer(bufferStart, buffer.end());
+
+			// We're going to have a single frame
+			Assert::AreEqual<size_t>(1, msgs.size());
+
+			for (auto& i : msgs)
+			{
+				writeSampleFile(__func__, i.dump(4)); // NOLINT
+			}
+
+			// Affirm that the first frame has a Contact that has been unfolded properly!
+			Assert::IsTrue(msgs[0].value("/h/X-Call-Instance-ID"_json_pointer, "").length() > 0);
+			Assert::AreEqual<std::string>(ciid, msgs[0].value("/h/X-Call-Instance-ID"_json_pointer, ""));
+			Assert::AreEqual<size_t>(2, msgs[0].value("/b/sdp"_json_pointer, nlohmann::json {}).size());
+			Assert::AreEqual<size_t>(1716, msgs[0].getContentLength());
+
+			Assert::AreEqual<string>("1", msgs[0].value("/b/sdp/0/a/leg_no"_json_pointer, ""s));
+			Assert::AreEqual<string>("7", msgs[0].value("/b/sdp/1/a/leg_no"_json_pointer, ""s));
+
+			Assert::AreEqual<string>("13773497", msgs[0].value("/b/sdp/1/e"_json_pointer, ""s));
+		}
+
+		// NOLINTNEXTLINE
+		TEST_METHOD(NOTIFY_single_2)
+		{
+			using namespace std;
+
+			auto		buffer		= loadSampleFile(__func__); // NOLINT
+			auto		bufferStart = buffer.begin();
+			std::string ciid		= "MDcwMjg4MjU3OTQ0NDUyNjI5NS51ay1lZC10aGFtZXMtMDEucmluZzIuY29tOjE1OTU5MTIyMDY6NzMwMjU2"s;
+
+			auto msgs = sip2json::parseAllFromBuffer(bufferStart, buffer.end());
+
+			// We're going to have a single frame
+			Assert::AreEqual<size_t>(1, msgs.size());
+
+			for (auto& i : msgs)
+			{
+				writeSampleFile(__func__, i.dump(4)); // NOLINT
+			}
+
+			// Affirm that the first frame has a Contact that has been unfolded properly!
+			Assert::IsTrue(msgs[0].value("/h/X-Call-Instance-ID"_json_pointer, "").length() > 0);
+			Assert::AreEqual<std::string>(ciid, msgs[0].value("/h/X-Call-Instance-ID"_json_pointer, ""));
+			Assert::AreEqual<size_t>(2, msgs[0].value("/b/sdp"_json_pointer, nlohmann::json {}).size());
+			Assert::AreEqual<size_t>(1872, msgs[0].getContentLength());
+
+			Assert::AreEqual<string>("1", msgs[0].value("/b/sdp/0/a/leg_no"_json_pointer, ""s));
+			Assert::AreEqual<string>("4", msgs[0].value("/b/sdp/1/a/leg_no"_json_pointer, ""s));
 		}
 	}; // namespace test_suite
 

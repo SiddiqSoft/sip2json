@@ -217,7 +217,7 @@ namespace siddiqsoftware
 	//	Parsing elements
 	static const std::string ELEM_SPACE {" "};
 	static const std::string ELEM_SEPERATOR {":"};
-	static const std::string ELEM_PADDEDSEPERATOR {": "};
+	//static const std::string ELEM_PADDEDSEPERATOR {": "};
 	static const std::string ELEM_TAGSEPERATOR {"{"};
 	static const std::string ELEM_NEWLINE {"\r\n"};
 	static const std::string ELEM_HEADERSECTIONDELIMITER {"\r\n\r\n"};
@@ -234,9 +234,9 @@ namespace siddiqsoftware
 												  "2.0)\\s{1,1}([^\\s]+)\\s{1,1}([^\\r\\n]*)");
 	static const std::regex SIP_PATTERN_CONTENT_LENGTH("^Content-Length:\\s{1,1}(\\d+)\\s*(\\r\\n|\\n)");
 	static const std::regex SIP_PATTERN_CONTENT_TYPE("^Content-type:\\s{1,1}([a-z|A-Z|\\-|/]+)\\s*(\\r\\n|\\n)");
-	static const std::regex SIP_PATTERN_HEADER("([^:\\s]*)\\s?:{1,1}\\s{1,1}([^\\r\\n]*)[\\x0A\\x0D]*");
+	static const std::regex SIP_PATTERN_HEADER("([^:\\s]*)\\s*:\\s*([^\\r\\n]*)[\\x0A\\x0D]*");
 
-	static const std::regex SIP_PATTERN_BODY("([vosictma]{1})=([^\\r\\n]*)");
+	static const std::regex SIP_PATTERN_BODY("([vosiuepcbtzkma]{1})=([^\\r\\n]*)");
 	static const std::regex SIP_PATTERN_BODY_ALINE("^([^:|\\r\\n]*)[:]{1}(.*$)[\\r\\n]?|(.*)[\\r\\n]");
 	static const std::regex SIP_PATTERN_BODY_ILINE("^(.*) \\(([^\\)]*)\\) ([^\\s|\\r\\n]*)");
 	static const std::regex SIP_PATTERN_BODY_CLINE("^(.*) (.*) ([^\\s|\\r\\n]*)");
