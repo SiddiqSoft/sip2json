@@ -5,6 +5,8 @@ trigger:
     - master
     - bufix/*
     - feature/*
+    - hotfix/*
+    - release/*
   paths:
     exclude:
     - README.md
@@ -74,13 +76,6 @@ steps:
   continueOnError: true
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
-- task: Bash@3
-  inputs:
-    targetType: 'inline'
-    script: |
-      echo 'Upload CodeCoverage to CodeCov.io'
-      bash <(curl -s https://codecov.io/bash) -s TestResults
-
 - task: PublishTestResults@2
   displayName: 'Publish DEBUG Test Results **/TEST-*.xml'
   inputs:
@@ -119,7 +114,6 @@ steps:
     diagnosticsEnabled: true
     rerunFailedTests: true
   continueOnError: true
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
 - task: PublishTestResults@2
   displayName: 'Publish Release Test Results **/TEST-*.xml'
@@ -129,6 +123,13 @@ steps:
     buildPlatform: 'x64'
     buildConfiguration: 'release'
   continueOnError: true
+
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: |
+      echo 'Upload CodeCoverage to CodeCov.io'
+      bash <(curl -s https://codecov.io/bash) -s TestResults
 
 - task: NuGetCommand@2
   displayName: 'NuGet pack'
