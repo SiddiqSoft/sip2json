@@ -592,17 +592,17 @@ namespace test_suite
 					// Via is an array
 					Assert::IsTrue(sipm.value("/h/Via"_json_pointer, nlohmann::json {}).is_array());
 					Assert::AreEqual<size_t>(1, sipm.value("/h/Via"_json_pointer, nlohmann::json {}).size());
-					Assert::AreEqual<std::string>("SIP/2.0/TCP il-ed-aras-01.ring2-corp.com:8443",
+					Assert::AreEqual<std::string>("SIP/2.0/TCP il-ed-aras-01.ring2-corp.com:8443"s,
 												  sipm.value("/h/Via/0"_json_pointer, ""));
 					// Call-ID
-					Assert::AreEqual<std::string>("755a8c07-ee3c-43fd-bfb-7f93ade4-89aaab98a8bb", sipm.getCallID());
+					Assert::AreEqual<std::string>("755a8c07-ee3c-43fd-bfb-7f93ade4-89aaab98a8bb"s, sipm.getCallID());
 					// Content-Type
-					Assert::AreEqual<std::string>("<sip:no_such_user_exists@loopup.com>;tag=12345678",
+					Assert::AreEqual<std::string>("<sip:no_such_user_exists@loopup.com>;tag=12345678"s,
 												  sipm.header<std::string>("To"s));
 					// Content-Length
 					Assert::AreEqual<uint32_t>(0, sipm.getContentLength());
 					Assert::AreEqual<uint32_t>(360, sipm.getExpires());
-					Assert::AreEqual<std::string>("Basic realm=eDial", sipm.header<std::string>("WWW-Authenticate"));
+					Assert::AreEqual<std::string>("Basic realm=eDial"s, sipm.header<std::string>("WWW-Authenticate"s));
 				});
 			}
 			catch (const std::exception& e)
@@ -614,6 +614,8 @@ namespace test_suite
 		// NOLINTNEXTLINE
 		TEST_METHOD(REGISTER_1)
 		{
+			using namespace std;
+
 			auto buffer		 = loadSampleFile(__func__); // NOLINT
 			auto bufferStart = buffer.begin();
 			auto msgs		 = sip2json::parseAllFromBuffer(bufferStart, buffer.end());
@@ -628,9 +630,9 @@ namespace test_suite
 				Assert::IsTrue(sipm.value("/h/Via"_json_pointer, nlohmann::json {}).is_array());
 				Assert::IsTrue(sipm.value("/h/Via"_json_pointer, nlohmann::json {}).size() == 1);
 				Assert::AreEqual<std::string>(sipm.value("/h/Via/0"_json_pointer, nlohmann::json {}),
-											  "SIP/2.0/TCP il-ed-mara-01.ring2.com:8443");
+											  "SIP/2.0/TCP il-ed-mara-01.ring2.com:8443"s);
 				// Call-ID
-				Assert::AreEqual<std::string>(sipm.getCallID(), "8DC1AF9E-8C37-4463-B8C9-1959A1428116");
+				Assert::AreEqual<std::string>(sipm.getCallID(), "8DC1AF9E-8C37-4463-B8C9-1959A1428116"s);
 				// Content-Type
 				//Assert::AreEqual<>(CONTENT_TYPE_APP_SDP, sipm.getContentType());
 				// Content-Length

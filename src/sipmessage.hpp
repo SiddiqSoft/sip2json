@@ -46,12 +46,14 @@
 #include <random>
 #include <sstream>
 
+#define FMT_HEADER_ONLY 1
+#include "fmt/chrono.h"
+#include "nlohmann/json.hpp"
+
 #include "sip2json_response_codes.hpp"
 #include "sip2json_utils.hpp"
 #include "sip2json_exception.hpp"
 
-#include "nlohmann/json.hpp"
-#include "fmt/chrono.h"
 
 namespace siddiqsoftware
 {

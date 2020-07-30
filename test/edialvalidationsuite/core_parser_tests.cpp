@@ -69,7 +69,7 @@ namespace test_suite
 			try
 			{
 				sipm.setUserAgent(ua);
-				Logger::WriteMessage( sip2json::serialize(sipm).c_str() );
+				Logger::WriteMessage(sip2json::serialize(sipm).c_str());
 				Assert::IsTrue(sipm.getUserAgent().find(ua) != std::string::npos);
 				Assert::IsTrue(sipm.getUserAgent().find("sip2json"s) != std::string::npos);
 			}
@@ -737,10 +737,11 @@ namespace test_suite
 			bool passTest = false;
 			auto buffer	  = loadSampleFile(__func__); // NOLINT
 			auto bs		  = buffer.begin();
-			sip2json::parseAllFromBuffer(bs, buffer.end(), {}, [&](const sip2jsonErrors& errCode) {
-				Assert::IsTrue(errCode == sip2jsonErrors::invalid_startline);
-				passTest = true;
-			});
+			sip2json::parseAllFromBuffer(
+					bs, buffer.end(), {}, [&](const sip2json_exception& e, std::string::iterator&, const std::string::iterator&) {
+						Assert::IsTrue(e.errCode == sip2jsonErrors::invalid_startline);
+						passTest = true;
+					});
 			Assert::IsTrue(passTest);
 		}
 
@@ -750,10 +751,11 @@ namespace test_suite
 			auto buffer	  = siddiqsoftware::SIP_SAMPLE_MINIMAL_MESSAGE;
 			bool passTest = false;
 			auto bs		  = buffer.begin();
-			sip2json::parseAllFromBuffer(bs, buffer.end(), {}, [&](const sip2jsonErrors& errCode) {
-				Assert::IsTrue(errCode == sip2jsonErrors::incomplete_buffer_for_parse);
-				passTest = true;
-			});
+			sip2json::parseAllFromBuffer(
+					bs, buffer.end(), {}, [&](const sip2json_exception& e, std::string::iterator&, const std::string::iterator&) {
+						Assert::IsTrue(e.errCode == sip2jsonErrors::incomplete_buffer_for_parse);
+						passTest = true;
+					});
 			Assert::IsTrue(passTest);
 		}
 
@@ -764,11 +766,12 @@ namespace test_suite
 			bool passTest = false;
 			auto buffer	  = loadSampleFile(__func__); // NOLINT
 			auto bs		  = buffer.begin();
-			sip2json::parseAllFromBuffer(bs, buffer.end(), {}, [&](const sip2jsonErrors& errCode) {
-				// We would get multiple exceptions/callbacks so we should watch out for our specific code.
-				Logger::WriteMessage(fmt::format("Test_incomplete_buffer_for_content: got error:{}\n", errCode).c_str());
-				if (errCode == sip2jsonErrors::incomplete_buffer_for_content) passTest = true;
-			});
+			sip2json::parseAllFromBuffer(
+					bs, buffer.end(), {}, [&](const sip2json_exception& e, std::string::iterator&, const std::string::iterator&) {
+						// We would get multiple exceptions/callbacks so we should watch out for our specific code.
+						Logger::WriteMessage(fmt::format("Test_incomplete_buffer_for_content: got error:{}\n", e.errCode).c_str());
+						if (e.errCode == sip2jsonErrors::incomplete_buffer_for_content) passTest = true;
+					});
 			Assert::IsTrue(passTest);
 		}
 
@@ -779,10 +782,11 @@ namespace test_suite
 			bool passTest = false;
 			auto buffer	  = loadSampleFile(__func__); // NOLINT
 			auto bs		  = buffer.begin();
-			sip2json::parseAllFromBuffer(bs, buffer.end(), {}, [&](const sip2jsonErrors& errCode) {
-				Assert::IsTrue(errCode == sip2jsonErrors::incomplete_buffer_for_header);
-				passTest = true;
-			});
+			sip2json::parseAllFromBuffer(
+					bs, buffer.end(), {}, [&](const sip2json_exception& e, std::string::iterator&, const std::string::iterator&) {
+						Assert::IsTrue(e.errCode == sip2jsonErrors::incomplete_buffer_for_header);
+						passTest = true;
+					});
 			Assert::IsTrue(passTest);
 		}
 
@@ -793,10 +797,11 @@ namespace test_suite
 			bool passTest = false;
 			auto buffer	  = loadSampleFile(__func__); // NOLINT
 			auto bs		  = buffer.begin();
-			sip2json::parseAllFromBuffer(bs, buffer.end(), {}, [&](const sip2jsonErrors& errCode) {
-				Assert::IsTrue(errCode == sip2jsonErrors::unsupported_contenttype);
-				passTest = true;
-			});
+			sip2json::parseAllFromBuffer(
+					bs, buffer.end(), {}, [&](const sip2json_exception& e, std::string::iterator&, const std::string::iterator&) {
+						Assert::IsTrue(e.errCode == sip2jsonErrors::unsupported_contenttype);
+						passTest = true;
+					});
 			Assert::IsTrue(passTest);
 		}
 
@@ -819,8 +824,8 @@ namespace test_suite
 						// Throw so we can get the error-callback triggered.
 						throw 666;
 					},
-					[&](const sip2jsonErrors& errCode) {
-						if (pass1Test) pass2Test = (errCode == sip2jsonErrors::unknown);
+					[&](const sip2json_exception& e, std::string::iterator&, const std::string::iterator&) {
+						if (pass1Test) pass2Test = (e.errCode == sip2jsonErrors::unknown);
 					});
 
 			Assert::IsTrue(pass1Test, L"First stage callback not invoked.");
