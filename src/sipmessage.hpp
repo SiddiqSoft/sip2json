@@ -72,8 +72,8 @@ namespace siddiqsoftware
 	class sipmessage : public nlohmann::json
 	{
 		static const inline std::string MetaLibName		  = "sip2json";
-		static const inline std::string MetaSchemaVersion = "0.3.0";
-		static const inline std::string MetaParserVersion = "1.3.3";
+		static const inline std::string MetaSchemaVersion = "0.4.0";
+		static const inline std::string MetaParserVersion = "1.4.3";
 
 	public:
 		sipmessage() = default;
