@@ -43,8 +43,9 @@
 #include <sstream>
 #include <optional>
 
-#include "nlohmann/json.hpp"
+#define FMT_HEADER_ONLY 1
 #include "fmt/chrono.h"
+#include "nlohmann/json.hpp"
 
 namespace siddiqsoftware
 {

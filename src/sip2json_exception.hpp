@@ -39,8 +39,10 @@
 #include <exception>
 #include <string>
 
-#include "nlohmann/json.hpp"
+#define FMT_HEADER_ONLY 1
 #include "fmt/format.h"
+#include "nlohmann/json.hpp"
+
 
 namespace siddiqsoftware
 {
@@ -76,106 +78,106 @@ namespace siddiqsoftware
 								  {sip2jsonErrors::empty_message, "empty_message"},
 								  {sip2jsonErrors::unknown, "unknown"}});
 
-
-	class missing_required_element : public std::invalid_argument
+	class sip2json_exception : public std::runtime_error
 	{
 	public:
-		sip2jsonErrors errCode = sip2jsonErrors::missing_required_element;
+		sip2jsonErrors errCode = sip2jsonErrors::unknown;
 
-		missing_required_element(const std::string& msg)
-			: std::invalid_argument(msg)
+		sip2json_exception(const std::string& msg)
+			: std::runtime_error(msg)
+		{
+		}
+
+		sip2json_exception(const std::exception& e)
+			: std::runtime_error(e.what())
 		{
 		}
 	};
 
-
-	class incomplete_buffer_for_parse_error : public std::runtime_error
+	class missing_required_element : public sip2json_exception
 	{
 	public:
-		sip2jsonErrors errCode = sip2jsonErrors::incomplete_buffer_for_parse;
+		missing_required_element(const std::string& msg)
+			: sip2json_exception(msg)
+		{
+			errCode = sip2jsonErrors::missing_required_element;
+		}
+	};
 
+
+	class incomplete_buffer_for_parse_error : public sip2json_exception
+	{
 	public:
 		incomplete_buffer_for_parse_error(const std::string& msg)
-			: std::runtime_error(msg)
+			: sip2json_exception(msg)
 		{
+			errCode = sip2jsonErrors::incomplete_buffer_for_parse;
 		}
 	};
 
 
-	class incomplete_buffer_for_content_error : public std::runtime_error
+	class incomplete_buffer_for_content_error : public sip2json_exception
 	{
-	public:
-		sip2jsonErrors errCode = sip2jsonErrors::incomplete_buffer_for_content;
-
 	public:
 		incomplete_buffer_for_content_error(const std::string& msg)
-			: std::runtime_error(msg)
+			: sip2json_exception(msg)
 		{
+			errCode = sip2jsonErrors::incomplete_buffer_for_content;
 		}
 	};
 
 
-	class incomplete_buffer_for_header_error : public std::runtime_error
+	class incomplete_buffer_for_header_error : public sip2json_exception
 	{
-	public:
-		sip2jsonErrors errCode = sip2jsonErrors::incomplete_buffer_for_header;
-
 	public:
 		incomplete_buffer_for_header_error(const std::string& msg)
-			: std::runtime_error(msg)
+			: sip2json_exception(msg)
 		{
+			errCode = sip2jsonErrors::incomplete_buffer_for_header;
 		}
 	};
 
 
-	class invalid_startline_error : public std::runtime_error
+	class invalid_startline_error : public sip2json_exception
 	{
-	public:
-		sip2jsonErrors errCode = sip2jsonErrors::invalid_startline;
-
 	public:
 		invalid_startline_error(const std::string& msg)
-			: std::runtime_error(msg)
+			: sip2json_exception(msg)
 		{
+			errCode = sip2jsonErrors::invalid_startline;
 		}
 	};
 
 
-	class unsupported_contenttype_error : public std::runtime_error
+	class unsupported_contenttype_error : public sip2json_exception
 	{
-	public:
-		sip2jsonErrors errCode = sip2jsonErrors::unsupported_contenttype;
-
 	public:
 		unsupported_contenttype_error(const std::string& msg)
-			: std::runtime_error(msg)
+			: sip2json_exception(msg)
 		{
+			errCode = sip2jsonErrors::unsupported_contenttype;
 		}
 	};
 
 
-	class invalid_document_error : public std::runtime_error
+	class invalid_document_error : public sip2json_exception
 	{
-	public:
-		sip2jsonErrors errCode = sip2jsonErrors::invalid_document;
-
 	public:
 		invalid_document_error(const std::string& msg)
-			: std::runtime_error(msg)
+			: sip2json_exception(msg)
 		{
+			errCode = sip2jsonErrors::invalid_document;
 		}
 	};
 
 
-	class empty_message_error : public std::runtime_error
+	class empty_message_error : public sip2json_exception
 	{
 	public:
-		sip2jsonErrors errCode = sip2jsonErrors::empty_message;
-
-	public:
 		empty_message_error(const std::string& msg)
-			: std::runtime_error(msg)
+			: sip2json_exception(msg)
 		{
+			errCode = sip2jsonErrors::empty_message;
 		}
 	};
 

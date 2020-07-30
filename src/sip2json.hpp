@@ -47,13 +47,15 @@
 #include <functional>
 #include <optional>
 
+#define FMT_HEADER_ONLY 1
+#include "fmt/chrono.h"
+#include "nlohmann/json.hpp"
+
 #include "sip2json_exception.hpp"
 #include "sip2json_response_codes.hpp"
 #include "sip2json_utils.hpp"
 #include "sipmessage.hpp"
 
-#include "nlohmann/json.hpp"
-#include "fmt/chrono.h"
 
 namespace siddiqsoftware
 {
@@ -424,11 +426,12 @@ namespace siddiqsoftware
 		/// @param parseCallback Optional callback which takes a reference to the sipmessage just decoded. If present, the return is empty vector.
 		/// @param errorCallback Optional callback to handle the error on the parse.
 		/// @return If parseCallback is provided then the return vector is empty otherwise vector of sipmessage decoded within the stream.
-		static std::vector<sipmessage>
-		parseAllFromBuffer(std::string::iterator&									 bufferStart,
-						   const std::string::iterator&								 bufferEnd,
-						   std::optional<std::function<void(sipmessage&)>>			 parseCallback = {},
-						   std::optional<std::function<void(const sip2jsonErrors&)>> errorCallback = {}) noexcept
+		static std::vector<sipmessage> parseAllFromBuffer(
+				std::string::iterator&							bufferStart,
+				const std::string::iterator&					bufferEnd,
+				std::optional<std::function<void(sipmessage&)>> parseCallback = {},
+				std::optional<std::function<void(const sip2json_exception&, std::string::iterator&, const std::string::iterator&)>>
+						errorCallback = {}) noexcept
 		{
 			std::vector<sipmessage> msgs;
 
@@ -443,40 +446,50 @@ namespace siddiqsoftware
 					else // otherwise we push to the vector to return to caller
 						msgs.emplace_back(sipm);
 				}
-				catch (invalid_startline_error& e)
+				catch (const invalid_startline_error& e)
 				{
 					// If the very first one has issues then we should quit.
-					if (errorCallback.has_value()) errorCallback.value()(e.errCode);
+					if (errorCallback.has_value()) errorCallback.value()(e, bufferStart, bufferEnd);
 					break;
 				}
-				catch (unsupported_contenttype_error& e)
+				catch (const unsupported_contenttype_error& e)
 				{
 					// If the very first one has issues then we should quit.
-					if (errorCallback.has_value()) errorCallback.value()(e.errCode);
+					if (errorCallback.has_value()) errorCallback.value()(e, bufferStart, bufferEnd);
 					break;
 				}
-				catch (incomplete_buffer_for_parse_error& e)
+				catch (const incomplete_buffer_for_parse_error& e)
 				{
 					// If the very first one has issues then we should quit.
-					if (errorCallback.has_value()) errorCallback.value()(e.errCode);
+					if (errorCallback.has_value()) errorCallback.value()(e, bufferStart, bufferEnd);
 					break;
 				}
-				catch (incomplete_buffer_for_header_error& e)
+				catch (const incomplete_buffer_for_header_error& e)
 				{
 					// If the very first one has issues then we should quit.
-					if (errorCallback.has_value()) errorCallback.value()(e.errCode);
+					if (errorCallback.has_value()) errorCallback.value()(e, bufferStart, bufferEnd);
 					break;
 				}
-				catch (incomplete_buffer_for_content_error& e)
+				catch (const incomplete_buffer_for_content_error& e)
 				{
 					// If the very first one has issues then we should quit.
-					if (errorCallback.has_value()) errorCallback.value()(e.errCode);
+					if (errorCallback.has_value()) errorCallback.value()(e, bufferStart, bufferEnd);
+					break;
+				}
+				catch (const std::exception& e)
+				{
+					// Just in case catch-all
+					sip2json_exception ex(e);
+
+					if (errorCallback.has_value()) errorCallback.value()(ex, bufferStart, bufferEnd);
 					break;
 				}
 				catch (...)
 				{
 					// Just in case catch-all
-					if (errorCallback.has_value()) errorCallback.value()(sip2jsonErrors::unknown);
+					sip2json_exception ex("Unknown generic error");
+
+					if (errorCallback.has_value()) errorCallback.value()(ex, bufferStart, bufferEnd);
 					break;
 				}
 			}
