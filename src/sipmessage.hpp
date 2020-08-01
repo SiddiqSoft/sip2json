@@ -72,8 +72,8 @@ namespace siddiqsoftware
 	class sipmessage : public nlohmann::json
 	{
 		static const inline std::string MetaLibName		  = "sip2json";
-		static const inline std::string MetaSchemaVersion = "0.4.0";
-		static const inline std::string MetaParserVersion = "1.4.3";
+		static const inline std::string MetaSchemaVersion = "0.4.1";
+		static const inline std::string MetaParserVersion = "1.4.4";
 
 	public:
 		sipmessage() = default;
@@ -86,18 +86,20 @@ namespace siddiqsoftware
 		/// @return
 		sipmessage(const std::string& method, const std::string& uri, const std::string& callId = {}, uint32_t cseq = 0)
 		{
-			update({{"s", {{"type", SIPMessageType::request}, {"method", method}, {"uri", uri}, {"version", SIPVER_20}}},
-					{"v", MetaSchemaVersion},
-					{"b", nullptr},
-					{"z", std::chrono::system_clock::now().time_since_epoch().count()},
-					{"h",
-					 {{"User-Agent", fmt::format("{}/{} (schema:{})", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
-					  {"Date", getRFC1123()}}}});
+			using namespace std;
+
+			update({{"s"s, {{"type"s, SIPMessageType::request}, {"method"s, method}, {"uri"s, uri}, {"version"s, SIPVER_20}}},
+					{"v"s, MetaSchemaVersion},
+					{"b"s, nullptr},
+					{"z"s, std::chrono::system_clock::now().time_since_epoch().count()},
+					{"h"s,
+					 {{"User-Agent"s, fmt::format("{}/{} (schema:{})"s, MetaLibName, MetaParserVersion, MetaSchemaVersion)},
+					  {"Date"s, getRFC1123()}}}});
 
 			// request-line: METHOD Request-URI SIP/2.0
 			// message-headers
-			if (!callId.empty()) header("Call-ID", callId);
-			if (cseq > 0) header("CSeq", fmt::format("{} {}", cseq, method));
+			if (!callId.empty()) setHeader("Call-ID"s, callId);
+			if (cseq > 0) setHeader("CSeq"s, fmt::format("{} {}"s, cseq, method));
 		}
 
 		/// @brief Instantiates a response message from scratch or optionally from existing sipmessage request
@@ -106,29 +108,31 @@ namespace siddiqsoftware
 		/// @return
 		sipmessage(uint32_t statusCode, std::optional<sipmessage> src = {})
 		{
+			using namespace std;
+
 			update(src.value_or(nlohmann::json {
-					{"s",
-					 {{"type", SIPMessageType::response},
-					  {"status", statusCode},
-					  {"reason", getReasonPhrase(statusCode)},
-					  {"version", SIPVER_20}}},
-					{"v", MetaSchemaVersion},
-					{"b", nullptr},
-					{"z", std::chrono::system_clock::now().time_since_epoch().count()},
-					{"h",
-					 {{"User-Agent", fmt::format("{}/{} (schema:{})", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
-					  {"Date", getRFC1123()}}}}));
+					{"s"s,
+					 {{"type"s, SIPMessageType::response},
+					  {"status"s, statusCode},
+					  {"reason"s, getReasonPhrase(statusCode)},
+					  {"version"s, SIPVER_20}}},
+					{"v"s, MetaSchemaVersion},
+					{"b"s, nullptr},
+					{"z"s, std::chrono::system_clock::now().time_since_epoch().count()},
+					{"h"s,
+					 {{"User-Agent"s, fmt::format("{}/{} (schema:{})"s, MetaLibName, MetaParserVersion, MetaSchemaVersion)},
+					  {"Date"s, getRFC1123()}}}}));
 
 			// We must clear these values in case we are updating an existing object.
-			erase("s");
+			erase("s"s);
 			// "status-line" (Status Reason Version)
-			(*this)["s"] = {{"type", SIPMessageType::response},
-							{"status", statusCode},
-							{"reason", getReasonPhrase(statusCode)},
-							{"version", SIPVER_20}};
+			(*this)["s"s] = {{"type"s, SIPMessageType::response},
+							 {"status"s, statusCode},
+							 {"reason"s, getReasonPhrase(statusCode)},
+							 {"version"s, SIPVER_20}};
 
-			(*this)["h"]["User-Agent"] = fmt::format("{}/{} (schema:{})", MetaLibName, MetaParserVersion, MetaSchemaVersion);
-			this->header("Date", getRFC1123());
+			(*this)["h"s]["User-Agent"s] = fmt::format("{}/{} (schema:{})"s, MetaLibName, MetaParserVersion, MetaSchemaVersion);
+			this->setHeader("Date"s, getRFC1123());
 		}
 
 		/// @brief Copy constructor from json
@@ -152,7 +156,7 @@ namespace siddiqsoftware
 		/// @brief Returns the header object reference
 		/// @return Return the header object reference
 		inline auto&			headers() { return this->at("h"); };
-		template <class T> auto header(const std::string& key, std::optional<T> defaultValue = {})
+		template <class T> auto getHeader(const std::string& key, std::optional<T> defaultValue = {})
 		{
 			// Return the value or the default for the object.
 			return (*this)["h"].value(key, defaultValue.value_or(T {}));
@@ -160,14 +164,14 @@ namespace siddiqsoftware
 		inline auto& setUserAgent(const std::string& ua)
 		{
 			if (!ua.empty())
-				header("User-Agent", fmt::format("{}/{} (schema:{}) {}", MetaLibName, MetaParserVersion, MetaSchemaVersion, ua));
+				setHeader("User-Agent", fmt::format("{}/{} (schema:{}) {}", MetaLibName, MetaParserVersion, MetaSchemaVersion, ua));
 			else
-				header("User-Agent", fmt::format("{}/{} (schema:{})", MetaLibName, MetaParserVersion, MetaSchemaVersion));
+				setHeader("User-Agent", fmt::format("{}/{} (schema:{})", MetaLibName, MetaParserVersion, MetaSchemaVersion));
 			return *this;
 		};
-		inline auto		getUserAgent() { return header<std::string>("User-Agent"); };
-		inline uint32_t getContentLength() { return header<uint32_t>("Content-Length"); };
-		inline uint32_t getExpires() { return header<uint32_t>("Expires"); };
+		inline auto		getUserAgent() { return getHeader<std::string>("User-Agent"); };
+		inline uint32_t getContentLength() { return getHeader<uint32_t>("Content-Length"); };
+		inline uint32_t getExpires() { return getHeader<uint32_t>("Expires"); };
 		inline auto		getContentType()
 		{
 			// Special concession for some SIP servers which incorrectly encode this field.
@@ -185,7 +189,7 @@ namespace siddiqsoftware
 
 			return std::string {};
 		};
-		inline auto getCallID() { return header<std::string>("Call-ID"); };
+		inline auto getCallID() { return getHeader<std::string>("Call-ID"); };
 		inline auto getMethod() { return this->value("/s/method"_json_pointer, ""); };
 		inline auto getUri() { return this->value("/s/uri"_json_pointer, ""); };
 		inline auto getStatusCode() { return this->value("/s/status"_json_pointer, 0); };
@@ -204,7 +208,7 @@ namespace siddiqsoftware
 
 		// mutators
 	public:
-		template <typename T> inline sipmessage& header(const std::string& key, const T& v)
+		template <typename T> inline sipmessage& setHeader(const std::string& key, const T& v)
 		{
 			headers()[key] = v;
 			return *this;
@@ -216,25 +220,5 @@ namespace siddiqsoftware
 			(*this)["b"][key] = v;
 			return *this;
 		};
-
-
-	public:
-		/// @brief Returns an envelope conforming to the CloudEvent spec. https://github.com/cloudevents/spec/blob/v1.0/spec.md
-		/// @return json containing the CloudEvent spec.
-		nlohmann::json to_cloudEvent()
-		{
-			sip2json_throw_if<invalid_document_error>((!this->contains("/h/Call-ID"_json_pointer) && !this->contains("z")),
-													  "{}:Missing Call-ID and ticks. Required elements.",
-													  std::string_view(__func__));
-
-			return nlohmann::json {{"specversion", "1.0"},
-								   {"source", "sip2json"},
-								   {"datacontenttype", "application/json+sip2json"},
-								   {"time", getISO8601()},
-								   {"subject", this->value("/s/type"_json_pointer, "")},
-								   {"data", *this},
-								   {"type", fmt::format("com.siddiqsoftware.sip2json.{}", this->value("/s/type"_json_pointer, ""))},
-								   {"id", fmt::format("{}.{}", getCallID(), this->value("z", 0))}};
-		}
 	}; // class sipmessage
 } // namespace siddiqsoftware
