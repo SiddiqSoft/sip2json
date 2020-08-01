@@ -598,11 +598,11 @@ namespace test_suite
 					Assert::AreEqual<std::string>("755a8c07-ee3c-43fd-bfb-7f93ade4-89aaab98a8bb"s, sipm.getCallID());
 					// Content-Type
 					Assert::AreEqual<std::string>("<sip:no_such_user_exists@loopup.com>;tag=12345678"s,
-												  sipm.header<std::string>("To"s));
+												  sipm.getHeader<std::string>("To"s));
 					// Content-Length
 					Assert::AreEqual<uint32_t>(0, sipm.getContentLength());
 					Assert::AreEqual<uint32_t>(360, sipm.getExpires());
-					Assert::AreEqual<std::string>("Basic realm=eDial"s, sipm.header<std::string>("WWW-Authenticate"s));
+					Assert::AreEqual<std::string>("Basic realm=eDial"s, sipm.getHeader<std::string>("WWW-Authenticate"s));
 				});
 			}
 			catch (const std::exception& e)
@@ -935,12 +935,12 @@ namespace test_suite
 				// Content-Length
 				Assert::AreEqual<uint32_t>(1326, sipm.getContentLength());
 
-				Assert::AreEqual<std::string>("matthew.gabbard@stblaw.com", sipm.header<std::string>("X-control-master"));
+				Assert::AreEqual<std::string>("matthew.gabbard@stblaw.com", sipm.getHeader<std::string>("X-control-master"));
 				Assert::AreEqual<std::string>("", sipm.value("/h/X-rss-id"_json_pointer, "-"));
-				Assert::AreEqual<std::string>("49 NOTIFY", sipm.header<std::string>("CSeq"));
-				Assert::AreEqual<bool>(true, sipm.header<bool>("X-Billing-code-required"));
+				Assert::AreEqual<std::string>("49 NOTIFY", sipm.getHeader<std::string>("CSeq"));
+				Assert::AreEqual<bool>(true, sipm.getHeader<bool>("X-Billing-code-required"));
 				Assert::AreEqual<std::string>("MTE5MDM1MTIxMjMwNTY3aWwtZWQtbWFyYS0wMToxNTkzNjM3MTcwOjE1Njc0Ng==",
-											  sipm.header<std::string>("X-Call-Instance-ID"));
+											  sipm.getHeader<std::string>("X-Call-Instance-ID"));
 
 				// Check the body
 				Assert::IsTrue(!sipm.value("/b"_json_pointer, nlohmann::json {}).empty());
@@ -1009,9 +1009,9 @@ namespace test_suite
 				// Content-Length
 				Assert::AreEqual<uint32_t>(790, sipm.getContentLength());
 
-				Assert::AreEqual<std::string>("1 NOTIFY", sipm.header<std::string>("CSeq"));
+				Assert::AreEqual<std::string>("1 NOTIFY", sipm.getHeader<std::string>("CSeq"));
 				Assert::AreEqual<std::string>("NzI0MTI2MzgxNjM1N2lsLWVkLWFyYXMtMDE6MTU5NjA5OTQ3NDo2NDE0NTM=",
-											  sipm.header<std::string>("X-Call-Instance-ID"));
+											  sipm.getHeader<std::string>("X-Call-Instance-ID"));
 
 				// Check the body
 				Assert::IsTrue(!sipm.value("/b"_json_pointer, nlohmann::json {}).empty());
@@ -1052,7 +1052,7 @@ namespace test_suite
 
 			verifyItems(sipm);
 
-			Logger::WriteMessage( sipm.dump(4).c_str() );
+			Logger::WriteMessage(sipm.dump(4).c_str());
 		}
 
 		// NOLINTNEXTLINE
@@ -1100,7 +1100,7 @@ namespace test_suite
 			// Content-Length
 			Assert::AreEqual<uint32_t>(0, sipm.getContentLength());
 			Assert::AreEqual<uint32_t>(300, sipm.getExpires());
-			Assert::AreEqual<bool>(true, sipm.header<bool>("X-subscribe-to-leg-events"));
+			Assert::AreEqual<bool>(true, sipm.getHeader<bool>("X-subscribe-to-leg-events"));
 		}
 
 
@@ -1853,7 +1853,7 @@ namespace test_suite
 				debugBuffer += ",";
 
 				// Check for each item; match the CSeq
-				Assert::AreEqual<std::string>(matchTarget[item], i.header<std::string>("CSeq"));
+				Assert::AreEqual<std::string>(matchTarget[item], i.getHeader<std::string>("CSeq"));
 			}
 
 			debugBuffer += "]";
@@ -1882,7 +1882,7 @@ namespace test_suite
 			}
 
 			// Affirm that the first frame has a Contact that has been unfolded properly!
-			Assert::AreEqual<std::string>("<sip:localhost:8443;transport=ssl>", msgs[0].header<std::string>("Contact"));
+			Assert::AreEqual<std::string>("<sip:localhost:8443;transport=ssl>", msgs[0].getHeader<std::string>("Contact"));
 			Assert::AreEqual<size_t>(1, msgs[0].value("/b/sdp"_json_pointer, nlohmann::json {}).size());
 			Assert::AreEqual<size_t>(729, msgs[0].getContentLength());
 
@@ -2211,6 +2211,130 @@ namespace test_suite
 			Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/a/clir"_json_pointer, ""), "false");
 		}
 
+		// NOLINTNEXTLINE
+		TEST_METHOD(NOTIFY_chunked_read)
+		{
+			using namespace std;
+
+			auto buffer		 = loadSampleFile(__func__); // NOLINT
+			auto bufferStart = buffer.begin();
+			bool passTest	 = false;
+
+			// First pass, send the partial frame which should throw an error.
+			sip2json::parseAllFromBuffer(
+					bufferStart,
+					buffer.end() - 2666, // this will break the first frame content so it would not satisfy the full parse.
+					[&](auto) { Assert::Fail(L"Should fail; we're sending incomplete frame."); },
+					[&](const sip2json_exception& e, std::string::iterator& bs, const std::string::iterator& be) {
+						Logger::WriteMessage(fmt::format("Exception during parse: {}\n", e.what()).c_str());
+						Assert::AreEqual<uint32_t>(uint32_t(siddiqsoftware::sip2jsonErrors::incomplete_buffer_for_content),
+												   uint32_t(e.errCode));
+					});
+
+			// First attempt fails; Should not touch the original buffer.
+			Assert::IsTrue(bufferStart == buffer.begin());
+
+			// Second pass - send the buffer which has the first full frame but partial second.
+			sip2json::parseAllFromBuffer(
+					bufferStart,
+					buffer.end() - 256, // the first frame should be decodeable but the second should not
+					[&](auto sipm) {
+						// Validate the message.
+						Logger::WriteMessage(L"Frame processed first buffer.\n");
+						// Call-ID
+						Assert::AreEqual<std::string>("109223116117473il-ed-mara-01"s, sipm.getCallID());
+						// Content-Type
+						Assert::AreEqual<std::string>(CONTENT_TYPE_APP_SDP, sipm.getContentType());
+						// Content-Length
+						Assert::AreEqual<uint32_t>(2716, sipm.getContentLength());
+						Assert::IsTrue(!sipm.value("/b"_json_pointer, nlohmann::json {}).empty());
+						Assert::IsTrue(sipm.value("/b/sdp"_json_pointer, nlohmann::json {}).is_array());
+						Assert::AreEqual<size_t>(2, sipm.value("/b/sdp"_json_pointer, nlohmann::json {}).size());
+
+						Assert::AreEqual<string>("21"s, sipm.value("/b/sdp/0/a/leg_no"_json_pointer, ""s));
+						Assert::AreEqual<string>("1596211850.816548"s, sipm.value("/b/sdp/0/a/cdr_start_time"_json_pointer, ""s));
+
+						Assert::AreEqual<string>("22"s, sipm.value("/b/sdp/1/a/leg_no"_json_pointer, ""s));
+						Assert::AreEqual<string>("1596211881.878508"s, sipm.value("/b/sdp/1/a/cdr_start_time"_json_pointer, ""s));
+					},
+					[&](const sip2json_exception& e, std::string::iterator& bs, const std::string::iterator& be) {
+						Logger::WriteMessage(fmt::format("Exception during parse(2nd): {}\n", e.what()).c_str());
+						Assert::AreEqual<uint32_t>(uint32_t(siddiqsoftware::sip2jsonErrors::incomplete_buffer_for_content),
+												   uint32_t(e.errCode));
+						//Assert::Fail(L"Second pass should NOT fail!");
+					});
+
+			// The bufferStart should now be after the full frame and at the start of the second!
+			Assert::IsTrue(bufferStart == buffer.begin() + 4238);
+
+			// Third pass, we should send the full end and the final frams should be decodeable..
+			sip2json::parseAllFromBuffer(
+					bufferStart,
+					buffer.end(),
+					[&](auto sipm) {
+						// Validate the message.
+						// METHOD: NOTIFY
+						Assert::AreEqual<std::string>(METHOD_NOTIFY, sipm.value("/s/method"_json_pointer, ""));
+						Assert::AreEqual<std::string>("sip:subscribe_to_call_events@loopup.com;machine",
+													  sipm.value("/s/uri"_json_pointer, ""));
+						// Via is an array
+						Assert::IsTrue(sipm.value("/h/Via"_json_pointer, nlohmann::json {}).is_array());
+						Assert::AreEqual<size_t>(4, sipm.value("/h/Via"_json_pointer, nlohmann::json {}).size());
+						// Call-ID
+						Assert::AreEqual<std::string>("7241263816357il-ed-aras-01", sipm.getCallID());
+						// Content-Type
+						Assert::AreEqual<std::string>(CONTENT_TYPE_APP_SDP, sipm.getContentType());
+						// Content-Length
+						Assert::AreEqual<uint32_t>(790, sipm.getContentLength());
+
+						Assert::AreEqual<std::string>("1 NOTIFY", sipm.getHeader<std::string>("CSeq"));
+						Assert::AreEqual<std::string>("NzI0MTI2MzgxNjM1N2lsLWVkLWFyYXMtMDE6MTU5NjA5OTQ3NDo2NDE0NTM=",
+													  sipm.getHeader<std::string>("X-Call-Instance-ID"));
+
+						// Check the body
+						Assert::IsTrue(!sipm.value("/b"_json_pointer, nlohmann::json {}).empty());
+						Assert::IsTrue(sipm.value("/b/sdp"_json_pointer, nlohmann::json {}).is_array());
+						Assert::IsTrue(sipm.value("/b/sdp/0/a"_json_pointer, nlohmann::json {}).is_object());
+						// Check access_code is parsed
+						Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/a/access_code"_json_pointer, ""), "2331231");
+						// Check leg_no is parsed
+						Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/a/leg_no"_json_pointer, ""), "1");
+						// Check status is parsed
+						Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/a/status"_json_pointer, ""), "(2) starting");
+						// Check timing is parsed into array
+						Assert::AreEqual<unsigned long>(sipm.value("/b/sdp/0/t/0"_json_pointer, 0L), 3805088241L);
+						Assert::AreEqual<unsigned long>(sipm.value("/b/sdp/0/t/1"_json_pointer, 1L), 0L);
+
+						Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/c/dn"_json_pointer, ""), "+19253230928");
+						Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/c/type"_json_pointer, ""), "TN");
+						Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/c/subtype"_json_pointer, ""), "RFC2543");
+
+						Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/i/dn"_json_pointer, ""), "+19253230928");
+						Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/i/name"_json_pointer, ""), "+19253230928");
+						Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/i/type"_json_pointer, ""), "CallByPhone-URL");
+
+						Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/o/host"_json_pointer, ""),
+													  "il-ed-aras-01.ring2-corp.com");
+						Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/o/subtype"_json_pointer, ""), "IP4");
+						Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/o/t1"_json_pointer, ""), "95023660363472");
+						Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/o/t2"_json_pointer, ""), "846985136");
+						Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/o/type"_json_pointer, ""), "IN");
+						Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/o/user"_json_pointer, ""), "hbcdhvbdfh67@loopup.co");
+
+						Assert::AreEqual<std::string>("14154498508"s, sipm.value("/b/sdp/0/a/dest_phone"_json_pointer, ""));
+
+						Assert::AreEqual<std::string>("00"s, sipm.value("/b/sdp/0/a/cli-screening"_json_pointer, ""));
+						Assert::AreEqual<bool>(true, sipm.value("/b/sdp/0/a/new_change"_json_pointer, false));
+						Assert::IsTrue(sipm.contains("/b/sdp/0/a/far_end"_json_pointer));
+						Assert::AreEqual<std::string>("false"s, sipm.value("/b/sdp/0/a/clir"_json_pointer, ""));
+						passTest = true;
+					},
+					[&](const sip2json_exception& e, std::string::iterator& bs, const std::string::iterator& be) {
+						Logger::WriteMessage(fmt::format("Exception during parse(3rd): {}\n", e.what()).c_str());
+						Assert::Fail(L"Should NOT fail!");
+					});
+			Assert::IsTrue(passTest);
+		}
 
 		// NOLINTNEXTLINE
 		TEST_METHOD(NOTIFY_CallEnd)
@@ -2306,7 +2430,7 @@ namespace test_suite
 			// Content-Length
 			Assert::AreEqual<uint32_t>(0, sipm.getContentLength());
 			Assert::AreEqual<uint32_t>(300, sipm.getExpires());
-			Assert::AreEqual<bool>(true, sipm.header<bool>("X-subscribe-to-leg-events"));
+			Assert::AreEqual<bool>(true, sipm.getHeader<bool>("X-subscribe-to-leg-events"));
 		}
 
 

@@ -434,12 +434,14 @@ namespace siddiqsoftware
 						errorCallback = {}) noexcept
 		{
 			std::vector<sipmessage> msgs;
+			auto					decodedMessageCount = 0;
 
 			while (bufferStart != bufferEnd)
 			{
 				try
 				{
 					auto sipm = parseFromBuffer(bufferStart, bufferEnd); // will throw if there is an issue
+					decodedMessageCount++;
 					// If the callback is provided, then we invoke the callback. Nothing is returned to caller.
 					if (parseCallback.has_value())
 						parseCallback.value()(sipm);
@@ -466,13 +468,11 @@ namespace siddiqsoftware
 				}
 				catch (const incomplete_buffer_for_header_error& e)
 				{
-					// If the very first one has issues then we should quit.
 					if (errorCallback.has_value()) errorCallback.value()(e, bufferStart, bufferEnd);
 					break;
 				}
 				catch (const incomplete_buffer_for_content_error& e)
 				{
-					// If the very first one has issues then we should quit.
 					if (errorCallback.has_value()) errorCallback.value()(e, bufferStart, bufferEnd);
 					break;
 				}
@@ -505,6 +505,7 @@ namespace siddiqsoftware
 		static sipmessage parseFromBuffer(std::string::iterator&	   bufferStart,
 										  const std::string::iterator& bufferEnd) noexcept(false)
 		{
+			auto	   previousBufferStart = bufferStart; // save the value so we can reset if we end up with exception.
 			sipmessage sipm;
 
 			if (bufferStart != bufferEnd)
@@ -534,6 +535,7 @@ namespace siddiqsoftware
 									}
 									else
 									{
+										bufferStart = previousBufferStart;
 										sip2json_throw<incomplete_buffer_for_content_error>(
 												"{}: Available buffer length:{} < Content-Length:{}",
 												__func__,
@@ -544,6 +546,7 @@ namespace siddiqsoftware
 							}
 							else if (!sipm.getContentType().empty())
 							{
+								bufferStart = previousBufferStart;
 								sip2json_throw<unsupported_contenttype_error>(
 										"{}:Content-Type {} not supported", __func__, sipm.getContentType());
 							}
@@ -553,6 +556,7 @@ namespace siddiqsoftware
 				else
 				{
 					// This will end our scan.
+					bufferStart = previousBufferStart;
 					sip2json_throw<incomplete_buffer_for_parse_error>("{}:Incomplete Buffer for parse to continue.", __func__);
 				}
 			}
@@ -600,7 +604,7 @@ namespace siddiqsoftware
 
 			// Encode the body first so we can get the content-length properly.
 			auto body = serializeSDP(sipm);
-			sipm.header("Content-Length", body.length());
+			sipm.setHeader("Content-Length", body.length());
 
 			// Headers
 			if (auto mh = sipm.headers(); mh.size() > 0)

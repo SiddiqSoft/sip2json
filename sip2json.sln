@@ -45,6 +45,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{6C56
 		test\samples\NOTIFY_CallEnd.sip = test\samples\NOTIFY_CallEnd.sip
 		test\samples\NOTIFY_CallStart_1.sip = test\samples\NOTIFY_CallStart_1.sip
 		test\samples\NOTIFY_CallStart_2.sip = test\samples\NOTIFY_CallStart_2.sip
+		test\samples\NOTIFY_chunked_read.sip = test\samples\NOTIFY_chunked_read.sip
 		test\samples\NOTIFY_connectorleg_1.sip = test\samples\NOTIFY_connectorleg_1.sip
 		test\samples\NOTIFY_EmptyHeaderKey_1.sip = test\samples\NOTIFY_EmptyHeaderKey_1.sip
 		test\samples\NOTIFY_generic_1.sip = test\samples\NOTIFY_generic_1.sip
