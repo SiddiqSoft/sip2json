@@ -73,10 +73,12 @@ namespace siddiqsoftware
 	{
 		static const inline std::string MetaLibName		  = "sip2json";
 		static const inline std::string MetaSchemaVersion = "0.4.1";
-		static const inline std::string MetaParserVersion = "1.4.4";
+		static const inline std::string MetaParserVersion = "1.6.0";
 
 	public:
-		sipmessage() = default;
+		sipmessage()
+		{
+		};
 
 		/// @brief Instantiates request message given method and uri with option callId and cseq
 		/// @param method One of the supported SIP methods
@@ -135,6 +137,12 @@ namespace siddiqsoftware
 			this->setHeader("Date"s, getRFC1123());
 		}
 
+
+		sipmessage(uint32_t statusCode, std::shared_ptr<sipmessage> src)
+			: sipmessage(statusCode, src ? *src : std::optional<sipmessage> {})
+		{
+		}
+
 		/// @brief Copy constructor from json
 		/// @param src Json object
 		/// @return
@@ -146,9 +154,15 @@ namespace siddiqsoftware
 		/// @brief Assignment constructor
 		/// @param src Json object
 		/// @return
-		sipmessage& operator=(const nlohmann::json& src)
+		sipmessage operator=(const nlohmann::json& src)
 		{
 			if (!src.empty()) this->update(src);
+			return *this;
+		}
+
+		sipmessage operator=(std::shared_ptr<sipmessage> src)
+		{
+			if (src && !src->empty()) this->update(*src);
 			return *this;
 		}
 
@@ -221,4 +235,7 @@ namespace siddiqsoftware
 			return *this;
 		};
 	}; // class sipmessage
+
+	using sipmessage_ptr = std::shared_ptr<sipmessage>;
+
 } // namespace siddiqsoftware

@@ -4,7 +4,7 @@
 
 [![Build Status](https://dev.azure.com/loopup/sys4/_apis/build/status/siddiqsoftware.sip2json?branchName=master)](https://dev.azure.com/loopup/sys4/_build/latest?definitionId=118&branchName=master)
 [![sip2json package in vshive feed in Azure Artifacts](https://feeds.dev.azure.com/loopup/_apis/public/Packaging/Feeds/a0302836-2c67-4470-bcb5-10149e5447f9/Packages/92cce774-0158-43bd-afbc-cad33212e7d9/Badge)](https://dev.azure.com/loopup/sys4/_packaging?_a=package&feed=a0302836-2c67-4470-bcb5-10149e5447f9&package=92cce774-0158-43bd-afbc-cad33212e7d9&preferRelease=true)
-<version>1.5.1</version>
+<version>1.6.0</version>
 
 
 [[TOC]]
@@ -68,15 +68,15 @@ void onReadCompleted(std::string& readBuffer)
   // Invokes the callback per each decoded sipmessage from the buffer
   // Keep track of the bufferStart as it is advanced to reach the readBuffer.end()
   // as objects are parsed.
-  processAllFromBuffer(bufferStart, readBuffer.end(), [](sipmessage& msg){
-      // Got a valid sipmessage object..
-      if(msg.empty()) {
-         // Do something..
-      }
-  },
-  [](sip2jsonErrors& errCode){
-      // Invoked for an error during the processing of the buffer.
-  };
+  processAllFromBuffer(bufferStart, readBuffer.end(), [](sipmessage_ptr msg){
+          // Got a valid sipmessage object..
+          if(!msg) {
+             // Do something..
+          }
+      },
+      [](sip2jsonErrors& errCode, const std::string& msg){
+          // Invoked for an error during the processing of the buffer.
+      });
 
   // Client is responsible for managing the state of the readBuffer
   // the library uses an iterator to parse the stream and advances
@@ -99,7 +99,7 @@ void createINVITE()
 {
   sipmessage sipm(METHOD_INVITE, "sip:user@mail.com");
   // Chain additional header values
-  sipm.header("To", "sip:user@mail.com")
+  sipm->header("To", "sip:user@mail.com")
       .header("From", "sip:user@mail.com")
       .header("Contact", "sip:user@mail.com;tel=14155551212")
       .header("From", "sip:user@mail.com")
@@ -107,9 +107,9 @@ void createINVITE()
       .header("Content-Length", 0);
   // Alternatively, you can use the headers() method to get access to the
   // object directly and perform an add to the array.
-  sipm.headers()["Via"].push_back("SIP/2.0/TCP callcontrolserver.com");
+  sipm->headers()["Via"].push_back("SIP/2.0/TCP callcontrolserver.com");
   // Next, we set the body
-  sipm.body("/sdp/0/v"_json_pointer, 0)
+  sipm->body("/sdp/0/v"_json_pointer, 0)
       .body("/sdp/0/t"_json_pointer, {999999, 0});
   .
   .
