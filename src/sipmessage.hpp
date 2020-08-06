@@ -73,12 +73,10 @@ namespace siddiqsoftware
 	{
 		static const inline std::string MetaLibName		  = "sip2json";
 		static const inline std::string MetaSchemaVersion = "0.4.1";
-		static const inline std::string MetaParserVersion = "1.6.0";
+		static const inline std::string MetaParserVersion = "1.7.0";
 
 	public:
-		sipmessage()
-		{
-		};
+		sipmessage() = default;
 
 		/// @brief Instantiates request message given method and uri with option callId and cseq
 		/// @param method One of the supported SIP methods
@@ -138,11 +136,6 @@ namespace siddiqsoftware
 		}
 
 
-		sipmessage(uint32_t statusCode, std::shared_ptr<sipmessage> src)
-			: sipmessage(statusCode, src ? *src : std::optional<sipmessage> {})
-		{
-		}
-
 		/// @brief Copy constructor from json
 		/// @param src Json object
 		/// @return
@@ -151,20 +144,6 @@ namespace siddiqsoftware
 			if (!src.empty()) this->update(src);
 		}
 
-		/// @brief Assignment constructor
-		/// @param src Json object
-		/// @return
-		sipmessage operator=(const nlohmann::json& src)
-		{
-			if (!src.empty()) this->update(src);
-			return *this;
-		}
-
-		sipmessage operator=(std::shared_ptr<sipmessage> src)
-		{
-			if (src && !src->empty()) this->update(*src);
-			return *this;
-		}
 
 	public:
 		/// @brief Returns the header object reference
@@ -208,13 +187,16 @@ namespace siddiqsoftware
 		inline auto getUri() { return this->value("/s/uri"_json_pointer, ""); };
 		inline auto getStatusCode() { return this->value("/s/status"_json_pointer, 0); };
 		inline auto getReason() { return this->value("/s/reason"_json_pointer, ""); };
-		/// @brief Returns a reference to the body object
+
+		/// @brief Returns a reference to the body object. This method should be used to change the body contents to text/plain or non-SDP content-type.
 		/// @return Returns reference to the body element b
 		inline auto& body() { return this->at("b"); };
+
 		inline auto	 isMessageRequest()
 		{
 			return (this->value("/s/type"_json_pointer, SIPMessageType::notspecified) == SIPMessageType::request);
 		};
+
 		inline auto isMessageResponse()
 		{
 			return (this->value("/s/type"_json_pointer, SIPMessageType::notspecified) == SIPMessageType::response);
@@ -222,20 +204,26 @@ namespace siddiqsoftware
 
 		// mutators
 	public:
+		/// @brief Sets a header key-value
+		/// @tparam T Type of object; this is typically inferred by the compiler.
+		/// @param key The header name
+		/// @param v The header value.
+		/// @return Self.
 		template <typename T> inline sipmessage& setHeader(const std::string& key, const T& v)
 		{
 			headers()[key] = v;
 			return *this;
 		};
 
-
+		/// @brief Set element within the body to the given value.
+		/// @tparam T Type of object; this is typically inferred by the compiler.
+		/// @param key The key within the body section.
+		/// @param v The value. Json, string (for text/plain)
+		/// @return Self
 		template <typename T> inline sipmessage& body(const json_pointer& key, const T& v)
 		{
 			(*this)["b"][key] = v;
 			return *this;
 		};
 	}; // class sipmessage
-
-	using sipmessage_ptr = std::shared_ptr<sipmessage>;
-
 } // namespace siddiqsoftware
