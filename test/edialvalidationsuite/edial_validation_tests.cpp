@@ -222,7 +222,7 @@ namespace test_suite
 
 			Assert::AreEqual<std::string>("jrbirge@nscorp.com", sipm.value("/h/X-control-master"_json_pointer, ""));
 			Assert::AreEqual<std::string>("267 NOTIFY", sipm.value("/h/CSeq"_json_pointer, ""));
-			Assert::AreEqual<bool>(false, sipm.value("/h/X-Billing-code-required"_json_pointer, true));
+			Assert::AreEqual<std::string>("false", sipm.value("/h/X-Billing-code-required"_json_pointer, "true"));
 			Assert::AreEqual<std::string>("NjczMjE5NjA0MzczN2lsLWVkLW1hcmEtMDE6MTU5MzU0NTA2NTo4MDQ0NjU=",
 										  sipm.value("/h/X-Call-Instance-ID"_json_pointer, ""));
 
@@ -252,7 +252,7 @@ namespace test_suite
 
 				Assert::AreEqual<std::string>("jrbirge@nscorp.com", sipm2.value("/h/X-control-master"_json_pointer, ""));
 				Assert::AreEqual<std::string>("267 NOTIFY", sipm2.value("/h/CSeq"_json_pointer, ""));
-				Assert::AreEqual<bool>(false, sipm2.value("/h/X-Billing-code-required"_json_pointer, true));
+				Assert::AreEqual<std::string>("false", sipm2.value("/h/X-Billing-code-required"_json_pointer, "true"));
 				Assert::AreEqual<std::string>("NjczMjE5NjA0MzczN2lsLWVkLW1hcmEtMDE6MTU5MzU0NTA2NTo4MDQ0NjU=",
 											  sipm2.value("/h/X-Call-Instance-ID"_json_pointer, ""));
 			}
@@ -289,7 +289,7 @@ namespace test_suite
 				Assert::AreEqual<std::string>("akirmayer@sidley.com", sipm.value("/h/X-control-master"_json_pointer, ""));
 				Assert::AreEqual<std::string>("", sipm.value("/h/X-rss-id"_json_pointer, "-"));
 				Assert::AreEqual<std::string>("2 NOTIFY", sipm.value("/h/CSeq"_json_pointer, ""));
-				Assert::AreEqual<bool>(false, sipm.value("/h/X-Billing-code-required"_json_pointer, true));
+				Assert::AreEqual<std::string>("false", sipm.value("/h/X-Billing-code-required"_json_pointer, "true"));
 				Assert::AreEqual<std::string>("MTUxMDUwNzYxNDE1NjNpbC1lZC1tYXJhLTAxOjE1OTM1NjQxNjc6Mjg0NDcw",
 											  sipm.value("/h/X-Call-Instance-ID"_json_pointer, ""));
 
@@ -360,7 +360,7 @@ namespace test_suite
 				Assert::AreEqual<std::string>("jrbirge@nscorp.com", sipm.value("/h/X-control-master"_json_pointer, ""));
 				Assert::AreEqual<std::string>("267 NOTIFY", sipm.value("/h/CSeq"_json_pointer, ""));
 				Assert::AreEqual<std::string>("", sipm.value("/h/X-rss-id"_json_pointer, "-"));
-				Assert::AreEqual<bool>(false, sipm.value("/h/X-Billing-code-required"_json_pointer, true));
+				Assert::AreEqual<std::string>("false", sipm.value("/h/X-Billing-code-required"_json_pointer, "true"));
 				Assert::AreEqual<std::string>("NjczMjE5NjA0MzczN2lsLWVkLW1hcmEtMDE6MTU5MzU0NTA2NTo4MDQ0NjU=",
 											  sipm.value("/h/X-Call-Instance-ID"_json_pointer, ""));
 
@@ -500,7 +500,7 @@ namespace test_suite
 				Assert::AreEqual<std::string>("matthew.gabbard@stblaw.com", sipm.value("/h/X-control-master"_json_pointer, ""));
 				Assert::AreEqual<std::string>("", sipm.value("/h/X-rss-id"_json_pointer, "-"));
 				Assert::AreEqual<std::string>("49 NOTIFY", sipm.value("/h/CSeq"_json_pointer, ""));
-				Assert::AreEqual<bool>(true, sipm.value("/h/X-Billing-code-required"_json_pointer, false));
+				Assert::AreEqual<std::string>("true", sipm.value("/h/X-Billing-code-required"_json_pointer, "false"));
 				Assert::AreEqual<std::string>("MTE5MDM1MTIxMjMwNTY3aWwtZWQtbWFyYS0wMToxNTkzNjM3MTcwOjE1Njc0Ng==",
 											  sipm.value("/h/X-Call-Instance-ID"_json_pointer, ""));
 
@@ -571,7 +571,7 @@ namespace test_suite
 				// Content-Length
 				Assert::AreEqual<uint32_t>(0, sipm.getContentLength());
 				Assert::AreEqual<uint32_t>(300, sipm.getExpires());
-				Assert::AreEqual<bool>(true, sipm.value("/h/X-subscribe-to-leg-events"_json_pointer, false));
+				Assert::AreEqual<std::string>("true", sipm.value("/h/X-subscribe-to-leg-events"_json_pointer, "false"));
 			});
 		}
 
@@ -638,7 +638,7 @@ namespace test_suite
 				// Content-Length
 				Assert::AreEqual<uint32_t>(0, sipm.getContentLength());
 				Assert::AreEqual<uint32_t>(300, sipm.getExpires());
-				Assert::AreEqual<bool>(true, sipm.value("/h/X-subscribe-to-leg-events"_json_pointer, false));
+				Assert::AreEqual<std::string>("true", sipm.value("/h/X-subscribe-to-leg-events"_json_pointer, "false"));
 			});
 		}
 
@@ -747,7 +747,7 @@ namespace test_suite
 			Assert::AreEqual<std::string>("", sipm.value("/h/X-rss-id"_json_pointer, "-"));
 			Assert::AreEqual<std::string>("", sipm.value("/b/sdp/0/s"_json_pointer, "-"));
 			Assert::AreEqual<std::string>("2 NOTIFY", sipm.value("/h/CSeq"_json_pointer, ""));
-			Assert::AreEqual<bool>(false, sipm.value("/h/X-Billing-code-required"_json_pointer, true));
+			Assert::AreEqual<std::string>("false", sipm.value("/h/X-Billing-code-required"_json_pointer, "true"));
 			Assert::AreEqual<std::string>("MTUxMDUwNzYxNDE1NjNpbC1lZC1tYXJhLTAxOjE1OTM1NjQxNjc6Mjg0NDcw",
 										  sipm.value("/h/X-Call-Instance-ID"_json_pointer, ""));
 
@@ -871,7 +871,7 @@ namespace test_suite
 			Assert::AreEqual<std::string>("jrbirge@nscorp.com", sipm.value("/h/X-control-master"_json_pointer, ""));
 			Assert::AreEqual<std::string>("267 NOTIFY", sipm.value("/h/CSeq"_json_pointer, ""));
 			Assert::AreEqual<std::string>("", sipm.value("/h/X-rss-id"_json_pointer, "-"));
-			Assert::AreEqual<bool>(false, sipm.value("/h/X-Billing-code-required"_json_pointer, true));
+			Assert::AreEqual<std::string>("false", sipm.value("/h/X-Billing-code-required"_json_pointer, "true"));
 			Assert::AreEqual<std::string>("NjczMjE5NjA0MzczN2lsLWVkLW1hcmEtMDE6MTU5MzU0NTA2NTo4MDQ0NjU=",
 										  sipm.value("/h/X-Call-Instance-ID"_json_pointer, ""));
 
@@ -938,7 +938,7 @@ namespace test_suite
 				Assert::AreEqual<std::string>("matthew.gabbard@stblaw.com", sipm.getHeader<std::string>("X-control-master"));
 				Assert::AreEqual<std::string>("", sipm.value("/h/X-rss-id"_json_pointer, "-"));
 				Assert::AreEqual<std::string>("49 NOTIFY", sipm.getHeader<std::string>("CSeq"));
-				Assert::AreEqual<bool>(true, sipm.getHeader<bool>("X-Billing-code-required"));
+				Assert::AreEqual<std::string>("true", sipm.getHeader<std::string>("X-Billing-code-required"));
 				Assert::AreEqual<std::string>("MTE5MDM1MTIxMjMwNTY3aWwtZWQtbWFyYS0wMToxNTkzNjM3MTcwOjE1Njc0Ng==",
 											  sipm.getHeader<std::string>("X-Call-Instance-ID"));
 
@@ -1076,7 +1076,7 @@ namespace test_suite
 			// Content-Length
 			Assert::AreEqual<uint32_t>(0, sipm.getContentLength());
 			Assert::AreEqual<uint32_t>(300, sipm.getExpires());
-			Assert::AreEqual<bool>(true, sipm.value("/h/X-subscribe-to-leg-events"_json_pointer, false));
+			Assert::AreEqual<std::string>("true", sipm.value("/h/X-subscribe-to-leg-events"_json_pointer, "false"));
 		}
 
 		// NOLINTNEXTLINE
@@ -1100,7 +1100,7 @@ namespace test_suite
 			// Content-Length
 			Assert::AreEqual<uint32_t>(0, sipm.getContentLength());
 			Assert::AreEqual<uint32_t>(300, sipm.getExpires());
-			Assert::AreEqual<bool>(true, sipm.getHeader<bool>("X-subscribe-to-leg-events"));
+			Assert::AreEqual<std::string>("true", sipm.getHeader<std::string>("X-subscribe-to-leg-events"));
 		}
 
 
@@ -2103,7 +2103,7 @@ namespace test_suite
 			Assert::AreEqual<std::string>("akirmayer@sidley.com", sipm.value("/h/X-control-master"_json_pointer, ""));
 			Assert::AreEqual<std::string>("", sipm.value("/h/X-rss-id"_json_pointer, "-"));
 			Assert::AreEqual<std::string>("2 NOTIFY", sipm.value("/h/CSeq"_json_pointer, ""));
-			Assert::AreEqual<bool>(false, sipm.value("/h/X-Billing-code-required"_json_pointer, true));
+			Assert::AreEqual<std::string>("false", sipm.value("/h/X-Billing-code-required"_json_pointer, "true"));
 			Assert::AreEqual<std::string>("MTUxMDUwNzYxNDE1NjNpbC1lZC1tYXJhLTAxOjE1OTM1NjQxNjc6Mjg0NDcw",
 										  sipm.value("/h/X-Call-Instance-ID"_json_pointer, ""));
 
@@ -2171,7 +2171,7 @@ namespace test_suite
 			Assert::AreEqual<std::string>("jrbirge@nscorp.com", sipm.value("/h/X-control-master"_json_pointer, ""));
 			Assert::AreEqual<std::string>("267 NOTIFY", sipm.value("/h/CSeq"_json_pointer, ""));
 			Assert::AreEqual<std::string>("", sipm.value("/h/X-rss-id"_json_pointer, "-"));
-			Assert::AreEqual<bool>(false, sipm.value("/h/X-Billing-code-required"_json_pointer, true));
+			Assert::AreEqual<std::string>("false", sipm.value("/h/X-Billing-code-required"_json_pointer, "true"));
 			Assert::AreEqual<std::string>("NjczMjE5NjA0MzczN2lsLWVkLW1hcmEtMDE6MTU5MzU0NTA2NTo4MDQ0NjU=",
 										  sipm.value("/h/X-Call-Instance-ID"_json_pointer, ""));
 
@@ -2363,7 +2363,7 @@ namespace test_suite
 				Assert::AreEqual<std::string>("matthew.gabbard@stblaw.com", sipm.value("/h/X-control-master"_json_pointer, ""));
 				Assert::AreEqual<std::string>("", sipm.value("/h/X-rss-id"_json_pointer, "-"));
 				Assert::AreEqual<std::string>("49 NOTIFY", sipm.value("/h/CSeq"_json_pointer, ""));
-				Assert::AreEqual<bool>(true, sipm.value("/h/X-Billing-code-required"_json_pointer, false));
+				Assert::AreEqual<std::string>("true", sipm.value("/h/X-Billing-code-required"_json_pointer, "false"));
 				Assert::AreEqual<std::string>("MTE5MDM1MTIxMjMwNTY3aWwtZWQtbWFyYS0wMToxNTkzNjM3MTcwOjE1Njc0Ng==",
 											  sipm.value("/h/X-Call-Instance-ID"_json_pointer, ""));
 
@@ -2430,7 +2430,7 @@ namespace test_suite
 			// Content-Length
 			Assert::AreEqual<uint32_t>(0, sipm.getContentLength());
 			Assert::AreEqual<uint32_t>(300, sipm.getExpires());
-			Assert::AreEqual<bool>(true, sipm.getHeader<bool>("X-subscribe-to-leg-events"));
+			Assert::AreEqual<std::string>("true", sipm.getHeader<std::string>("X-subscribe-to-leg-events"));
 		}
 
 
@@ -2456,7 +2456,7 @@ namespace test_suite
 			// Content-Length
 			Assert::AreEqual<uint32_t>(0, sipm.getContentLength());
 			Assert::AreEqual<uint32_t>(300, sipm.getExpires());
-			Assert::AreEqual<bool>(true, sipm.value("/h/X-subscribe-to-leg-events"_json_pointer, false));
+			Assert::AreEqual<std::string>("true", sipm.value("/h/X-subscribe-to-leg-events"_json_pointer, "false"));
 		}
 	};
 } // namespace test_suite

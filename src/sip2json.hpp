@@ -143,14 +143,16 @@ namespace siddiqsoftware
 			{
 				sipm["h"][key] = std::stoi(value);
 			}
-			else if (value.find("true") == 0)
-			{
-				sipm["h"][key] = true;
-			}
-			else if (value.find("false") == 0)
-			{
-				sipm["h"][key] = false;
-			}
+			// This helper causes issues when the payload may contain "true" or "false" as a string value not intended as boolean
+			// This approach allows the client the ultimate authority for decoding the data.
+			//else if (value.find("true") == 0)
+			//{
+			//	sipm["h"][key] = true;
+			//}
+			//else if (value.find("false") == 0)
+			//{
+			//	sipm["h"][key] = false;
+			//}
 			else if (value.empty())
 			{
 				sipm["h"][key] = "";
