@@ -73,7 +73,7 @@ namespace siddiqsoftware
 	{
 		static const inline std::string MetaLibName		  = "sip2json";
 		static const inline std::string MetaSchemaVersion = "0.4.1";
-		static const inline std::string MetaParserVersion = "1.7.0";
+		static const inline std::string MetaParserVersion = "1.8.0";
 
 	public:
 		sipmessage() = default;
