@@ -430,9 +430,9 @@ namespace siddiqsoftware
 		/// @param errorCallback Optional callback to handle the error on the parse.
 		/// @return If parseCallback is provided then the return vector is empty otherwise vector of sipmessage decoded within the stream.
 		static std::vector<sipmessage>
-		parse(std::string::iterator&						 bufferStart,
-			  const std::string::iterator&					 bufferEnd,
-			  std::optional<std::function<void(sipmessage)>> parseCallback = {},
+		parse(std::string::iterator&						  bufferStart,
+			  const std::string::iterator&					  bufferEnd,
+			  std::optional<std::function<void(sipmessage&)>> parseCallback = {},
 			  std::optional<std::function<void(const sip2json_exception&, std::string::iterator&, const std::string::iterator&)>>
 					  errorCallback = {}) noexcept
 		{
@@ -443,18 +443,17 @@ namespace siddiqsoftware
 			{
 				try
 				{
-					sipmessage sipm = parseFromBuffer(bufferStart, bufferEnd); // will throw if there is an issue
-					decodedMessageCount++;
 					// If the callback is provided, then we invoke the callback. Nothing is returned to caller.
-					if (parseCallback.has_value())
+					if (sipmessage sipm = parseFromBuffer(bufferStart, bufferEnd); parseCallback.has_value())
 					{
-						parseCallback.value()(std::move(sipm)); // we don't care about the object anymore!
-						if (!sipm.empty()) DebugBreak();
+						decodedMessageCount++;
+						parseCallback.value()(sipm);
 					}
 					else
-					{ // otherwise we push to the vector to return to caller
+					{
+						decodedMessageCount++;
+						// otherwise we push to the vector to return to caller
 						msgs.emplace_back(std::move(sipm));
-						if (!sipm.empty()) DebugBreak();
 					}
 				}
 				catch (const invalid_startline_error& e)
@@ -516,25 +515,28 @@ namespace siddiqsoftware
 		{
 			auto	   previousBufferStart = bufferStart; // save the value so we can reset if we end up with exception.
 			sipmessage sipm;
+			InvokeCallbackOnDestruct timeTaken {[&](long long delta) {
+				sipm["meta"]["ttx"] = delta;
+			}}; // upon destruction, sets the ttx to account for parse time
 
 			if (bufferStart != bufferEnd)
 			{
 				if (size_t diff = bufferEnd - bufferStart; diff > SIP_SAMPLE_MINIMAL_MESSAGE.length())
 				{
-					auto foundRequest = parseStartLine(sipm, bufferStart, bufferEnd);
-					if (foundRequest)
+					if (auto foundRequest = parseStartLine(sipm, bufferStart, bufferEnd); foundRequest)
 					{
-						auto foundHeaders = parseHeaders(sipm, bufferStart, bufferEnd);
-						if (foundHeaders)
+						if (auto foundHeaders = parseHeaders(sipm, bufferStart, bufferEnd); foundHeaders)
 						{
 							if (sipm.getContentType() == CONTENT_TYPE_APP_SDP)
 							{
+								// It is acceptable in some implementations to declare the Content-Type as application/sdp
+								// but provide no actual body. We must not fault this case.
 								if (sipm.getContentLength() > 0)
 								{
 									// Check to make sure that we have sufficient content in the buffer
 									// to process the body..
-									auto availableRemainingBufferSize = bufferEnd - bufferStart;
-									if (availableRemainingBufferSize >= sipm.getContentLength())
+									if (auto availableRemainingBufferSize = bufferEnd - bufferStart;
+										availableRemainingBufferSize >= sipm.getContentLength())
 									{
 										// We must limit the decode to the reported size of the content
 										auto bodyEnd = bufferStart;
@@ -570,7 +572,6 @@ namespace siddiqsoftware
 				}
 			}
 
-			sipm["z"] = std::chrono::system_clock::now().time_since_epoch().count();
 			return sipm;
 		}
 
@@ -589,6 +590,9 @@ namespace siddiqsoftware
 
 			// Assert: non-empty json document
 			sip2json_throw_if<empty_message_error>(sipm.size() == 0, "{}:sipm is empty."s, __func__);
+			// Assert: non-empty json document; starting with v1.9 we have a meta element for diagnostics; this is to be treated as "empty".
+			sip2json_throw_if<empty_message_error>(
+					(sipm.contains("meta") && sipm.size() == 1), "{}:sipm is empty (except for meta)."s, __func__);
 			// Assert: Method is one of the supported items
 			sip2json_throw_if<invalid_document_error>(supportedMethods.find(sipm.getMethod()) == std::string::npos,
 													  "{}:Unsupported method:{}"s,

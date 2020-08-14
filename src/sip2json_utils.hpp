@@ -50,12 +50,39 @@
 namespace siddiqsoftware
 {
 #pragma region Datetime helpers
+	/// @brief Helper struct which runs your lambda when this object goes out of scope. Used to time expression scope.
+	/// @tparam Fn Lambda of type void(long long delta) called upon destructor; must not throw.
+	template <typename Fn> struct InvokeCallbackOnDestruct
+	{
+		Fn											callbackOnEnd;
+		const std::chrono::system_clock::time_point ttxStart {std::chrono::system_clock::now()};
+
+		/// @brief Gets the time delta between start/instantiation of this object and now
+		/// @return long long type delta
+		auto ttx() noexcept
+		{
+			const auto ttxNow = std::chrono::system_clock::now();
+			return std::chrono::duration_cast<std::chrono::milliseconds>(ttxNow - ttxStart).count();
+		};
+
+		InvokeCallbackOnDestruct() = delete;
+
+		/// @brief Constructor with callback that is to be invoked at destructor
+		/// @param callback Callback must accept long long indicating the delta
+		/// @return Creates the object
+		InvokeCallbackOnDestruct(Fn&& callback) noexcept
+			: callbackOnEnd {callback} {};
+
+		~InvokeCallbackOnDestruct() noexcept { callbackOnEnd(ttx()); };
+	};
+
+
 	/// @brief Create a string representation of the timepoint as RFC1123 spec
 	/// @param tp Optional system_clock::timepoint; uses "now" if not provided
 	/// @return String with your date/time as "Sun, 28 Jun 2020 23:29:00 GMT"
-	static std::string getRFC1123(std::optional<std::chrono::system_clock::time_point> src = {}) noexcept(false)
+	static std::string TimeAsRFC1123(std::optional<std::chrono::system_clock::time_point> src = {}) noexcept(false)
 	{
-		auto tp = src.value_or(std::chrono::system_clock::now());
+		const auto tp = src.value_or(std::chrono::system_clock::now());
 		return fmt::format("{:%a, %d %b %Y %T} GMT", fmt::gmtime(std::chrono::system_clock::to_time_t(tp)));
 	}
 
@@ -63,10 +90,10 @@ namespace siddiqsoftware
 	/// @brief Creates a string representaiton of the date time in ISO8601 format with millisecond precision.
 	/// @param tp Optional system_clock::timepoint; uses "now" if not provided
 	/// @return String ISO8601 "2020-06-28T23:29:00.000Z"
-	static std::string getISO8601(std::optional<std::chrono::system_clock::time_point> src = {}) noexcept(false)
+	static std::string TimeAsISO8601(std::optional<std::chrono::system_clock::time_point> src = {}) noexcept(false)
 	{
-		auto tp = src.value_or(std::chrono::system_clock::now());
-		auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(tp.time_since_epoch()).count();
+		const auto tp = src.value_or(std::chrono::system_clock::now());
+		auto	   ms = std::chrono::duration_cast<std::chrono::milliseconds>(tp.time_since_epoch()).count();
 		return fmt::format("{:%Y-%m-%dT%T}.{:03}Z", fmt::gmtime(std::chrono::system_clock::to_time_t(tp)), ms);
 	}
 #pragma endregion

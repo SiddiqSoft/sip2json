@@ -4,7 +4,7 @@
 
 [![Build Status](https://dev.azure.com/loopup/sys4/_apis/build/status/siddiqsoftware.sip2json?branchName=master)](https://dev.azure.com/loopup/sys4/_build/latest?definitionId=118&branchName=master)
 [![sip2json package in vshive feed in Azure Artifacts](https://feeds.dev.azure.com/loopup/_apis/public/Packaging/Feeds/a0302836-2c67-4470-bcb5-10149e5447f9/Packages/92cce774-0158-43bd-afbc-cad33212e7d9/Badge)](https://dev.azure.com/loopup/sys4/_packaging?_a=package&feed=a0302836-2c67-4470-bcb5-10149e5447f9&package=92cce774-0158-43bd-afbc-cad33212e7d9&preferRelease=true)
-<version>1.8.0</version>
+<version>1.9.0</version>
 
 
 [[TOC]]
@@ -56,7 +56,7 @@ This library is intendended to be used as a basis for you application and does n
 
 The library is provided as a nuget package but can also be used as a header-only dependency.
 
-```c
+```cpp
 #include "siddiqsoftware/sip2json.hpp"
 
 // Assume a method invoked by the IO system on each "frame" read
@@ -124,6 +124,7 @@ void createINVITE()
  Release | Notes
 ---------|---------
 v1.0.0   | Basic decoder and decoder with support for CloudEvent envelope.
+v2.0.0   | Improve performance and refactor interface. Avoid use of std::regex due to its reported highcost.
 
 ## Tests
 
@@ -131,7 +132,7 @@ v1.0.0   | Basic decoder and decoder with support for CloudEvent envelope.
 - Code Coverage is enabled (only if you're using Visual Studio Enterprise).
 - Azure pipelines CI reports on the test results and the coverage results.
 - There are to date `64` tests covering parsing and serialization.
-- Use live SIP data found under the [`test\samples`](test/samples) folder.
+- Use live SIP data found under the `test\samples` folder.
 - [Clang-Tidy](.clang-tidy) is used as a linter to highlight issues with best-practices and static code analysis.
 - Consistent formatting using [Clang Format](.clang-format).
 
@@ -142,11 +143,11 @@ v1.0.0   | Basic decoder and decoder with support for CloudEvent envelope.
 
 #### Container
 
-The document contains single character entries: `z`, `s`, `h`, `b`.
+The document contains single character entries: `s`, `h`, `b` and the diagnostic element `meta` which is used to track such items as version, time of arrival, time to decode, etc.
 
 ```json
 {
-    "z": 0,
+    "meta": {"version": "sip2json/1.9.0/1.0.0", "time": "2020-08-13T12:27:30.555Z", "ttx": 0},
     "s": {},
     "h": {},
     "b": null
@@ -160,7 +161,7 @@ Keeping the data compact and mapping the raw SIP and SDP means less intermediate
 Field | Type | Description
 -----:|:-----|--------------------
 **`s`**   | object | Represents the [SIP start line](#sip-start-line).
-**`z`**   | number | Number of ticks since 1900.
+**`meta`**   | object | Diagnostic object that contains `version`, `time` of arrival and `ttx` milliseconds taken to parse.
 **`h`**   | object | Contains the [SIP headers](#sip-headers).
 `b`   | object | Contains the [SIP body](#sip-body). Optional.<br/>Currently, only the `application/sdp` body encode/decode is supported.<br/>If the `Content-Length` is `0`, despite the value of the `Content-Type` this element is skipped.
 
@@ -230,7 +231,7 @@ Field | Type | Description
 #### Request Document
 ```json
 {
-    "z": 900000000,
+    "meta": {"version": "sip2json/1.9.0/1.0.0", "time": "2020-08-13T12:27:30.555Z", "ttx": 0},
     "s": {
         "type": "request",
         "method": "INVITE",
@@ -270,7 +271,7 @@ Field | Type | Description
 #### Response Document
 ```json
 {
-    "z": 900000000,
+    "meta": {"version": "sip2json/1.9.0/1.0.0", "time": "2020-08-13T12:27:30.555Z", "ttx": 0},
     "s": {
         "type": "response",
         "status": 100,
@@ -389,6 +390,11 @@ The source for the following is this [sample SIP](test/samples/NOTIFY_generic_1.
         "X-start-muted": false,
         "X-subject": "Robin Myers' Meeting Room",
         "X-suppress-system-im": false
+    },
+    "meta": {
+        "version": "sip2json/1.9.0/1.0.0",
+        "time": "2020-08-13T12:27:30.555Z",
+        "ttx": 0
     },
     "s": {
         "method": "NOTIFY",

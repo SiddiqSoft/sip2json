@@ -45,48 +45,6 @@ steps:
   continueOnError: true
 
 - task: VSBuild@1
-  displayName: 'Build solution sip2json.sln DEBUG'
-  inputs:
-    solution: 'sip2json.sln'
-    platform: 'x64'
-    configuration: 'debug'
-    maximumCpuCount: true
-    msbuildArchitecture: 'x64'
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-
-- task: VSTest@2
-  displayName: 'VsTest - Debug'
-  inputs:
-    testSelector: 'testAssemblies'
-    testAssemblyVer2: |
-      **\*test*.exe
-      **\*test*.dll
-      !**\*TestAdapter.dll
-      !**\obj\**
-      !**\Release\**
-    searchFolder: '$(System.DefaultWorkingDirectory)'
-    resultsFolder: '$(System.DefaultWorkingDirectory)\TestResults'
-    runSettingsFile: '.runsettings'
-    runInParallel: true
-    runTestsInIsolation: true
-    codeCoverageEnabled: true
-    platform: 'x64'
-    configuration: 'debug'
-    diagnosticsEnabled: true
-    rerunFailedTests: true
-  continueOnError: true
-  condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))
-
-- task: PublishTestResults@2
-  displayName: 'Publish DEBUG Test Results **/TEST-*.xml'
-  inputs:
-    testResultsFormat: 'VSTest'
-    testResultsFiles: '**/TEST-*.xml'
-    buildPlatform: 'x64'
-    buildConfiguration: 'debug'
-  continueOnError: true
-
-- task: VSBuild@1
   displayName: 'Build solution sip2json.sln RELEASE'
   inputs:
     solution: 'sip2json.sln'

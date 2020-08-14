@@ -24,7 +24,7 @@
        -->
     <!-- 0 = As many processes as possible, limited by number of cores on machine, 1 = Sequential (1 process), 2-> Given number of processes up to limit by number of cores on machine-->
     <MaxCpuCount>0</MaxCpuCount>
-    <DisableParallelization>false</DisableParallelization>
+    <DisableParallelization>true</DisableParallelization>
     <!-- TestSessionTimeout was introduced in Visual Studio 2017 version 15.5 -->
     <!-- Specify timeout in milliseconds. A valid value should be greater than 0 -->
     <TestSessionTimeout>600000</TestSessionTimeout>

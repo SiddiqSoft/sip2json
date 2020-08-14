@@ -55,7 +55,7 @@ namespace test_suite
 	TEST_CLASS(serialize)
 	{
 		void roundTripVerify(
-				const std::string& funcName, const std::string& buffer, sipmessage sipm, std::function<void(sipmessage)> verify)
+				const std::string& funcName, const std::string& buffer, sipmessage& sipm, std::function<void(sipmessage&)> verify)
 		{
 			try
 			{
@@ -106,7 +106,7 @@ namespace test_suite
 				Logger::WriteMessage(str.c_str());
 			}
 
-			auto verify = [](sipmessage& sipm) {
+			const auto verify = [](sipmessage& sipm) {
 				// Affirm that the first frame has a Contact that has been unfolded properly!
 				Assert::AreEqual<std::string>(sipm.value("/h/Contact"_json_pointer, ""), "<sip:localhost:8443;transport=ssl>");
 				Assert::AreEqual<size_t>(1, sipm.value("/b/sdp"_json_pointer, nlohmann::json {}).size());
@@ -123,10 +123,11 @@ namespace test_suite
 			};
 
 			// Verify the decode
-			verify(msgs[0]);
+			sipmessage sipm {msgs.at(0)};
+			verify(msgs.at(0));
 
 			// Let's serialize it
-			auto serialized = sip2json::serialize(msgs[0]);
+			auto serialized = sip2json::serialize(sipm);
 			writeSampleFile("NOTIFY_connectorleg_1", serialized);
 
 			// Decode the serialized
@@ -146,7 +147,7 @@ namespace test_suite
 			auto   bufferStart	  = buffer.begin();
 			auto   msgs			  = sip2json::parse(bufferStart, buffer.end());
 
-			auto verify = [&](sipmessage& sipm) {
+			const auto verify = [&](sipmessage& sipm) {
 				Logger::WriteMessage(sipm.flatten().dump(4).c_str());
 				if (countOfMessage == 1)
 				{
@@ -189,9 +190,9 @@ namespace test_suite
 			};
 
 			countOfMessage = 1;
-			roundTripVerify(__func__, EMPTY_STD_STRING_VALUE, msgs[0], verify);
+			roundTripVerify(__func__, EMPTY_STD_STRING_VALUE, msgs.at(0), verify); //NOLINT
 			countOfMessage = 2;
-			roundTripVerify(__func__, EMPTY_STD_STRING_VALUE, msgs[1], verify);
+			roundTripVerify(__func__, EMPTY_STD_STRING_VALUE, msgs.at(1), verify); // NOLINT
 
 			Assert::AreEqual<size_t>(2, countOfMessage);
 		}
@@ -202,7 +203,7 @@ namespace test_suite
 			auto	   buffer	   = loadSampleFile("NOTIFY_LegDrop");
 			auto	   bufferStart = buffer.begin();
 			auto	   msgs		   = sip2json::parse(bufferStart, buffer.end());
-			sipmessage sipm		   = msgs[0];
+			sipmessage sipm		   = msgs.at(0);
 
 			//Logger::WriteMessage(sipm.dump(2).c_str());
 
@@ -269,7 +270,7 @@ namespace test_suite
 			auto	   buffer	   = loadSampleFile(__func__); // NOLINT
 			auto	   bufferStart = buffer.begin();
 			auto	   msgs		   = sip2json::parse(bufferStart, buffer.end());
-			sipmessage sipm		   = msgs[0];
+			sipmessage sipm		   = msgs.at(0);
 
 			roundTripVerify(__func__, buffer, sipm, [&](sipmessage& sipm) {
 				// Start checking if we decoded properly..
@@ -340,7 +341,7 @@ namespace test_suite
 			auto	   buffer	   = loadSampleFile(__func__); // NOLINT
 			auto	   bufferStart = buffer.begin();
 			auto	   msgs		   = sip2json::parse(bufferStart, buffer.end());
-			sipmessage sipm		   = msgs[0];
+			sipmessage sipm		   = msgs.at(0);
 
 			roundTripVerify(__func__, buffer, sipm, [&](sipmessage& sipm) {
 				// Start checking if we decoded properly..
@@ -407,9 +408,9 @@ namespace test_suite
 			auto	   buffer	   = loadSampleFile(__func__); // NOLINT
 			auto	   bufferStart = buffer.begin();
 			auto	   msgs		   = sip2json::parse(bufferStart, buffer.end());
-			sipmessage sipm		   = msgs[0];
+			sipmessage sipm		   = msgs.at(0);
 
-			auto verifyItems = [](sipmessage& sipm) {
+			const auto verifyItems = [](sipmessage& sipm) {
 				// Start checking if we decoded properly..
 				// METHOD: NOTIFY
 				Assert::AreEqual<std::string>(METHOD_NOTIFY, sipm.value("/s/method"_json_pointer, ""));
@@ -479,9 +480,9 @@ namespace test_suite
 			auto	   buffer	   = loadSampleFile(__func__); // NOLINT
 			auto	   bufferStart = buffer.begin();
 			auto	   msgs		   = sip2json::parse(bufferStart, buffer.end());
-			sipmessage sipm		   = msgs[0];
+			sipmessage sipm		   = msgs.at(0);
 
-			auto verifyItems = [](sipmessage& sipm) {
+			const auto verifyItems = [](sipmessage& sipm) {
 				// Start checking if we decoded properly..
 				// METHOD: NOTIFY
 				Assert::AreEqual<std::string>(METHOD_NOTIFY, sipm.value("/s/method"_json_pointer, ""));
@@ -552,7 +553,7 @@ namespace test_suite
 			auto	   buffer	   = loadSampleFile(__func__); // NOLINT
 			auto	   bufferStart = buffer.begin();
 			auto	   msgs		   = sip2json::parse(bufferStart, buffer.end());
-			sipmessage sipm		   = msgs[0];
+			sipmessage sipm		   = msgs.at(0);
 
 			Logger::WriteMessage(fmt::format("{} - Decoded SIPMessage document\n{}\n", __func__, sipm.dump(2)).c_str());
 
@@ -619,7 +620,7 @@ namespace test_suite
 			auto	   buffer	   = loadSampleFile(__func__); // NOLINT
 			auto	   bufferStart = buffer.begin();
 			auto	   msgs		   = sip2json::parse(bufferStart, buffer.end());
-			sipmessage sipm		   = msgs[0];
+			sipmessage sipm		   = msgs.at(0);
 
 
 			// NOLINTNEXTLINE
@@ -649,7 +650,7 @@ namespace test_suite
 			auto	   buffer	   = loadSampleFile("REGISTER_1"); // NOLINT
 			auto	   bufferStart = buffer.begin();
 			auto	   msgs		   = sip2json::parse(bufferStart, buffer.end());
-			sipmessage sipm		   = msgs[0];
+			sipmessage sipm		   = msgs.at(0);
 
 			// Deliberately poison the message type
 			sipm["/s/type"_json_pointer] = SIPMessageType::notspecified;
@@ -919,7 +920,7 @@ namespace test_suite
 			auto	   bufferStart = buffer.begin();
 			sipmessage sipm		   = sip2json::parseFromBuffer(bufferStart, buffer.end());
 
-			auto verifyItems = [](sipmessage& sipm) {
+			const auto verifyItems = [](sipmessage&& sipm) {
 				// Start checking if we decoded properly..
 				// METHOD: NOTIFY
 				Assert::AreEqual<std::string>(METHOD_NOTIFY, sipm.value("/s/method"_json_pointer, ""));
@@ -981,7 +982,7 @@ namespace test_suite
 				Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/a/clir"_json_pointer, ""), "false:18777464263");
 			};
 
-			verifyItems(sipm);
+			verifyItems(std::move(sipm));
 		}
 
 		// NOLINTNEXTLINE
@@ -993,7 +994,7 @@ namespace test_suite
 			auto	   bufferStart = buffer.begin();
 			sipmessage sipm		   = sip2json::parseFromBuffer(bufferStart, buffer.end());
 
-			auto verifyItems = [](sipmessage& sipm) {
+			const auto verifyItems = [](sipmessage&& sipm) {
 				// Start checking if we decoded properly..
 				// METHOD: NOTIFY
 				Assert::AreEqual<std::string>(METHOD_NOTIFY, sipm.value("/s/method"_json_pointer, ""));
@@ -1050,9 +1051,8 @@ namespace test_suite
 				Assert::AreEqual<std::string>("false"s, sipm.value("/b/sdp/0/a/clir"_json_pointer, ""));
 			};
 
-			verifyItems(sipm);
-
 			Logger::WriteMessage(sipm.dump(4).c_str());
+			verifyItems(std::move(sipm));
 		}
 
 		// NOLINTNEXTLINE
@@ -1116,16 +1116,17 @@ namespace test_suite
 			Assert::AreEqual<size_t>(3, msgs.size());
 			// Affirm that the first frame has a Contact that has been unfolded properly!
 			Assert::AreEqual<std::string>(
-					msgs[0].value("/h/Contact"_json_pointer, ""),
+					msgs.at(0).value("/h/Contact"_json_pointer, ""),
 					"sip:jcollier@federationbankia.com;expires=1593725109;tag=sp2(263988)_IL-PS-CONGO-02.ring2.com, "
 					"sip:jcollier@federationbankia.com;expires=1593725109;tag=sp2(26392)_IL-PS-CONGO-01.ring2.com, "
 					"sip:jcollier@federationbankia.com;expires=1593725269;tag=65750151432167il-ed-mara-01__sp3[USCHEQ-ASRTA01."
 					"ring2.com]");
 			// Affirm that the second item's contact is a single line
-			Assert::AreEqual<std::string>(msgs[1].value("/h/Contact"_json_pointer, ""), "<sip:216.111.92.37:8443;transport=ssl>");
+			Assert::AreEqual<std::string>(msgs.at(1).value("/h/Contact"_json_pointer, ""),
+										  "<sip:216.111.92.37:8443;transport=ssl>");
 
 			// Affirm that the third element's contact ends with a space.
-			Assert::AreEqual<std::string>(msgs[2].value("/h/Contact"_json_pointer, ""),
+			Assert::AreEqual<std::string>(msgs.at(2).value("/h/Contact"_json_pointer, ""),
 										  "<sip:216.111.92.37:8443;transport=ssl>;expires=3600;tag=65750151432167il-ed-mara-01__"
 										  "sp3[USCHEQ-ASRTA01.ring2.com], ");
 
@@ -1155,9 +1156,9 @@ namespace test_suite
 			}
 
 			// Affirm that the first frame has a Contact that has been unfolded properly!
-			Assert::AreEqual<std::string>(msgs[0].value("/h/Contact"_json_pointer, ""), "<sip:localhost:8443;transport=ssl>");
+			Assert::AreEqual<std::string>(msgs.at(0).value("/h/Contact"_json_pointer, ""), "<sip:localhost:8443;transport=ssl>");
 			// We should have 4 SDP elements
-			Assert::AreEqual<size_t>(4, msgs[0].value("/b/sdp"_json_pointer, nlohmann::json {}).size());
+			Assert::AreEqual<size_t>(4, msgs.at(0).value("/b/sdp"_json_pointer, nlohmann::json {}).size());
 		}
 
 
@@ -1218,11 +1219,12 @@ namespace test_suite
 			for (auto& i : msgs)
 			{
 				item++;
-				auto str = fmt::format("{} - document {} -> found:{}.....expected:{}\n",
+				auto str = fmt::format("{} - document {} -> found:{}.....expected:{}; ttx:{}\n",
 									   __func__,
 									   item,
 									   i.value("/h/CSeq"_json_pointer, ""),
-									   matchTarget[item]);
+									   matchTarget.at(item),
+									   i.value("/meta/ttx"_json_pointer, 0));
 				Logger::WriteMessage(str.c_str());
 
 				counters[i.value("/h/CSeq"_json_pointer, "")]++;
@@ -1233,7 +1235,7 @@ namespace test_suite
 					counters[i.value("/h/method"_json_pointer, "")]++;
 
 				// Check for each item; match the CSeq
-				Assert::AreEqual<std::string>(matchTarget[item], i.value("/h/CSeq"_json_pointer, ""));
+				Assert::AreEqual<std::string>(matchTarget.at(item), i.value("/h/CSeq"_json_pointer, ""));
 			}
 
 			Logger::WriteMessage(fmt::format("{} - Found: {} messages\n", __func__, msgs.size()).c_str());
@@ -1265,16 +1267,14 @@ namespace test_suite
 			for (auto& i : msgs)
 			{
 				item++;
-				auto str = fmt::format("{} - document {} -> found:{}.....expected:{}; CL:{}-->{}\n",
+				auto str = fmt::format("{} - document {} -> found:{}.....expected:{}; CL:{}-->{}   ttx:{}\n",
 									   __func__,
 									   item,
 									   i.value("/h/CSeq"_json_pointer, ""),
-									   std::get<0>(matchTarget[item]),
+									   std::get<0>(matchTarget.at(item)),
 									   i.getContentLength(),
-									   std::get<1>(matchTarget[item])
-
-
-				);
+									   std::get<1>(matchTarget.at(item)),
+									   i.value("/meta/ttx"_json_pointer, 0));
 				Logger::WriteMessage(str.c_str());
 
 				counters[i.value("/h/CSeq"_json_pointer, "")]++;
@@ -1285,9 +1285,9 @@ namespace test_suite
 					counters[i.value("/h/method"_json_pointer, "")]++;
 
 				// Check for each item; match the CSeq
-				Assert::AreEqual<std::string>(std::get<0>(matchTarget[item]), i.value("/h/CSeq"_json_pointer, ""));
-				Assert::AreEqual<size_t>(std::get<1>(matchTarget[item]), i.getContentLength());
-				Assert::AreEqual<size_t>(std::get<2>(matchTarget[item]), i["b"]["sdp"].size());
+				Assert::AreEqual<std::string>(std::get<0>(matchTarget.at(item)), i.value("/h/CSeq"_json_pointer, ""));
+				Assert::AreEqual<size_t>(std::get<1>(matchTarget.at(item)), i.getContentLength());
+				Assert::AreEqual<size_t>(std::get<2>(matchTarget.at(item)), i["b"]["sdp"].size());
 			}
 
 			Logger::WriteMessage(fmt::format("{} - Found: {} messages\n", __func__, msgs.size()).c_str());
@@ -1331,16 +1331,14 @@ namespace test_suite
 			for (auto& i : msgs)
 			{
 				item++;
-				auto str = fmt::format("{} - document {} -> found:{}.....expected:{}; CL:{}-->{}\n",
+				auto str = fmt::format("{} - document {} -> found:{}.....expected:{}; CL:{}-->{}   ttx:{}\n",
 									   __func__,
 									   item,
 									   i.value("/h/CSeq"_json_pointer, ""),
-									   std::get<0>(matchTarget[item]),
+									   std::get<0>(matchTarget.at(item)),
 									   i.getContentLength(),
-									   std::get<1>(matchTarget[item])
-
-
-				);
+									   std::get<1>(matchTarget.at(item)),
+									   i.value("/meta/ttx"_json_pointer, 0));
 				Logger::WriteMessage(str.c_str());
 
 				counters[i.value("/h/CSeq"_json_pointer, "")]++;
@@ -1351,9 +1349,9 @@ namespace test_suite
 					counters[i.value("/h/method"_json_pointer, "")]++;
 
 				// Check for each item; match the CSeq
-				Assert::AreEqual<std::string>(std::get<0>(matchTarget[item]), i.value("/h/CSeq"_json_pointer, ""));
-				Assert::AreEqual<size_t>(std::get<1>(matchTarget[item]), i.getContentLength());
-				Assert::AreEqual<size_t>(std::get<2>(matchTarget[item]), i["b"]["sdp"].size());
+				Assert::AreEqual<std::string>(std::get<0>(matchTarget.at(item)), i.value("/h/CSeq"_json_pointer, ""));
+				Assert::AreEqual<size_t>(std::get<1>(matchTarget.at(item)), i.getContentLength());
+				Assert::AreEqual<size_t>(std::get<2>(matchTarget.at(item)), i["b"]["sdp"].size());
 			}
 
 			Logger::WriteMessage(fmt::format("{} - Found: {} messages\n", __func__, msgs.size()).c_str());
@@ -1835,11 +1833,12 @@ namespace test_suite
 			for (auto& i : msgs)
 			{
 				item++;
-				auto str = fmt::format("{} - document {} -> found:{}.....expected:{}\n",
+				auto str = fmt::format("{} - document {} -> found:{}.....expected:{}   ttx:{}\n",
 									   __func__,
 									   item,
 									   i.value("/h/CSeq"_json_pointer, ""),
-									   matchTarget[item]);
+									   matchTarget.at(item),
+									   i.value("/meta/ttx"_json_pointer, 0));
 				Logger::WriteMessage(str.c_str());
 
 				counters[i.value("/h/CSeq"_json_pointer, "")]++;
@@ -1853,7 +1852,7 @@ namespace test_suite
 				debugBuffer += ",";
 
 				// Check for each item; match the CSeq
-				Assert::AreEqual<std::string>(matchTarget[item], i.getHeader<std::string>("CSeq"));
+				Assert::AreEqual<std::string>(matchTarget.at(item), i.getHeader<std::string>("CSeq"));
 			}
 
 			debugBuffer += "]";
@@ -1882,12 +1881,12 @@ namespace test_suite
 			}
 
 			// Affirm that the first frame has a Contact that has been unfolded properly!
-			Assert::AreEqual<std::string>("<sip:localhost:8443;transport=ssl>", msgs[0].getHeader<std::string>("Contact"));
-			Assert::AreEqual<size_t>(1, msgs[0].value("/b/sdp"_json_pointer, nlohmann::json {}).size());
-			Assert::AreEqual<size_t>(729, msgs[0].getContentLength());
+			Assert::AreEqual<std::string>("<sip:localhost:8443;transport=ssl>", msgs.at(0).getHeader<std::string>("Contact"));
+			Assert::AreEqual<size_t>(1, msgs.at(0).value("/b/sdp"_json_pointer, nlohmann::json {}).size());
+			Assert::AreEqual<size_t>(729, msgs.at(0).getContentLength());
 
 			// `X-rss-id: ` should end up with a valid empty string header.
-			Assert::AreEqual<std::string>("", msgs[0].value("/h/X-rss-id"_json_pointer, "-"));
+			Assert::AreEqual<std::string>("", msgs.at(0).value("/h/X-rss-id"_json_pointer, "-"));
 		}
 
 
@@ -1909,18 +1908,18 @@ namespace test_suite
 			}
 
 			// Affirm that the first frame has a Contact that has been unfolded properly!
-			Assert::AreEqual<std::string>(msgs[0].value("/h/Contact"_json_pointer, ""), "<sip:localhost:8443;transport=ssl>");
-			Assert::AreEqual<size_t>(1, msgs[0].value("/b/sdp"_json_pointer, nlohmann::json {}).size());
-			Assert::AreEqual<size_t>(886, msgs[0].getContentLength());
+			Assert::AreEqual<std::string>(msgs.at(0).value("/h/Contact"_json_pointer, ""), "<sip:localhost:8443;transport=ssl>");
+			Assert::AreEqual<size_t>(1, msgs.at(0).value("/b/sdp"_json_pointer, nlohmann::json {}).size());
+			Assert::AreEqual<size_t>(886, msgs.at(0).getContentLength());
 
 			// c=IN IP4 10.254.254.33
-			Assert::AreEqual<std::string>("IN", msgs[0].value("/b/sdp/0/c/type"_json_pointer, ""));
-			Assert::AreEqual<std::string>("IP4", msgs[0].value("/b/sdp/0/c/subtype"_json_pointer, ""));
-			Assert::AreEqual<std::string>("10.254.254.33", msgs[0].value("/b/sdp/0/c/dn"_json_pointer, ""));
+			Assert::AreEqual<std::string>("IN", msgs.at(0).value("/b/sdp/0/c/type"_json_pointer, ""));
+			Assert::AreEqual<std::string>("IP4", msgs.at(0).value("/b/sdp/0/c/subtype"_json_pointer, ""));
+			Assert::AreEqual<std::string>("10.254.254.33", msgs.at(0).value("/b/sdp/0/c/dn"_json_pointer, ""));
 
 			// a=rtpmap should have 2 entries
-			Assert::IsTrue(msgs[0].value("/b/sdp/0/a/rtpmap"_json_pointer, nlohmann::json {}).is_array());
-			Assert::AreEqual<size_t>(2, msgs[0].value("/b/sdp/0/a/rtpmap"_json_pointer, nlohmann::json {}).size());
+			Assert::IsTrue(msgs.at(0).value("/b/sdp/0/a/rtpmap"_json_pointer, nlohmann::json {}).is_array());
+			Assert::AreEqual<size_t>(2, msgs.at(0).value("/b/sdp/0/a/rtpmap"_json_pointer, nlohmann::json {}).size());
 		}
 
 
@@ -1940,18 +1939,18 @@ namespace test_suite
 			}
 
 			// Affirm that the first frame has a Contact that has been unfolded properly!
-			Assert::AreEqual<std::string>(msgs[0].value("/h/Contact"_json_pointer, ""), "<sip:localhost:8443;transport=ssl>");
-			Assert::AreEqual<size_t>(1, msgs[0].value("/b/sdp"_json_pointer, nlohmann::json {}).size());
-			Assert::AreEqual<size_t>(880, msgs[0].getContentLength());
+			Assert::AreEqual<std::string>(msgs.at(0).value("/h/Contact"_json_pointer, ""), "<sip:localhost:8443;transport=ssl>");
+			Assert::AreEqual<size_t>(1, msgs.at(0).value("/b/sdp"_json_pointer, nlohmann::json {}).size());
+			Assert::AreEqual<size_t>(880, msgs.at(0).getContentLength());
 
 			// c=IN IP4 10.254.254.33
-			Assert::AreEqual<std::string>("IN", msgs[0].value("/b/sdp/0/c/type"_json_pointer, ""));
-			Assert::AreEqual<std::string>("IP4", msgs[0].value("/b/sdp/0/c/subtype"_json_pointer, ""));
-			Assert::AreEqual<std::string>("10.254.254.33", msgs[0].value("/b/sdp/0/c/dn"_json_pointer, ""));
+			Assert::AreEqual<std::string>("IN", msgs.at(0).value("/b/sdp/0/c/type"_json_pointer, ""));
+			Assert::AreEqual<std::string>("IP4", msgs.at(0).value("/b/sdp/0/c/subtype"_json_pointer, ""));
+			Assert::AreEqual<std::string>("10.254.254.33", msgs.at(0).value("/b/sdp/0/c/dn"_json_pointer, ""));
 
 			// a=rtpmap should have 2 entries
-			Assert::IsTrue(msgs[0].value("/b/sdp/0/a/rtpmap"_json_pointer, nlohmann::json {}).is_array());
-			Assert::AreEqual<size_t>(2, msgs[0].value("/b/sdp/0/a/rtpmap"_json_pointer, nlohmann::json {}).size());
+			Assert::IsTrue(msgs.at(0).value("/b/sdp/0/a/rtpmap"_json_pointer, nlohmann::json {}).is_array());
+			Assert::AreEqual<size_t>(2, msgs.at(0).value("/b/sdp/0/a/rtpmap"_json_pointer, nlohmann::json {}).size());
 		}
 
 		// NOLINTNEXTLINE
@@ -1994,15 +1993,15 @@ namespace test_suite
 			}
 
 			// Affirm that the first frame has a Contact that has been unfolded properly!
-			Assert::IsTrue(msgs[0].value("/h/X-Call-Instance-ID"_json_pointer, "").length() > 0);
-			Assert::AreEqual<std::string>(ciid, msgs[0].value("/h/X-Call-Instance-ID"_json_pointer, ""));
-			Assert::AreEqual<size_t>(2, msgs[0].value("/b/sdp"_json_pointer, nlohmann::json {}).size());
-			Assert::AreEqual<size_t>(1716, msgs[0].getContentLength());
+			Assert::IsTrue(msgs.at(0).value("/h/X-Call-Instance-ID"_json_pointer, "").length() > 0);
+			Assert::AreEqual<std::string>(ciid, msgs.at(0).value("/h/X-Call-Instance-ID"_json_pointer, ""));
+			Assert::AreEqual<size_t>(2, msgs.at(0).value("/b/sdp"_json_pointer, nlohmann::json {}).size());
+			Assert::AreEqual<size_t>(1716, msgs.at(0).getContentLength());
 
-			Assert::AreEqual<string>("1", msgs[0].value("/b/sdp/0/a/leg_no"_json_pointer, ""s));
-			Assert::AreEqual<string>("7", msgs[0].value("/b/sdp/1/a/leg_no"_json_pointer, ""s));
+			Assert::AreEqual<string>("1", msgs.at(0).value("/b/sdp/0/a/leg_no"_json_pointer, ""s));
+			Assert::AreEqual<string>("7", msgs.at(0).value("/b/sdp/1/a/leg_no"_json_pointer, ""s));
 
-			Assert::AreEqual<string>("13773497", msgs[0].value("/b/sdp/1/e"_json_pointer, ""s));
+			Assert::AreEqual<string>("13773497", msgs.at(0).value("/b/sdp/1/e"_json_pointer, ""s));
 		}
 
 		// NOLINTNEXTLINE
@@ -2025,13 +2024,13 @@ namespace test_suite
 			}
 
 			// Affirm that the first frame has a Contact that has been unfolded properly!
-			Assert::IsTrue(msgs[0].value("/h/X-Call-Instance-ID"_json_pointer, "").length() > 0);
-			Assert::AreEqual<std::string>(ciid, msgs[0].value("/h/X-Call-Instance-ID"_json_pointer, ""));
-			Assert::AreEqual<size_t>(2, msgs[0].value("/b/sdp"_json_pointer, nlohmann::json {}).size());
-			Assert::AreEqual<size_t>(1872, msgs[0].getContentLength());
+			Assert::IsTrue(msgs.at(0).value("/h/X-Call-Instance-ID"_json_pointer, "").length() > 0);
+			Assert::AreEqual<std::string>(ciid, msgs.at(0).value("/h/X-Call-Instance-ID"_json_pointer, ""));
+			Assert::AreEqual<size_t>(2, msgs.at(0).value("/b/sdp"_json_pointer, nlohmann::json {}).size());
+			Assert::AreEqual<size_t>(1872, msgs.at(0).getContentLength());
 
-			Assert::AreEqual<string>("1", msgs[0].value("/b/sdp/0/a/leg_no"_json_pointer, ""s));
-			Assert::AreEqual<string>("4", msgs[0].value("/b/sdp/1/a/leg_no"_json_pointer, ""s));
+			Assert::AreEqual<string>("1", msgs.at(0).value("/b/sdp/0/a/leg_no"_json_pointer, ""s));
+			Assert::AreEqual<string>("4", msgs.at(0).value("/b/sdp/1/a/leg_no"_json_pointer, ""s));
 		}
 	}; // namespace test_suite
 
@@ -2047,7 +2046,7 @@ namespace test_suite
 			auto	   buffer	   = loadSampleFile("NOTIFY_LegDrop");
 			auto	   bufferStart = buffer.begin();
 			auto	   msgs		   = sip2json::parse(bufferStart, buffer.end());
-			sipmessage sipm		   = msgs[0];
+			sipmessage sipm		   = msgs.at(0);
 
 			// Start checking if we decoded properly..
 			// METHOD: NOTIFY
@@ -2061,7 +2060,7 @@ namespace test_suite
 			auto	   buffer	   = loadSampleFile("NOTIFY_LegDrop");
 			auto	   bufferStart = buffer.begin();
 			auto	   msgs		   = sip2json::parse(bufferStart, buffer.end());
-			sipmessage sipm		   = msgs[0];
+			sipmessage sipm		   = msgs.at(0);
 
 			// Start checking if we decoded properly..
 			// METHOD: NOTIFY
@@ -2084,7 +2083,7 @@ namespace test_suite
 			auto	   buffer	   = loadSampleFile(__func__); // NOLINT
 			auto	   bufferStart = buffer.begin();
 			auto	   msgs		   = sip2json::parse(bufferStart, buffer.end());
-			sipmessage sipm		   = msgs[0];
+			sipmessage sipm		   = msgs.at(0);
 
 			// Start checking if we decoded properly..
 			// METHOD: NOTIFY
@@ -2152,7 +2151,7 @@ namespace test_suite
 			auto	   buffer	   = loadSampleFile(__func__); // NOLINT
 			auto	   bufferStart = buffer.begin();
 			auto	   msgs		   = sip2json::parse(bufferStart, buffer.end());
-			sipmessage sipm		   = msgs[0];
+			sipmessage sipm		   = msgs.at(0);
 
 			// Start checking if we decoded properly..
 			// METHOD: NOTIFY
@@ -2342,9 +2341,9 @@ namespace test_suite
 			auto	   buffer	   = loadSampleFile(__func__); // NOLINT
 			auto	   bufferStart = buffer.begin();
 			auto	   msgs		   = sip2json::parse(bufferStart, buffer.end());
-			sipmessage sipm		   = msgs[0];
+			sipmessage sipm		   = msgs.at(0);
 
-			auto verifyItems = [](sipmessage& sipm) {
+			const auto verifyItems = [](sipmessage&& sipm) {
 				// Start checking if we decoded properly..
 				// METHOD: NOTIFY
 				Assert::AreEqual<std::string>(METHOD_NOTIFY, sipm.value("/s/method"_json_pointer, ""));
@@ -2406,7 +2405,7 @@ namespace test_suite
 				Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/a/clir"_json_pointer, ""), "false:18777464263");
 			};
 
-			verifyItems(sipm);
+			verifyItems(std::move(sipm));
 		}
 
 
@@ -2416,7 +2415,7 @@ namespace test_suite
 			auto	   buffer	   = loadSampleFile(__func__); // NOLINT
 			auto	   bufferStart = buffer.begin();
 			auto	   msgs		   = sip2json::parse(bufferStart, buffer.end());
-			sipmessage sipm		   = msgs[0];
+			sipmessage sipm		   = msgs.at(0);
 
 			// Start checking if we decoded properly..
 			// Start-Line (response): SIP/2.0 200 OK
@@ -2440,7 +2439,7 @@ namespace test_suite
 			auto	   buffer	   = loadSampleFile("REGISTER_1");
 			auto	   bufferStart = buffer.begin();
 			auto	   msgs		   = sip2json::parse(bufferStart, buffer.end());
-			sipmessage sipm		   = msgs[0];
+			sipmessage sipm		   = msgs.at(0);
 
 			// Start checking if we decoded properly..
 			// Start-Line (response): SIP/2.0 200 OK

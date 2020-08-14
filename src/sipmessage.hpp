@@ -72,11 +72,18 @@ namespace siddiqsoftware
 	class sipmessage : public nlohmann::json
 	{
 		static const inline std::string MetaLibName		  = "sip2json";
-		static const inline std::string MetaSchemaVersion = "0.4.1";
-		static const inline std::string MetaParserVersion = "1.8.0";
+		static const inline std::string MetaSchemaVersion = "1.0.0";
+		static const inline std::string MetaParserVersion = "1.9.0";
 
 	public:
-		sipmessage() = default;
+		sipmessage()
+		{
+			using namespace std;
+			// Overwrite the source object's values
+			(*this)["meta"s] = {{"version"s, fmt::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
+								{"time"s, TimeAsISO8601()},
+								{"ttx"s, 0}};
+		}
 
 		/// @brief Instantiates request message given method and uri with option callId and cseq
 		/// @param method One of the supported SIP methods
@@ -89,12 +96,14 @@ namespace siddiqsoftware
 			using namespace std;
 
 			update({{"s"s, {{"type"s, SIPMessageType::request}, {"method"s, method}, {"uri"s, uri}, {"version"s, SIPVER_20}}},
-					{"v"s, MetaSchemaVersion},
 					{"b"s, nullptr},
-					{"z"s, std::chrono::system_clock::now().time_since_epoch().count()},
+					{"meta"s,
+					 {{"version"s, fmt::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
+					  {"time"s, TimeAsISO8601()},
+					  {"ttx"s, 0}}},
 					{"h"s,
 					 {{"User-Agent"s, fmt::format("{}/{} (schema:{})"s, MetaLibName, MetaParserVersion, MetaSchemaVersion)},
-					  {"Date"s, getRFC1123()}}}});
+					  {"Date"s, TimeAsRFC1123()}}}});
 
 			// request-line: METHOD Request-URI SIP/2.0
 			// message-headers
@@ -116,15 +125,25 @@ namespace siddiqsoftware
 					  {"status"s, statusCode},
 					  {"reason"s, getReasonPhrase(statusCode)},
 					  {"version"s, SIPVER_20}}},
-					{"v"s, MetaSchemaVersion},
 					{"b"s, nullptr},
-					{"z"s, std::chrono::system_clock::now().time_since_epoch().count()},
+					{"meta"s,
+					 {{"version"s, fmt::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
+					  {"time"s, TimeAsISO8601()},
+					  {"ttx"s, 0}}},
 					{"h"s,
 					 {{"User-Agent"s, fmt::format("{}/{} (schema:{})"s, MetaLibName, MetaParserVersion, MetaSchemaVersion)},
-					  {"Date"s, getRFC1123()}}}}));
+					  {"Date"s, TimeAsRFC1123()}}}}));
 
-			// We must clear these values in case we are updating an existing object.
-			erase("s"s);
+			if (src.has_value())
+			{
+				// Overwrite the source object's values
+				(*this)["meta"s] = {{"version"s, fmt::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
+									{"time"s, TimeAsISO8601()},
+									{"ttx"s, 0}};
+			}
+
+			//// We must clear these values in case we are updating an existing object.
+			//erase("s"s);
 			// "status-line" (Status Reason Version)
 			(*this)["s"s] = {{"type"s, SIPMessageType::response},
 							 {"status"s, statusCode},
@@ -132,7 +151,7 @@ namespace siddiqsoftware
 							 {"version"s, SIPVER_20}};
 
 			(*this)["h"s]["User-Agent"s] = fmt::format("{}/{} (schema:{})"s, MetaLibName, MetaParserVersion, MetaSchemaVersion);
-			this->setHeader("Date"s, getRFC1123());
+			this->setHeader("Date"s, TimeAsRFC1123());
 		}
 
 
@@ -192,7 +211,7 @@ namespace siddiqsoftware
 		/// @return Returns reference to the body element b
 		inline auto& body() { return this->at("b"); };
 
-		inline auto	 isMessageRequest()
+		inline auto isMessageRequest()
 		{
 			return (this->value("/s/type"_json_pointer, SIPMessageType::notspecified) == SIPMessageType::request);
 		};
@@ -211,7 +230,7 @@ namespace siddiqsoftware
 		/// @return Self.
 		template <typename T> inline sipmessage& setHeader(const std::string& key, const T& v)
 		{
-			headers()[key] = v;
+			(*this)["h"][key] = v;
 			return *this;
 		};
 

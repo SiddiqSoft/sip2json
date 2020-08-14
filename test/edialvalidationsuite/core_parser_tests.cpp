@@ -63,7 +63,7 @@ namespace test_suite
 		// NOLINTNEXTLINE
 		TEST_METHOD(Test_UserAgent)
 		{
-			auto	   ua = __func__;
+			auto	   ua = __func__; //NOLINT
 			sipmessage sipm(METHOD_REGISTER, "sip:hello@world.com");
 
 			try
@@ -80,6 +80,23 @@ namespace test_suite
 			}
 		}
 
+
+		// NOLINTNEXTLINE
+		TEST_METHOD(Test_meta_element)
+		{
+			sipmessage sipm(METHOD_REGISTER, "sip:hello@world.com");
+
+			try
+			{
+				Logger::WriteMessage(sip2json::serialize(sipm).c_str());
+				Assert::IsTrue(sipm.contains("meta"));
+			}
+			catch (const std::exception& e)
+			{
+				Logger::WriteMessage(e.what());
+				Assert::Fail(L"Got exception.");
+			}
+		}
 
 		// NOLINTNEXTLINE
 		TEST_METHOD(Test_sip2jsonErrors)
@@ -121,14 +138,14 @@ namespace test_suite
 		}
 
 		// NOLINTNEXTLINE
-		TEST_METHOD(Test_getRFC1123)
+		TEST_METHOD(Test_TimeAsRFC1123)
 		{
-			auto todays_date = getRFC1123();
+			auto todays_date = TimeAsRFC1123();
 			Assert::IsTrue(!todays_date.empty());
 		}
 
 		// NOLINTNEXTLINE
-		TEST_METHOD(Test_getRFC1123_args)
+		TEST_METHOD(Test_TimeAsRFC1123_args)
 		{
 			tm knowntm {};
 			knowntm.tm_year	 = 2010 - 1900;
@@ -141,19 +158,19 @@ namespace test_suite
 			knowntm.tm_isdst = 0;
 
 
-			auto todays_date = getRFC1123(std::chrono::system_clock::from_time_t(_mkgmtime(&knowntm)));
+			auto todays_date = TimeAsRFC1123(std::chrono::system_clock::from_time_t(_mkgmtime(&knowntm)));
 			Assert::IsTrue(todays_date.compare("Sat, 13 Nov 2010 23:29:00 GMT") == 0);
 		}
 
 		// NOLINTNEXTLINE
-		TEST_METHOD(Test_getISO8601)
+		TEST_METHOD(Test_TimeAsISO8601)
 		{
-			auto todays_date = getISO8601();
+			auto todays_date = TimeAsISO8601();
 			Assert::IsTrue(!todays_date.empty());
 		}
 
 		// NOLINTNEXTLINE
-		TEST_METHOD(Test_getISO8601_args)
+		TEST_METHOD(Test_TimeAsISO8601_args)
 		{
 			tm knowntm {};
 			knowntm.tm_year	 = 2010 - 1900;
@@ -165,7 +182,7 @@ namespace test_suite
 			knowntm.tm_wday	 = 6;	   // Sat
 			knowntm.tm_isdst = 0;
 
-			auto knownDate = getISO8601(std::chrono::system_clock::from_time_t(_mkgmtime(&knowntm)));
+			auto knownDate = TimeAsISO8601(std::chrono::system_clock::from_time_t(_mkgmtime(&knowntm)));
 			// Note the use of "find" instead of compare since the milliseconds are an unkown and
 			// unless we create from scratch they will contain an arbitrary noise.
 			Assert::IsTrue(knownDate.find("2010-11-13T23:29:00.") == 0);
