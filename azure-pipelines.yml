@@ -53,27 +53,6 @@ steps:
     maximumCpuCount: true
     msbuildArchitecture: 'x64'
 
-- task: VSTest@2
-  displayName: 'VsTest - Release'
-  inputs:
-    testSelector: 'testAssemblies'
-    testAssemblyVer2: |
-      **\*test*.exe
-      **\*test*.dll
-      !**\*TestAdapter.dll
-      !**\obj\**
-      !**\Debug\**
-    searchFolder: '$(System.DefaultWorkingDirectory)'
-    resultsFolder: '$(System.DefaultWorkingDirectory)\TestResults'
-    runInParallel: true
-    runTestsInIsolation: true
-    codeCoverageEnabled: false
-    platform: 'x64'
-    configuration: 'release'
-    diagnosticsEnabled: true
-    rerunFailedTests: true
-  continueOnError: true
-
 - task: CmdLine@2
   inputs:
     script: |
@@ -81,13 +60,14 @@ steps:
       cd test
       cd validation_tests
       cd Release
-      validation_tests.exe --gtest_output=xml:..\..\TestResults\
+      validation_tests.exe --gtest_output=xml:..\..\..\TestResults\
 
 - task: PublishTestResults@2
   displayName: 'Publish Release Test Results **/TEST-*.xml'
   inputs:
-    testResultsFormat: 'VSTest'
-    testResultsFiles: '**/TEST-*.xml'
+    testResultsFormat: 'JUnit'
+    testResultsFiles: '**/validation_tests.xml'
+    mergeTestResults: true
     buildPlatform: 'x64'
     buildConfiguration: 'release'
   continueOnError: true
