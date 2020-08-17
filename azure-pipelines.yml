@@ -75,6 +75,17 @@ steps:
     rerunFailedTests: true
   continueOnError: true
 
+- task: CmdLine@2
+  inputs:
+    script: |
+      echo Write your commands here
+      
+      dir "%VCINSTALLDIR%..\Team Tools\Dynamic Code Coverage Tools\amd64"
+      
+      dir $(System.DefaultWorkingDirectory)\TestResults
+      
+      "%VCINSTALLDIR%..\Team Tools\Dynamic Code Coverage Tools\amd64\CodeCoverage.exe" analyze /output:$(System.DefaultWorkingDirectory)\TestResults\coverage.xml
+
 - task: reportgenerator@4
   inputs:
     reports: 'coverage.xml;**\*coverage*'
