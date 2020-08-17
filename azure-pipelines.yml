@@ -74,6 +74,15 @@ steps:
     rerunFailedTests: true
   continueOnError: true
 
+- task: CmdLine@2
+  inputs:
+    script: |
+      echo Running googltest
+      cd test
+      cd validation_tests
+      cd Release
+      validation_tests.exe --gtest_output=xml:..\..\TestResults\
+
 - task: PublishTestResults@2
   displayName: 'Publish Release Test Results **/TEST-*.xml'
   inputs:
