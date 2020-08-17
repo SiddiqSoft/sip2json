@@ -56,16 +56,11 @@ steps:
 - task: VSTest@2
   inputs:
     testSelector: 'testAssemblies'
-    testAssemblyVer2: |
-      **\*tests*.exe
-      **\*test*.dll
-      !**\*TestAdapter.dll
-      !**\obj\**
+    testAssemblyVer2: '$(System.DefaultWorkingDirectory)\test\validation_tests\Release\validation_tests.exe --gtest_output=xml:$(System.DefaultWorkingDirectory)\TestResults'
     searchFolder: '$(System.DefaultWorkingDirectory)'
     resultsFolder: '$(System.DefaultWorkingDirectory)\TestResults'
     runInParallel: true
     codeCoverageEnabled: true
-    otherConsoleOptions: '--gtest_output=xml:$(System.DefaultWorkingDirectory)\TestResults'
     platform: 'x64'
     configuration: 'Release'
 
