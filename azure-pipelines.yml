@@ -53,6 +53,23 @@ steps:
     maximumCpuCount: true
     msbuildArchitecture: 'x64'
 
+- task: VSTest@2
+  inputs:
+    testSelector: 'testAssemblies'
+    testAssemblyVer2: |
+      **\*tests*.exe
+      **\*test*.dll
+      !**\*TestAdapter.dll
+      !**\obj\**
+    searchFolder: '$(System.DefaultWorkingDirectory)'
+    resultsFolder: '$(System.DefaultWorkingDirectory)\TestResults'
+    runInParallel: true
+    codeCoverageEnabled: true
+    otherConsoleOptions: '--gtest_output=xml:$(System.DefaultWorkingDirectory)\TestResults'
+    platform: 'x64'
+    configuration: 'Release'
+
+
 - task: CmdLine@2
   inputs:
     script: |
