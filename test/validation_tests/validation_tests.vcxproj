@@ -42,11 +42,6 @@
     <ClCompile Include="test.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src{BE17724B-F2AA-40B9-94E0-0B2EFCAA5768}">
-      <Project>{be17724b-f2aa-40b9-94e0-0b2efcaa5768}</Project>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemDefinitionGroup />

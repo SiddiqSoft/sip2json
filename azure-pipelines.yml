@@ -65,7 +65,6 @@ steps:
       !**\Debug\**
     searchFolder: '$(System.DefaultWorkingDirectory)'
     resultsFolder: '$(System.DefaultWorkingDirectory)\TestResults'
-    runSettingsFile: '.runsettings'
     runInParallel: true
     runTestsInIsolation: true
     codeCoverageEnabled: false
