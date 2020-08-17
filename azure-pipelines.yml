@@ -68,12 +68,18 @@ steps:
     runSettingsFile: '.runsettings'
     runInParallel: true
     runTestsInIsolation: true
-    codeCoverageEnabled: false
+    codeCoverageEnabled: true
     platform: 'x64'
     configuration: 'release'
     diagnosticsEnabled: true
     rerunFailedTests: true
   continueOnError: true
+
+- task: reportgenerator@4
+  inputs:
+    reports: 'coverage.xml;**\*coverage*'
+    targetdir: '$(System.DefaultWorkingDirectory)\TestResults'
+    sourcedirs: '$(System.DefaultWorkingDirectory)\TestResults'
 
 - task: PublishTestResults@2
   displayName: 'Publish Release Test Results **/TEST-*.xml'
