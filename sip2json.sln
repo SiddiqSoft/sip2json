@@ -71,22 +71,22 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{6C56
 		test\samples\Trying_INVITE_1.sip = test\samples\Trying_INVITE_1.sip
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "validation_tests", "test\validation_tests\validation_tests.vcxproj", "{0619F397-3A26-4BE8-8B5E-D186CF369FFB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
-		Debug|x86 = Debug|x86
 		Release|x64 = Release|x64
-		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{21BF02FD-4390-483A-9904-EB09D033F182}.Debug|x64.ActiveCfg = Debug|x64
 		{21BF02FD-4390-483A-9904-EB09D033F182}.Debug|x64.Build.0 = Debug|x64
-		{21BF02FD-4390-483A-9904-EB09D033F182}.Debug|x86.ActiveCfg = Debug|Win32
-		{21BF02FD-4390-483A-9904-EB09D033F182}.Debug|x86.Build.0 = Debug|Win32
 		{21BF02FD-4390-483A-9904-EB09D033F182}.Release|x64.ActiveCfg = Release|x64
 		{21BF02FD-4390-483A-9904-EB09D033F182}.Release|x64.Build.0 = Release|x64
-		{21BF02FD-4390-483A-9904-EB09D033F182}.Release|x86.ActiveCfg = Release|Win32
-		{21BF02FD-4390-483A-9904-EB09D033F182}.Release|x86.Build.0 = Release|Win32
+		{0619F397-3A26-4BE8-8B5E-D186CF369FFB}.Debug|x64.ActiveCfg = Debug|x64
+		{0619F397-3A26-4BE8-8B5E-D186CF369FFB}.Debug|x64.Build.0 = Debug|x64
+		{0619F397-3A26-4BE8-8B5E-D186CF369FFB}.Release|x64.ActiveCfg = Release|x64
+		{0619F397-3A26-4BE8-8B5E-D186CF369FFB}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
