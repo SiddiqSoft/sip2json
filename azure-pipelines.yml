@@ -85,7 +85,11 @@ steps:
       echo "Location of the output.."
       dir $(System.DefaultWorkingDirectory)\TestResults
       echo "Run the coverage conversion.."
-      "%VCINSTALLDIR%..\Team Tools\Dynamic Code Coverage Tools\CodeCoverage.exe" analyze /output:$(System.DefaultWorkingDirectory)\TestResults\coverage.xml
+      echo "%VCINSTALLDIR%..\Team Tools\Dynamic Code Coverage Tools\CodeCoverage.exe"
+      dir "%VCINSTALLDIR%"
+      dir "%VCINSTALLDIR%..\Team Tools"
+      dir "%VCINSTALLDIR%..\Team Tools\Dynamic Code Coverage Tools"
+      rem analyze /output:$(System.DefaultWorkingDirectory)\TestResults\coverage.xml
 
 - task: reportgenerator@4
   inputs:
