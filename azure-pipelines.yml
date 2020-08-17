@@ -81,15 +81,6 @@ steps:
     targetdir: '$(System.DefaultWorkingDirectory)\TestResults'
     sourcedirs: '$(System.DefaultWorkingDirectory)\TestResults'
 
-- task: PublishTestResults@2
-  displayName: 'Publish Release Test Results **/TEST-*.xml'
-  inputs:
-    testResultsFormat: 'VSTest'
-    testResultsFiles: '**/TEST-*.xml'
-    buildPlatform: 'x64'
-    buildConfiguration: 'release'
-  continueOnError: true
-
 - task: NuGetCommand@2
   displayName: 'NuGet pack'
   inputs:
