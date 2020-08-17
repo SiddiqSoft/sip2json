@@ -28,8 +28,8 @@ using namespace std;
 static std::string loadSampleFile(const std::string_view& fileName)
 {
 	std::stringstream testFile;
-	std::ifstream	  sampleInputFile(fmt::format("../test/samples/{}.sip", fileName), std::ios::binary);
-
+	std::ifstream	  sampleInputFile(fmt::format("../../samples/{}.sip", fileName), std::ios::binary);
+	
 	if (sampleInputFile.is_open())
 	{
 		testFile << sampleInputFile.rdbuf();
@@ -189,7 +189,6 @@ TEST(siphelpers, Test_createResponse)
 	EXPECT_TRUE(dummyMessage.isMessageResponse());
 }
 
-#ifdef WORKING
 
 // NOLINTNEXTLINE
 TEST(siphelpers, Test_createRequest_then_response)
@@ -203,8 +202,7 @@ TEST(siphelpers, Test_createRequest_then_response)
 
 	EXPECT_TRUE(registerMessage.size() != 0);
 	EXPECT_TRUE(registerMessage.value("/h/Call-ID"_json_pointer, std::string {}).length() == 44);
-	Assert::AreEqual<SIPMessageType>(SIPMessageType::request,
-									 registerMessage.value("/s/type"_json_pointer, SIPMessageType::notspecified));
+	EXPECT_EQ(SIPMessageType::request, registerMessage.value("/s/type"_json_pointer, SIPMessageType::notspecified));
 
 	// WARNING
 	// As we're passing the registerMessage as parameter to create an inplace response message
@@ -214,12 +212,10 @@ TEST(siphelpers, Test_createRequest_then_response)
 
 	EXPECT_TRUE(responseMessage.size() != 0);
 	EXPECT_TRUE(responseMessage.value("/h/Call-ID"_json_pointer, std::string {}).length() == 44);
-	Assert::AreEqual<SIPMessageType>(SIPMessageType::response,
-									 responseMessage.value("/s/type"_json_pointer, SIPMessageType::notspecified));
+	EXPECT_EQ(SIPMessageType::response, responseMessage.value("/s/type"_json_pointer, SIPMessageType::notspecified));
 	EXPECT_TRUE(!responseMessage.value("/h/Date"_json_pointer, std::string {}).empty());
 
-	Assert::AreEqual<std::string>(registerMessage.value("/h/Call-ID"_json_pointer, "req"),
-								  responseMessage.value("/h/Call-ID"_json_pointer, "resp"));
+	EXPECT_EQ(registerMessage.value("/h/Call-ID"_json_pointer, "req"s), responseMessage.value("/h/Call-ID"_json_pointer, "resp"s));
 }
 
 // NOLINTNEXTLINE
@@ -246,21 +242,21 @@ TEST(siphelpers, Test_serialize)
 		ll				 = __LINE__;
 		sipmessage sipm2 = sip2json::parseFromBuffer(bufferStart, strsipm.end());
 		EXPECT_TRUE(!sipm2.empty());
-		Assert::AreEqual(registerMessage.getContentLength(), sipm2.getContentLength());
-		Assert::AreEqual(registerMessage.getCallID(), sipm2.getCallID());
+		EXPECT_EQ(registerMessage.getContentLength(), sipm2.getContentLength());
+		EXPECT_EQ(registerMessage.getCallID(), sipm2.getCallID());
 
-			std::clog <<"\n============vvv=\n");
-			std::clog <<strsipm.c_str());
-			std::clog <<"\n============   =\n");
-			std::clog <<sip2json::serialize(sipm2).c_str());
-			std::clog <<"\n============^^^=\n");
+		std::clog << "\n============vvv=\n";
+		std::clog << strsipm;
+		std::clog << "\n============   =\n";
+		std::clog << sip2json::serialize(sipm2);
+		std::clog << "\n============^^^=\n";
 
-			Assert::AreEqual(strsipm.length(), sip2json::serialize(sipm2).length());
+		EXPECT_EQ(strsipm.length(), sip2json::serialize(sipm2).length());
 	}
 	catch (const std::exception& e)
 	{
-			std::clog <<fmt::format("{}:Exception lastline:{} --> {}\n", __func__, ll, e.what()).c_str());
-			Assert::Fail(L"Unexpected exception.");
+		std::clog << fmt::format("{}:Exception lastline:{} --> {}\n", __func__, ll, e.what());
+		EXPECT_TRUE(true) << L"Unexpected exception.";
 	}
 }
 
@@ -274,7 +270,7 @@ TEST(siphelpers, Test_serialize_empty_mb_fail)
 			.setHeader("Content-Type", "application/dummy");
 	// This will cause serialize to throw!
 	registerMessage["b"] = 0;
-	Assert::ExpectException<std::exception>([&]() { sip2json::serialize(registerMessage); });
+	EXPECT_THROW(sip2json::serialize(registerMessage), std::exception);
 }
 
 // NOLINTNEXTLINE
@@ -287,14 +283,14 @@ TEST(siphelpers, Test_serialize_empty_mb_valid)
 			.setHeader("Content-Type", CONTENT_TYPE_APP_SDP);
 	// Should not throw; body is null despite the header being SDP there is no body element set.
 	// This is a supported use-case
-	sip2json::serialize(registerMessage);
+	EXPECT_NO_THROW(sip2json::serialize(registerMessage));
 }
 
 // NOLINTNEXTLINE
 TEST(siphelpers, Test_loadTestFile)
 {
 	std::stringstream testFile;
-	std::ifstream	  sampleInputFile("../test/samples/NOTIFY_LegDrop.sip");
+	std::ifstream	  sampleInputFile("../../samples/NOTIFY_LegDrop.sip");
 
 	if (sampleInputFile.is_open())
 	{
@@ -312,109 +308,78 @@ TEST(siphelpers, Test_loadTestFile)
 // NOLINTNEXTLINE
 TEST(siphelpers, Test_incomplete_buffer_for_parse)
 {
-	auto buffer = siddiqsoftware::SIP_SAMPLE_MINIMAL_MESSAGE;
-	try
-	{
-		auto bs = buffer.begin();
-		sip2json::parseFromBuffer(bs, buffer.end());
-		Assert::Fail(L"Expect exception: incomplete_buffer_for_parse\n");
-	}
-	catch (incomplete_buffer_for_parse_error& e)
-	{
-			std::clog <<e.what());
-			EXPECT_TRUE(e.errCode == sip2jsonErrors::incomplete_buffer_for_parse);
-	}
+	EXPECT_THROW(
+			[]() {
+				auto buffer = siddiqsoftware::SIP_SAMPLE_MINIMAL_MESSAGE;
+				auto bs		= buffer.begin();
+				sip2json::parseFromBuffer(bs, buffer.end());
+			}(),
+			incomplete_buffer_for_parse_error)
+			<< L"Expect exception: incomplete_buffer_for_parse\n";
 }
 
 
 // NOLINTNEXTLINE
 TEST(siphelpers, Test_incomplete_buffer_for_content)
 {
-	auto buffer = loadSampleFile(__func__); // NOLINT
-	try
-	{
-		auto bs = buffer.begin();
-		sip2json::parseFromBuffer(bs, buffer.end());
-		Assert::Fail(L"Expect exception: incomplete_buffer_for_content\n");
-	}
-	catch (incomplete_buffer_for_content_error& e)
-	{
-			std::clog <<e.what());
-			EXPECT_TRUE(e.errCode == sip2jsonErrors::incomplete_buffer_for_content);
-	}
+	EXPECT_THROW(
+			[]() {
+				auto buffer = loadSampleFile("Test_incomplete_buffer_for_content"s); // NOLINT
+				auto bs		= buffer.begin();
+				sip2json::parseFromBuffer(bs, buffer.end());
+			}(),
+			incomplete_buffer_for_content_error);
 }
 
 
 // NOLINTNEXTLINE
 TEST(siphelpers, Test_incomplete_buffer_for_header)
 {
-	auto buffer = loadSampleFile(__func__); // NOLINT
-	try
-	{
-		auto bs = buffer.begin();
-		sip2json::parseFromBuffer(bs, buffer.end());
-		Assert::Fail(L"Expect exception: incomplete_buffer_for_header\n");
-	}
-	catch (incomplete_buffer_for_header_error& e)
-	{
-			std::clog <<e.what());
-			EXPECT_TRUE(e.errCode == sip2jsonErrors::incomplete_buffer_for_header);
-	}
+	EXPECT_THROW(
+			[]() {
+				auto buffer = loadSampleFile("Test_incomplete_buffer_for_header"s); // NOLINT
+				auto bs		= buffer.begin();
+				sip2json::parseFromBuffer(bs, buffer.end());
+			}(),
+			incomplete_buffer_for_header_error);
 }
 
 
 // NOLINTNEXTLINE
 TEST(siphelpers, Test_unsupported_contenttype)
 {
-	auto buffer = loadSampleFile(__func__); // NOLINT
-	try
-	{
-		auto bs = buffer.begin();
-		sip2json::parseFromBuffer(bs, buffer.end());
-		Assert::Fail(L"Expect exception: unsupported_contenttype\n");
-	}
-	catch (unsupported_contenttype_error& e)
-	{
-			std::clog <<e.what());
-			EXPECT_TRUE(e.errCode == sip2jsonErrors::unsupported_contenttype);
-	}
+	EXPECT_THROW(
+			[]() {
+				auto buffer = loadSampleFile("Test_unsupported_contenttype"); // NOLINT
+				auto bs		= buffer.begin();
+				sip2json::parseFromBuffer(bs, buffer.end());
+			}(),
+			unsupported_contenttype_error);
 }
 
 
 // NOLINTNEXTLINE
 TEST(siphelpers, Test_invalid_document)
 {
-	sipmessage sipm;
-
-	try
-	{
-		sipm["dummy"] = "world";
-		sip2json::serialize(sipm);
-		Assert::Fail(L"Expect exception: invalid_document\n");
-	}
-	catch (invalid_document_error& e)
-	{
-			std::clog <<e.what());
-			EXPECT_TRUE(e.errCode == sip2jsonErrors::invalid_document);
-	}
+	EXPECT_THROW(
+			[]() {
+				sipmessage sipm;
+				sipm["dummy"] = "world";
+				sip2json::serialize(sipm);
+			}(),
+			invalid_document_error);
 }
 
 
 // NOLINTNEXTLINE
 TEST(siphelpers, Test_invalid_document_startline)
 {
-	sipmessage sipm("ROR", "sip:dummy@world.com");
-
-	try
-	{
-		sip2json::serialize(sipm);
-		Assert::Fail(L"Expect exception: invalid_document\n");
-	}
-	catch (invalid_document_error& e)
-	{
-			std::clog <<e.what());
-			EXPECT_TRUE(e.errCode == sip2jsonErrors::invalid_document);
-	}
+	EXPECT_THROW(
+			[]() {
+				sipmessage sipm("ROR", "sip:dummy@world.com");
+				sip2json::serialize(sipm);
+			}(),
+			invalid_document_error);
 }
 
 
@@ -432,17 +397,7 @@ TEST(siphelpers, Test_empty_mb)
 
 	// Force an error by setting the body to something non-SDP
 	sipm.body() = "<root></root>";
-	Assert::ExpectException<siddiqsoftware::invalid_document_error>([&]() {
-		try
-		{
-				std::clog <<sip2json::serialize(sipm).c_str());
-		}
-		catch (siddiqsoftware::invalid_document_error& e)
-		{
-				std::clog <<e.what());
-				throw;
-		}
-	});
+	EXPECT_THROW(sip2json::serialize(sipm), siddiqsoftware::invalid_document_error);
 
 	// Reset the invalid body so we can set it to SDP and recheck
 	sipm.body() = nullptr; // dont' erase()
@@ -455,18 +410,21 @@ TEST(siphelpers, Test_empty_mb)
 	// Check again for the body. it should be non-null
 	EXPECT_TRUE(sipm.body().is_object());
 
-		std::clog <<fmt::format("{} - Contents\n{}\n", __func__, sipm.dump(2)).c_str());
+	std::clog << fmt::format("{} - Contents\n{}\n", __func__, sipm.dump(2));
 
-		Assert::AreEqual<uint32_t>(0, sipm.body()["sdp"][0]["v"].get<uint32_t>());
-		Assert::AreEqual<std::string>("subject", sipm.body()["sdp"][0]["s"].get<std::string>());
-		Assert::AreEqual<uint32_t>(100001, sipm.body()["sdp"][0]["t"][0].get<uint32_t>());
-		Assert::AreEqual<uint32_t>(200002, sipm.body()["sdp"][0]["t"][1].get<uint32_t>());
+	EXPECT_EQ(0, sipm.body()["sdp"][0]["v"].get<uint32_t>());
+	EXPECT_EQ("subject"s, sipm.body()["sdp"][0]["s"].get<std::string>());
+	EXPECT_EQ(100001, sipm.body()["sdp"][0]["t"][0].get<uint32_t>());
+	EXPECT_EQ(200002, sipm.body()["sdp"][0]["t"][1].get<uint32_t>());
 
-		sipm.erase("b");
-		sipm.setHeader("Content-Type", CONTENT_TYPE_TEXT_PLAIN);
-		std::clog <<"\n");
-		std::clog <<sip2json::serialize(sipm).c_str());
+	sipm.erase("b");
+	sipm.setHeader("Content-Type", CONTENT_TYPE_TEXT_PLAIN);
+	std::clog << "\n";
+	std::clog << sip2json::serialize(sipm);
 }
+
+
+#ifdef _DEBUG0
 
 
 // NOLINTNEXTLINE
