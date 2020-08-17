@@ -75,22 +75,6 @@ steps:
     rerunFailedTests: true
   continueOnError: true
 
-- task: CmdLine@2
-  inputs:
-    script: |
-      echo Write your commands here
-      where CodeCoverage.exe
-      echo "Location of dynamic code coverage tools..?"
-      dir "%VCINSTALLDIR%..\Team Tools\Dynamic Code Coverage Tools"
-      echo "Location of the output.."
-      dir $(System.DefaultWorkingDirectory)\TestResults
-      echo "Run the coverage conversion.."
-      echo "%VCINSTALLDIR%..\Team Tools\Dynamic Code Coverage Tools\CodeCoverage.exe"
-      dir "%VCINSTALLDIR%"
-      dir "%VCINSTALLDIR%..\Team Tools"
-      dir "%VCINSTALLDIR%..\Team Tools\Dynamic Code Coverage Tools"
-      rem analyze /output:$(System.DefaultWorkingDirectory)\TestResults\coverage.xml
-
 - task: reportgenerator@4
   inputs:
     reports: 'coverage.xml;**\*coverage*'
