@@ -82,6 +82,23 @@ namespace test_suite
 
 
 		// NOLINTNEXTLINE
+		TEST_METHOD(Test_TimeAsISO8601)
+		{
+			auto ts = TimeAsISO8601();
+			Logger::WriteMessage(fmt::format("{} - ts:{}\n", __func__, ts).c_str());
+			Assert::IsTrue(ts.length() == 24);
+		}
+
+		// NOLINTNEXTLINE
+		TEST_METHOD(Test_TimeAsRFC3339)
+		{
+			auto ts = TimeAsRFC3339();
+			Logger::WriteMessage(fmt::format("{} - ts:{}\n", __func__, ts).c_str());
+			Assert::IsTrue(ts.length() == 24);
+		}
+
+
+		// NOLINTNEXTLINE
 		TEST_METHOD(Test_meta_element)
 		{
 			sipmessage sipm(METHOD_REGISTER, "sip:hello@world.com");
@@ -160,13 +177,6 @@ namespace test_suite
 
 			auto todays_date = TimeAsRFC1123(std::chrono::system_clock::from_time_t(_mkgmtime(&knowntm)));
 			Assert::IsTrue(todays_date.compare("Sat, 13 Nov 2010 23:29:00 GMT") == 0);
-		}
-
-		// NOLINTNEXTLINE
-		TEST_METHOD(Test_TimeAsISO8601)
-		{
-			auto todays_date = TimeAsISO8601();
-			Assert::IsTrue(!todays_date.empty());
 		}
 
 		// NOLINTNEXTLINE

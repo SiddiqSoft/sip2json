@@ -86,16 +86,24 @@ namespace siddiqsoftware
 		return fmt::format("{:%a, %d %b %Y %T} GMT", fmt::gmtime(std::chrono::system_clock::to_time_t(tp)));
 	}
 
+	/// @brief Creates a string representaiton of the date time in RFC3339 format with millisecond precision.
+	/// @param tp Optional system_clock::timepoint; uses "now" if not provided
+	/// @return String RFC3339 "2020-06-28T23:29:00.000Z"
+	static std::string TimeAsRFC3339(std::optional<std::chrono::system_clock::time_point> src = {}) noexcept(false)
+	{
+		const auto tp = src.value_or(std::chrono::system_clock::now());
+		auto	   ms = std::chrono::duration_cast<std::chrono::milliseconds>(tp.time_since_epoch()).count() % 1000;
+		return fmt::format("{:%Y-%m-%dT%T}.{:03}Z", fmt::gmtime(std::chrono::system_clock::to_time_t(tp)), ms);
+	}
 
-	/// @brief Creates a string representaiton of the date time in ISO8601 format with millisecond precision.
+	/// @brief Creates a string representaiton of the date time in ISO8601 format with millisecond precision. Alias for TimeAsRFC3339 method.
 	/// @param tp Optional system_clock::timepoint; uses "now" if not provided
 	/// @return String ISO8601 "2020-06-28T23:29:00.000Z"
 	static std::string TimeAsISO8601(std::optional<std::chrono::system_clock::time_point> src = {}) noexcept(false)
 	{
-		const auto tp = src.value_or(std::chrono::system_clock::now());
-		auto	   ms = std::chrono::duration_cast<std::chrono::milliseconds>(tp.time_since_epoch()).count();
-		return fmt::format("{:%Y-%m-%dT%T}.{:03}Z", fmt::gmtime(std::chrono::system_clock::to_time_t(tp)), ms);
+		return TimeAsRFC3339(src);
 	}
+
 #pragma endregion
 
 
