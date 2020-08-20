@@ -525,45 +525,55 @@ namespace siddiqsoftware
 			{
 				if (size_t diff = bufferEnd - bufferStart; diff > SIP_SAMPLE_MINIMAL_MESSAGE.length())
 				{
-					if (auto foundRequest = parseStartLine(sipm, bufferStart, bufferEnd); foundRequest)
+					try
 					{
-						if (auto foundHeaders = parseHeaders(sipm, bufferStart, bufferEnd); foundHeaders)
+						if (auto foundRequest = parseStartLine(sipm, bufferStart, bufferEnd); foundRequest)
 						{
-							if (sipm.getContentType() == CONTENT_TYPE_APP_SDP)
+							if (auto foundHeaders = parseHeaders(sipm, bufferStart, bufferEnd); foundHeaders)
 							{
-								// It is acceptable in some implementations to declare the Content-Type as application/sdp
-								// but provide no actual body. We must not fault this case.
-								if (sipm.getContentLength() > 0)
+								if (sipm.getContentType() == CONTENT_TYPE_APP_SDP)
 								{
-									// Check to make sure that we have sufficient content in the buffer
-									// to process the body..
-									if (auto availableRemainingBufferSize = bufferEnd - bufferStart;
-										availableRemainingBufferSize >= sipm.getContentLength())
+									// It is acceptable in some implementations to declare the Content-Type as application/sdp
+									// but provide no actual body. We must not fault this case.
+									if (sipm.getContentLength() > 0)
 									{
-										// We must limit the decode to the reported size of the content
-										auto bodyEnd = bufferStart;
-										bodyEnd += sipm.getContentLength();
-										// Decode the SDP
-										parseBodySDP(sipm, bufferStart, bodyEnd);
-									}
-									else
-									{
-										bufferStart = previousBufferStart;
-										sip2json_throw<incomplete_buffer_for_content_error>(
-												"{}: Available buffer length:{} < Content-Length:{}",
-												__func__,
-												availableRemainingBufferSize,
-												sipm.getContentLength());
+										// Check to make sure that we have sufficient content in the buffer
+										// to process the body..
+										if (auto availableRemainingBufferSize = bufferEnd - bufferStart;
+											availableRemainingBufferSize >= sipm.getContentLength())
+										{
+											// We must limit the decode to the reported size of the content
+											auto bodyEnd = bufferStart;
+											bodyEnd += sipm.getContentLength();
+											// Decode the SDP
+											parseBodySDP(sipm, bufferStart, bodyEnd);
+										}
+										else
+										{
+											bufferStart = previousBufferStart;
+											sip2json_throw<incomplete_buffer_for_content_error>(
+													"{}: Available buffer length:{} < Content-Length:{}",
+													__func__,
+													availableRemainingBufferSize,
+													sipm.getContentLength());
+										}
 									}
 								}
-							}
-							else if (!sipm.getContentType().empty())
-							{
-								bufferStart = previousBufferStart;
-								sip2json_throw<unsupported_contenttype_error>(
-										"{}:Content-Type {} not supported", __func__, sipm.getContentType());
+								else if (!sipm.getContentType().empty())
+								{
+									bufferStart = previousBufferStart;
+									sip2json_throw<unsupported_contenttype_error>(
+											"{}:Content-Type {} not supported", __func__, sipm.getContentType());
+								}
 							}
 						}
+					}
+					catch(...)
+					{
+						// We must reset the buffer to ensure that we can re-parse when there is sufficient buffer
+						bufferStart = previousBufferStart;
+						// Rethrow
+						throw;
 					}
 				}
 				else

@@ -2336,6 +2336,70 @@ namespace test_suite
 			Assert::IsTrue(passTest);
 		}
 
+
+		// NOLINTNEXTLINE
+		TEST_METHOD(NOTIFY_chunked_read_NELSON)
+		{
+			using namespace std;
+
+			auto buffer		 = loadSampleFile(__func__); // NOLINT
+			auto bufferStart = buffer.begin();
+			bool passTest	 = false;
+
+			// First pass, send the partial frame which should throw an error: incomplete header
+			sip2json::parse(
+					bufferStart,
+					buffer.end() - 1508, // this will break the first frame content so it would not satisfy the full parse.
+					[&](auto) { Assert::Fail(L"Should fail; we're sending incomplete frame."); },
+					[&](const sip2json_exception& e, std::string::iterator& bs, const std::string::iterator& be) {
+						Logger::WriteMessage(fmt::format("Exception during parse: {}\n", e.what()).c_str());
+						Assert::AreEqual<uint32_t>(uint32_t(siddiqsoftware::sip2jsonErrors::incomplete_buffer_for_header),
+												   uint32_t(e.errCode));
+					});
+
+			// First attempt fails; Should not touch the original buffer.
+			Assert::IsTrue(bufferStart == buffer.begin(), L"Our buffer must be restored so we can re-attempt parse!");
+
+			// Second pass, send the partial frame which should throw an error: incomplete content
+			sip2json::parse(
+					bufferStart,
+					buffer.end() - 1206, // this will break the first frame content so it would not satisfy the full parse.
+					[&](auto) { Assert::Fail(L"Should fail; we're sending incomplete frame."); },
+					[&](const sip2json_exception& e, std::string::iterator& bs, const std::string::iterator& be) {
+						Logger::WriteMessage(fmt::format("Exception during parse: {}\n", e.what()).c_str());
+						Assert::AreEqual<uint32_t>(uint32_t(siddiqsoftware::sip2jsonErrors::incomplete_buffer_for_content),
+												   uint32_t(e.errCode));
+					});
+
+
+			// third pass - send the remaining buffer which has the first full frame.
+			sip2json::parse(
+					bufferStart,
+					buffer.end(),
+					[&](sipmessage sipm) {
+						// Validate the message.
+						Logger::WriteMessage(sipm.dump(3).c_str());
+						// Call-ID
+						Assert::AreEqual<std::string>("203305133919627uk-ed-nelson-01"s, sipm.getCallID());
+						// Content-Type
+						Assert::AreEqual<std::string>(CONTENT_TYPE_APP_SDP, sipm.getContentType());
+						// Content-Length
+						Assert::AreEqual<uint32_t>(1304, sipm.getContentLength());
+						Assert::IsTrue(!sipm.value("/b"_json_pointer, nlohmann::json {}).empty());
+						Assert::IsTrue(sipm.value("/b/sdp"_json_pointer, nlohmann::json {}).is_array());
+						Assert::AreEqual<size_t>(1, sipm.value("/b/sdp"_json_pointer, nlohmann::json {}).size());
+						passTest = true;
+					},
+					[&](const sip2json_exception& e, std::string::iterator& bs, const std::string::iterator& be) {
+						Logger::WriteMessage(fmt::format("Exception during parse(2nd): {}\n", e.what()).c_str());
+						Assert::AreEqual<uint32_t>(uint32_t(siddiqsoftware::sip2jsonErrors::incomplete_buffer_for_content),
+												   uint32_t(e.errCode));
+						//Assert::Fail(L"Second pass should NOT fail!");
+					});
+
+			Assert::IsTrue(passTest);
+		}
+
 		// NOLINTNEXTLINE
 		TEST_METHOD(NOTIFY_CallEnd)
 		{

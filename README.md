@@ -4,7 +4,7 @@
 
 [![Build Status](https://dev.azure.com/loopup/sys4/_apis/build/status/siddiqsoftware.sip2json?branchName=master)](https://dev.azure.com/loopup/sys4/_build/latest?definitionId=118&branchName=master)
 [![sip2json package in vshive feed in Azure Artifacts](https://feeds.dev.azure.com/loopup/_apis/public/Packaging/Feeds/a0302836-2c67-4470-bcb5-10149e5447f9/Packages/92cce774-0158-43bd-afbc-cad33212e7d9/Badge)](https://dev.azure.com/loopup/sys4/_packaging?_a=package&feed=a0302836-2c67-4470-bcb5-10149e5447f9&package=92cce774-0158-43bd-afbc-cad33212e7d9&preferRelease=true)
-<version>1.9.6</version>
+<version>1.10.0</version>
 
 
 [[TOC]]
@@ -147,7 +147,7 @@ The document contains single character entries: `s`, `h`, `b` and the diagnostic
 
 ```json
 {
-    "meta": {"version": "sip2json/1.9.6/1.0.1", "time": "2020-08-13T12:27:30.555Z", "ttx": 0},
+    "meta": {"version": "sip2json/1.10.0/1.0.1", "time": "2020-08-13T12:27:30.555Z", "ttx": 0},
     "s": {},
     "h": {},
     "b": null
@@ -231,7 +231,7 @@ Field | Type | Description
 #### Request Document
 ```json
 {
-    "meta": {"version": "sip2json/1.9.6/1.0.0", "time": "2020-08-13T12:27:30.555Z", "ttx": 0},
+    "meta": {"version": "sip2json/1.10.0/1.0.0", "time": "2020-08-13T12:27:30.555Z", "ttx": 0},
     "s": {
         "type": "request",
         "method": "INVITE",
@@ -271,7 +271,7 @@ Field | Type | Description
 #### Response Document
 ```json
 {
-    "meta": {"version": "sip2json/1.9.6/1.0.0", "time": "2020-08-13T12:27:30.555Z", "ttx": 0},
+    "meta": {"version": "sip2json/1.10.0/1.0.0", "time": "2020-08-13T12:27:30.555Z", "ttx": 0},
     "s": {
         "type": "response",
         "status": 100,
@@ -392,7 +392,7 @@ The source for the following is this [sample SIP](test/samples/NOTIFY_generic_1.
         "X-suppress-system-im": false
     },
     "meta": {
-        "version": "sip2json/1.9.6/1.0.0",
+        "version": "sip2json/1.10.0/1.0.0",
         "time": "2020-08-13T12:27:30.555Z",
         "ttx": 0
     },
