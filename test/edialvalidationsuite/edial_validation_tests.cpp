@@ -2271,6 +2271,7 @@ namespace test_suite
 					bufferStart,
 					buffer.end(),
 					[&](sipmessage sipm) {
+						Logger::WriteMessage(sipm.dump(3).c_str());
 						// Validate the message.
 						// METHOD: NOTIFY
 						Assert::AreEqual<std::string>(METHOD_NOTIFY, sipm.value("/s/method"_json_pointer, ""));
