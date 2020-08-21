@@ -437,7 +437,7 @@ namespace siddiqsoftware
 					  errorCallback = {}) noexcept
 		{
 			std::vector<sipmessage> msgs;
-			auto					decodedMessageCount = 0;
+			size_t					decodedMessageCount {0};
 
 			while (bufferStart != bufferEnd)
 			{
@@ -447,11 +447,13 @@ namespace siddiqsoftware
 					if (sipmessage sipm = parseFromBuffer(bufferStart, bufferEnd); parseCallback.has_value())
 					{
 						decodedMessageCount++;
+						sipm["meta"]["parseCountThisBuffer"] = decodedMessageCount;
 						parseCallback.value()(sipm);
 					}
 					else
 					{
 						decodedMessageCount++;
+						sipm["meta"]["parseCountThisBuffer"] = decodedMessageCount;
 						// otherwise we push to the vector to return to caller
 						msgs.emplace_back(std::move(sipm));
 					}
@@ -568,7 +570,7 @@ namespace siddiqsoftware
 							}
 						}
 					}
-					catch(...)
+					catch (...)
 					{
 						// We must reset the buffer to ensure that we can re-parse when there is sufficient buffer
 						bufferStart = previousBufferStart;
