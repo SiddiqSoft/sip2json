@@ -517,7 +517,7 @@ namespace siddiqsoftware
 		{
 			auto	   previousBufferStart = bufferStart; // save the value so we can reset if we end up with exception.
 			sipmessage sipm;
-			InvokeCallbackOnDestruct timeTaken {[&](long long delta) {
+			InvokeOnDestruct timeTaken {[&](long long delta) {
 				sipm["meta"]["ttx"]	 = delta;
 				sipm["meta"]["pre"]	 = bufferStart - previousBufferStart;
 				sipm["meta"]["post"] = bufferEnd - bufferStart;

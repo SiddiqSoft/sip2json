@@ -52,7 +52,7 @@ namespace siddiqsoftware
 #pragma region Datetime helpers
 	/// @brief Helper struct which runs your lambda when this object goes out of scope. Used to time expression scope.
 	/// @tparam Fn Lambda of type void(long long delta) called upon destructor; must not throw.
-	template <typename Fn> struct InvokeCallbackOnDestruct
+	template <typename Fn> struct InvokeOnDestruct
 	{
 		Fn											callbackOnEnd;
 		const std::chrono::system_clock::time_point ttxStart {std::chrono::system_clock::now()};
@@ -65,15 +65,24 @@ namespace siddiqsoftware
 			return std::chrono::duration_cast<std::chrono::milliseconds>(ttxNow - ttxStart).count();
 		};
 
-		InvokeCallbackOnDestruct() = delete;
+		InvokeOnDestruct() = delete;
 
 		/// @brief Constructor with callback that is to be invoked at destructor
 		/// @param callback Callback must accept long long indicating the delta
 		/// @return Creates the object
-		InvokeCallbackOnDestruct(Fn&& callback) noexcept
+		InvokeOnDestruct(Fn&& callback) noexcept
 			: callbackOnEnd {callback} {};
 
-		~InvokeCallbackOnDestruct() noexcept { callbackOnEnd(ttx()); };
+		~InvokeOnDestruct() noexcept
+		{
+			try
+			{
+				callbackOnEnd(ttx());
+			}
+			catch (...)
+			{
+			}
+		};
 	};
 
 
@@ -142,9 +151,9 @@ namespace siddiqsoftware
 
 	// CAUTION; this is used as a reference to break out of the processing loop if the remaining buffer is less than the
 	// size of this sample message.
-	static std::string SIP_SAMPLE_MINIMAL_MESSAGE =
+	static std::string SIP_SAMPLE_MINIMAL_MESSAGE {
 			"SIP/2.0 A B\r\nVia: SIP/2.0/TCP localhost\r\nCall-ID: A\r\nCSeq: 1 ACK\r\nFrom: sip:A\r\nTo: "
-			"sip:A\r\nContact: A\r\nContent-Length: 0\r\n\r\n";
+			"sip:A\r\nContact: A\r\nContent-Length: 0\r\n\r\n"};
 
 	// Authorization Type
 	static const std::string AUTHORIZATION_CLEAR {"Clear"};
@@ -167,16 +176,16 @@ namespace siddiqsoftware
 	static const std::string SUBSTATE_TERMINATED {"terminated"};
 
 	// TTL constants
-	static const int DEFAULT_SERVER_PORT		 = 5060;
-	static const int DEFAULT_MAX_REGISTER_TTL	 = 1 * 60 * 60;						 // 3600s
-	static const int DEFAULT_MAX_REGISTER_TTL_MS = DEFAULT_MAX_REGISTER_TTL * 1000;	 //	1 hour in milliseconds
-	static const int DEFAULT_MIN_REGISTER_TTL	 = 2 * 60;							 // 120s
-	static const int REGISTER_PERIOD_10MIN_SEC	 = 10 * 60;							 // 600s = 10 minutes.
-	static const int REGISTER_PERIOD_1MIN_SEC	 = 60;								 // 60s = 1 minutes.
-	static const int REGISTER_PERIOD_MIN_SEC	 = 30;								 // 30s
-	static const int REGISTER_PERIOD_10MIN_MS	 = REGISTER_PERIOD_10MIN_SEC * 1000; // 600s = 10 minutes.
+	static const int DEFAULT_SERVER_PORT {5060};
+	static const int DEFAULT_MAX_REGISTER_TTL {1 * 60 * 60};						// 3600s
+	static const int DEFAULT_MAX_REGISTER_TTL_MS {DEFAULT_MAX_REGISTER_TTL * 1000}; //	1 hour in milliseconds
+	static const int DEFAULT_MIN_REGISTER_TTL {2 * 60};								// 120s
+	static const int REGISTER_PERIOD_10MIN_SEC {10 * 60};							// 600s = 10 minutes.
+	static const int REGISTER_PERIOD_1MIN_SEC {60};									// 60s = 1 minutes.
+	static const int REGISTER_PERIOD_MIN_SEC {30};									// 30s
+	static const int REGISTER_PERIOD_10MIN_MS {REGISTER_PERIOD_10MIN_SEC * 1000};	// 600s = 10 minutes.
 
-	static const std::string SIPVER_20 = "SIP/2.0";
+	static const std::string SIPVER_20 {"SIP/2.0"};
 
 	static const std::string METHOD_INVITE {"INVITE"};
 	static const std::string METHOD_ACK {"ACK"};
@@ -210,7 +219,6 @@ namespace siddiqsoftware
 	static const std::string HF_CALLID {"Call-ID"};
 	static const std::string HF_CALLID_ALT {"i"};
 	static const std::string HF_CSEQ {"CSeq"};
-	static const std::string HF_CSEQ_ALT {"CSeq"};
 	static const std::string HF_VIA {"Via"};
 	static const std::string HF_VIA_ALT {"v"};
 	static const std::string HF_ENCRYPTION {"Encryption"};
@@ -253,7 +261,7 @@ namespace siddiqsoftware
 	//	Parsing elements
 	static const std::string ELEM_SPACE {" "};
 	static const std::string ELEM_SEPERATOR {":"};
-	//static const std::string ELEM_PADDEDSEPERATOR {": "};
+	static const std::string ELEM_PADDEDSEPERATOR {": "};
 	static const std::string ELEM_TAGSEPERATOR {"{"};
 	static const std::string ELEM_NEWLINE {"\r\n"};
 	static const std::string ELEM_HEADERSECTIONDELIMITER {"\r\n\r\n"};
@@ -266,17 +274,15 @@ namespace siddiqsoftware
 	static const std::string SIP_ADDR_PREFIX {"sip:"};
 
 	// Helpers to parse the SIP buffer
-	static const std::regex SIP_PATTERN_STARTLINE("^(MESSAGE|INFO|INVITE|ACK|OPTIONS|BYE|CANCEL|REGISTER|SUBSCRIBE|NOTIFY|SIP/"
-												  "2.0)\\s{1,1}([^\\s]+)\\s{1,1}([^\\r\\n]*)");
-	static const std::regex SIP_PATTERN_CONTENT_LENGTH("^Content-Length:\\s{1,1}(\\d+)\\s*(\\r\\n|\\n)");
-	static const std::regex SIP_PATTERN_CONTENT_TYPE("^Content-type:\\s{1,1}([a-z|A-Z|\\-|/]+)\\s*(\\r\\n|\\n)");
-	static const std::regex SIP_PATTERN_HEADER("([^:\\s]*)\\s*:\\s*([^\\r\\n]*)[\\x0A\\x0D]*");
+	static const std::regex SIP_PATTERN_STARTLINE {"^(MESSAGE|INFO|INVITE|ACK|OPTIONS|BYE|CANCEL|REGISTER|SUBSCRIBE|NOTIFY|SIP/"
+												   "2.0)\\s{1,1}([^\\s]+)\\s{1,1}([^\\r\\n]*)"};
+	static const std::regex SIP_PATTERN_CONTENT_LENGTH {"^Content-Length:\\s{1,1}(\\d+)\\s*(\\r\\n|\\n)"};
+	static const std::regex SIP_PATTERN_CONTENT_TYPE {"^Content-type:\\s{1,1}([a-z|A-Z|\\-|/]+)\\s*(\\r\\n|\\n)"};
+	static const std::regex SIP_PATTERN_HEADER {"([^:\\s]*)\\s*:\\s*([^\\r\\n]*)[\\x0A\\x0D]*"};
 
-	static const std::regex SIP_PATTERN_BODY("([vosiuepcbtzkma]{1})=([^\\r\\n]*)");
-	static const std::regex SIP_PATTERN_BODY_ALINE("^([^:|\\r\\n]*)[:]{1}(.*$)[\\r\\n]?|(.*)[\\r\\n]");
-	static const std::regex SIP_PATTERN_BODY_ILINE("^(.*) \\(([^\\)]*)\\) ([^\\s|\\r\\n]*)");
-	static const std::regex SIP_PATTERN_BODY_CLINE("^(.*) (.*) ([^\\s|\\r\\n]*)");
-	static const std::regex SIP_PATTERN_BODY_OLINE("([^\\s]*) (\\d*) (\\d*) (\\w*) (\\w*) ([^\\s]*)");
-
-
+	static const std::regex SIP_PATTERN_BODY {"([vosiuepcbtzkma]{1})=([^\\r\\n]*)"};
+	static const std::regex SIP_PATTERN_BODY_ALINE {"^([^:|\\r\\n]*)[:]{1}(.*$)[\\r\\n]?|(.*)[\\r\\n]"};
+	static const std::regex SIP_PATTERN_BODY_ILINE {"^(.*) \\(([^\\)]*)\\) ([^\\s|\\r\\n]*)"};
+	static const std::regex SIP_PATTERN_BODY_CLINE {"^(.*) (.*) ([^\\s|\\r\\n]*)"};
+	static const std::regex SIP_PATTERN_BODY_OLINE {"([^\\s]*) (\\d*) (\\d*) (\\w*) (\\w*) ([^\\s]*)"};
 } // namespace siddiqsoftware
