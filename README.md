@@ -68,7 +68,7 @@ void onReadCompleted(std::string& readBuffer)
   // Invokes the callback per each decoded sipmessage from the buffer
   // Keep track of the bufferStart as it is advanced to reach the readBuffer.end()
   // as objects are parsed.
-  sip2json::parse(bufferStart, readBuffer.end(), [](sipmessage msg) {
+  sip2json::parse(bufferStart, readBuffer.end(), [](sipmessage&& msg) {
           // Got a valid sipmessage object.. the object has been moved into this argument.
           // The parameter msg has been std::move()'d and therefore the lifetime ends when
           // the callback is completed. It is up to the client to ensure that they
