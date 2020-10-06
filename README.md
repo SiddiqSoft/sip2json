@@ -7,7 +7,7 @@
 <version>1.10.2</version>
 
 
-[[_TOC_]]
+[[__TOC__]]
 
 
 ## Design goals
