@@ -432,7 +432,7 @@ namespace siddiqsoftware
 		static std::vector<sipmessage>
 		parse(std::string::iterator&						  bufferStart,
 			  const std::string::iterator&					  bufferEnd,
-			  std::optional<std::function<void(sipmessage&)>> parseCallback = {},
+			  std::optional<std::function<void(sipmessage&&)>> parseCallback = {},
 			  std::optional<std::function<void(const sip2json_exception&, std::string::iterator&, const std::string::iterator&)>>
 					  errorCallback = {}) noexcept
 		{
@@ -448,7 +448,7 @@ namespace siddiqsoftware
 					{
 						decodedMessageCount++;
 						sipm["meta"]["parseCountThisBuffer"] = decodedMessageCount;
-						parseCallback.value()(sipm);
+						parseCallback.value()(std::move(sipm));
 					}
 					else
 					{
