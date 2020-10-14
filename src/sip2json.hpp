@@ -509,7 +509,7 @@ namespace siddiqsoftware
 			while (bufferStart != bufferEnd)
 			{
 				// If the callback is provided, then we invoke the callback. Nothing is returned to caller.
-				if (sipmessage sipm = std::move(parseFromBuffer(bufferStart, bufferEnd)))
+				if (sipmessage&& sipm = std::move(parseFromBuffer(bufferStart, bufferEnd)))
 				{
 					decodedMessageCount++;
 					sipm["meta"]["parseCountThisBuffer"] = decodedMessageCount;
