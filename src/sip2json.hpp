@@ -423,39 +423,30 @@ namespace siddiqsoftware
 #pragma endregion
 
 	public:
-		/// @brief Given a buffer, parse each message and return a vector of sipmessage objects. If the parseCallback is provided then the return is empty.
+		/// @brief Given a buffer, parse each message and invoke the callback with the decoded sipmessage object.
 		/// @param bufferStart Start of the buffer (modified by call to this method).
 		/// @param bufferEnd End of the buffer
-		/// @param parseCallback Optional callback which takes a reference to the sipmessage just decoded. If present, the return is empty vector.
+		/// @param parseCallback Callback which takes a reference to the sipmessage just decoded. If present, the return is empty vector.
 		/// @param errorCallback Optional callback to handle the error on the parse.
-		/// @return If parseCallback is provided then the return vector is empty otherwise vector of sipmessage decoded within the stream.
-		[[nodiscard]] static std::vector<sipmessage>
-		parse(std::string::iterator&						   bufferStart,
-			  const std::string::iterator&					   bufferEnd,
-			  std::optional<std::function<void(sipmessage&&)>> parseCallback = {},
-			  std::optional<std::function<void(const sip2json_exception&, std::string::iterator&, const std::string::iterator&)>>
-					  errorCallback = {}) noexcept
+		static void parseAsync(
+				std::string::iterator&			  bufferStart,
+				const std::string::iterator&	  bufferEnd,
+				std::function<void(sipmessage&&)> parseCallback,
+				std::optional<std::function<void(const sip2json_exception&, std::string::iterator&, const std::string::iterator&)>>
+						errorCallback = {}) noexcept
 		{
-			std::vector<sipmessage> msgs;
-			size_t					decodedMessageCount {0};
+			size_t decodedMessageCount {0};
 
 			while (bufferStart != bufferEnd)
 			{
 				try
 				{
 					// If the callback is provided, then we invoke the callback. Nothing is returned to caller.
-					if (sipmessage sipm = std::move(parseFromBuffer(bufferStart, bufferEnd)); parseCallback.has_value())
+					if (sipmessage&& sipm = std::move(parseFromBuffer(bufferStart, bufferEnd)))
 					{
 						decodedMessageCount++;
 						sipm["meta"]["parseCountThisBuffer"] = decodedMessageCount;
-						parseCallback.value()(std::move(sipm));
-					}
-					else
-					{
-						decodedMessageCount++;
-						sipm["meta"]["parseCountThisBuffer"] = decodedMessageCount;
-						// otherwise we push to the vector to return to caller
-						msgs.emplace_back(std::move(sipm));
+						parseCallback(std::move(sipm));
 					}
 				}
 				catch (const invalid_startline_error& e)
@@ -501,6 +492,29 @@ namespace siddiqsoftware
 
 					if (errorCallback.has_value()) errorCallback.value()(ex, bufferStart, bufferEnd);
 					break;
+				}
+			}
+		}
+
+		/// @brief Given a buffer, parse each message and return a vector of sipmessage objects. If the parseCallback is provided then the return is empty.
+		/// @param bufferStart Start of the buffer (modified by call to this method).
+		/// @param bufferEnd End of the buffer
+		/// @return If parseCallback is provided then the return vector is empty otherwise vector of sipmessage decoded within the stream.
+		[[nodiscard]] static std::vector<sipmessage> parse(std::string::iterator&		bufferStart,
+														   const std::string::iterator& bufferEnd) noexcept
+		{
+			std::vector<sipmessage> msgs;
+			size_t					decodedMessageCount {0};
+
+			while (bufferStart != bufferEnd)
+			{
+				// If the callback is provided, then we invoke the callback. Nothing is returned to caller.
+				if (sipmessage sipm = std::move(parseFromBuffer(bufferStart, bufferEnd)))
+				{
+					decodedMessageCount++;
+					sipm["meta"]["parseCountThisBuffer"] = decodedMessageCount;
+					// otherwise we push to the vector to return to caller
+					msgs.emplace_back(std::move(sipm));
 				}
 			}
 

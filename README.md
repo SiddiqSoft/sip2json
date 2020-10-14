@@ -4,7 +4,7 @@
 
 [](https://dev.azure.com/loopup/sys4/_apis/build/status/siddiqsoftware.sip2json?branchName=master)
 [![sip2json package in vshive feed in Azure Artifacts](https://feeds.dev.azure.com/loopup/_apis/public/Packaging/Feeds/a0302836-2c67-4470-bcb5-10149e5447f9/Packages/92cce774-0158-43bd-afbc-cad33212e7d9/Badge)](https://dev.azure.com/loopup/sys4/_packaging?_a=package&feed=a0302836-2c67-4470-bcb5-10149e5447f9&package=92cce774-0158-43bd-afbc-cad33212e7d9&preferRelease=true)
-<version>1.10.2</version>
+<version>1.11.1</version>
 
 
 [[__TOC__]]
@@ -68,17 +68,19 @@ void onReadCompleted(std::string& readBuffer)
   // Invokes the callback per each decoded sipmessage from the buffer
   // Keep track of the bufferStart as it is advanced to reach the readBuffer.end()
   // as objects are parsed.
-  sip2json::parse(bufferStart, readBuffer.end(), [](sipmessage&& msg) {
-          // Got a valid sipmessage object.. the object has been moved into this argument.
-          // The parameter msg has been std::move()'d and therefore the lifetime ends when
-          // the callback is completed. It is up to the client to ensure that they
-          // make copies as necessary.
-          if(!msg.empty()) {
-             // Do something..
-          }
-      },
-      [](sip2jsonErrors& errCode, const std::string& msg){
-          // Invoked for an error during the processing of the buffer.
+  sip2json::parseAsync(bufferStart,
+          readBuffer.end(),
+          [](sipmessage&& msg) {
+              // Got a valid sipmessage object.. the object has been moved into this argument.
+              // The parameter msg has been std::move()'d and therefore the lifetime ends when
+              // the callback is completed. It is up to the client to ensure that they
+              // make copies as necessary.
+              if(!msg.empty()) {
+                 // Do something..
+              }
+          },
+          [](sip2jsonErrors& errCode, const std::string& msg){
+              // Invoked for an error during the processing of the buffer.
       });
 
   // Client is responsible for managing the state of the readBuffer
