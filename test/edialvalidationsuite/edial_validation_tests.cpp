@@ -132,7 +132,7 @@ namespace test_suite
 
 			// Decode the serialized
 			auto	   secondBufferStart = serialized.begin();
-			sipmessage sipm2			 = sip2json::parseFromBuffer(secondBufferStart, serialized.end());
+			sipmessage sipm2 {sip2json::parseFromBuffer(secondBufferStart, serialized.end())};
 
 			// Verify the decode of the serialized
 			verify(sipm2);
@@ -238,7 +238,7 @@ namespace test_suite
 
 				// So we can decode it again and ensure that we can round-trip!
 				auto	   serializedFromDecodedStart = serializedFromDecoded.begin();
-				sipmessage sipm2 = sip2json::parseFromBuffer(serializedFromDecodedStart, serializedFromDecoded.end());
+				sipmessage sipm2 {sip2json::parseFromBuffer(serializedFromDecodedStart, serializedFromDecoded.end())};
 				Assert::AreEqual<std::string>(METHOD_NOTIFY, sipm2.getMethod());
 				Assert::AreEqual<std::string>("sip:subscribe_to_call_events@loopup.com;machine", sipm2.getUri());
 				// Via is an array
@@ -377,7 +377,7 @@ namespace test_suite
 				Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/a/status"_json_pointer, ""), "(4) dropped");
 				// Check timing is parsed into array
 				Assert::AreEqual<unsigned long>(sipm.value("/b/sdp/0/t/0"_json_pointer, 0L), 3802534341L);
-				Assert::AreEqual<unsigned long>(sipm.value("/b/sdp/0/t/1"_json_pointer, 0L), 3802534887L);
+				Assert::AreEqual<unsigned long>(sipm.value<unsigned long>("/b/sdp/0/t/1"_json_pointer, 0L), 3802534887L);
 
 				Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/c/dn"_json_pointer, ""), "+4044166441");
 				Assert::AreEqual<std::string>(sipm.value("/b/sdp/0/c/type"_json_pointer, ""), "TN");
@@ -585,8 +585,8 @@ namespace test_suite
 
 			try
 			{
-				sipmessage sipm = sip2json::parseFromBuffer(bufferStart, buffer.end());
-				roundTripVerify(__func__, buffer, sipm, [&](sipmessage sipm) {
+				sipmessage sipm {sip2json::parseFromBuffer(bufferStart, buffer.end())};
+				roundTripVerify(__func__, buffer, sipm, [&](sipmessage& sipm) {
 					Logger::WriteMessage(sipm.flatten().dump().c_str());
 					// Start checking if we decoded properly..
 					Assert::AreEqual<uint32_t>(401, sipm.getStatusCode());
@@ -667,7 +667,7 @@ namespace test_suite
 
 			try
 			{
-				sipmessage sipm = sip2json::parseFromBuffer(bufferStart, buffer.end());
+				sipmessage sipm {sip2json::parseFromBuffer(bufferStart, buffer.end())};
 
 				// c=T-N RFC/2543 +12124553521(hi)
 				Assert::AreEqual<std::string>("T-NRFC/2543+12124553521(hi)", sipm.value("/b/sdp/0/c"_json_pointer, ""));
@@ -693,7 +693,7 @@ namespace test_suite
 		{
 			auto	   buffer	   = loadSampleFile("NOTIFY_LegDrop");
 			auto	   bufferStart = buffer.begin();
-			sipmessage sipm		   = sip2json::parseFromBuffer(bufferStart, buffer.end());
+			sipmessage sipm		   =std::move( sip2json::parseFromBuffer(bufferStart, buffer.end()) );
 
 			// Start checking if we decoded properly..
 			// METHOD: NOTIFY
@@ -706,7 +706,7 @@ namespace test_suite
 		{
 			auto	   buffer	   = loadSampleFile("NOTIFY_LegDrop");
 			auto	   bufferStart = buffer.begin();
-			sipmessage sipm		   = sip2json::parseFromBuffer(bufferStart, buffer.end());
+			sipmessage sipm		   = std::move(sip2json::parseFromBuffer(bufferStart, buffer.end()));
 
 			// Start checking if we decoded properly..
 			// METHOD: NOTIFY
@@ -2237,7 +2237,7 @@ namespace test_suite
 			sip2json::parse(
 					bufferStart,
 					buffer.end() - 256, // the first frame should be decodeable but the second should not
-					[&](sipmessage sipm) {
+					[&](sipmessage& sipm) {
 						// Validate the message.
 						Logger::WriteMessage(L"Frame processed first buffer.\n");
 						// Call-ID
@@ -2270,7 +2270,7 @@ namespace test_suite
 			sip2json::parse(
 					bufferStart,
 					buffer.end(),
-					[&](sipmessage sipm) {
+					[&](sipmessage& sipm) {
 						Logger::WriteMessage(sipm.dump(3).c_str());
 						// Validate the message.
 						// METHOD: NOTIFY
@@ -2376,7 +2376,7 @@ namespace test_suite
 			sip2json::parse(
 					bufferStart,
 					buffer.end(),
-					[&](sipmessage sipm) {
+					[&](sipmessage& sipm) {
 						// Validate the message.
 						Logger::WriteMessage(sipm.dump(3).c_str());
 						// Call-ID

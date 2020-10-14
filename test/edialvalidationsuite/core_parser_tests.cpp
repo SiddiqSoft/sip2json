@@ -355,8 +355,8 @@ namespace test_suite
 			auto buffer = siddiqsoftware::SIP_SAMPLE_MINIMAL_MESSAGE;
 			try
 			{
-				auto bs = buffer.begin();
-				sip2json::parseFromBuffer(bs, buffer.end());
+				auto bs	  = buffer.begin();
+				auto sipm = sip2json::parseFromBuffer(bs, buffer.end());
 				Assert::Fail(L"Expect exception: incomplete_buffer_for_parse\n");
 			}
 			catch (incomplete_buffer_for_parse_error& e)
@@ -373,8 +373,8 @@ namespace test_suite
 			auto buffer = loadSampleFile(__func__); // NOLINT
 			try
 			{
-				auto bs = buffer.begin();
-				sip2json::parseFromBuffer(bs, buffer.end());
+				auto bs	  = buffer.begin();
+				auto sipm = sip2json::parseFromBuffer(bs, buffer.end());
 				Assert::Fail(L"Expect exception: incomplete_buffer_for_content\n");
 			}
 			catch (incomplete_buffer_for_content_error& e)
@@ -391,8 +391,8 @@ namespace test_suite
 			auto buffer = loadSampleFile(__func__); // NOLINT
 			try
 			{
-				auto bs = buffer.begin();
-				sip2json::parseFromBuffer(bs, buffer.end());
+				auto bs	  = buffer.begin();
+				auto sipm = sip2json::parseFromBuffer(bs, buffer.end());
 				Assert::Fail(L"Expect exception: incomplete_buffer_for_header\n");
 			}
 			catch (incomplete_buffer_for_header_error& e)
@@ -409,8 +409,8 @@ namespace test_suite
 			auto buffer = loadSampleFile(__func__); // NOLINT
 			try
 			{
-				auto bs = buffer.begin();
-				sip2json::parseFromBuffer(bs, buffer.end());
+				auto bs	  = buffer.begin();
+				auto sipm = sip2json::parseFromBuffer(bs, buffer.end());
 				Assert::Fail(L"Expect exception: unsupported_contenttype\n");
 			}
 			catch (unsupported_contenttype_error& e)
@@ -574,8 +574,8 @@ namespace test_suite
 
 			try
 			{
-				auto bs = buffer.begin();
-				sip2json::parseFromBuffer(bs, buffer.end());
+				auto bs	  = buffer.begin();
+				auto sipm = sip2json::parseFromBuffer(bs, buffer.end());
 				Assert::Fail(L"Expect exception: invalid_startline\n");
 			}
 			catch (invalid_startline_error& e)
