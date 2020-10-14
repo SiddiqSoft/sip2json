@@ -429,9 +429,9 @@ namespace siddiqsoftware
 		/// @param parseCallback Optional callback which takes a reference to the sipmessage just decoded. If present, the return is empty vector.
 		/// @param errorCallback Optional callback to handle the error on the parse.
 		/// @return If parseCallback is provided then the return vector is empty otherwise vector of sipmessage decoded within the stream.
-		static std::vector<sipmessage>
-		parse(std::string::iterator&						  bufferStart,
-			  const std::string::iterator&					  bufferEnd,
+		[[nodiscard]] static std::vector<sipmessage>
+		parse(std::string::iterator&						   bufferStart,
+			  const std::string::iterator&					   bufferEnd,
 			  std::optional<std::function<void(sipmessage&&)>> parseCallback = {},
 			  std::optional<std::function<void(const sip2json_exception&, std::string::iterator&, const std::string::iterator&)>>
 					  errorCallback = {}) noexcept
@@ -444,7 +444,7 @@ namespace siddiqsoftware
 				try
 				{
 					// If the callback is provided, then we invoke the callback. Nothing is returned to caller.
-					if (sipmessage sipm = parseFromBuffer(bufferStart, bufferEnd); parseCallback.has_value())
+					if (sipmessage sipm = std::move(parseFromBuffer(bufferStart, bufferEnd)); parseCallback.has_value())
 					{
 						decodedMessageCount++;
 						sipm["meta"]["parseCountThisBuffer"] = decodedMessageCount;
@@ -504,7 +504,7 @@ namespace siddiqsoftware
 				}
 			}
 
-			return msgs;
+			return std::move(msgs);
 		}
 
 
@@ -512,11 +512,11 @@ namespace siddiqsoftware
 		/// @param bufferStart iterator to the start of the buffer the client expects a SIP message.
 		/// @param bufferEnd iterator to the end of the buffer the client expects a SIP message.
 		/// @return A sipmessage object containing the document representing the first decoded sipmessage in the buffer.
-		static sipmessage parseFromBuffer(std::string::iterator&	   bufferStart,
-										  const std::string::iterator& bufferEnd) noexcept(false)
+		[[nodiscard]] static sipmessage parseFromBuffer(std::string::iterator&		 bufferStart,
+														const std::string::iterator& bufferEnd) noexcept(false)
 		{
-			auto	   previousBufferStart = bufferStart; // save the value so we can reset if we end up with exception.
-			sipmessage sipm;
+			auto			 previousBufferStart = bufferStart; // save the value so we can reset if we end up with exception.
+			sipmessage		 sipm;
 			InvokeOnDestruct timeTaken {[&](long long delta) {
 				sipm["meta"]["ttx"]	 = delta;
 				sipm["meta"]["pre"]	 = bufferStart - previousBufferStart;
@@ -586,6 +586,7 @@ namespace siddiqsoftware
 				}
 			}
 
+			// Let the compiler perform copy-elison; don't use move here!
 			return sipm;
 		}
 

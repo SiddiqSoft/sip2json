@@ -706,7 +706,8 @@ namespace test_suite
 			bool passTest = false;
 			auto buffer	  = loadSampleFile(__func__); // NOLINT
 			auto bs		  = buffer.begin();
-			sip2json::parse(
+
+			auto m= sip2json::parse(
 					bs, buffer.end(), {}, [&](const sip2json_exception& e, std::string::iterator&, const std::string::iterator&) {
 						Assert::IsTrue(e.errCode == sip2jsonErrors::invalid_startline);
 						passTest = true;
@@ -720,7 +721,7 @@ namespace test_suite
 			auto buffer	  = siddiqsoftware::SIP_SAMPLE_MINIMAL_MESSAGE;
 			bool passTest = false;
 			auto bs		  = buffer.begin();
-			sip2json::parse(
+			auto m=sip2json::parse(
 					bs, buffer.end(), {}, [&](const sip2json_exception& e, std::string::iterator&, const std::string::iterator&) {
 						Assert::IsTrue(e.errCode == sip2jsonErrors::incomplete_buffer_for_parse);
 						passTest = true;
@@ -735,7 +736,8 @@ namespace test_suite
 			bool passTest = false;
 			auto buffer	  = loadSampleFile(__func__); // NOLINT
 			auto bs		  = buffer.begin();
-			sip2json::parse(
+			
+			auto m=sip2json::parse(
 					bs, buffer.end(), {}, [&](const sip2json_exception& e, std::string::iterator&, const std::string::iterator&) {
 						// We would get multiple exceptions/callbacks so we should watch out for our specific code.
 						Logger::WriteMessage(fmt::format("Test_incomplete_buffer_for_content: got error:{}\n", e.errCode).c_str());
@@ -751,7 +753,7 @@ namespace test_suite
 			bool passTest = false;
 			auto buffer	  = loadSampleFile(__func__); // NOLINT
 			auto bs		  = buffer.begin();
-			sip2json::parse(
+			auto m=sip2json::parse(
 					bs, buffer.end(), {}, [&](const sip2json_exception& e, std::string::iterator&, const std::string::iterator&) {
 						Assert::IsTrue(e.errCode == sip2jsonErrors::incomplete_buffer_for_header);
 						passTest = true;
@@ -766,7 +768,8 @@ namespace test_suite
 			bool passTest = false;
 			auto buffer	  = loadSampleFile(__func__); // NOLINT
 			auto bs		  = buffer.begin();
-			sip2json::parse(
+			
+			auto m=sip2json::parse(
 					bs, buffer.end(), {}, [&](const sip2json_exception& e, std::string::iterator&, const std::string::iterator&) {
 						Assert::IsTrue(e.errCode == sip2jsonErrors::unsupported_contenttype);
 						passTest = true;
@@ -784,10 +787,10 @@ namespace test_suite
 			auto bs		   = buffer.begin();
 
 			// Deliberately throw an exception in the parse-callback so we can ensure that the error-callback is invoked.
-			sip2json::parse(
+			auto m=sip2json::parse(
 					bs,
 					buffer.end(),
-					[&](sipmessage& sipm) {
+					[&](sipmessage&& sipm) {
 						// We should parse valid message and get our callback.
 						pass1Test = true;
 						// Throw so we can get the error-callback triggered.

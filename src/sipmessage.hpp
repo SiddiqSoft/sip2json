@@ -85,6 +85,15 @@ namespace siddiqsoftware
 								{"ttx"s, 0}};
 		}
 
+		sipmessage(const nlohmann::json& src) { this->update(src); }
+		sipmessage(nlohmann::json&& src) { nlohmann::json((*this)).operator=(std::move(src)); }
+
+		sipmessage(sipmessage&&) = default;
+		sipmessage(const sipmessage& src) { this->update(nlohmann::json(src)); }
+
+		sipmessage& operator=(sipmessage&& src) = default;
+		sipmessage& operator					=(nlohmann::json&& src) { nlohmann::json((*this)).operator=(std::move(src)); }
+
 		/// @brief Instantiates request message given method and uri with option callId and cseq
 		/// @param method One of the supported SIP methods
 		/// @param uri Request URI
@@ -115,11 +124,39 @@ namespace siddiqsoftware
 		/// @param statusCode Status Code for this message, the reason is built using map
 		/// @param src Optional sipmessage object of type request
 		/// @return
-		sipmessage(uint32_t statusCode, std::optional<sipmessage> src = {})
+		sipmessage(uint32_t statusCode, const sipmessage& src)
 		{
 			using namespace std;
 
-			update(src.value_or(nlohmann::json {
+			update(src);
+
+			// Overwrite the source object's values
+			(*this)["meta"s] = {{"version"s, fmt::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
+								{"time"s, TimeAsISO8601()},
+								{"ttx"s, 0}};
+
+			//// We must clear these values in case we are updating an existing object.
+			//erase("s"s);
+			// "status-line" (Status Reason Version)
+			(*this)["s"s] = {{"type"s, SIPMessageType::response},
+							 {"status"s, statusCode},
+							 {"reason"s, getReasonPhrase(statusCode)},
+							 {"version"s, SIPVER_20}};
+
+			(*this)["h"s]["User-Agent"s] = fmt::format("{}/{} (schema:{})"s, MetaLibName, MetaParserVersion, MetaSchemaVersion);
+			setHeader("Date"s, TimeAsRFC1123());
+		}
+
+
+		/// @brief Instantiates a response message from scratch or optionally from existing sipmessage request
+		/// @param statusCode Status Code for this message, the reason is built using map
+		/// @param src Optional sipmessage object of type request
+		/// @return
+		sipmessage(uint32_t statusCode)
+		{
+			using namespace std;
+
+			update(nlohmann::json {
 					{"s"s,
 					 {{"type"s, SIPMessageType::response},
 					  {"status"s, statusCode},
@@ -132,35 +169,7 @@ namespace siddiqsoftware
 					  {"ttx"s, 0}}},
 					{"h"s,
 					 {{"User-Agent"s, fmt::format("{}/{} (schema:{})"s, MetaLibName, MetaParserVersion, MetaSchemaVersion)},
-					  {"Date"s, TimeAsRFC1123()}}}}));
-
-			if (src.has_value())
-			{
-				// Overwrite the source object's values
-				(*this)["meta"s] = {{"version"s, fmt::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
-									{"time"s, TimeAsISO8601()},
-									{"ttx"s, 0}};
-			}
-
-			//// We must clear these values in case we are updating an existing object.
-			//erase("s"s);
-			// "status-line" (Status Reason Version)
-			(*this)["s"s] = {{"type"s, SIPMessageType::response},
-							 {"status"s, statusCode},
-							 {"reason"s, getReasonPhrase(statusCode)},
-							 {"version"s, SIPVER_20}};
-
-			(*this)["h"s]["User-Agent"s] = fmt::format("{}/{} (schema:{})"s, MetaLibName, MetaParserVersion, MetaSchemaVersion);
-			this->setHeader("Date"s, TimeAsRFC1123());
-		}
-
-
-		/// @brief Copy constructor from json
-		/// @param src Json object
-		/// @return
-		sipmessage(const nlohmann::json& src)
-		{
-			if (!src.empty()) this->update(src);
+					  {"Date"s, TimeAsRFC1123()}}}});
 		}
 
 

@@ -124,7 +124,7 @@ namespace test_suite
 
 			// Verify the decode
 			sipmessage sipm {msgs.at(0)};
-			verify(msgs.at(0));
+			verify(sipm);
 
 			// Let's serialize it
 			auto serialized = sip2json::serialize(sipm);
@@ -203,7 +203,7 @@ namespace test_suite
 			auto	   buffer	   = loadSampleFile("NOTIFY_LegDrop");
 			auto	   bufferStart = buffer.begin();
 			auto	   msgs		   = sip2json::parse(bufferStart, buffer.end());
-			sipmessage sipm		   = msgs.at(0);
+			sipmessage sipm {msgs.at(0)};
 
 			//Logger::WriteMessage(sipm.dump(2).c_str());
 
@@ -270,7 +270,7 @@ namespace test_suite
 			auto	   buffer	   = loadSampleFile(__func__); // NOLINT
 			auto	   bufferStart = buffer.begin();
 			auto	   msgs		   = sip2json::parse(bufferStart, buffer.end());
-			sipmessage sipm		   = msgs.at(0);
+			sipmessage sipm {msgs.at(0)};
 
 			roundTripVerify(__func__, buffer, sipm, [&](sipmessage& sipm) {
 				// Start checking if we decoded properly..
@@ -341,7 +341,7 @@ namespace test_suite
 			auto	   buffer	   = loadSampleFile(__func__); // NOLINT
 			auto	   bufferStart = buffer.begin();
 			auto	   msgs		   = sip2json::parse(bufferStart, buffer.end());
-			sipmessage sipm		   = msgs.at(0);
+			sipmessage sipm {msgs.at(0)};
 
 			roundTripVerify(__func__, buffer, sipm, [&](sipmessage& sipm) {
 				// Start checking if we decoded properly..
@@ -408,7 +408,7 @@ namespace test_suite
 			auto	   buffer	   = loadSampleFile(__func__); // NOLINT
 			auto	   bufferStart = buffer.begin();
 			auto	   msgs		   = sip2json::parse(bufferStart, buffer.end());
-			sipmessage sipm		   = msgs.at(0);
+			sipmessage sipm {msgs.at(0)};
 
 			const auto verifyItems = [](sipmessage& sipm) {
 				// Start checking if we decoded properly..
@@ -480,7 +480,7 @@ namespace test_suite
 			auto	   buffer	   = loadSampleFile(__func__); // NOLINT
 			auto	   bufferStart = buffer.begin();
 			auto	   msgs		   = sip2json::parse(bufferStart, buffer.end());
-			sipmessage sipm		   = msgs.at(0);
+			sipmessage sipm {msgs.at(0)};
 
 			const auto verifyItems = [](sipmessage& sipm) {
 				// Start checking if we decoded properly..
@@ -553,7 +553,7 @@ namespace test_suite
 			auto	   buffer	   = loadSampleFile(__func__); // NOLINT
 			auto	   bufferStart = buffer.begin();
 			auto	   msgs		   = sip2json::parse(bufferStart, buffer.end());
-			sipmessage sipm		   = msgs.at(0);
+			sipmessage sipm {msgs.at(0)};
 
 			Logger::WriteMessage(fmt::format("{} - Decoded SIPMessage document\n{}\n", __func__, sipm.dump(2)).c_str());
 
@@ -620,7 +620,7 @@ namespace test_suite
 			auto	   buffer	   = loadSampleFile(__func__); // NOLINT
 			auto	   bufferStart = buffer.begin();
 			auto	   msgs		   = sip2json::parse(bufferStart, buffer.end());
-			sipmessage sipm		   = msgs.at(0);
+			sipmessage sipm {msgs.at(0)};
 
 
 			// NOLINTNEXTLINE
@@ -650,7 +650,7 @@ namespace test_suite
 			auto	   buffer	   = loadSampleFile("REGISTER_1"); // NOLINT
 			auto	   bufferStart = buffer.begin();
 			auto	   msgs		   = sip2json::parse(bufferStart, buffer.end());
-			sipmessage sipm		   = msgs.at(0);
+			sipmessage sipm {msgs.at(0)};
 
 			// Deliberately poison the message type
 			sipm["/s/type"_json_pointer] = SIPMessageType::notspecified;
@@ -693,7 +693,7 @@ namespace test_suite
 		{
 			auto	   buffer	   = loadSampleFile("NOTIFY_LegDrop");
 			auto	   bufferStart = buffer.begin();
-			sipmessage sipm		   =std::move( sip2json::parseFromBuffer(bufferStart, buffer.end()) );
+			sipmessage sipm {sip2json::parseFromBuffer(bufferStart, buffer.end())};
 
 			// Start checking if we decoded properly..
 			// METHOD: NOTIFY
@@ -706,7 +706,7 @@ namespace test_suite
 		{
 			auto	   buffer	   = loadSampleFile("NOTIFY_LegDrop");
 			auto	   bufferStart = buffer.begin();
-			sipmessage sipm		   = std::move(sip2json::parseFromBuffer(bufferStart, buffer.end()));
+			sipmessage sipm {sip2json::parseFromBuffer(bufferStart, buffer.end())};
 
 			// Start checking if we decoded properly..
 			// METHOD: NOTIFY
@@ -798,7 +798,7 @@ namespace test_suite
 			size_t		countOfMessage = 0;
 			auto		buffer		   = loadSampleFile(__func__); // NOLINT
 			auto		bufferStart	   = buffer.begin();
-			auto		msgs		   = sip2json::parse(bufferStart, buffer.end(), [&](sipmessage& sipm) {
+			auto		msgs		   = sip2json::parse(bufferStart, buffer.end(), [&](sipmessage&& sipm) {
 				 ++countOfMessage;
 				 debugBuffer += sipm.dump(4);
 				 debugBuffer += ",";
@@ -1169,7 +1169,7 @@ namespace test_suite
 			auto bufferStart = buffer.begin();
 			bool passTest	 = false;
 
-			auto msgs = sip2json::parse(bufferStart, buffer.end(), [&](sipmessage& sipm) {
+			auto msgs = sip2json::parse(bufferStart, buffer.end(), [&](sipmessage&& sipm) {
 				Assert::IsTrue(!sipm.empty(), L"Expect valid one message parsed.");
 				Assert::AreEqual<std::string>("1593721670540996", sipm.headers().value("X-Message-Time", ""));
 				Assert::AreEqual<std::string>("3 INVITE", sipm.headers().value("CSeq", ""));
@@ -1960,7 +1960,7 @@ namespace test_suite
 			auto bufferStart = buffer.begin();
 			bool passTest	 = false;
 
-			auto msgs = sip2json::parse(bufferStart, buffer.end(), [&](sipmessage& sipm) {
+			auto msgs = sip2json::parse(bufferStart, buffer.end(), [&](sipmessage&& sipm) {
 				Assert::IsTrue(!sipm.empty(), L"Expect valid one message parsed.");
 				writeSampleFile("Trying_INVITE_1", sipm.dump(4));
 				Assert::AreEqual<std::string>("1593721670540996", sipm.headers().value("X-Message-Time", ""));
@@ -2220,7 +2220,7 @@ namespace test_suite
 			bool passTest	 = false;
 
 			// First pass, send the partial frame which should throw an error.
-			sip2json::parse(
+			auto m = sip2json::parse(
 					bufferStart,
 					buffer.end() - 2666, // this will break the first frame content so it would not satisfy the full parse.
 					[&](auto) { Assert::Fail(L"Should fail; we're sending incomplete frame."); },
@@ -2234,10 +2234,10 @@ namespace test_suite
 			Assert::IsTrue(bufferStart == buffer.begin());
 
 			// Second pass - send the buffer which has the first full frame but partial second.
-			sip2json::parse(
+			auto m2 = sip2json::parse(
 					bufferStart,
 					buffer.end() - 256, // the first frame should be decodeable but the second should not
-					[&](sipmessage& sipm) {
+					[&](sipmessage&& sipm) {
 						// Validate the message.
 						Logger::WriteMessage(L"Frame processed first buffer.\n");
 						// Call-ID
@@ -2267,10 +2267,10 @@ namespace test_suite
 			Assert::IsTrue(bufferStart == buffer.begin() + 4238);
 
 			// Third pass, we should send the full end and the final frams should be decodeable..
-			sip2json::parse(
+			auto m3 = sip2json::parse(
 					bufferStart,
 					buffer.end(),
-					[&](sipmessage& sipm) {
+					[&](sipmessage&& sipm) {
 						Logger::WriteMessage(sipm.dump(3).c_str());
 						// Validate the message.
 						// METHOD: NOTIFY
@@ -2347,7 +2347,7 @@ namespace test_suite
 			bool passTest	 = false;
 
 			// First pass, send the partial frame which should throw an error: incomplete header
-			sip2json::parse(
+			auto m = sip2json::parse(
 					bufferStart,
 					buffer.end() - 1508, // this will break the first frame content so it would not satisfy the full parse.
 					[&](auto) { Assert::Fail(L"Should fail; we're sending incomplete frame."); },
@@ -2361,7 +2361,7 @@ namespace test_suite
 			Assert::IsTrue(bufferStart == buffer.begin(), L"Our buffer must be restored so we can re-attempt parse!");
 
 			// Second pass, send the partial frame which should throw an error: incomplete content
-			sip2json::parse(
+			auto m2 = sip2json::parse(
 					bufferStart,
 					buffer.end() - 1206, // this will break the first frame content so it would not satisfy the full parse.
 					[&](auto) { Assert::Fail(L"Should fail; we're sending incomplete frame."); },
@@ -2373,10 +2373,10 @@ namespace test_suite
 
 
 			// third pass - send the remaining buffer which has the first full frame.
-			sip2json::parse(
+			auto m3 = sip2json::parse(
 					bufferStart,
 					buffer.end(),
-					[&](sipmessage& sipm) {
+					[&](sipmessage&& sipm) {
 						// Validate the message.
 						Logger::WriteMessage(sipm.dump(3).c_str());
 						// Call-ID
