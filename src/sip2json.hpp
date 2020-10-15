@@ -442,7 +442,7 @@ namespace siddiqsoftware
 				try
 				{
 					// If the callback is provided, then we invoke the callback. Nothing is returned to caller.
-					if (sipmessage&& sipm = std::move(parseFromBuffer(bufferStart, bufferEnd)))
+					if (auto&& sipm {parseFromBuffer(bufferStart, bufferEnd)}; !sipm.empty())
 					{
 						decodedMessageCount++;
 						sipm["meta"]["parseCountThisBuffer"] = decodedMessageCount;
@@ -496,29 +496,37 @@ namespace siddiqsoftware
 			}
 		}
 
-		/// @brief Given a buffer, parse each message and return a vector of sipmessage objects. If the parseCallback is provided then the return is empty.
+		/// @brief Given a buffer, parse as many frames and return the vector of messages. Re-Throws only if there was not possible to decode even a single message. Stops parsing on any additional exception.
 		/// @param bufferStart Start of the buffer (modified by call to this method).
 		/// @param bufferEnd End of the buffer
 		/// @return If parseCallback is provided then the return vector is empty otherwise vector of sipmessage decoded within the stream.
 		[[nodiscard]] static std::vector<sipmessage> parse(std::string::iterator&		bufferStart,
-														   const std::string::iterator& bufferEnd) noexcept
+														   const std::string::iterator& bufferEnd) noexcept(false)
 		{
 			std::vector<sipmessage> msgs;
 			size_t					decodedMessageCount {0};
 
 			while (bufferStart != bufferEnd)
 			{
-				// If the callback is provided, then we invoke the callback. Nothing is returned to caller.
-				if (sipmessage&& sipm = std::move(parseFromBuffer(bufferStart, bufferEnd)))
+				try
 				{
-					decodedMessageCount++;
-					sipm["meta"]["parseCountThisBuffer"] = decodedMessageCount;
-					// otherwise we push to the vector to return to caller
-					msgs.emplace_back(std::move(sipm));
+					// If the callback is provided, then we invoke the callback. Nothing is returned to caller.
+					if (auto&& sipm {parseFromBuffer(bufferStart, bufferEnd)}; !sipm.empty())
+					{
+						decodedMessageCount++;
+						sipm["meta"]["parseCountThisBuffer"] = decodedMessageCount;
+						// otherwise we push to the vector to return to caller
+						msgs.emplace_back(std::move(sipm));
+					}
+				}
+				catch (...)
+				{
+					if (msgs.size() == 0) throw;
+					break;
 				}
 			}
 
-			return std::move(msgs);
+			return msgs;
 		}
 
 
