@@ -33,7 +33,7 @@
 	-->
   <files>
     <!-- includes -->
-    <file src="..\src\*.hpp" target="build\native\include\siddiqsoftware\" />
+    <file src="..\src\*.hpp" target="build\native\include\siddiqsoft\" />
 
     <!--
     <file src="..\output\Debug\sip2json.lib" target="build\native\lib\Debug" />

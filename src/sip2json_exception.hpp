@@ -44,7 +44,7 @@
 #include "nlohmann/json.hpp"
 
 
-namespace siddiqsoftware
+namespace siddiqsoft
 {
 	enum class sip2jsonErrors : uint32_t
 	{
@@ -205,4 +205,4 @@ namespace siddiqsoftware
 		}
 	}
 
-} // namespace siddiqsoftware
+} // namespace siddiqsoft

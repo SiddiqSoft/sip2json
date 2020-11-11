@@ -55,7 +55,7 @@
 #include "sip2json_exception.hpp"
 
 
-namespace siddiqsoftware
+namespace siddiqsoft
 {
 	enum class SIPMessageType
 	{
@@ -254,4 +254,4 @@ namespace siddiqsoftware
 			return *this;
 		};
 	}; // class sipmessage
-} // namespace siddiqsoftware
+} // namespace siddiqsoft

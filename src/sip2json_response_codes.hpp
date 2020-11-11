@@ -49,7 +49,7 @@
 #include "fmt/chrono.h"
 #include "nlohmann/json.hpp"
 
-namespace siddiqsoftware
+namespace siddiqsoft
 {
 #pragma region SIP Response Codes
 	// Source: https://en.wikipedia.org/wiki/List_of_SIP_response_codes
@@ -137,4 +137,4 @@ namespace siddiqsoftware
 																		  {608, "Rejected"}};
 	static const std::string& getReasonPhrase(uint32_t statusCode) { return SIPResponseCodes.at(statusCode); }
 #pragma endregion
-} // namespace siddiqsoftware
+} // namespace siddiqsoft

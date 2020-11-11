@@ -47,7 +47,7 @@
 #include "fmt/chrono.h"
 #include "nlohmann/json.hpp"
 
-namespace siddiqsoftware
+namespace siddiqsoft
 {
 #pragma region Datetime helpers
 	/// @brief Helper struct which runs your lambda when this object goes out of scope. Used to time expression scope.
@@ -285,4 +285,4 @@ namespace siddiqsoftware
 	static const std::regex SIP_PATTERN_BODY_ILINE {"^(.*) \\(([^\\)]*)\\) ([^\\s|\\r\\n]*)"};
 	static const std::regex SIP_PATTERN_BODY_CLINE {"^(.*) (.*) ([^\\s|\\r\\n]*)"};
 	static const std::regex SIP_PATTERN_BODY_OLINE {"([^\\s]*) (\\d*) (\\d*) (\\w*) (\\w*) ([^\\s]*)"};
-} // namespace siddiqsoftware
+} // namespace siddiqsoft

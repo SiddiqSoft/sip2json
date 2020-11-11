@@ -22,14 +22,14 @@
 #include "gtest/gtest.h"
 
 
-using namespace siddiqsoftware;
+using namespace siddiqsoft;
 using namespace std;
 
 static std::string loadSampleFile(const std::string_view& fileName)
 {
 	std::stringstream testFile;
 	std::ifstream	  sampleInputFile(fmt::format("../../samples/{}.sip", fileName), std::ios::binary);
-	
+
 	if (sampleInputFile.is_open())
 	{
 		testFile << sampleInputFile.rdbuf();
@@ -310,9 +310,9 @@ TEST(siphelpers, Test_incomplete_buffer_for_parse)
 {
 	EXPECT_THROW(
 			[]() {
-				auto buffer = siddiqsoftware::SIP_SAMPLE_MINIMAL_MESSAGE;
+				auto buffer = siddiqsoft::SIP_SAMPLE_MINIMAL_MESSAGE;
 				auto bs		= buffer.begin();
-				sip2json::parseFromBuffer(bs, buffer.end());
+				auto dummy	= sip2json::parseFromBuffer(bs, buffer.end());
 			}(),
 			incomplete_buffer_for_parse_error)
 			<< L"Expect exception: incomplete_buffer_for_parse\n";
@@ -326,7 +326,7 @@ TEST(siphelpers, Test_incomplete_buffer_for_content)
 			[]() {
 				auto buffer = loadSampleFile("Test_incomplete_buffer_for_content"s); // NOLINT
 				auto bs		= buffer.begin();
-				sip2json::parseFromBuffer(bs, buffer.end());
+				auto dummy	= sip2json::parseFromBuffer(bs, buffer.end());
 			}(),
 			incomplete_buffer_for_content_error);
 }
@@ -339,7 +339,7 @@ TEST(siphelpers, Test_incomplete_buffer_for_header)
 			[]() {
 				auto buffer = loadSampleFile("Test_incomplete_buffer_for_header"s); // NOLINT
 				auto bs		= buffer.begin();
-				sip2json::parseFromBuffer(bs, buffer.end());
+				auto dummy	= sip2json::parseFromBuffer(bs, buffer.end());
 			}(),
 			incomplete_buffer_for_header_error);
 }
@@ -352,7 +352,7 @@ TEST(siphelpers, Test_unsupported_contenttype)
 			[]() {
 				auto buffer = loadSampleFile("Test_unsupported_contenttype"); // NOLINT
 				auto bs		= buffer.begin();
-				sip2json::parseFromBuffer(bs, buffer.end());
+				auto dummy	= sip2json::parseFromBuffer(bs, buffer.end());
 			}(),
 			unsupported_contenttype_error);
 }
@@ -397,7 +397,7 @@ TEST(siphelpers, Test_empty_mb)
 
 	// Force an error by setting the body to something non-SDP
 	sipm.body() = "<root></root>";
-	EXPECT_THROW(sip2json::serialize(sipm), siddiqsoftware::invalid_document_error);
+	EXPECT_THROW(sip2json::serialize(sipm), siddiqsoft::invalid_document_error);
 
 	// Reset the invalid body so we can set it to SDP and recheck
 	sipm.body() = nullptr; // dont' erase()
@@ -625,7 +625,7 @@ TEST(siphelpers, Test_invalid_startline)
 // NOLINTNEXTLINE
 TEST(siphelpers, Test_incomplete_buffer_for_parse)
 {
-	auto buffer	  = siddiqsoftware::SIP_SAMPLE_MINIMAL_MESSAGE;
+	auto buffer	  = siddiqsoft::SIP_SAMPLE_MINIMAL_MESSAGE;
 	bool passTest = false;
 	auto bs		  = buffer.begin();
 	sip2json::parse(bs, buffer.end(), {}, [&](const sip2json_exception& e, std::string::iterator&, const std::string::iterator&) {

@@ -57,7 +57,7 @@
 #include "sipmessage.hpp"
 
 
-namespace siddiqsoftware
+namespace siddiqsoft
 {
 #pragma region SIP match patterns
 #pragma endregion
@@ -876,4 +876,4 @@ namespace siddiqsoftware
 	// SIP Response Codes: https://en.wikipedia.org/wiki/List_of_SIP_response_codes
 	// JSON Library: https://nlohmann.github.io/json/
 	// FMT Library : https://fmt.dev/latest/index.html
-} // namespace siddiqsoftware
+} // namespace siddiqsoft

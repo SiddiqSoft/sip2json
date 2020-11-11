@@ -98,7 +98,7 @@ There are two primary objects: `sipmessage` and the factory `sip2json` objects.
 #include "sip2json.hpp"
 #include "sipmessage.hpp"
 
-using namespace siddiqsoftware;
+using namespace siddiqsoft;
 
 void createINVITE()
 {
