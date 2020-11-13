@@ -370,9 +370,9 @@ namespace siddiqsoft
 															 {"subtype"s, olineMatcher[5]},
 															 {"host"s, olineMatcher[6]}};
 							}
-							else
+							else if (!value.empty())
 							{
-								sipm[pkey] = !value.empty() ? value : nullptr;
+								sipm[pkey] = value;
 							}
 						}
 						else if (key.compare("i") == 0)
