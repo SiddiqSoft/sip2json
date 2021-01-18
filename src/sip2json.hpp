@@ -505,23 +505,30 @@ namespace siddiqsoft
 		{
 			std::vector<sipmessage> msgs;
 			size_t					decodedMessageCount {0};
+			auto					ll = __LINE__;
 
 			while (bufferStart != bufferEnd)
 			{
 				try
 				{
+					ll = __LINE__;
 					// If the callback is provided, then we invoke the callback. Nothing is returned to caller.
 					if (auto&& sipm {parseFromBuffer(bufferStart, bufferEnd)}; !sipm.empty())
 					{
+						ll = __LINE__;
 						decodedMessageCount++;
+
+						ll									 = __LINE__;
 						sipm["meta"]["parseCountThisBuffer"] = decodedMessageCount;
+
+						ll = __LINE__;
 						// otherwise we push to the vector to return to caller
 						msgs.emplace_back(std::move(sipm));
 					}
 				}
 				catch (...)
 				{
-					if (msgs.size() == 0) throw;
+					if (msgs.size() == 0) throw std::invalid_argument("Nothing was parsed.");
 					break;
 				}
 			}
