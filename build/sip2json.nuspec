@@ -34,13 +34,7 @@
   <files>
     <!-- includes -->
     <file src="..\src\*.hpp" target="build\native\include\siddiqsoft\" />
-
-    <!--
-    <file src="..\output\Debug\sip2json.lib" target="build\native\lib\Debug" />
-    <file src="..\output\Debug\sip2json.pdb" target="build\native\lib\Debug" />
-    <file src="..\output\Release\sip2json.lib" target="build\native\lib\Release" />
-    <file src="..\output\Release\sip2json.pdb" target="build\native\lib\Release" />
-    -->
+	<file src="..\test\samples\*.sip" target="build\native\include\siddiqsoft\samples\" />
 
     <!-- MSBuild .targets files -->
     <file src="sip2json.targets" target="build\native" />
