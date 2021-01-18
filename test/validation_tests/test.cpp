@@ -714,4 +714,115 @@ TEST(siphelpers, Test_unknown_exception)
 	EXPECT_TRUE(pass1Test) << L"First stage callback not invoked.";
 	EXPECT_TRUE(pass2Test) << L"Error callback not invoked.";
 }
+
 #endif
+
+
+// NOLINTNEXTLINE
+TEST(validation, Test_extension_aras)
+{
+	auto buffer		= loadSampleFile("Test_extension_aras"); // NOLINT
+	auto bs			= buffer.begin();
+	auto parseCount = 0;
+
+
+	sip2json::parseAsync(bs, buffer.end(), [&](auto&& sipm) {
+		switch (parseCount++)
+		{
+		case 0:
+		{
+			EXPECT_EQ(1131, sipm.getContentLength());
+			EXPECT_EQ("+14152264822x,0830423985", sipm.body()["/sdp/0/c/dn"_json_pointer].get<std::string>());
+		}
+		break;
+		case 1:
+		{
+			EXPECT_EQ(1258, sipm.getContentLength());
+			EXPECT_EQ("+14152264822x,0830423985", sipm.body()["/sdp/0/c/dn"_json_pointer].get<std::string>());
+		}
+		break;
+		case 2:
+		{
+			EXPECT_EQ(1286, sipm.getContentLength());
+			EXPECT_EQ("+14152264822x,0830423985", sipm.body()["/sdp/0/c/dn"_json_pointer].get<std::string>());
+		}
+		break;
+		};
+	});
+
+	// There must be atleast 3 NOTIFY from the buffer
+	EXPECT_EQ(3, parseCount) << "Should get 3 items instead of " << parseCount << std::endl;
+}
+
+
+// NOLINTNEXTLINE
+TEST(validation, Test_extension_nelson)
+{
+	auto buffer		= loadSampleFile("Test_extension_nelson"); // NOLINT
+	auto bs			= buffer.begin();
+	auto parseCount = 0;
+
+
+	sip2json::parseAsync(bs, buffer.end(), [&](siddiqsoft::sipmessage&& sipm) {
+		switch (parseCount++)
+		{
+		case 0:
+			EXPECT_EQ(1089, sipm.getContentLength());
+			EXPECT_EQ("+19172084495", sipm.body()["/sdp/0/c/dn"_json_pointer].get<std::string>());
+			break;
+		case 1:
+			EXPECT_EQ(1216, sipm.getContentLength());
+			EXPECT_EQ("+19172084495", sipm.body()["/sdp/0/c/dn"_json_pointer].get<std::string>());
+			break;
+		case 2:
+			EXPECT_EQ(2054, sipm.getContentLength());
+			EXPECT_EQ(2, sipm.body()["sdp"].size());
+			EXPECT_EQ("+19172084495", sipm.body()["/sdp/0/c/dn"_json_pointer].get<std::string>());
+			EXPECT_EQ("+448443351801", sipm.body()["/sdp/1/c/dn"_json_pointer].get<std::string>());
+			break;
+		case 3:
+			EXPECT_EQ(1002, sipm.getContentLength());
+			EXPECT_EQ("+448443351801", sipm.body()["/sdp/0/c/dn"_json_pointer].get<std::string>());
+			break;
+		case 4:
+			EXPECT_EQ(1104, sipm.getContentLength());
+			EXPECT_EQ("+448443351801", sipm.body()["/sdp/0/c/dn"_json_pointer].get<std::string>());
+			break;
+		case 5:
+			EXPECT_EQ(1097, sipm.getContentLength());
+			EXPECT_EQ("+442080163962x,7415135063", sipm.body()["/sdp/0/c/dn"_json_pointer].get<std::string>());
+			break;
+		case 6:
+			EXPECT_EQ(1349, sipm.getContentLength());
+			EXPECT_EQ("+442080163962x,7415135063", sipm.body()["/sdp/0/c/dn"_json_pointer].get<std::string>());
+			break;
+		};
+	});
+
+	// There must be atleast 7 NOTIFY from the buffer
+	EXPECT_EQ(7, parseCount);
+}
+
+
+// NOLINTNEXTLINE
+TEST(validation, Test_parse_invalid_string_position)
+{
+	auto buffer		 = loadSampleFile("Test_parse_invalid_string_position"); // NOLINT
+	auto bs			 = buffer.begin();
+	auto parseResult = sip2json::parse(bs, buffer.end());
+
+	// There must be atleast 3 NOTIFY from the buffer
+	ASSERT_EQ(3, parseResult.size());
+
+	// Frame 1
+	EXPECT_EQ(1062, parseResult[0].getContentLength());
+	EXPECT_EQ("+19362329469", parseResult[0].body()["/sdp/0/c/dn"_json_pointer].get<std::string>());
+
+	// Frame 2
+	EXPECT_EQ(1189, parseResult[1].getContentLength());
+	EXPECT_EQ("+19362329469", parseResult[1].body()["/sdp/0/c/dn"_json_pointer].get<std::string>());
+
+	// Frame 3
+	EXPECT_EQ(1192, parseResult[2].getContentLength());
+	EXPECT_EQ("+19362329469", parseResult[2].body()["/sdp/0/c/dn"_json_pointer].get<std::string>());
+}
