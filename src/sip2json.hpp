@@ -828,16 +828,16 @@ namespace siddiqsoft
 							{
 								for (auto& i : v.items())
 								{
-									ret += fmt::format("a={}:{}\r\n"s, kv.key(), i.value());
+									fmt::format_to(std::back_inserter(ret), "a={}:{}\r\n"s, kv.key(), i.value());
 								}
 							}
 							else if (v.is_string() || v.is_number() || v.is_number_integer() || v.is_number_float() ||
 									 v.is_number_unsigned())
-								ret += fmt::format("a={}:{}\r\n"s, kv.key(), v);
+								fmt::format_to(std::back_inserter(ret), "a={}:{}\r\n"s, kv.key(), v);
 							else if (v.is_boolean() && v == true)
-								ret += fmt::format("a={}\r\n"s, kv.key());
+								fmt::format_to(std::back_inserter(ret), "a={}\r\n"s, kv.key());
 							else
-								ret += fmt::format("a={}\r\n"s, kv.key());
+								fmt::format_to(std::back_inserter(ret), "a={}\r\n"s, kv.key());
 						}
 
 						return ret;
