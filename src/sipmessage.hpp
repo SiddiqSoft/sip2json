@@ -72,8 +72,8 @@ namespace siddiqsoft
 	class sipmessage : public nlohmann::json
 	{
 		static const inline std::string MetaLibName		  = "sip2json";
-		static const inline std::string MetaSchemaVersion = "1.0.1";
-		static const inline std::string MetaParserVersion = "1.11.2";
+		static const inline std::string MetaSchemaVersion = "1.0.2";
+		static const inline std::string MetaParserVersion = "1.12.0";
 
 	public:
 		sipmessage()
@@ -210,15 +210,33 @@ namespace siddiqsoft
 
 			return std::string {};
 		};
+
 		inline auto getCallID() { return getHeader<std::string>("Call-ID"); };
 		inline auto getMethod() { return this->value("/s/method"_json_pointer, ""); };
 		inline auto getUri() { return this->value("/s/uri"_json_pointer, ""); };
 		inline auto getStatusCode() { return this->value("/s/status"_json_pointer, 0); };
 		inline auto getReason() { return this->value("/s/reason"_json_pointer, ""); };
 
+
 		/// @brief Returns a reference to the body object. This method should be used to change the body contents to text/plain or non-SDP content-type.
 		/// @return Returns reference to the body element b
-		inline auto& body() { return this->at("b"); };
+		inline auto& body() noexcept(false) { return this->at("b"); };
+
+		
+		/// @brief Checks if we have the "b" body element
+		/// @return True if the sipmessage contains the body element
+		inline bool hasBody() { return this->contains("b"); }
+
+
+		/// @brief Get body element (relative to /b). Throws if body does not exist.
+		/// @tparam T Type
+		/// @param jp The key as json_pointer
+		/// @param defaultValue The default value
+		/// @return The item found or the default value.
+		template <typename T> T getBodyElement(const nlohmann::json::json_pointer& jp, const T& defaultValue)
+		{
+			return this->at("b").value<T>(jp, defaultValue);
+		};
 
 		inline auto isMessageRequest()
 		{
@@ -243,15 +261,44 @@ namespace siddiqsoft
 			return *this;
 		};
 
+
+		/// @brief Sets the header elements from the source json object which is merge patched
+		/// @param arg source json object
+		/// @return the sipmessage
+		inline sipmessage& setHeader(const nlohmann::json& arg)
+		{
+			if (!this->contains("h"))
+				(*this)["h"] = arg;
+			else
+				(*this)["h"].merge_patch(arg);
+			return *this;
+		};
+
+
 		/// @brief Set element within the body to the given value.
 		/// @tparam T Type of object; this is typically inferred by the compiler.
 		/// @param key The key within the body section.
 		/// @param v The value. Json, string (for text/plain)
 		/// @return Self
-		template <typename T> inline sipmessage& body(const json_pointer& key, const T& v)
+		template <typename T> inline sipmessage& setBody(const json_pointer& key, const T& v)
 		{
 			(*this)["b"][key] = v;
 			return *this;
 		};
+
+
+		/// @brief Sets the sip elements from the source json object which is merge patched
+		/// @param arg source json object must be /sdp/0/...
+		/// @return the sipmessage
+		inline sipmessage& setBody(const nlohmann::json& arg)
+		{
+			if (!this->contains("b"))
+				(*this)["b"] = arg;
+			else
+				(*this)["b"].merge_patch(arg);
+
+			return *this;
+		};
+
 	}; // class sipmessage
 } // namespace siddiqsoft

@@ -273,6 +273,18 @@ TEST(siphelpers, Test_serialize_empty_mb_fail)
 	EXPECT_THROW(sip2json::serialize(registerMessage), std::exception);
 }
 
+
+TEST(siphelpers, Test_serialize_empty_mb_fail_2)
+{
+	sipmessage registerMessage("REGISTER", "sip:hello@world.com", createCallId(), 1);
+
+	registerMessage.setHeader(
+			{{"To", "sip:hello@world.com"}, {"Contact", "sip:hello@world.com"}, {"Content-Type", "application/dummy"}});
+	// This will cause serialize to throw!
+	registerMessage["b"] = 0;
+	EXPECT_THROW(sip2json::serialize(registerMessage), std::exception);
+}
+
 // NOLINTNEXTLINE
 TEST(siphelpers, Test_serialize_empty_mb_valid)
 {
@@ -285,6 +297,19 @@ TEST(siphelpers, Test_serialize_empty_mb_valid)
 	// This is a supported use-case
 	EXPECT_NO_THROW(sip2json::serialize(registerMessage));
 }
+
+
+TEST(siphelpers, Test_serialize_empty_mb_valid_2)
+{
+	sipmessage registerMessage("REGISTER", "sip:hello@world.com", createCallId(), 1);
+
+	registerMessage.setHeader(
+			{{"To", "sip:hello@world.com"}, {"Contact", "sip:hello@world.com"}, {"Content-Type", CONTENT_TYPE_APP_SDP}});
+	// Should not throw; body is null despite the header being SDP there is no body element set.
+	// This is a supported use-case
+	EXPECT_NO_THROW(sip2json::serialize(registerMessage));
+}
+
 
 // NOLINTNEXTLINE
 TEST(siphelpers, Test_loadTestFile)
@@ -400,17 +425,15 @@ TEST(siphelpers, Test_empty_mb)
 	EXPECT_THROW(sip2json::serialize(sipm), siddiqsoft::invalid_document_error);
 
 	// Reset the invalid body so we can set it to SDP and recheck
-	sipm.body() = nullptr; // dont' erase()
+	sipm.body() = nullptr; // don't erase()
 	// Set some dummy value..
-	sipm.body("/sdp/0/v"_json_pointer, 0)
-			.body("/sdp/0/s"_json_pointer, "subject")
-			.body("/sdp/0/a/access_code"_json_pointer, "0277777")
-			.body("/sdp/0/t"_json_pointer, nlohmann::json {100001, 200002});
+	sipm.setBody("/sdp/0/v"_json_pointer, 0)
+			.setBody("/sdp/0/s"_json_pointer, "subject")
+			.setBody("/sdp/0/a/access_code"_json_pointer, "0277777")
+			.setBody("/sdp/0/t"_json_pointer, nlohmann::json {100001, 200002});
 
 	// Check again for the body. it should be non-null
 	EXPECT_TRUE(sipm.body().is_object());
-
-	std::clog << fmt::format("{} - Contents\n{}\n", __func__, sipm.dump(2));
 
 	EXPECT_EQ(0, sipm.body()["sdp"][0]["v"].get<uint32_t>());
 	EXPECT_EQ("subject"s, sipm.body()["sdp"][0]["s"].get<std::string>());
@@ -418,11 +441,70 @@ TEST(siphelpers, Test_empty_mb)
 	EXPECT_EQ(200002, sipm.body()["sdp"][0]["t"][1].get<uint32_t>());
 
 	sipm.erase("b");
+	EXPECT_FALSE(sipm.hasBody()) << sipm.dump(2);
+
 	sipm.setHeader("Content-Type", CONTENT_TYPE_TEXT_PLAIN);
-	std::clog << "\n";
-	std::clog << sip2json::serialize(sipm);
+	EXPECT_EQ(CONTENT_TYPE_TEXT_PLAIN, sipm.getHeader<std::string>(HF_CONTENT_TYPE, "unknown")) << sipm.dump(2);
 }
 
+TEST(siphelpers, Test_empty_mb_2)
+{
+	using namespace std;
+
+	sipmessage sipm("REGISTER", "sip:hello@world.com", createCallId(), 1);
+
+	sipm.setHeader({{"To", "sip:hello@world.com"}, {"Contact", "sip:hello@world.com"}, {"Content-Type", CONTENT_TYPE_APP_SDP}});
+
+	// By default the body is null
+	EXPECT_TRUE(sipm.body().empty());
+
+	// Force an error by setting the body to something non-SDP
+	sipm.body() = "<root></root>";
+	EXPECT_THROW(sip2json::serialize(sipm), siddiqsoft::invalid_document_error);
+
+	// Reset the invalid body so we can set it to SDP and recheck
+	sipm.body() = nullptr; // don't erase()
+	// Set some dummy value..
+	sipm.setBody({{"sdp",
+				   {{{"v", 0},
+					 {"s", "subject"},
+					 {"t", {100001, 200002}},
+					 {"a", {{"server", "media-server"}, {"access_code", "0277777"}}}},
+
+					{{"v", 0},
+					 {"s", "subject-2"},
+					 {"t", {133331, 233332}},
+					 {"a", {{"server", "media-server-2"}, {"access_code", "2777777"}}}}}}});
+
+	// Check again for the body. it should be non-null
+	EXPECT_TRUE(sipm.body().is_object()) << sipm.dump(2);
+
+	//EXPECT_TRUE(false) << sipm.body().dump(2);
+	EXPECT_EQ(2, sipm.body().at("sdp").size());
+
+	// Check first sdp
+	EXPECT_EQ(0, sipm.getBodyElement("/sdp/0/v"_json_pointer, 99)) << sipm.body().dump(2);
+	EXPECT_EQ("subject"s, sipm.getBodyElement("/sdp/0/s"_json_pointer, ""s)) << sipm.body().dump(2);
+	EXPECT_EQ(100001, sipm.getBodyElement("/sdp/0/t/0"_json_pointer, 0)) << sipm.body().dump(2);
+	EXPECT_EQ(200002, sipm.getBodyElement("/sdp/0/t/1"_json_pointer, 0)) << sipm.body().dump(2);
+	EXPECT_EQ("media-server"s, sipm.getBodyElement("/sdp/0/a/server"_json_pointer, ""s)) << sipm.body().dump(2);
+	EXPECT_EQ("0277777"s, sipm.getBodyElement("/sdp/0/a/access_code"_json_pointer, ""s)) << sipm.body().dump(2);
+
+	// Check the second sdp
+	EXPECT_EQ(0, sipm.getBodyElement("/sdp/1/v"_json_pointer, 99)) << sipm.body().dump(2);
+	EXPECT_EQ("subject-2"s, sipm.getBodyElement("/sdp/1/s"_json_pointer, ""s)) << sipm.body().dump(2);
+	EXPECT_EQ(133331, sipm.getBodyElement("/sdp/1/t/0"_json_pointer, 0)) << sipm.body().dump(2);
+	EXPECT_EQ(233332, sipm.getBodyElement("/sdp/1/t/1"_json_pointer, 0)) << sipm.body().dump(2);
+	EXPECT_EQ("media-server-2"s, sipm.getBodyElement("/sdp/1/a/server"_json_pointer, ""s)) << sipm.body().dump(2);
+	EXPECT_EQ("2777777"s, sipm.getBodyElement("/sdp/1/a/access_code"_json_pointer, ""s)) << sipm.body().dump(2);
+
+
+	sipm.erase("b");
+	EXPECT_FALSE(sipm.hasBody()) << sipm.dump(2);
+
+	sipm.setHeader("Content-Type", CONTENT_TYPE_TEXT_PLAIN);
+	EXPECT_EQ(CONTENT_TYPE_TEXT_PLAIN, sipm.getHeader<std::string>(HF_CONTENT_TYPE, "unknown")) << sipm.dump(2);
+}
 
 #ifdef _DEBUG
 
@@ -575,18 +657,18 @@ TEST(siphelpers, Test_body_method)
 	EXPECT_TRUE(sipm.body().empty());
 
 	// Set dummy but all required values! v, 0, s, t, m
-	sipm.body("/sdp/0/v"_json_pointer, 0)
-			.body("/sdp/0/o"_json_pointer,
-				  nlohmann::json {{"user", "sip:hello@world.com"},
-								  {"type", "IN"},
-								  {"subtype", "IP4"},
-								  {"host", "host.name.com"},
-								  {"t1", "900001"},	 // these must be string
-								  {"t2", "900009"}}) // must be string
-			.body("/sdp/0/s"_json_pointer, "subject")
-			.body("/sdp/0/a/access_code"_json_pointer, "0277777")
-			.body("/sdp/0/t"_json_pointer, nlohmann::json {100001, 200002})
-			.body("/sdp/0/m"_json_pointer, "audio voice");
+	sipm.setBody("/sdp/0/v"_json_pointer, 0)
+			.setBody<nlohmann::json>("/sdp/0/o"_json_pointer,
+									 {{"user", "sip:hello@world.com"},
+									  {"type", "IN"},
+									  {"subtype", "IP4"},
+									  {"host", "host.name.com"},
+									  {"t1", "900001"},	 // these must be string
+									  {"t2", "900009"}}) // must be string
+			.setBody("/sdp/0/s"_json_pointer, "subject")
+			.setBody("/sdp/0/a/access_code"_json_pointer, "0277777")
+			.setBody("/sdp/0/t"_json_pointer, nlohmann::json {100001, 200002})
+			.setBody("/sdp/0/m"_json_pointer, "audio voice");
 
 	// Check again for the body. it should be non-null
 	EXPECT_TRUE(sipm.body().is_object());
@@ -732,19 +814,19 @@ TEST(validation, Test_extension_aras)
 		case 0:
 		{
 			EXPECT_EQ(1131, sipm.getContentLength());
-			EXPECT_EQ("+14152264822x,0830423985", sipm.body()["/sdp/0/c/dn"_json_pointer].get<std::string>());
+			EXPECT_EQ("+14152264822x,0830423985", sipm.getBodyElement("/sdp/0/c/dn"_json_pointer, ""s));
 		}
 		break;
 		case 1:
 		{
 			EXPECT_EQ(1258, sipm.getContentLength());
-			EXPECT_EQ("+14152264822x,0830423985", sipm.body()["/sdp/0/c/dn"_json_pointer].get<std::string>());
+			EXPECT_EQ("+14152264822x,0830423985", sipm.getBodyElement("/sdp/0/c/dn"_json_pointer, ""s));
 		}
 		break;
 		case 2:
 		{
 			EXPECT_EQ(1286, sipm.getContentLength());
-			EXPECT_EQ("+14152264822x,0830423985", sipm.body()["/sdp/0/c/dn"_json_pointer].get<std::string>());
+			EXPECT_EQ("+14152264822x,0830423985", sipm.getBodyElement("/sdp/0/c/dn"_json_pointer, ""s));
 		}
 		break;
 		};
@@ -768,33 +850,33 @@ TEST(validation, Test_extension_nelson)
 		{
 		case 0:
 			EXPECT_EQ(1089, sipm.getContentLength());
-			EXPECT_EQ("+19172084495", sipm.body()["/sdp/0/c/dn"_json_pointer].get<std::string>());
+			EXPECT_EQ("+19172084495", sipm.getBodyElement("/sdp/0/c/dn"_json_pointer, ""s));
 			break;
 		case 1:
 			EXPECT_EQ(1216, sipm.getContentLength());
-			EXPECT_EQ("+19172084495", sipm.body()["/sdp/0/c/dn"_json_pointer].get<std::string>());
+			EXPECT_EQ("+19172084495", sipm.getBodyElement("/sdp/0/c/dn"_json_pointer, ""s));
 			break;
 		case 2:
 			EXPECT_EQ(2054, sipm.getContentLength());
 			EXPECT_EQ(2, sipm.body()["sdp"].size());
-			EXPECT_EQ("+19172084495", sipm.body()["/sdp/0/c/dn"_json_pointer].get<std::string>());
-			EXPECT_EQ("+448443351801", sipm.body()["/sdp/1/c/dn"_json_pointer].get<std::string>());
+			EXPECT_EQ("+19172084495", sipm.getBodyElement("/sdp/0/c/dn"_json_pointer, ""s));
+			EXPECT_EQ("+448443351801", sipm.getBodyElement("/sdp/1/c/dn"_json_pointer, ""s));
 			break;
 		case 3:
 			EXPECT_EQ(1002, sipm.getContentLength());
-			EXPECT_EQ("+448443351801", sipm.body()["/sdp/0/c/dn"_json_pointer].get<std::string>());
+			EXPECT_EQ("+448443351801", sipm.getBodyElement("/sdp/0/c/dn"_json_pointer, ""s));
 			break;
 		case 4:
 			EXPECT_EQ(1104, sipm.getContentLength());
-			EXPECT_EQ("+448443351801", sipm.body()["/sdp/0/c/dn"_json_pointer].get<std::string>());
+			EXPECT_EQ("+448443351801", sipm.getBodyElement("/sdp/0/c/dn"_json_pointer, ""s));
 			break;
 		case 5:
 			EXPECT_EQ(1097, sipm.getContentLength());
-			EXPECT_EQ("+442080163962x,7415135063", sipm.body()["/sdp/0/c/dn"_json_pointer].get<std::string>());
+			EXPECT_EQ("+442080163962x,7415135063", sipm.getBodyElement("/sdp/0/c/dn"_json_pointer, ""s));
 			break;
 		case 6:
 			EXPECT_EQ(1349, sipm.getContentLength());
-			EXPECT_EQ("+442080163962x,7415135063", sipm.body()["/sdp/0/c/dn"_json_pointer].get<std::string>());
+			EXPECT_EQ("+442080163962x,7415135063", sipm.getBodyElement("/sdp/0/c/dn"_json_pointer, ""s));
 			break;
 		};
 	});
@@ -816,13 +898,13 @@ TEST(validation, Test_parse_invalid_string_position)
 
 	// Frame 1
 	EXPECT_EQ(1062, parseResult[0].getContentLength());
-	EXPECT_EQ("+19362329469", parseResult[0].body()["/sdp/0/c/dn"_json_pointer].get<std::string>());
+	EXPECT_EQ("+19362329469", parseResult[0].getBodyElement("/sdp/0/c/dn"_json_pointer, ""s));
 
 	// Frame 2
 	EXPECT_EQ(1189, parseResult[1].getContentLength());
-	EXPECT_EQ("+19362329469", parseResult[1].body()["/sdp/0/c/dn"_json_pointer].get<std::string>());
+	EXPECT_EQ("+19362329469", parseResult[1].getBodyElement("/sdp/0/c/dn"_json_pointer, ""s));
 
 	// Frame 3
 	EXPECT_EQ(1192, parseResult[2].getContentLength());
-	EXPECT_EQ("+19362329469", parseResult[2].body()["/sdp/0/c/dn"_json_pointer].get<std::string>());
+	EXPECT_EQ("+19362329469", parseResult[2].getBodyElement("/sdp/0/c/dn"_json_pointer, ""s));
 }
