@@ -821,7 +821,7 @@ namespace siddiqsoft
 					{
 						std::string ret;
 
-						for (auto& [kv,v] : item.items())
+						for (auto& [kv, v] : item.items())
 						{
 							if (v.is_array())
 							{
@@ -830,9 +830,14 @@ namespace siddiqsoft
 									fmt::format_to(std::back_inserter(ret), "a={}:{}\r\n"s, kv, i.value());
 								}
 							}
-							else if (v.is_string() || v.is_number() || v.is_number_integer() || v.is_number_float() ||
-									 v.is_number_unsigned())
-								fmt::format_to(std::back_inserter(ret), "a={}:{}\r\n"s, kv, v);
+							else if (v.is_string())
+								fmt::format_to(std::back_inserter(ret), "a={}:{}\r\n"s, kv, v.get<std::string>());
+							else if (v.is_number() || v.is_number_integer())
+								fmt::format_to(std::back_inserter(ret), "a={}:{}\r\n"s, kv, v.get<int64_t>());
+							else if (v.is_number_unsigned())
+								fmt::format_to(std::back_inserter(ret), "a={}:{}\r\n"s, kv, v.get<uint64_t>());
+							else if (v.is_number_float())
+								fmt::format_to(std::back_inserter(ret), "a={}:{}\r\n"s, kv, v.get<double>());
 							else if (v.is_boolean() && v == true)
 								fmt::format_to(std::back_inserter(ret), "a={}\r\n"s, kv);
 							else
