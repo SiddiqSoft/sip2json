@@ -821,23 +821,22 @@ namespace siddiqsoft
 					{
 						std::string ret;
 
-						for (auto& kv : item.items())
+						for (auto& [kv,v] : item.items())
 						{
-							auto v = kv.value();
 							if (v.is_array())
 							{
 								for (auto& i : v.items())
 								{
-									fmt::format_to(std::back_inserter(ret), "a={}:{}\r\n"s, kv.key(), i.value());
+									fmt::format_to(std::back_inserter(ret), "a={}:{}\r\n"s, kv, i.value());
 								}
 							}
 							else if (v.is_string() || v.is_number() || v.is_number_integer() || v.is_number_float() ||
 									 v.is_number_unsigned())
-								fmt::format_to(std::back_inserter(ret), "a={}:{}\r\n"s, kv.key(), v);
+								fmt::format_to(std::back_inserter(ret), "a={}:{}\r\n"s, kv, v);
 							else if (v.is_boolean() && v == true)
-								fmt::format_to(std::back_inserter(ret), "a={}\r\n"s, kv.key());
+								fmt::format_to(std::back_inserter(ret), "a={}\r\n"s, kv);
 							else
-								fmt::format_to(std::back_inserter(ret), "a={}\r\n"s, kv.key());
+								fmt::format_to(std::back_inserter(ret), "a={}\r\n"s, kv);
 						}
 
 						return ret;
