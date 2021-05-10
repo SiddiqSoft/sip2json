@@ -447,6 +447,7 @@ TEST(siphelpers, Test_empty_mb)
 	EXPECT_EQ(CONTENT_TYPE_TEXT_PLAIN, sipm.getHeader<std::string>(HF_CONTENT_TYPE, "unknown")) << sipm.dump(2);
 }
 
+
 TEST(siphelpers, Test_empty_mb_2)
 {
 	using namespace std;
@@ -505,6 +506,74 @@ TEST(siphelpers, Test_empty_mb_2)
 	sipm.setHeader("Content-Type", CONTENT_TYPE_TEXT_PLAIN);
 	EXPECT_EQ(CONTENT_TYPE_TEXT_PLAIN, sipm.getHeader<std::string>(HF_CONTENT_TYPE, "unknown")) << sipm.dump(2);
 }
+
+
+TEST(siphelpers, Test_empty_mb_3)
+{
+	sipmessage sipm("REGISTER", "sip:hello@world.com", createCallId(), 1);
+
+	sipm.setHeader("To", "sip:hello@world.com")
+			.setHeader("Contact", "sip:hello@world.com")
+			.setHeader("Content-Type", CONTENT_TYPE_APP_SDP);
+
+	// By default the body is null
+	EXPECT_TRUE(sipm.body().empty());
+
+	// Force an error by setting the body to something non-SDP
+	sipm.body() = "<root></root>";
+	EXPECT_THROW(sip2json::serialize(sipm), siddiqsoft::invalid_document_error);
+
+	// Reset the invalid body so we can set it to SDP and recheck
+	sipm.body() = nullptr; // don't erase()
+	// Set some dummy value..
+	sipm.setBody("/sdp/0/v"_json_pointer, 0)
+			.setBody("/sdp/0/s"_json_pointer, "sssssss")
+			.setBody("/sdp/0/a/access_code"_json_pointer, "0000000")
+			.setBody("/sdp/0/a/clir"_json_pointer, "false")
+			.setBody("/sdp/0/t"_json_pointer, nlohmann::json {999999, 999999});
+
+	// Check again for the body. it should be non-null
+	EXPECT_TRUE(sipm.body().is_object()) << sipm.dump(2);
+
+	// Check first sdp
+	EXPECT_EQ(0, sipm.getBodyElement("/sdp/0/v"_json_pointer, 99)) << sipm.body().dump(2);
+	EXPECT_EQ("sssssss"s, sipm.getBodyElement("/sdp/0/s"_json_pointer, ""s)) << sipm.body().dump(2);
+	EXPECT_EQ(999999, sipm.getBodyElement("/sdp/0/t/0"_json_pointer, 0)) << sipm.body().dump(2);
+	EXPECT_EQ(999999, sipm.getBodyElement("/sdp/0/t/1"_json_pointer, 0)) << sipm.body().dump(2);
+	EXPECT_EQ("0000000"s, sipm.getBodyElement("/sdp/0/a/access_code"_json_pointer, ""s)) << sipm.body().dump(2);
+	EXPECT_EQ("false"s, sipm.getBodyElement("/sdp/0/a/clir"_json_pointer, ""s)) << sipm.body().dump(2);
+
+	sipm.setBody({{"sdp",
+				   {
+						   {{"v", 0},
+							{"s", "subject"},
+							{"t", {100001, 200002}},
+							{"a", {{"server", "media-server"}, {"access_code", "0277777"}}}},
+				   }}});
+
+	// Check again for the body. it should be non-null
+	EXPECT_TRUE(sipm.body().is_object()) << sipm.dump(2);
+
+	//EXPECT_TRUE(false) << sipm.body().dump(2);
+	EXPECT_EQ(1, sipm.body().at("sdp").size());
+
+	// Check first sdp
+	EXPECT_EQ(0, sipm.getBodyElement("/sdp/0/v"_json_pointer, 99)) << sipm.body().dump(2);
+	EXPECT_EQ("subject"s, sipm.getBodyElement("/sdp/0/s"_json_pointer, ""s)) << sipm.body().dump(2);
+	EXPECT_EQ(100001, sipm.getBodyElement("/sdp/0/t/0"_json_pointer, 0)) << sipm.body().dump(2);
+	EXPECT_EQ(200002, sipm.getBodyElement("/sdp/0/t/1"_json_pointer, 0)) << sipm.body().dump(2);
+	EXPECT_EQ("media-server"s, sipm.getBodyElement("/sdp/0/a/server"_json_pointer, ""s)) << sipm.body().dump(2);
+	EXPECT_EQ("0277777"s, sipm.getBodyElement("/sdp/0/a/access_code"_json_pointer, ""s)) << sipm.body().dump(2);
+	// The field is removed!
+	EXPECT_EQ(""s, sipm.getBodyElement("/sdp/0/a/clir"_json_pointer, ""s)) << sipm.body().dump(2);
+
+	sipm.erase("b");
+	EXPECT_FALSE(sipm.hasBody()) << sipm.dump(2);
+
+	sipm.setHeader("Content-Type", CONTENT_TYPE_TEXT_PLAIN);
+	EXPECT_EQ(CONTENT_TYPE_TEXT_PLAIN, sipm.getHeader<std::string>(HF_CONTENT_TYPE, "unknown")) << sipm.dump(2);
+}
+
 
 #ifdef _DEBUG
 

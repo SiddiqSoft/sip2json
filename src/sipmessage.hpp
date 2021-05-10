@@ -287,7 +287,7 @@ namespace siddiqsoft
 		};
 
 
-		/// @brief Sets the sip elements from the source json object which is merge patched
+		/// @brief Sets the sip elements from the source json object which is updated. Previous keys are replaced!
 		/// @param arg source json object must be /sdp/0/...
 		/// @return the sipmessage
 		inline sipmessage& setBody(const nlohmann::json& arg)
@@ -295,7 +295,7 @@ namespace siddiqsoft
 			if (!this->contains("b"))
 				(*this)["b"] = arg;
 			else
-				(*this)["b"].merge_patch(arg);
+				(*this).at("b").update(arg); 
 
 			return *this;
 		};
