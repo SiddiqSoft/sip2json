@@ -831,7 +831,8 @@ namespace siddiqsoft
 									ret += fmt::format("a={}:{}\r\n"s, kv.key(), i.value());
 								}
 							}
-							else if (v.is_string())
+							else if (v.is_string() || v.is_number() || v.is_number_integer() || v.is_number_float() ||
+									 v.is_number_unsigned())
 								ret += fmt::format("a={}:{}\r\n"s, kv.key(), v);
 							else if (v.is_boolean() && v == true)
 								ret += fmt::format("a={}\r\n"s, kv.key());
