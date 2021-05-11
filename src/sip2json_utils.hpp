@@ -43,8 +43,9 @@
 #include <sstream>
 #include <optional>
 
-#define FMT_HEADER_ONLY 1
-#include "fmt/chrono.h"
+//#define FMT_HEADER_ONLY 1
+//#include "fmt/chrono.h"
+#include <format>
 #include "nlohmann/json.hpp"
 
 namespace siddiqsoft
@@ -92,7 +93,8 @@ namespace siddiqsoft
 	static std::string TimeAsRFC1123(std::optional<std::chrono::system_clock::time_point> src = {}) noexcept(false)
 	{
 		const auto tp = src.value_or(std::chrono::system_clock::now());
-		return fmt::format("{:%a, %d %b %Y %T} GMT", fmt::gmtime(std::chrono::system_clock::to_time_t(tp)));
+		return std::format("{:%a, %d %b %Y %T} GMT", tp);
+		//return std::format("{:%a, %d %b %Y %T} GMT", std::gmtime(std::chrono::system_clock::to_time_t(tp)));
 	}
 
 	/// @brief Creates a string representaiton of the date time in RFC3339 format with millisecond precision.
@@ -102,7 +104,8 @@ namespace siddiqsoft
 	{
 		const auto tp = src.value_or(std::chrono::system_clock::now());
 		auto	   ms = std::chrono::duration_cast<std::chrono::milliseconds>(tp.time_since_epoch()).count() % 1000;
-		return fmt::format("{:%Y-%m-%dT%T}.{:03}Z", fmt::gmtime(std::chrono::system_clock::to_time_t(tp)), ms);
+		//return std::format("{:%Y-%m-%dT%T}.{:03}Z", std::gmtime(std::chrono::system_clock::to_time_t(tp)), ms);
+		return std::format("{:%Y-%m-%dT%T}.{:03}Z", tp, ms);
 	}
 
 	/// @brief Creates a string representaiton of the date time in ISO8601 format with millisecond precision. Alias for TimeAsRFC3339 method.

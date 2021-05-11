@@ -47,8 +47,9 @@
 #include <functional>
 #include <optional>
 
-#define FMT_HEADER_ONLY 1
-#include "fmt/chrono.h"
+//#define FMT_HEADER_ONLY 1
+//#include "fmt/chrono.h"
+#include <format>
 #include "nlohmann/json.hpp"
 
 #include "sip2json_exception.hpp"
@@ -291,7 +292,7 @@ namespace siddiqsoft
 						// First element; increment blockIndex.
 						// Add the next element to a new SDP object.
 						blockIndex++; // the first match will increment this to "0"
-						//nlohmann::json::json_pointer pkey(fmt::format("/b/sdp/{}/{}", blockIndex, key));
+						//nlohmann::json::json_pointer pkey(std::format("/b/sdp/{}/{}", blockIndex, key));
 						//sipm[pkey]						   = 0;
 						sipm["b"s]["sdp"s][blockIndex][key] = 0;
 					}
@@ -305,14 +306,14 @@ namespace siddiqsoft
 						{
 							// This is the form where a=attribute:value
 							nlohmann::json::json_pointer pkey(
-									fmt::format("/b/sdp/{}/{}/{}", blockIndex, key, alineMatcher[1].str()));
+									std::format("/b/sdp/{}/{}/{}", blockIndex, key, alineMatcher[1].str()));
 
 							// We may get multiple items for the same "key" such as `a=rtpmap:x` and `a=rtpmap:y`
 							// In this case we should start an array
 							if (sipm.contains(pkey) && !sipm[pkey].is_array())
 							{
 								auto						 previousValue = sipm[pkey];
-								nlohmann::json::json_pointer pkeyUpOneLevel(fmt::format("/b/sdp/{}/{}", blockIndex, key));
+								nlohmann::json::json_pointer pkeyUpOneLevel(std::format("/b/sdp/{}/{}", blockIndex, key));
 								if (sipm[pkeyUpOneLevel].erase(alineMatcher[1].str()) == 1)
 								{
 									// Push the first item
@@ -335,13 +336,13 @@ namespace siddiqsoft
 						{
 							// This is the form where a=flag
 							// We matched a=key without the `:` or the "value" so we should store the value with nullptr
-							nlohmann::json::json_pointer pkey(fmt::format("/b/sdp/{}/{}/{}", blockIndex, key, value));
+							nlohmann::json::json_pointer pkey(std::format("/b/sdp/{}/{}/{}", blockIndex, key, value));
 							sipm[pkey] = true;
 						}
 					}
 					else
 					{
-						nlohmann::json::json_pointer pkey(fmt::format("/b/sdp/{}/{}", blockIndex, key));
+						nlohmann::json::json_pointer pkey(std::format("/b/sdp/{}/{}", blockIndex, key));
 
 						if (key == "c"s)
 						{
@@ -648,12 +649,12 @@ namespace siddiqsoft
 			if (sipm.isMessageRequest())
 			{
 				// Request Line
-				buffer = fmt::format("{} {} SIP/2.0\r\n"s, sipm.getMethod(), sipm.getUri());
+				buffer = std::format("{} {} SIP/2.0\r\n"s, sipm.getMethod(), sipm.getUri());
 			}
 			else if (sipm.isMessageResponse())
 			{
 				// Status Line
-				buffer = fmt::format("SIP/2.0 {} {}\r\n"s, sipm.getStatusCode(), sipm.getReason());
+				buffer = std::format("SIP/2.0 {} {}\r\n"s, sipm.getStatusCode(), sipm.getReason());
 			}
 			else
 			{
@@ -676,27 +677,27 @@ namespace siddiqsoft
 					if (val.is_null())
 					{
 						// For null entries, put a blank entry. This is the same as our decode
-						buffer += fmt::format("{}: \r\n"s, key);
+						buffer += std::format("{}: \r\n"s, key);
 					}
 					else if (val.is_number_unsigned())
 					{
-						buffer += fmt::format("{}: {}\r\n"s, key, val.get<uint64_t>());
+						buffer += std::format("{}: {}\r\n"s, key, val.get<uint64_t>());
 					}
 					else if (val.is_number_integer() || val.is_number())
 					{
-						buffer += fmt::format("{}: {}\r\n"s, key, val.get<int64_t>());
+						buffer += std::format("{}: {}\r\n"s, key, val.get<int64_t>());
 					}
 					else if (val.is_number_float())
 					{
-						buffer += fmt::format("{}: {}\r\n"s, key, val.get<float>());
+						buffer += std::format("{}: {}\r\n"s, key, val.get<float>());
 					}
 					else if (val.is_string())
 					{
-						buffer += fmt::format("{}: {}\r\n"s, key, val);
+						buffer += std::format("{}: {}\r\n"s, key, val);
 					}
 					else if (val.is_boolean())
 					{
-						buffer += fmt::format("{}: {}\r\n"s, key, val ? "true" : "false");
+						buffer += std::format("{}: {}\r\n"s, key, val ? "true" : "false");
 					}
 					else if (val.is_array())
 					{
@@ -705,12 +706,12 @@ namespace siddiqsoft
 						for (auto& item : val.items())
 						{
 							auto iv = item.value();
-							buffer += fmt::format("{}: {}\r\n"s, key, iv);
+							buffer += std::format("{}: {}\r\n"s, key, iv);
 						}
 					}
 					else
 					{
-						buffer += fmt::format("{}: {{}}\r\n"s, key, val);
+						buffer += std::format("{}: {{}}\r\n"s, key, val);
 					}
 				};
 
@@ -757,18 +758,18 @@ namespace siddiqsoft
 						for (auto& block : sdp)
 						{
 							// Build each block; order is critical. We do not support session-level attributes (only media-level attributes)
-							buffer += fmt::format("v=0\r\no={}\r\ns={}\r\ni={}\r\n"s,
+							buffer += std::format("v=0\r\no={}\r\ns={}\r\ni={}\r\n"s,
 												  serializeSDPelement(block, "o"s),
 												  serializeSDPelement(block, "s"s),
 												  serializeSDPelement(block, "i"s));
 							// Optional..
-							if (block.contains("u")) buffer += fmt::format("u={}\r\n"s, serializeSDPelement(block, "u"s));
+							if (block.contains("u")) buffer += std::format("u={}\r\n"s, serializeSDPelement(block, "u"s));
 							// Optional..
-							if (block.contains("e")) buffer += fmt::format("e={}\r\n"s, serializeSDPelement(block, "e"s));
+							if (block.contains("e")) buffer += std::format("e={}\r\n"s, serializeSDPelement(block, "e"s));
 							// Optional..
-							if (block.contains("p")) buffer += fmt::format("p={}\r\n"s, serializeSDPelement(block, "p"s));
+							if (block.contains("p")) buffer += std::format("p={}\r\n"s, serializeSDPelement(block, "p"s));
 							// Mandatory (typical); No support for session a-lines.
-							buffer += fmt::format("c={}\r\nt={}\r\nm={}\r\n"s,
+							buffer += std::format("c={}\r\nt={}\r\nm={}\r\n"s,
 												  serializeSDPelement(block, "c"s),
 												  serializeSDPelement(block, "t"s),
 												  serializeSDPelement(block, "m"s));
@@ -827,28 +828,28 @@ namespace siddiqsoft
 							{
 								for (auto& i : v.items())
 								{
-									fmt::format_to(std::back_inserter(ret), "a={}:{}\r\n"s, kv, i.value());
+									std::format_to(std::back_inserter(ret), "a={}:{}\r\n"s, kv, i.value());
 								}
 							}
 							else if (v.is_string())
-								fmt::format_to(std::back_inserter(ret), "a={}:{}\r\n"s, kv, v.get<std::string>());
+								std::format_to(std::back_inserter(ret), "a={}:{}\r\n"s, kv, v.get<std::string>());
 							else if (v.is_number() || v.is_number_integer())
-								fmt::format_to(std::back_inserter(ret), "a={}:{}\r\n"s, kv, v.get<int64_t>());
+								std::format_to(std::back_inserter(ret), "a={}:{}\r\n"s, kv, v.get<int64_t>());
 							else if (v.is_number_unsigned())
-								fmt::format_to(std::back_inserter(ret), "a={}:{}\r\n"s, kv, v.get<uint64_t>());
+								std::format_to(std::back_inserter(ret), "a={}:{}\r\n"s, kv, v.get<uint64_t>());
 							else if (v.is_number_float())
-								fmt::format_to(std::back_inserter(ret), "a={}:{}\r\n"s, kv, v.get<double>());
+								std::format_to(std::back_inserter(ret), "a={}:{}\r\n"s, kv, v.get<double>());
 							else if (v.is_boolean() && v == true)
-								fmt::format_to(std::back_inserter(ret), "a={}\r\n"s, kv);
+								std::format_to(std::back_inserter(ret), "a={}\r\n"s, kv);
 							else
-								fmt::format_to(std::back_inserter(ret), "a={}\r\n"s, kv);
+								std::format_to(std::back_inserter(ret), "a={}\r\n"s, kv);
 						}
 
 						return ret;
 					}
 					if (element == "o"s)
 					{
-						return fmt::format("{} {} {} {} {} {}"s,
+						return std::format("{} {} {} {} {} {}"s,
 										   item.value("user"s, ""s),
 										   item.value("t1"s, ""s),
 										   item.value("t2"s, ""s),
@@ -858,16 +859,16 @@ namespace siddiqsoft
 					}
 					if (element == "i"s)
 					{
-						return fmt::format("{} ({}) {}"s, item.value("name"s, ""), item.value("dn"s, ""), item.value("type"s, ""));
+						return std::format("{} ({}) {}"s, item.value("name"s, ""), item.value("dn"s, ""), item.value("type"s, ""));
 					}
 					if (element == "c"s)
 					{
-						return fmt::format("{} {} {}"s, item.value("type"s, ""), item.value("subtype"s, ""), item.value("dn"s, ""));
+						return std::format("{} {} {}"s, item.value("type"s, ""), item.value("subtype"s, ""), item.value("dn"s, ""));
 					}
 				}
 				else if (item.is_array())
 				{
-					if (element == "t"s) { return fmt::format("{} {}"s, item[0].get<uint32_t>(), item[1].get<uint32_t>()); }
+					if (element == "t"s) { return std::format("{} {}"s, item[0].get<uint32_t>(), item[1].get<uint32_t>()); }
 				}
 				else if (item.is_string())
 				{

@@ -46,8 +46,9 @@
 #include <random>
 #include <sstream>
 
-#define FMT_HEADER_ONLY 1
-#include "fmt/chrono.h"
+//#define FMT_HEADER_ONLY 1
+//#include "fmt/chrono.h"
+#include <format>
 #include "nlohmann/json.hpp"
 
 #include "sip2json_response_codes.hpp"
@@ -80,7 +81,7 @@ namespace siddiqsoft
 		{
 			using namespace std;
 			// Overwrite the source object's values
-			(*this)["meta"s] = {{"version"s, fmt::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
+			(*this)["meta"s] = {{"version"s, std::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
 								{"time"s, TimeAsISO8601()},
 								{"ttx"s, 0}};
 		}
@@ -107,17 +108,17 @@ namespace siddiqsoft
 			update({{"s"s, {{"type"s, SIPMessageType::request}, {"method"s, method}, {"uri"s, uri}, {"version"s, SIPVER_20}}},
 					{"b"s, nullptr},
 					{"meta"s,
-					 {{"version"s, fmt::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
+					 {{"version"s, std::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
 					  {"time"s, TimeAsISO8601()},
 					  {"ttx"s, 0}}},
 					{"h"s,
-					 {{"User-Agent"s, fmt::format("{}/{} (schema:{})"s, MetaLibName, MetaParserVersion, MetaSchemaVersion)},
+					 {{"User-Agent"s, std::format("{}/{} (schema:{})"s, MetaLibName, MetaParserVersion, MetaSchemaVersion)},
 					  {"Date"s, TimeAsRFC1123()}}}});
 
 			// request-line: METHOD Request-URI SIP/2.0
 			// message-headers
 			if (!callId.empty()) setHeader("Call-ID"s, callId);
-			if (cseq > 0) setHeader("CSeq"s, fmt::format("{} {}"s, cseq, method));
+			if (cseq > 0) setHeader("CSeq"s, std::format("{} {}"s, cseq, method));
 		}
 
 		/// @brief Instantiates a response message from scratch or optionally from existing sipmessage request
@@ -131,7 +132,7 @@ namespace siddiqsoft
 			update(src);
 
 			// Overwrite the source object's values
-			(*this)["meta"s] = {{"version"s, fmt::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
+			(*this)["meta"s] = {{"version"s, std::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
 								{"time"s, TimeAsISO8601()},
 								{"ttx"s, 0}};
 
@@ -143,7 +144,7 @@ namespace siddiqsoft
 							 {"reason"s, getReasonPhrase(statusCode)},
 							 {"version"s, SIPVER_20}};
 
-			(*this)["h"s]["User-Agent"s] = fmt::format("{}/{} (schema:{})"s, MetaLibName, MetaParserVersion, MetaSchemaVersion);
+			(*this)["h"s]["User-Agent"s] = std::format("{}/{} (schema:{})"s, MetaLibName, MetaParserVersion, MetaSchemaVersion);
 			setHeader("Date"s, TimeAsRFC1123());
 		}
 
@@ -164,11 +165,11 @@ namespace siddiqsoft
 					  {"version"s, SIPVER_20}}},
 					{"b"s, nullptr},
 					{"meta"s,
-					 {{"version"s, fmt::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
+					 {{"version"s, std::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
 					  {"time"s, TimeAsISO8601()},
 					  {"ttx"s, 0}}},
 					{"h"s,
-					 {{"User-Agent"s, fmt::format("{}/{} (schema:{})"s, MetaLibName, MetaParserVersion, MetaSchemaVersion)},
+					 {{"User-Agent"s, std::format("{}/{} (schema:{})"s, MetaLibName, MetaParserVersion, MetaSchemaVersion)},
 					  {"Date"s, TimeAsRFC1123()}}}});
 		}
 
@@ -185,9 +186,9 @@ namespace siddiqsoft
 		inline auto& setUserAgent(const std::string& ua)
 		{
 			if (!ua.empty())
-				setHeader("User-Agent", fmt::format("{}/{} (schema:{}) {}", MetaLibName, MetaParserVersion, MetaSchemaVersion, ua));
+				setHeader("User-Agent", std::format("{}/{} (schema:{}) {}", MetaLibName, MetaParserVersion, MetaSchemaVersion, ua));
 			else
-				setHeader("User-Agent", fmt::format("{}/{} (schema:{})", MetaLibName, MetaParserVersion, MetaSchemaVersion));
+				setHeader("User-Agent", std::format("{}/{} (schema:{})", MetaLibName, MetaParserVersion, MetaSchemaVersion));
 			return *this;
 		};
 		inline auto		getUserAgent() { return getHeader<std::string>("User-Agent"); };
@@ -280,7 +281,7 @@ namespace siddiqsoft
 		/// @param key The key within the body section.
 		/// @param v The value. Json, string (for text/plain)
 		/// @return Self
-		template <typename T> inline sipmessage& setBody(const json_pointer& key, const T& v)
+		template <typename T> inline sipmessage& setBody(const nlohmann::json::json_pointer& key, const T& v)
 		{
 			(*this)["b"][key] = v;
 			return *this;

@@ -20,7 +20,6 @@
     <copyright>Copyright (c) 2003-2020 Abdelkareem Siddiq</copyright>
     <!-- Dependencies -->
     <dependencies>
-      <dependency id="fmt" version="7.0.1"/>
       <dependency id="nlohmann.json" version="3.9.1"/>
     </dependencies>
   </metadata>

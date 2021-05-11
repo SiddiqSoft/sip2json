@@ -12,9 +12,10 @@
 #include <string_view>
 #include <filesystem>
 
-#define FMT_HEADER_ONLY 1
+//#define FMT_HEADER_ONLY 1
+//#include "fmt/chrono.h"
+#include <format>
 #include "nlohmann/json.hpp"
-#include "fmt/chrono.h"
 
 #include "../../src/sip2json.hpp"
 #include "../../src/sip2json_exception.hpp"
@@ -28,7 +29,7 @@ using namespace std;
 static std::string loadSampleFile(const std::string_view& fileName)
 {
 	std::stringstream testFile;
-	std::ifstream	  sampleInputFile(fmt::format("../../samples/{}.sip", fileName), std::ios::binary);
+	std::ifstream	  sampleInputFile(format("../../samples/{}.sip", fileName), std::ios::binary);
 
 	if (sampleInputFile.is_open())
 	{
@@ -80,31 +81,31 @@ TEST(core_parser_tests, Test_sip2jsonErrors)
 {
 	auto ee = sip2jsonErrors::ok;
 
-	std::clog << fmt::format("{} - {} --> {}\n", __func__, ee, nlohmann::json(ee).dump());
+	std::clog << std::format("{} - {} --> {}\n", __func__, uint32_t(ee), nlohmann::json(ee).dump());
 
 	ee = sip2jsonErrors::empty_message;
-	std::clog << fmt::format("{} - {} --> {}\n", __func__, ee, nlohmann::json(ee).dump());
+	std::clog << std::format("{} - {} --> {}\n", __func__, uint32_t(ee), nlohmann::json(ee).dump());
 
 	ee = sip2jsonErrors::incomplete_buffer_for_content;
-	std::clog << fmt::format("{} - {} --> {}\n", __func__, ee, nlohmann::json(ee).dump());
+	std::clog << std::format("{} - {} --> {}\n", __func__, uint32_t(ee), nlohmann::json(ee).dump());
 
 	ee = sip2jsonErrors::incomplete_buffer_for_header;
-	std::clog << fmt::format("{} - {} --> {}\n", __func__, ee, nlohmann::json(ee).dump());
+	std::clog << std::format("{} - {} --> {}\n", __func__, uint32_t(ee), nlohmann::json(ee).dump());
 
 	ee = sip2jsonErrors::incomplete_buffer_for_parse;
-	std::clog << fmt::format("{} - {} --> {}\n", __func__, ee, nlohmann::json(ee).dump());
+	std::clog << std::format("{} - {} --> {}\n", __func__, uint32_t(ee), nlohmann::json(ee).dump());
 
 	ee = sip2jsonErrors::invalid_document;
-	std::clog << fmt::format("{} - {} --> {}\n", __func__, ee, nlohmann::json(ee).dump());
+	std::clog << std::format("{} - {} --> {}\n", __func__, uint32_t(ee), nlohmann::json(ee).dump());
 
 	ee = sip2jsonErrors::invalid_document_unsupported_content;
-	std::clog << fmt::format("{} - {} --> {}\n", __func__, ee, nlohmann::json(ee).dump());
+	std::clog << std::format("{} - {} --> {}\n", __func__, uint32_t(ee), nlohmann::json(ee).dump());
 
 	ee = sip2jsonErrors::invalid_document_unsupported_method;
-	std::clog << fmt::format("{} - {} --> {}\n", __func__, ee, nlohmann::json(ee).dump());
+	std::clog << std::format("{} - {} --> {}\n", __func__, uint32_t(ee), nlohmann::json(ee).dump());
 
 	ee = sip2jsonErrors::invalid_startline;
-	std::clog << fmt::format("{} - {} --> {}\n", __func__, ee, nlohmann::json(ee).dump());
+	std::clog << std::format("{} - {} --> {}\n", __func__, uint32_t(ee), nlohmann::json(ee).dump());
 }
 
 // NOLINTNEXTLINE
@@ -255,7 +256,7 @@ TEST(siphelpers, Test_serialize)
 	}
 	catch (const std::exception& e)
 	{
-		std::clog << fmt::format("{}:Exception lastline:{} --> {}\n", __func__, ll, e.what());
+		std::clog << std::format("{}:Exception lastline:{} --> {}\n", __func__, ll, e.what());
 		EXPECT_TRUE(true) << L"Unexpected exception.";
 	}
 }
@@ -590,7 +591,7 @@ TEST(siphelpers, Test_empty_h)
 			.setHeader("Content-Type", CONTENT_TYPE_TEXT_PLAIN)
 			.setHeader("Content-Length", 0);
 
-	std::clog << fmt::format("{} - contents\n{}\n", __func__, sip2json::serialize(sipm));
+	std::clog << std::format("{} - contents\n{}\n", __func__, sip2json::serialize(sipm));
 
 	// Check that the header exists..
 	EXPECT_EQ("sip:hello@world.com", sipm.getHeader<std::string>("To"));
@@ -605,7 +606,7 @@ TEST(siphelpers, Test_empty_h)
 	sipm.headers().erase("From");
 	sipm.headers().erase("Contact");
 
-	std::clog << fmt::format("{} - contents\n{}\n", __func__, sip2json::serialize(sipm));
+	std::clog << std::format("{} - contents\n{}\n", __func__, sip2json::serialize(sipm));
 
 	EXPECT_FALSE(sipm.headers().contains("To"));
 	EXPECT_FALSE(sipm.headers().contains("From"));
@@ -742,7 +743,7 @@ TEST(siphelpers, Test_body_method)
 	// Check again for the body. it should be non-null
 	EXPECT_TRUE(sipm.body().is_object());
 
-	std::clog << fmt::format("{} - Contents\n{}\n", __func__, sipm.dump(2));
+	std::clog << std::format("{} - Contents\n{}\n", __func__, sipm.dump(2));
 
 	EXPECT_EQ(0, sipm.body()["sdp"][0]["v"].get<uint32_t>());
 	EXPECT_EQ("subject", sipm.body()["sdp"][0]["s"].get<std::string>());
@@ -755,7 +756,7 @@ TEST(siphelpers, Test_body_method)
 	}
 	catch (const std::exception& e)
 	{
-		std::clog << fmt::format("{}:Exception: {}\n", __func__, e.what());
+		std::clog << std::format("{}:Exception: {}\n", __func__, e.what());
 		EXPECT_FALSE(false) << L"Unexpected exception.";
 	}
 }
@@ -803,7 +804,7 @@ TEST(siphelpers, Test_async_incomplete_buffer_for_content)
 	sip2json::parseAsync(
 			bs, buffer.end(), {}, [&](const sip2json_exception& e, std::string::iterator&, const std::string::iterator&) {
 				// We would get multiple exceptions/callbacks so we should watch out for our specific code.
-				std::clog << fmt::format("Test_incomplete_buffer_for_content: got error:{}\n", e.errCode);
+				std::clog << std::format("Test_incomplete_buffer_for_content: got error:{}\n", e.errCode);
 				if (e.errCode == sip2jsonErrors::incomplete_buffer_for_content) passTest = true;
 			});
 	EXPECT_TRUE(passTest);
