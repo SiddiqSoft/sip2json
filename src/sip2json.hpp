@@ -310,20 +310,20 @@ namespace siddiqsoft
 							if (sipm.contains(pkey) && !sipm[pkey].is_array())
 							{
 								auto previousValue = sipm[pkey]; // make a copy!
-
-								nlohmann::json::json_pointer pkeyUpOneLevel(fmt::format("/b/sdp/{}/{}", blockIndex, key));
-								if (sipm[pkeyUpOneLevel].erase(alineMatcher[1].str()) == 1)
-								{
-									// Push the first item
-									sipm[pkey].push_back(previousValue);
-									// Push the current item
-									sipm[pkey].push_back(alineMatcher[2].str());
-								}
-								else
-								{
-									sip2json_throw<unsupported_contenttype_error>(
-											"{}:Failed removing {} from sipmessage.", __func__, string(pkey));
-								}
+								sipm[pkey]={previousValue, alineMatcher[2].str()};
+								//nlohmann::json::json_pointer pkeyUpOneLevel(fmt::format("/b/sdp/{}/{}", blockIndex, key));
+								//if (sipm[pkeyUpOneLevel].erase(alineMatcher[1].str()) == 1)
+								//{
+								//	// Push the first item
+								//	sipm[pkey].push_back(previousValue);
+								//	// Push the current item
+								//	sipm[pkey].push_back(alineMatcher[2].str());
+								//}
+								//else
+								//{
+								//	sip2json_throw<unsupported_contenttype_error>(
+								//			"{}:Failed removing {} from sipmessage.", __func__, string(pkey));
+								//}
 							}
 							else if (sipm[pkey].is_array())
 								sipm[pkey].push_back(alineMatcher[2].str());
@@ -433,20 +433,25 @@ namespace siddiqsoft
 				std::optional<std::function<void(const sip2json_exception&, std::string::iterator&, const std::string::iterator&)>>
 						errorCallback = {}) noexcept
 		{
+			auto						ll			= __LINE__;
 			std::string::iterator		bufferStart = frameBuffer.begin();
 			const std::string::iterator bufferEnd	= frameBuffer.end();
+			size_t						decodedMessageCount {0};
 
-			size_t decodedMessageCount {0};
-
+			ll = __LINE__;
 			while (bufferStart != bufferEnd)
 			{
 				try
 				{
+					ll = __LINE__;
 					// If the callback is provided, then we invoke the callback. Nothing is returned to caller.
 					if (auto&& sipm {parseFromBuffer(bufferStart, bufferEnd)}; !sipm.empty())
 					{
+						ll = __LINE__;
 						decodedMessageCount++;
+						ll									 = __LINE__;
 						sipm["meta"]["parseCountThisBuffer"] = decodedMessageCount;
+						ll									 = __LINE__;
 						parseCallback(std::move(sipm));
 					}
 				}

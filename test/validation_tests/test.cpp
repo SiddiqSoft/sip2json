@@ -871,29 +871,53 @@ TEST(validation, Test_extension_aras)
 	auto parseCount = 0;
 
 
-	sip2json::parseAsync(buffer, [&](auto&& sipm) {
-		switch (parseCount++)
-		{
-		case 0:
-		{
-			EXPECT_EQ(1131, sipm.getContentLength());
-			EXPECT_EQ("+14152264822x,0830423985", sipm.getBodyElement("/sdp/0/c/dn"_json_pointer, ""s));
-		}
-		break;
-		case 1:
-		{
-			EXPECT_EQ(1258, sipm.getContentLength());
-			EXPECT_EQ("+14152264822x,0830423985", sipm.getBodyElement("/sdp/0/c/dn"_json_pointer, ""s));
-		}
-		break;
-		case 2:
-		{
-			EXPECT_EQ(1286, sipm.getContentLength());
-			EXPECT_EQ("+14152264822x,0830423985", sipm.getBodyElement("/sdp/0/c/dn"_json_pointer, ""s));
-		}
-		break;
-		};
-	});
+	buffer = sip2json::parseAsync(
+			buffer,
+			[&](auto&& sipm) {
+				switch (parseCount++)
+				{
+				case 0:
+				{
+					EXPECT_EQ(2, sipm["/h/Via"_json_pointer].size()) << sipm.dump(2);
+					EXPECT_EQ(1153, sipm.getContentLength());
+					EXPECT_EQ("+14152264822x,0830423985", sipm.getBodyElement("/sdp/0/c/dn"_json_pointer, ""s));
+					EXPECT_EQ("1.11", sipm.value("/b/sdp/0/a/x-ring2-coords"_json_pointer, "")) << sipm.dump(2);
+				}
+				break;
+				case 1:
+				{
+					//EXPECT_TRUE(false) << sipm.dump(2); // Diagnostics only
+
+					EXPECT_EQ(2, sipm["/h/Via"_json_pointer].size()) << sipm.dump(2);
+					EXPECT_EQ(1302, sipm.getContentLength());
+					EXPECT_EQ("+14152264822x,0830423985", sipm.getBodyElement("/sdp/0/c/dn"_json_pointer, ""s));
+					EXPECT_TRUE(sipm.contains("/b/sdp/0/a/x-ring2-coords"_json_pointer)) << sipm.dump(2);
+					EXPECT_EQ(2, sipm["/b/sdp/0/a/x-ring2-coords"_json_pointer].size()) << sipm.dump(2);
+					EXPECT_EQ("2.11", sipm.value("/b/sdp/0/a/x-ring2-coords/0"_json_pointer, "")) << sipm.dump(2);
+					EXPECT_EQ("2.22", sipm.value("/b/sdp/0/a/x-ring2-coords/1"_json_pointer, "")) << sipm.dump(2);
+				}
+				break;
+				case 2:
+				{
+					//EXPECT_TRUE(false) << sipm.dump(2); // Diagnostics only
+
+					EXPECT_EQ(2, sipm["/h/Via"_json_pointer].size()) << sipm.dump(2);
+					EXPECT_EQ(1355, sipm.getContentLength());
+					EXPECT_EQ("+14152264822x,0830423985", sipm.getBodyElement("/sdp/0/c/dn"_json_pointer, ""s));
+					EXPECT_TRUE(sipm.contains("/b/sdp/0/a/x-ring2-coords"_json_pointer)) << sipm.dump(2);
+					EXPECT_EQ(3, sipm["/b/sdp/0/a/x-ring2-coords"_json_pointer].size()) << sipm.dump(2);
+					EXPECT_EQ("3.11", sipm.value("/b/sdp/0/a/x-ring2-coords/0"_json_pointer, "")) << sipm.dump(2);
+					EXPECT_EQ("3.22", sipm.value("/b/sdp/0/a/x-ring2-coords/1"_json_pointer, "")) << sipm.dump(2);
+					EXPECT_EQ("3.33", sipm.value("/b/sdp/0/a/x-ring2-coords/2"_json_pointer, "")) << sipm.dump(2);
+				}
+				break;
+				};
+			},
+			[](const sip2json_exception& e, std::string::iterator&, const std::string::iterator&) {
+				EXPECT_FALSE(true) << e.what();
+			}
+
+	);
 
 	// There must be atleast 3 NOTIFY from the buffer
 	EXPECT_EQ(3, parseCount) << "Should get 3 items instead of " << parseCount << std::endl;
