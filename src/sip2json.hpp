@@ -428,13 +428,15 @@ namespace siddiqsoft
 		/// @param bufferEnd End of the buffer
 		/// @param parseCallback Callback which takes a reference to the sipmessage just decoded. If present, the return is empty vector.
 		/// @param errorCallback Optional callback to handle the error on the parse.
-		static void parseAsync(
-				std::string::iterator&			  bufferStart,
-				const std::string::iterator&	  bufferEnd,
+		static std::string& parseAsync(
+				std::string&					  frameBuffer,
 				std::function<void(sipmessage&&)> parseCallback,
 				std::optional<std::function<void(const sip2json_exception&, std::string::iterator&, const std::string::iterator&)>>
 						errorCallback = {}) noexcept
 		{
+			std::string::iterator		bufferStart = frameBuffer.begin();
+			const std::string::iterator bufferEnd	= frameBuffer.end();
+
 			size_t decodedMessageCount {0};
 
 			while (bufferStart != bufferEnd)
@@ -494,6 +496,14 @@ namespace siddiqsoft
 					break;
 				}
 			}
+
+			// Remove the processed elements from the buffer.
+			// The bufferStart will point to the location past the point where
+			// the frame was extracted.
+			// We must therefore remove anything prior and upto the bufferStart
+			frameBuffer.erase(frameBuffer.begin(), bufferStart);
+
+			return frameBuffer;
 		}
 
 		/// @brief Given a buffer, parse as many frames and return the vector of messages. Re-Throws only if there was not possible to decode even a single message. Stops parsing on any additional exception.
