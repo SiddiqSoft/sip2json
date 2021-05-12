@@ -311,14 +311,16 @@ namespace siddiqsoft
 							// In this case we should start an array
 							if (sipm.contains(pkey) && !sipm[pkey].is_array())
 							{
-								auto						 previousValue = sipm[pkey];
+								auto&						 sipm_pkey	   = sipm.at(pkey);
+								auto						 previousValue = sipm.at(pkey);
+
 								nlohmann::json::json_pointer pkeyUpOneLevel(fmt::format("/b/sdp/{}/{}", blockIndex, key));
 								if (sipm[pkeyUpOneLevel].erase(alineMatcher[1].str()) == 1)
 								{
 									// Push the first item
-									sipm[pkey].push_back(previousValue);
+									sipm_pkey.push_back(previousValue);
 									// Push the current item
-									sipm[pkey].push_back(alineMatcher[2].str());
+									sipm_pkey.push_back(alineMatcher[2].str());
 								}
 								else
 								{
