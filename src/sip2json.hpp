@@ -291,15 +291,13 @@ namespace siddiqsoft
 						// First element; increment blockIndex.
 						// Add the next element to a new SDP object.
 						blockIndex++; // the first match will increment this to "0"
-						//nlohmann::json::json_pointer pkey(fmt::format("/b/sdp/{}/{}", blockIndex, key));
-						//sipm[pkey]						   = 0;
 						sipm["b"s]["sdp"s][blockIndex][key] = 0;
 					}
 					else if (key == "a"s)
 					{
 						// attribute lines: https://en.wikipedia.org/wiki/Session_Description_Protocol#Attributes
-						//sipm[pkey].push_back(matcher[2].str());
 						match_results<string::iterator> alineMatcher;
+
 						if (regex_search(value.begin(), value.end(), alineMatcher, SIP_PATTERN_BODY_ALINE) &&
 							alineMatcher.size() >= 3)
 						{
@@ -311,16 +309,15 @@ namespace siddiqsoft
 							// In this case we should start an array
 							if (sipm.contains(pkey) && !sipm[pkey].is_array())
 							{
-								auto&						 sipm_pkey	   = sipm.at(pkey);
-								auto						 previousValue = sipm.at(pkey);
+								auto previousValue = sipm[pkey]; // make a copy!
 
 								nlohmann::json::json_pointer pkeyUpOneLevel(fmt::format("/b/sdp/{}/{}", blockIndex, key));
 								if (sipm[pkeyUpOneLevel].erase(alineMatcher[1].str()) == 1)
 								{
 									// Push the first item
-									sipm_pkey.push_back(previousValue);
+									sipm[pkey].push_back(previousValue);
 									// Push the current item
-									sipm_pkey.push_back(alineMatcher[2].str());
+									sipm[pkey].push_back(alineMatcher[2].str());
 								}
 								else
 								{
