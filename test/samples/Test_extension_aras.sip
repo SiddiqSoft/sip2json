@@ -32,7 +32,7 @@ X-Video-UsingMCU: false
 X-subject: Denver's Lab Meeting Room
 X-Call-Instance-ID: OTcxMDkyOTAwNTMyMzU0MzEwLmlsLWVkLWFyYXMtMDEucmluZzItY29ycC5jb206MTYxMDg0MzAzMDo5MDgwODY=
 X-Route-ID: 2
-Content-Length: 1131
+Content-Length: 1153
 Content-type: application/sdp
 
 v=0
@@ -65,6 +65,7 @@ a=x-ring2-displayname_type:0
 a=x-ring2-clientaddress:135.180.107.115:24051
 a=x-ring2-unique_device_id:4c52138a-e4ac-42d3-986d-2df18cc15b69
 a=x-ring2-UF1: 
+a=x-ring2-coords:1.11
 a=ivr:dialout
 a=dialout:click_in
 a=access_code:2451228
@@ -106,7 +107,7 @@ X-Video-UsingMCU: false
 X-subject: Denver's Lab Meeting Room
 X-Call-Instance-ID: OTcxMDkyOTAwNTMyMzU0MzEwLmlsLWVkLWFyYXMtMDEucmluZzItY29ycC5jb206MTYxMDg0MzAzMDo5MDgwODY=
 X-Route-ID: 2
-Content-Length: 1258
+Content-Length: 1302
 Content-type: application/sdp
 
 v=0
@@ -142,6 +143,8 @@ a=x-ring2-displayname_type:0
 a=x-ring2-clientaddress:135.180.107.115:24051
 a=x-ring2-unique_device_id:4c52138a-e4ac-42d3-986d-2df18cc15b69
 a=x-ring2-UF1: 
+a=x-ring2-coords:2.11
+a=x-ring2-coords:2.22
 a=ivr:dialout
 a=dialout:click_in
 a=access_code:2451228
@@ -184,7 +187,7 @@ X-Video-UsingMCU: false
 X-subject: Denver's Lab Meeting Room
 X-Call-Instance-ID: OTcxMDkyOTAwNTMyMzU0MzEwLmlsLWVkLWFyYXMtMDEucmluZzItY29ycC5jb206MTYxMDg0MzAzMDo5MDgwODY=
 X-Route-ID: 2
-Content-Length: 1286
+Content-Length: 1355
 Content-type: application/sdp
 
 v=0
@@ -221,6 +224,9 @@ a=x-ring2-displayname_type:0
 a=x-ring2-clientaddress:135.180.107.115:24051
 a=x-ring2-unique_device_id:4c52138a-e4ac-42d3-986d-2df18cc15b69
 a=x-ring2-UF1: 
+a=x-ring2-coords:3.11
+a=x-ring2-coords:3.22
+a=x-ring2-coords:3.33
 a=ivr:dialout
 a=dialout:click_in
 a=access_code:2451228
