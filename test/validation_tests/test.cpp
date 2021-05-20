@@ -1,4 +1,4 @@
-/*
+﻿/*
   A SIP Parser for Modern C++ / Version 1.0.0
   https://github.com/siddiqsoftware/sip2json/
   Copyright 2003-2020 Abdelkareem Siddiq.
@@ -719,7 +719,10 @@ TEST(siphelpers, Test_header_method)
 // NOLINTNEXTLINE
 TEST(siphelpers, Test_body_method)
 {
-	sipmessage sipm("REGISTER", "sip:hello@world.com", createCallId(), 1);
+	using namespace std;
+
+	auto	   iName = "Test body HЯ⾀ method"s;
+	sipmessage sipm("INVITE", "sip:hello@world.com", createCallId(), 1);
 
 	sipm.setHeader("Content-Type", CONTENT_TYPE_APP_SDP);
 
@@ -735,14 +738,15 @@ TEST(siphelpers, Test_body_method)
 									 {"t1", "900001"},	// these must be string
 									 {"t2", "900009"}}) // must be string
 			.setBody("/sdp/0/s"_json_pointer, "subject")
+			.setBody("/sdp/0/i/name"_json_pointer, iName)
+			.setBody("/sdp/0/i/type"_json_pointer, "CallByPhone-URL")
+			.setBody("/sdp/0/i/dn"_json_pointer, "16668661212")
 			.setBody("/sdp/0/a/access_code"_json_pointer, "0277777")
 			.setBody("/sdp/0/t"_json_pointer, nlohmann::json {100001, 200002})
 			.setBody("/sdp/0/m"_json_pointer, "audio voice");
 
 	// Check again for the body. it should be non-null
 	EXPECT_TRUE(sipm.body().is_object());
-
-	std::clog << fmt::format("{} - Contents\n{}\n", __func__, sipm.dump(2));
 
 	EXPECT_EQ(0, sipm.body()["sdp"][0]["v"].get<uint32_t>());
 	EXPECT_EQ("subject", sipm.body()["sdp"][0]["s"].get<std::string>());
@@ -751,7 +755,19 @@ TEST(siphelpers, Test_body_method)
 
 	try
 	{
-		std::clog << sip2json::serialize(sipm);
+		auto buffer = sip2json::serialize(sipm);
+
+		// Returns the remaining buffer!
+		buffer = sip2json::parseAsync(buffer, [&](auto&& dsipm) {
+			// We Should check for the iline
+			EXPECT_EQ(iName, dsipm.body().value("/sdp/0/i/name"_json_pointer, "")) << dsipm.dump(2);
+
+			EXPECT_EQ(0, dsipm.body()["sdp"][0]["v"].get<uint32_t>());
+			EXPECT_EQ("subject", dsipm.body()["sdp"][0]["s"].get<std::string>());
+			EXPECT_EQ(100001, dsipm.body()["sdp"][0]["t"][0].get<uint32_t>());
+			EXPECT_EQ(200002, dsipm.body()["sdp"][0]["t"][1].get<uint32_t>());
+		});
+		EXPECT_EQ(0, buffer.length()) << buffer;
 	}
 	catch (const std::exception& e)
 	{

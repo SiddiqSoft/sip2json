@@ -352,9 +352,9 @@ namespace siddiqsoft
 								sipm[pkey] = nlohmann::json {
 										{"type"s, clineMatcher[1]}, {"subtype"s, clineMatcher[2]}, {"dn"s, clineMatcher[3]}};
 							}
-							else
+							else if (!value.empty())
 							{
-								sipm[pkey] = !value.empty() ? value : nullptr;
+								sipm[pkey] = value;
 							}
 						}
 						else if (key == "o"s)
@@ -382,8 +382,12 @@ namespace siddiqsoft
 							if (regex_search(value.begin(), value.end(), ilineMatcher, SIP_PATTERN_BODY_ILINE) &&
 								ilineMatcher.size() >= 3)
 							{
+								auto iName = ilineMatcher[1].str();
+								// Set the name but check to ensure that if we have a " in the name that we strip it..
 								sipm[pkey] = nlohmann::json {
-										{"name", ilineMatcher[1]}, {"dn", ilineMatcher[2]}, {"type", ilineMatcher[3]}};
+										{"name"s, iName.starts_with("\""s) ? iName.substr(1, iName.length() - 2) : iName},
+										{"dn"s, ilineMatcher[2]},
+										{"type"s, ilineMatcher[3]}};
 							}
 							else if (!value.empty())
 							{
@@ -868,7 +872,8 @@ namespace siddiqsoft
 					}
 					if (element == "i"s)
 					{
-						return fmt::format("{} ({}) {}"s, item.value("name"s, ""), item.value("dn"s, ""), item.value("type"s, ""));
+						return fmt::format(
+								"\"{}\" ({}) {}"s, item.value("name"s, ""), item.value("dn"s, ""), item.value("type"s, ""));
 					}
 					if (element == "c"s)
 					{
