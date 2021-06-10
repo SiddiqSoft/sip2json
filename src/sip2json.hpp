@@ -292,15 +292,13 @@ namespace siddiqsoft
 						// First element; increment blockIndex.
 						// Add the next element to a new SDP object.
 						blockIndex++; // the first match will increment this to "0"
-						//nlohmann::json::json_pointer pkey(std::format("/b/sdp/{}/{}", blockIndex, key));
-						//sipm[pkey]						   = 0;
 						sipm["b"s]["sdp"s][blockIndex][key] = 0;
 					}
 					else if (key == "a"s)
 					{
 						// attribute lines: https://en.wikipedia.org/wiki/Session_Description_Protocol#Attributes
-						//sipm[pkey].push_back(matcher[2].str());
 						match_results<string::iterator> alineMatcher;
+
 						if (regex_search(value.begin(), value.end(), alineMatcher, SIP_PATTERN_BODY_ALINE) &&
 							alineMatcher.size() >= 3)
 						{
@@ -312,20 +310,21 @@ namespace siddiqsoft
 							// In this case we should start an array
 							if (sipm.contains(pkey) && !sipm[pkey].is_array())
 							{
-								auto						 previousValue = sipm[pkey];
-								nlohmann::json::json_pointer pkeyUpOneLevel(std::format("/b/sdp/{}/{}", blockIndex, key));
-								if (sipm[pkeyUpOneLevel].erase(alineMatcher[1].str()) == 1)
-								{
-									// Push the first item
-									sipm[pkey].push_back(previousValue);
-									// Push the current item
-									sipm[pkey].push_back(alineMatcher[2].str());
-								}
-								else
-								{
-									sip2json_throw<unsupported_contenttype_error>(
-											"{}:Failed removing {} from sipmessage.", __func__, string(pkey));
-								}
+								auto previousValue = sipm[pkey]; // make a copy!
+								sipm[pkey]={previousValue, alineMatcher[2].str()};
+								//nlohmann::json::json_pointer pkeyUpOneLevel(fmt::format("/b/sdp/{}/{}", blockIndex, key));
+								//if (sipm[pkeyUpOneLevel].erase(alineMatcher[1].str()) == 1)
+								//{
+								//	// Push the first item
+								//	sipm[pkey].push_back(previousValue);
+								//	// Push the current item
+								//	sipm[pkey].push_back(alineMatcher[2].str());
+								//}
+								//else
+								//{
+								//	sip2json_throw<unsupported_contenttype_error>(
+								//			"{}:Failed removing {} from sipmessage.", __func__, string(pkey));
+								//}
 							}
 							else if (sipm[pkey].is_array())
 								sipm[pkey].push_back(alineMatcher[2].str());
@@ -353,9 +352,9 @@ namespace siddiqsoft
 								sipm[pkey] = nlohmann::json {
 										{"type"s, clineMatcher[1]}, {"subtype"s, clineMatcher[2]}, {"dn"s, clineMatcher[3]}};
 							}
-							else
+							else if (!value.empty())
 							{
-								sipm[pkey] = !value.empty() ? value : nullptr;
+								sipm[pkey] = value;
 							}
 						}
 						else if (key == "o"s)
@@ -383,8 +382,12 @@ namespace siddiqsoft
 							if (regex_search(value.begin(), value.end(), ilineMatcher, SIP_PATTERN_BODY_ILINE) &&
 								ilineMatcher.size() >= 3)
 							{
+								auto iName = ilineMatcher[1].str();
+								// Set the name but check to ensure that if we have a " in the name that we strip it..
 								sipm[pkey] = nlohmann::json {
-										{"name", ilineMatcher[1]}, {"dn", ilineMatcher[2]}, {"type", ilineMatcher[3]}};
+										{"name"s, iName.starts_with("\""s) ? iName.substr(1, iName.length() - 2) : iName},
+										{"dn"s, ilineMatcher[2]},
+										{"type"s, ilineMatcher[3]}};
 							}
 							else if (!value.empty())
 							{
@@ -429,24 +432,31 @@ namespace siddiqsoft
 		/// @param bufferEnd End of the buffer
 		/// @param parseCallback Callback which takes a reference to the sipmessage just decoded. If present, the return is empty vector.
 		/// @param errorCallback Optional callback to handle the error on the parse.
-		static void parseAsync(
-				std::string::iterator&			  bufferStart,
-				const std::string::iterator&	  bufferEnd,
+		static std::string& parseAsync(
+				std::string&					  frameBuffer,
 				std::function<void(sipmessage&&)> parseCallback,
 				std::optional<std::function<void(const sip2json_exception&, std::string::iterator&, const std::string::iterator&)>>
 						errorCallback = {}) noexcept
 		{
-			size_t decodedMessageCount {0};
+			auto						ll			= __LINE__;
+			std::string::iterator		bufferStart = frameBuffer.begin();
+			const std::string::iterator bufferEnd	= frameBuffer.end();
+			size_t						decodedMessageCount {0};
 
+			ll = __LINE__;
 			while (bufferStart != bufferEnd)
 			{
 				try
 				{
+					ll = __LINE__;
 					// If the callback is provided, then we invoke the callback. Nothing is returned to caller.
 					if (auto&& sipm {parseFromBuffer(bufferStart, bufferEnd)}; !sipm.empty())
 					{
+						ll = __LINE__;
 						decodedMessageCount++;
+						ll									 = __LINE__;
 						sipm["meta"]["parseCountThisBuffer"] = decodedMessageCount;
+						ll									 = __LINE__;
 						parseCallback(std::move(sipm));
 					}
 				}
@@ -495,6 +505,14 @@ namespace siddiqsoft
 					break;
 				}
 			}
+
+			// Remove the processed elements from the buffer.
+			// The bufferStart will point to the location past the point where
+			// the frame was extracted.
+			// We must therefore remove anything prior and upto the bufferStart
+			frameBuffer.erase(frameBuffer.begin(), bufferStart);
+
+			return frameBuffer;
 		}
 
 		/// @brief Given a buffer, parse as many frames and return the vector of messages. Re-Throws only if there was not possible to decode even a single message. Stops parsing on any additional exception.
@@ -859,7 +877,8 @@ namespace siddiqsoft
 					}
 					if (element == "i"s)
 					{
-						return std::format("{} ({}) {}"s, item.value("name"s, ""), item.value("dn"s, ""), item.value("type"s, ""));
+						return fmt::format(
+								"\"{}\" ({}) {}"s, item.value("name"s, ""), item.value("dn"s, ""), item.value("type"s, ""));
 					}
 					if (element == "c"s)
 					{

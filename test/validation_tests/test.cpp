@@ -1,4 +1,4 @@
-/*
+﻿/*
   A SIP Parser for Modern C++ / Version 1.0.0
   https://github.com/siddiqsoftware/sip2json/
   Copyright 2003-2020 Abdelkareem Siddiq.
@@ -720,7 +720,10 @@ TEST(siphelpers, Test_header_method)
 // NOLINTNEXTLINE
 TEST(siphelpers, Test_body_method)
 {
-	sipmessage sipm("REGISTER", "sip:hello@world.com", createCallId(), 1);
+	using namespace std;
+
+	auto	   iName = "Test body HЯ⾀ method"s;
+	sipmessage sipm("INVITE", "sip:hello@world.com", createCallId(), 1);
 
 	sipm.setHeader("Content-Type", CONTENT_TYPE_APP_SDP);
 
@@ -728,22 +731,23 @@ TEST(siphelpers, Test_body_method)
 
 	// Set dummy but all required values! v, 0, s, t, m
 	sipm.setBody("/sdp/0/v"_json_pointer, 0)
-			.setBody<nlohmann::json>("/sdp/0/o"_json_pointer,
-									 {{"user", "sip:hello@world.com"},
-									  {"type", "IN"},
-									  {"subtype", "IP4"},
-									  {"host", "host.name.com"},
-									  {"t1", "900001"},	 // these must be string
-									  {"t2", "900009"}}) // must be string
+			.setBody("/sdp/0/o"_json_pointer,
+					 nlohmann::json {{"user", "sip:hello@world.com"},
+									 {"type", "IN"},
+									 {"subtype", "IP4"},
+									 {"host", "host.name.com"},
+									 {"t1", "900001"},	// these must be string
+									 {"t2", "900009"}}) // must be string
 			.setBody("/sdp/0/s"_json_pointer, "subject")
+			.setBody("/sdp/0/i/name"_json_pointer, iName)
+			.setBody("/sdp/0/i/type"_json_pointer, "CallByPhone-URL")
+			.setBody("/sdp/0/i/dn"_json_pointer, "16668661212")
 			.setBody("/sdp/0/a/access_code"_json_pointer, "0277777")
 			.setBody("/sdp/0/t"_json_pointer, nlohmann::json {100001, 200002})
 			.setBody("/sdp/0/m"_json_pointer, "audio voice");
 
 	// Check again for the body. it should be non-null
 	EXPECT_TRUE(sipm.body().is_object());
-
-	std::clog << std::format("{} - Contents\n{}\n", __func__, sipm.dump(2));
 
 	EXPECT_EQ(0, sipm.body()["sdp"][0]["v"].get<uint32_t>());
 	EXPECT_EQ("subject", sipm.body()["sdp"][0]["s"].get<std::string>());
@@ -752,7 +756,19 @@ TEST(siphelpers, Test_body_method)
 
 	try
 	{
-		std::clog << sip2json::serialize(sipm);
+		auto buffer = sip2json::serialize(sipm);
+
+		// Returns the remaining buffer!
+		buffer = sip2json::parseAsync(buffer, [&](auto&& dsipm) {
+			// We Should check for the iline
+			EXPECT_EQ(iName, dsipm.body().value("/sdp/0/i/name"_json_pointer, "")) << dsipm.dump(2);
+
+			EXPECT_EQ(0, dsipm.body()["sdp"][0]["v"].get<uint32_t>());
+			EXPECT_EQ("subject", dsipm.body()["sdp"][0]["s"].get<std::string>());
+			EXPECT_EQ(100001, dsipm.body()["sdp"][0]["t"][0].get<uint32_t>());
+			EXPECT_EQ(200002, dsipm.body()["sdp"][0]["t"][1].get<uint32_t>());
+		});
+		EXPECT_EQ(0, buffer.length()) << buffer;
 	}
 	catch (const std::exception& e)
 	{
@@ -769,11 +785,10 @@ TEST(siphelpers, Test_async_invalid_startline)
 	auto buffer	  = loadSampleFile("Test_invalid_startline"); // NOLINT
 	auto bs		  = buffer.begin();
 	std::clog << buffer << "\n";
-	sip2json::parseAsync(
-			bs, buffer.end(), {}, [&](const sip2json_exception& e, std::string::iterator&, const std::string::iterator&) {
-				EXPECT_TRUE(e.errCode == sip2jsonErrors::invalid_startline);
-				passTest = true;
-			});
+	sip2json::parseAsync(buffer, {}, [&](const sip2json_exception& e, std::string::iterator&, const std::string::iterator&) {
+		EXPECT_TRUE(e.errCode == sip2jsonErrors::invalid_startline);
+		passTest = true;
+	});
 	EXPECT_TRUE(passTest);
 }
 
@@ -783,11 +798,10 @@ TEST(siphelpers, Test_async_incomplete_buffer_for_parse)
 	auto buffer	  = siddiqsoft::SIP_SAMPLE_MINIMAL_MESSAGE;
 	bool passTest = false;
 	auto bs		  = buffer.begin();
-	sip2json::parseAsync(
-			bs, buffer.end(), {}, [&](const sip2json_exception& e, std::string::iterator&, const std::string::iterator&) {
-				EXPECT_TRUE(e.errCode == sip2jsonErrors::incomplete_buffer_for_parse);
-				passTest = true;
-			});
+	sip2json::parseAsync(buffer, {}, [&](const sip2json_exception& e, std::string::iterator&, const std::string::iterator&) {
+		EXPECT_TRUE(e.errCode == sip2jsonErrors::incomplete_buffer_for_parse);
+		passTest = true;
+	});
 	EXPECT_TRUE(passTest);
 }
 
@@ -801,12 +815,11 @@ TEST(siphelpers, Test_async_incomplete_buffer_for_content)
 
 	ASSERT_TRUE(buffer.size() > 0) << "Buffer contents: [[ " << buffer << " ]]";
 
-	sip2json::parseAsync(
-			bs, buffer.end(), {}, [&](const sip2json_exception& e, std::string::iterator&, const std::string::iterator&) {
-				// We would get multiple exceptions/callbacks so we should watch out for our specific code.
-				std::clog << std::format("Test_incomplete_buffer_for_content: got error:{}\n", e.errCode);
-				if (e.errCode == sip2jsonErrors::incomplete_buffer_for_content) passTest = true;
-			});
+	sip2json::parseAsync(buffer, {}, [&](const sip2json_exception& e, std::string::iterator&, const std::string::iterator&) {
+		// We would get multiple exceptions/callbacks so we should watch out for our specific code.
+		std::clog << fmt::format("Test_incomplete_buffer_for_content: got error:{}\n", e.errCode);
+		if (e.errCode == sip2jsonErrors::incomplete_buffer_for_content) passTest = true;
+	});
 	EXPECT_TRUE(passTest);
 }
 
@@ -817,11 +830,10 @@ TEST(siphelpers, Test_async_incomplete_buffer_for_header)
 	bool passTest = false;
 	auto buffer	  = loadSampleFile("Test_incomplete_buffer_for_header"); // NOLINT
 	auto bs		  = buffer.begin();
-	sip2json::parseAsync(
-			bs, buffer.end(), {}, [&](const sip2json_exception& e, std::string::iterator&, const std::string::iterator&) {
-				EXPECT_TRUE(e.errCode == sip2jsonErrors::incomplete_buffer_for_header);
-				passTest = true;
-			});
+	sip2json::parseAsync(buffer, {}, [&](const sip2json_exception& e, std::string::iterator&, const std::string::iterator&) {
+		EXPECT_TRUE(e.errCode == sip2jsonErrors::incomplete_buffer_for_header);
+		passTest = true;
+	});
 	EXPECT_TRUE(passTest);
 }
 
@@ -832,11 +844,10 @@ TEST(siphelpers, Test_async_unsupported_contenttype)
 	bool passTest = false;
 	auto buffer	  = loadSampleFile("Test_unsupported_contenttype"); // NOLINT
 	auto bs		  = buffer.begin();
-	sip2json::parseAsync(
-			bs, buffer.end(), {}, [&](const sip2json_exception& e, std::string::iterator&, const std::string::iterator&) {
-				EXPECT_TRUE(e.errCode == sip2jsonErrors::unsupported_contenttype);
-				passTest = true;
-			});
+	sip2json::parseAsync(buffer, {}, [&](const sip2json_exception& e, std::string::iterator&, const std::string::iterator&) {
+		EXPECT_TRUE(e.errCode == sip2jsonErrors::unsupported_contenttype);
+		passTest = true;
+	});
 	EXPECT_TRUE(passTest);
 }
 
@@ -851,8 +862,7 @@ TEST(siphelpers, Test_unknown_exception)
 
 	// Deliberately throw an exception in the parse-callback so we can ensure that the error-callback is invoked.
 	sip2json::parseAsync(
-			bs,
-			buffer.end(),
+			buffer,
 			[&](sipmessage&& sipm) {
 				// We should parse valid message and get our callback.
 				pass1Test = true;
@@ -878,29 +888,53 @@ TEST(validation, Test_extension_aras)
 	auto parseCount = 0;
 
 
-	sip2json::parseAsync(bs, buffer.end(), [&](auto&& sipm) {
-		switch (parseCount++)
-		{
-		case 0:
-		{
-			EXPECT_EQ(1131, sipm.getContentLength());
-			EXPECT_EQ("+14152264822x,0830423985", sipm.getBodyElement("/sdp/0/c/dn"_json_pointer, ""s));
-		}
-		break;
-		case 1:
-		{
-			EXPECT_EQ(1258, sipm.getContentLength());
-			EXPECT_EQ("+14152264822x,0830423985", sipm.getBodyElement("/sdp/0/c/dn"_json_pointer, ""s));
-		}
-		break;
-		case 2:
-		{
-			EXPECT_EQ(1286, sipm.getContentLength());
-			EXPECT_EQ("+14152264822x,0830423985", sipm.getBodyElement("/sdp/0/c/dn"_json_pointer, ""s));
-		}
-		break;
-		};
-	});
+	buffer = sip2json::parseAsync(
+			buffer,
+			[&](auto&& sipm) {
+				switch (parseCount++)
+				{
+				case 0:
+				{
+					EXPECT_EQ(2, sipm["/h/Via"_json_pointer].size()) << sipm.dump(2);
+					EXPECT_EQ(1153, sipm.getContentLength());
+					EXPECT_EQ("+14152264822x,0830423985", sipm.getBodyElement("/sdp/0/c/dn"_json_pointer, ""s));
+					EXPECT_EQ("1.11", sipm.value("/b/sdp/0/a/x-ring2-coords"_json_pointer, "")) << sipm.dump(2);
+				}
+				break;
+				case 1:
+				{
+					//EXPECT_TRUE(false) << sipm.dump(2); // Diagnostics only
+
+					EXPECT_EQ(2, sipm["/h/Via"_json_pointer].size()) << sipm.dump(2);
+					EXPECT_EQ(1302, sipm.getContentLength());
+					EXPECT_EQ("+14152264822x,0830423985", sipm.getBodyElement("/sdp/0/c/dn"_json_pointer, ""s));
+					EXPECT_TRUE(sipm.contains("/b/sdp/0/a/x-ring2-coords"_json_pointer)) << sipm.dump(2);
+					EXPECT_EQ(2, sipm["/b/sdp/0/a/x-ring2-coords"_json_pointer].size()) << sipm.dump(2);
+					EXPECT_EQ("2.11", sipm.value("/b/sdp/0/a/x-ring2-coords/0"_json_pointer, "")) << sipm.dump(2);
+					EXPECT_EQ("2.22", sipm.value("/b/sdp/0/a/x-ring2-coords/1"_json_pointer, "")) << sipm.dump(2);
+				}
+				break;
+				case 2:
+				{
+					//EXPECT_TRUE(false) << sipm.dump(2); // Diagnostics only
+
+					EXPECT_EQ(2, sipm["/h/Via"_json_pointer].size()) << sipm.dump(2);
+					EXPECT_EQ(1355, sipm.getContentLength());
+					EXPECT_EQ("+14152264822x,0830423985", sipm.getBodyElement("/sdp/0/c/dn"_json_pointer, ""s));
+					EXPECT_TRUE(sipm.contains("/b/sdp/0/a/x-ring2-coords"_json_pointer)) << sipm.dump(2);
+					EXPECT_EQ(3, sipm["/b/sdp/0/a/x-ring2-coords"_json_pointer].size()) << sipm.dump(2);
+					EXPECT_EQ("3.11", sipm.value("/b/sdp/0/a/x-ring2-coords/0"_json_pointer, "")) << sipm.dump(2);
+					EXPECT_EQ("3.22", sipm.value("/b/sdp/0/a/x-ring2-coords/1"_json_pointer, "")) << sipm.dump(2);
+					EXPECT_EQ("3.33", sipm.value("/b/sdp/0/a/x-ring2-coords/2"_json_pointer, "")) << sipm.dump(2);
+				}
+				break;
+				};
+			},
+			[](const sip2json_exception& e, std::string::iterator&, const std::string::iterator&) {
+				EXPECT_FALSE(true) << e.what();
+			}
+
+	);
 
 	// There must be atleast 3 NOTIFY from the buffer
 	EXPECT_EQ(3, parseCount) << "Should get 3 items instead of " << parseCount << std::endl;
@@ -915,7 +949,7 @@ TEST(validation, Test_extension_nelson)
 	auto parseCount = 0;
 
 
-	sip2json::parseAsync(bs, buffer.end(), [&](siddiqsoft::sipmessage&& sipm) {
+	sip2json::parseAsync(buffer, [&](siddiqsoft::sipmessage&& sipm) {
 		switch (parseCount++)
 		{
 		case 0:
