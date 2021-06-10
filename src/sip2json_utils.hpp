@@ -42,10 +42,8 @@
 #include <random>
 #include <sstream>
 #include <optional>
-
-//#define FMT_HEADER_ONLY 1
-//#include "fmt/chrono.h"
 #include <format>
+
 #include "nlohmann/json.hpp"
 
 namespace siddiqsoft
@@ -90,30 +88,86 @@ namespace siddiqsoft
 	/// @brief Create a string representation of the timepoint as RFC1123 spec
 	/// @param tp Optional system_clock::timepoint; uses "now" if not provided
 	/// @return String with your date/time as "Sun, 28 Jun 2020 23:29:00 GMT"
-	static std::string TimeAsRFC1123(std::optional<std::chrono::system_clock::time_point> src = {}) noexcept(false)
+	template <class T = std::string>
+	static T TimeAsRFC1123(std::optional<std::chrono::system_clock::time_point> src = {}) noexcept(false)
 	{
-		const auto tp = src.value_or(std::chrono::system_clock::now());
-		return std::format("{:%a, %d %b %Y %T} GMT", tp);
-		//return std::format("{:%a, %d %b %Y %T} GMT", std::gmtime(std::chrono::system_clock::to_time_t(tp)));
+		const auto rawtp   = src.value_or(std::chrono::system_clock::now());
+		auto	   rawtime = std::chrono::system_clock::to_time_t(rawtp);
+		tm		   timeInfo {};
+
+		// Get the UTC time packet.
+		auto ec = gmtime_s(&timeInfo, &rawtime);
+
+		if constexpr (std::is_same_v<T, std::string>)
+		{
+			// HTTP-date as per RFC 7231:  Tue, 01 Nov 1994 08:12:31 GMT
+			// Note that since we are getting the UTC time we should not use the %z or %Z in the strftime format
+			// as it returns the local timezone and not GMT.
+			char buff[sizeof "Tue, 01 Nov 1994 08:12:31 GMT"] {};
+			if (ec != EINVAL) strftime(buff, sizeof(buff), "%a, %d %h %Y %T GMT", &timeInfo);
+
+			return buff;
+		}
+		else if constexpr (std::is_same_v<T, std::wstring>)
+		{
+			// HTTP-date as per RFC 7231:  Tue, 01 Nov 1994 08:12:31 GMT
+			// Note that since we are getting the UTC time we should not use the %z or %Z in the strftime format
+			// as it returns the local timezone and not GMT.
+			wchar_t buff[sizeof L"Tue, 01 Nov 1994 08:12:31 GMT"] {};
+			if (ec != EINVAL) wcsftime(buff, sizeof(buff), L"%a, %d %h %Y %T GMT", &timeInfo);
+			return buff;
+		}
+
+		return T {};
 	}
 
 	/// @brief Creates a string representaiton of the date time in RFC3339 format with millisecond precision.
 	/// @param tp Optional system_clock::timepoint; uses "now" if not provided
 	/// @return String RFC3339 "2020-06-28T23:29:00.000Z"
-	static std::string TimeAsRFC3339(std::optional<std::chrono::system_clock::time_point> src = {}) noexcept(false)
+	template <class T = std::string>
+	static T TimeAsRFC3339(std::optional<std::chrono::system_clock::time_point> src = {}) noexcept(false)
 	{
-		const auto tp = src.value_or(std::chrono::system_clock::now());
-		auto	   ms = std::chrono::duration_cast<std::chrono::milliseconds>(tp.time_since_epoch()).count() % 1000;
-		//return std::format("{:%Y-%m-%dT%T}.{:03}Z", std::gmtime(std::chrono::system_clock::to_time_t(tp)), ms);
-		return std::format("{:%Y-%m-%dT%T}.{:03}Z", tp, ms);
+		const auto rawtp   = src.value_or(std::chrono::system_clock::now());
+		auto	   rawtime = std::chrono::system_clock::to_time_t(rawtp);
+		tm		   timeInfo {};
+		// We need to get the fractional milliseconds from the raw time point.
+		auto msTime = std::chrono::duration_cast<std::chrono::milliseconds>(rawtp.time_since_epoch()).count() % 1000;
+		// Get the UTC time packet.
+		auto ec = gmtime_s(&timeInfo, &rawtime);
+
+		if constexpr (std::is_same_v<T, std::string>)
+		{
+			// https://en.wikipedia.org/wiki/ISO_8601
+			// yyyy-mm-ddThh:mm:ss.mmmZ
+			char buff[sizeof "yyyy-mm-ddThh:mm:ss.0000000Z"] {};
+
+			if (ec != EINVAL) strftime(buff, sizeof(buff), "%FT%T", &timeInfo);
+			return std::format("{}.{:03}Z", buff, msTime);
+		}
+		else if constexpr (std::is_same_v<T, std::wstring>)
+		{
+			// https://en.wikipedia.org/wiki/ISO_8601
+			// yyyy-mm-ddThh:mm:ss.mmmZ
+			wchar_t buff[sizeof L"yyyy-mm-ddThh:mm:ss.0000000Z"] {};
+			if (ec != EINVAL) wcsftime(buff, sizeof(buff), L"%FT%T", &timeInfo);
+			return std::format(L"{}.{:03}Z", buff, msTime);
+		}
+
+		return T {};
 	}
 
 	/// @brief Creates a string representaiton of the date time in ISO8601 format with millisecond precision. Alias for TimeAsRFC3339 method.
 	/// @param tp Optional system_clock::timepoint; uses "now" if not provided
 	/// @return String ISO8601 "2020-06-28T23:29:00.000Z"
-	static std::string TimeAsISO8601(std::optional<std::chrono::system_clock::time_point> src = {}) noexcept(false)
+	template <class T = std::string>
+	static T TimeAsISO8601(std::optional<std::chrono::system_clock::time_point> src = {}) noexcept(false)
 	{
-		return TimeAsRFC3339(src);
+		const auto tp = src.value_or(std::chrono::system_clock::now());
+		
+		// NOTE: The resolution for %T includes siz-digits of microsecond detail!
+		if constexpr (std::is_same_v<T, std::wstring>) { return std::format(L"{:%Y-%m-%dT%T}Z", tp); }
+
+		return std::format("{:%Y-%m-%dT%T}Z", tp);
 	}
 
 #pragma endregion

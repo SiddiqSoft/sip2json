@@ -47,8 +47,6 @@
 #include <functional>
 #include <optional>
 
-//#define FMT_HEADER_ONLY 1
-//#include "fmt/chrono.h"
 #include <format>
 #include "nlohmann/json.hpp"
 
@@ -311,8 +309,8 @@ namespace siddiqsoft
 							if (sipm.contains(pkey) && !sipm[pkey].is_array())
 							{
 								auto previousValue = sipm[pkey]; // make a copy!
-								sipm[pkey]={previousValue, alineMatcher[2].str()};
-								//nlohmann::json::json_pointer pkeyUpOneLevel(fmt::format("/b/sdp/{}/{}", blockIndex, key));
+								sipm[pkey]		   = {previousValue, alineMatcher[2].str()};
+								//nlohmann::json::json_pointer pkeyUpOneLevel(std::format("/b/sdp/{}/{}", blockIndex, key));
 								//if (sipm[pkeyUpOneLevel].erase(alineMatcher[1].str()) == 1)
 								//{
 								//	// Push the first item
@@ -667,12 +665,12 @@ namespace siddiqsoft
 			if (sipm.isMessageRequest())
 			{
 				// Request Line
-				buffer = std::format("{} {} SIP/2.0\r\n"s, sipm.getMethod(), sipm.getUri());
+				std::format_to(std::back_inserter(buffer), "{} {} SIP/2.0\r\n"s, sipm.getMethod(), sipm.getUri());
 			}
 			else if (sipm.isMessageResponse())
 			{
 				// Status Line
-				buffer = std::format("SIP/2.0 {} {}\r\n"s, sipm.getStatusCode(), sipm.getReason());
+				std::format_to(std::back_inserter(buffer), "SIP/2.0 {} {}\r\n"s, sipm.getStatusCode(), sipm.getReason());
 			}
 			else
 			{
@@ -695,27 +693,27 @@ namespace siddiqsoft
 					if (val.is_null())
 					{
 						// For null entries, put a blank entry. This is the same as our decode
-						buffer += std::format("{}: \r\n"s, key);
+						std::format_to(std::back_inserter(buffer), "{}: \r\n"s, key);
 					}
 					else if (val.is_number_unsigned())
 					{
-						buffer += std::format("{}: {}\r\n"s, key, val.get<uint64_t>());
+						std::format_to(std::back_inserter(buffer), "{}: {}\r\n"s, key, val.get<uint64_t>());
 					}
 					else if (val.is_number_integer() || val.is_number())
 					{
-						buffer += std::format("{}: {}\r\n"s, key, val.get<int64_t>());
+						std::format_to(std::back_inserter(buffer), "{}: {}\r\n"s, key, val.get<int64_t>());
 					}
 					else if (val.is_number_float())
 					{
-						buffer += std::format("{}: {}\r\n"s, key, val.get<float>());
+						std::format_to(std::back_inserter(buffer), "{}: {}\r\n"s, key, val.get<float>());
 					}
 					else if (val.is_string())
 					{
-						buffer += std::format("{}: {}\r\n"s, key, val);
+						std::format_to(std::back_inserter(buffer), "{}: {}\r\n"s, key, val.get<std::string>());
 					}
 					else if (val.is_boolean())
 					{
-						buffer += std::format("{}: {}\r\n"s, key, val ? "true" : "false");
+						std::format_to(std::back_inserter(buffer), "{}: {}\r\n"s, key, val ? "true" : "false");
 					}
 					else if (val.is_array())
 					{
@@ -724,12 +722,12 @@ namespace siddiqsoft
 						for (auto& item : val.items())
 						{
 							auto iv = item.value();
-							buffer += std::format("{}: {}\r\n"s, key, iv);
+							std::format_to(std::back_inserter(buffer), "{}: {}\r\n"s, key, iv.get<std::string>());
 						}
 					}
 					else
 					{
-						buffer += std::format("{}: {{}}\r\n"s, key, val);
+						std::format_to(std::back_inserter(buffer), "{}: {{}}\r\n"s, key, val);
 					}
 				};
 
@@ -776,21 +774,26 @@ namespace siddiqsoft
 						for (auto& block : sdp)
 						{
 							// Build each block; order is critical. We do not support session-level attributes (only media-level attributes)
-							buffer += std::format("v=0\r\no={}\r\ns={}\r\ni={}\r\n"s,
-												  serializeSDPelement(block, "o"s),
-												  serializeSDPelement(block, "s"s),
-												  serializeSDPelement(block, "i"s));
+							std::format_to(std::back_inserter(buffer),
+										   "v=0\r\no={}\r\ns={}\r\ni={}\r\n"s,
+										   serializeSDPelement(block, "o"s),
+										   serializeSDPelement(block, "s"s),
+										   serializeSDPelement(block, "i"s));
 							// Optional..
-							if (block.contains("u")) buffer += std::format("u={}\r\n"s, serializeSDPelement(block, "u"s));
+							if (block.contains("u"))
+								std::format_to(std::back_inserter(buffer), "u={}\r\n"s, serializeSDPelement(block, "u"s));
 							// Optional..
-							if (block.contains("e")) buffer += std::format("e={}\r\n"s, serializeSDPelement(block, "e"s));
+							if (block.contains("e"))
+								std::format_to(std::back_inserter(buffer), "e={}\r\n"s, serializeSDPelement(block, "e"s));
 							// Optional..
-							if (block.contains("p")) buffer += std::format("p={}\r\n"s, serializeSDPelement(block, "p"s));
+							if (block.contains("p"))
+								std::format_to(std::back_inserter(buffer), "p={}\r\n"s, serializeSDPelement(block, "p"s));
 							// Mandatory (typical); No support for session a-lines.
-							buffer += std::format("c={}\r\nt={}\r\nm={}\r\n"s,
-												  serializeSDPelement(block, "c"s),
-												  serializeSDPelement(block, "t"s),
-												  serializeSDPelement(block, "m"s));
+							std::format_to(std::back_inserter(buffer),
+										   "c={}\r\nt={}\r\nm={}\r\n"s,
+										   serializeSDPelement(block, "c"s),
+										   serializeSDPelement(block, "t"s),
+										   serializeSDPelement(block, "m"s));
 							// Media a-lines
 							buffer += serializeSDPelement(block, "a"s);
 						}
@@ -877,7 +880,7 @@ namespace siddiqsoft
 					}
 					if (element == "i"s)
 					{
-						return fmt::format(
+						return std::format(
 								"\"{}\" ({}) {}"s, item.value("name"s, ""), item.value("dn"s, ""), item.value("type"s, ""));
 					}
 					if (element == "c"s)
@@ -909,3 +912,12 @@ namespace siddiqsoft
 	// JSON Library: https://nlohmann.github.io/json/
 	// FMT Library : https://fmt.dev/latest/index.html
 } // namespace siddiqsoft
+
+
+template <> struct std::formatter<siddiqsoft::SIPMessageType> : std::formatter<std::string>
+{
+	auto format(const siddiqsoft::SIPMessageType& mt, std::format_context& ctx)
+	{
+		return std::formatter<string>::format("notset"s, ctx);
+	}
+};

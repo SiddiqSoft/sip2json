@@ -46,8 +46,6 @@
 #include <random>
 #include <sstream>
 
-//#define FMT_HEADER_ONLY 1
-//#include "fmt/chrono.h"
 #include <format>
 #include "nlohmann/json.hpp"
 
@@ -74,7 +72,7 @@ namespace siddiqsoft
 	{
 		static const inline std::string MetaLibName		  = "sip2json";
 		static const inline std::string MetaSchemaVersion = "1.0.2";
-		static const inline std::string MetaParserVersion = "1.12.0";
+		static const inline std::string MetaParserVersion = "1.13.0";
 
 	public:
 		sipmessage()

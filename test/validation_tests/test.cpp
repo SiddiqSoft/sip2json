@@ -12,8 +12,6 @@
 #include <string_view>
 #include <filesystem>
 
-//#define FMT_HEADER_ONLY 1
-//#include "fmt/chrono.h"
 #include <format>
 #include "nlohmann/json.hpp"
 
@@ -137,7 +135,25 @@ TEST(core_parser_tests, Test_TimeAsRFC1123_args)
 
 
 	auto todays_date = TimeAsRFC1123(std::chrono::system_clock::from_time_t(_mkgmtime(&knowntm)));
-	EXPECT_TRUE(todays_date.compare("Sat, 13 Nov 2010 23:29:00 GMT") == 0);
+	EXPECT_EQ("Sat, 13 Nov 2010 23:29:00 GMT"s, todays_date);
+}
+
+// NOLINTNEXTLINE
+TEST(core_parser_tests, Test_TimeAsRFC3339_args)
+{
+	tm knowntm {};
+	knowntm.tm_year	 = 2010 - 1900;
+	knowntm.tm_mon	 = 11 - 1; // Nov
+	knowntm.tm_mday	 = 13;	   // 13th
+	knowntm.tm_hour	 = 23;	   // 23h
+	knowntm.tm_min	 = 29;	   // 29m
+	knowntm.tm_sec	 = 0;	   // 0s
+	knowntm.tm_wday	 = 6;	   // Sat
+	knowntm.tm_isdst = 0;
+
+
+	auto todays_date = TimeAsRFC3339(std::chrono::system_clock::from_time_t(_mkgmtime(&knowntm)));
+	EXPECT_EQ("2010-11-13T23:29:00.000Z"s, todays_date);
 }
 
 // NOLINTNEXTLINE
@@ -161,9 +177,7 @@ TEST(core_parser_tests, Test_TimeAsISO8601_args)
 	knowntm.tm_isdst = 0;
 
 	auto knownDate = TimeAsISO8601(std::chrono::system_clock::from_time_t(_mkgmtime(&knowntm)));
-	// Note the use of "find" instead of compare since the milliseconds are an unkown and
-	// unless we create from scratch they will contain an arbitrary noise.
-	EXPECT_TRUE(knownDate.find("2010-11-13T23:29:00.") == 0);
+	EXPECT_EQ("2010-11-13T23:29:00.0000000Z",knownDate);
 }
 
 
@@ -576,9 +590,6 @@ TEST(siphelpers, Test_empty_mb_3)
 }
 
 
-#ifdef _DEBUG
-
-
 // NOLINTNEXTLINE
 TEST(siphelpers, Test_empty_h)
 {
@@ -817,7 +828,7 @@ TEST(siphelpers, Test_async_incomplete_buffer_for_content)
 
 	sip2json::parseAsync(buffer, {}, [&](const sip2json_exception& e, std::string::iterator&, const std::string::iterator&) {
 		// We would get multiple exceptions/callbacks so we should watch out for our specific code.
-		std::clog << fmt::format("Test_incomplete_buffer_for_content: got error:{}\n", e.errCode);
+		std::clog << std::format("Test_incomplete_buffer_for_content: got error:{}\n", e.errCode);
 		if (e.errCode == sip2jsonErrors::incomplete_buffer_for_content) passTest = true;
 	});
 	EXPECT_TRUE(passTest);
@@ -876,8 +887,6 @@ TEST(siphelpers, Test_unknown_exception)
 	EXPECT_TRUE(pass1Test) << L"First stage callback not invoked.";
 	EXPECT_TRUE(pass2Test) << L"Error callback not invoked.";
 }
-
-#endif
 
 
 // NOLINTNEXTLINE
