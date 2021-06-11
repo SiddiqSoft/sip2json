@@ -849,7 +849,20 @@ namespace siddiqsoft
 							{
 								for (auto& i : v.items())
 								{
-									std::format_to(std::back_inserter(ret), "a={}:{}\r\n"s, kv, i.value());
+									auto& vi = i.value();
+									//std::format_to(std::back_inserter(ret), "a={}:{}\r\n"s, kv, i.value().get<std::string>());
+									if (vi.is_string())
+										std::format_to(std::back_inserter(ret), "a={}:{}\r\n"s, kv, vi.get<std::string>());
+									else if (vi.is_number() || vi.is_number_integer())
+										std::format_to(std::back_inserter(ret), "a={}:{}\r\n"s, kv, vi.get<int64_t>());
+									else if (vi.is_number_unsigned())
+										std::format_to(std::back_inserter(ret), "a={}:{}\r\n"s, kv, vi.get<uint64_t>());
+									else if (vi.is_number_float())
+										std::format_to(std::back_inserter(ret), "a={}:{}\r\n"s, kv, vi.get<double>());
+									else if (vi.is_boolean() && vi == true)
+										std::format_to(std::back_inserter(ret), "a={}\r\n"s, kv);
+									else
+										std::format_to(std::back_inserter(ret), "a={}\r\n"s, kv);
 								}
 							}
 							else if (v.is_string())
