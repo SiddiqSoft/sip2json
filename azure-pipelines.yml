@@ -24,9 +24,9 @@ variables:
   
 steps:
 - task: NuGetToolInstaller@1
-  displayName: 'Use NuGet 5.4.0'
+  displayName: 'Use NuGet 5.10.0'
   inputs:
-    versionSpec: '5.4.0'
+    versionSpec: '5.10.0'
     checkLatest: true
 
 - task: gittools.gitversion.gitversion-task.GitVersion@5
@@ -49,7 +49,7 @@ steps:
   inputs:
     solution: 'sip2json.sln'
     platform: 'x64'
-    configuration: 'release'
+    configuration: 'Release'
     maximumCpuCount: true
     msbuildArchitecture: 'x64'
 

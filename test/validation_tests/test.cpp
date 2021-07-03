@@ -48,7 +48,7 @@ TEST(core_parser_tests, Test_UserAgent)
 	try
 	{
 		sipm.setUserAgent(ua);
-		std::clog << sip2json::serialize(sipm);
+		std::cerr << sip2json::serialize(sipm);
 		EXPECT_TRUE(sipm.getUserAgent().find(ua) != std::string::npos);
 		EXPECT_TRUE(sipm.getUserAgent().find("sip2json"s) != std::string::npos);
 	}
