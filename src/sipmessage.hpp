@@ -56,248 +56,248 @@
 
 namespace siddiqsoft
 {
-	enum class SIPMessageType
-	{
-		notspecified,
-		request	 = 1,
-		response = 2
-	};
+    enum class SIPMessageType
+    {
+        notspecified,
+        request  = 1,
+        response = 2
+    };
 
-	NLOHMANN_JSON_SERIALIZE_ENUM(SIPMessageType,
-								 {{SIPMessageType::request, "request"},
-								  {SIPMessageType::response, "response"},
-								  {SIPMessageType::notspecified, "notspecified"}});
+    NLOHMANN_JSON_SERIALIZE_ENUM(SIPMessageType,
+                                 {{SIPMessageType::request, "request"},
+                                  {SIPMessageType::response, "response"},
+                                  {SIPMessageType::notspecified, "notspecified"}});
 
-	class sipmessage : public nlohmann::json
-	{
-		static const inline std::string MetaLibName		  = "sip2json";
-		static const inline std::string MetaSchemaVersion = "1.0.2";
-		static const inline std::string MetaParserVersion = "1.14.0";
+    class sipmessage : public nlohmann::json
+    {
+        static const inline std::string MetaLibName       = "sip2json";
+        static const inline std::string MetaSchemaVersion = "1.0.2";
+        static const inline std::string MetaParserVersion = "1.14.0";
 
-	public:
-		sipmessage()
-		{
-			using namespace std;
-			// Overwrite the source object's values
-			(*this)["meta"s] = {{"version"s, std::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
-								{"time"s, TimeAsISO8601()},
-								{"ttx"s, 0}};
-		}
+    public:
+        sipmessage()
+        {
+            using namespace std;
+            // Overwrite the source object's values
+            (*this)["meta"s] = {{"version"s, std::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
+                                {"time"s, TimeAsISO8601()},
+                                {"ttx"s, 0}};
+        }
 
-		sipmessage(const nlohmann::json& src) { this->update(src); }
-		sipmessage(nlohmann::json&& src) { nlohmann::json((*this)).operator=(std::move(src)); }
+        sipmessage(const nlohmann::json& src) { this->update(src); }
+        sipmessage(nlohmann::json&& src) { nlohmann::json((*this)).operator=(std::move(src)); }
 
-		sipmessage(sipmessage&&) = default;
-		sipmessage(const sipmessage& src) { this->update(nlohmann::json(src)); }
+        sipmessage(sipmessage&&) = default;
+        sipmessage(const sipmessage& src) { this->update(nlohmann::json(src)); }
 
-		sipmessage& operator=(sipmessage&& src) = default;
-		sipmessage& operator					=(nlohmann::json&& src) { nlohmann::json((*this)).operator=(std::move(src)); }
+        sipmessage& operator=(sipmessage&& src) = default;
+        sipmessage& operator                    =(nlohmann::json&& src) { nlohmann::json((*this)).operator=(std::move(src)); }
 
-		/// @brief Instantiates request message given method and uri with option callId and cseq
-		/// @param method One of the supported SIP methods
-		/// @param uri Request URI
-		/// @param callId Optional CallId
-		/// @param cseq Optional Cseq; the string value is build using this parameter and the method
-		/// @return
-		sipmessage(const std::string& method, const std::string& uri, const std::string& callId = {}, uint32_t cseq = 0)
-		{
-			using namespace std;
+        /// @brief Instantiates request message given method and uri with option callId and cseq
+        /// @param method One of the supported SIP methods
+        /// @param uri Request URI
+        /// @param callId Optional CallId
+        /// @param cseq Optional Cseq; the string value is build using this parameter and the method
+        /// @return
+        sipmessage(const std::string& method, const std::string& uri, const std::string& callId = {}, uint32_t cseq = 0)
+        {
+            using namespace std;
 
-			update({{"s"s, {{"type"s, SIPMessageType::request}, {"method"s, method}, {"uri"s, uri}, {"version"s, SIPVER_20}}},
-					{"b"s, nullptr},
-					{"meta"s,
-					 {{"version"s, std::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
-					  {"time"s, TimeAsISO8601()},
-					  {"ttx"s, 0}}},
-					{"h"s,
-					 {{"User-Agent"s, std::format("{}/{} (schema:{})"s, MetaLibName, MetaParserVersion, MetaSchemaVersion)},
-					  {"Date"s, TimeAsRFC1123()}}}});
+            update({{"s"s, {{"type"s, SIPMessageType::request}, {"method"s, method}, {"uri"s, uri}, {"version"s, SIPVER_20}}},
+                    {"b"s, nullptr},
+                    {"meta"s,
+                     {{"version"s, std::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
+                      {"time"s, TimeAsISO8601()},
+                      {"ttx"s, 0}}},
+                    {"h"s,
+                     {{"User-Agent"s, std::format("{}/{} (schema:{})"s, MetaLibName, MetaParserVersion, MetaSchemaVersion)},
+                      {"Date"s, TimeAsRFC1123()}}}});
 
-			// request-line: METHOD Request-URI SIP/2.0
-			// message-headers
-			if (!callId.empty()) setHeader("Call-ID"s, callId);
-			if (cseq > 0) setHeader("CSeq"s, std::format("{} {}"s, cseq, method));
-		}
+            // request-line: METHOD Request-URI SIP/2.0
+            // message-headers
+            if (!callId.empty()) setHeader("Call-ID"s, callId);
+            if (cseq > 0) setHeader("CSeq"s, std::format("{} {}"s, cseq, method));
+        }
 
-		/// @brief Instantiates a response message from scratch or optionally from existing sipmessage request
-		/// @param statusCode Status Code for this message, the reason is built using map
-		/// @param src Optional sipmessage object of type request
-		/// @return
-		sipmessage(uint32_t statusCode, const sipmessage& src)
-		{
-			using namespace std;
+        /// @brief Instantiates a response message from scratch or optionally from existing sipmessage request
+        /// @param statusCode Status Code for this message, the reason is built using map
+        /// @param src Optional sipmessage object of type request
+        /// @return
+        sipmessage(uint32_t statusCode, const sipmessage& src)
+        {
+            using namespace std;
 
-			update(src);
+            update(src);
 
-			// Overwrite the source object's values
-			(*this)["meta"s] = {{"version"s, std::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
-								{"time"s, TimeAsISO8601()},
-								{"ttx"s, 0}};
+            // Overwrite the source object's values
+            (*this)["meta"s] = {{"version"s, std::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
+                                {"time"s, TimeAsISO8601()},
+                                {"ttx"s, 0}};
 
-			//// We must clear these values in case we are updating an existing object.
-			//erase("s"s);
-			// "status-line" (Status Reason Version)
-			(*this)["s"s] = {{"type"s, SIPMessageType::response},
-							 {"status"s, statusCode},
-							 {"reason"s, getReasonPhrase(statusCode)},
-							 {"version"s, SIPVER_20}};
+            //// We must clear these values in case we are updating an existing object.
+            //erase("s"s);
+            // "status-line" (Status Reason Version)
+            (*this)["s"s] = {{"type"s, SIPMessageType::response},
+                             {"status"s, statusCode},
+                             {"reason"s, getReasonPhrase(statusCode)},
+                             {"version"s, SIPVER_20}};
 
-			(*this)["h"s]["User-Agent"s] = std::format("{}/{} (schema:{})"s, MetaLibName, MetaParserVersion, MetaSchemaVersion);
-			setHeader("Date"s, TimeAsRFC1123());
-		}
-
-
-		/// @brief Instantiates a response message from scratch or optionally from existing sipmessage request
-		/// @param statusCode Status Code for this message, the reason is built using map
-		/// @param src Optional sipmessage object of type request
-		/// @return
-		sipmessage(uint32_t statusCode)
-		{
-			using namespace std;
-
-			update(nlohmann::json {
-					{"s"s,
-					 {{"type"s, SIPMessageType::response},
-					  {"status"s, statusCode},
-					  {"reason"s, getReasonPhrase(statusCode)},
-					  {"version"s, SIPVER_20}}},
-					{"b"s, nullptr},
-					{"meta"s,
-					 {{"version"s, std::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
-					  {"time"s, TimeAsISO8601()},
-					  {"ttx"s, 0}}},
-					{"h"s,
-					 {{"User-Agent"s, std::format("{}/{} (schema:{})"s, MetaLibName, MetaParserVersion, MetaSchemaVersion)},
-					  {"Date"s, TimeAsRFC1123()}}}});
-		}
+            (*this)["h"s]["User-Agent"s] = std::format("{}/{} (schema:{})"s, MetaLibName, MetaParserVersion, MetaSchemaVersion);
+            setHeader("Date"s, TimeAsRFC1123());
+        }
 
 
-	public:
-		/// @brief Returns the header object reference
-		/// @return Return the header object reference
-		inline auto&			headers() { return this->at("h"); };
-		template <class T> auto getHeader(const std::string& key, std::optional<T> defaultValue = {})
-		{
-			// Return the value or the default for the object.
-			return (*this)["h"].value(key, defaultValue.value_or(T {}));
-		};
-		inline auto& setUserAgent(const std::string& ua)
-		{
-			if (!ua.empty())
-				setHeader("User-Agent", std::format("{}/{} (schema:{}) {}", MetaLibName, MetaParserVersion, MetaSchemaVersion, ua));
-			else
-				setHeader("User-Agent", std::format("{}/{} (schema:{})", MetaLibName, MetaParserVersion, MetaSchemaVersion));
-			return *this;
-		};
-		inline auto		getUserAgent() { return getHeader<std::string>("User-Agent"); };
-		inline uint32_t getContentLength() { return getHeader<uint32_t>("Content-Length"); };
-		inline uint32_t getExpires() { return getHeader<uint32_t>("Expires"); };
-		inline auto		getContentType()
-		{
-			// Special concession for some SIP servers which incorrectly encode this field.
-			// First we try the Content-Type and default to looking up Content-type else return empty string.
-			if (headers().contains("Content-Type"))
-			{
-				auto ct = headers().at("Content-Type");
-				return ct.is_null() ? std::string {} : ct.get<std::string>();
-			}
-			else if (headers().contains("Content-type"))
-			{
-				auto ct = headers().at("Content-type");
-				return ct.is_null() ? std::string {} : ct.get<std::string>();
-			}
+        /// @brief Instantiates a response message from scratch or optionally from existing sipmessage request
+        /// @param statusCode Status Code for this message, the reason is built using map
+        /// @param src Optional sipmessage object of type request
+        /// @return
+        sipmessage(uint32_t statusCode)
+        {
+            using namespace std;
 
-			return std::string {};
-		};
-
-		inline auto getCallID() { return getHeader<std::string>("Call-ID"); };
-		inline auto getMethod() { return this->value("/s/method"_json_pointer, ""); };
-		inline auto getUri() { return this->value("/s/uri"_json_pointer, ""); };
-		inline auto getStatusCode() { return this->value("/s/status"_json_pointer, 0); };
-		inline auto getReason() { return this->value("/s/reason"_json_pointer, ""); };
+            update(nlohmann::json {
+                    {"s"s,
+                     {{"type"s, SIPMessageType::response},
+                      {"status"s, statusCode},
+                      {"reason"s, getReasonPhrase(statusCode)},
+                      {"version"s, SIPVER_20}}},
+                    {"b"s, nullptr},
+                    {"meta"s,
+                     {{"version"s, std::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
+                      {"time"s, TimeAsISO8601()},
+                      {"ttx"s, 0}}},
+                    {"h"s,
+                     {{"User-Agent"s, std::format("{}/{} (schema:{})"s, MetaLibName, MetaParserVersion, MetaSchemaVersion)},
+                      {"Date"s, TimeAsRFC1123()}}}});
+        }
 
 
-		/// @brief Returns a reference to the body object. This method should be used to change the body contents to text/plain or non-SDP content-type.
-		/// @return Returns reference to the body element b
-		inline auto& body() noexcept(false) { return this->at("b"); };
+    public:
+        /// @brief Returns the header object reference
+        /// @return Return the header object reference
+        inline auto&            headers() { return this->at("h"); };
+        template <class T> auto getHeader(const std::string& key, std::optional<T> defaultValue = {})
+        {
+            // Return the value or the default for the object.
+            return (*this)["h"].value(key, defaultValue.value_or(T {}));
+        };
+        inline auto& setUserAgent(const std::string& ua)
+        {
+            if (!ua.empty())
+                setHeader("User-Agent", std::format("{}/{} (schema:{}) {}", MetaLibName, MetaParserVersion, MetaSchemaVersion, ua));
+            else
+                setHeader("User-Agent", std::format("{}/{} (schema:{})", MetaLibName, MetaParserVersion, MetaSchemaVersion));
+            return *this;
+        };
+        inline auto     getUserAgent() { return getHeader<std::string>("User-Agent"); };
+        inline uint32_t getContentLength() { return getHeader<uint32_t>("Content-Length"); };
+        inline uint32_t getExpires() { return getHeader<uint32_t>("Expires"); };
+        inline auto     getContentType()
+        {
+            // Special concession for some SIP servers which incorrectly encode this field.
+            // First we try the Content-Type and default to looking up Content-type else return empty string.
+            if (headers().contains("Content-Type"))
+            {
+                auto ct = headers().at("Content-Type");
+                return ct.is_null() ? std::string {} : ct.get<std::string>();
+            }
+            else if (headers().contains("Content-type"))
+            {
+                auto ct = headers().at("Content-type");
+                return ct.is_null() ? std::string {} : ct.get<std::string>();
+            }
 
-		
-		/// @brief Checks if we have the "b" body element
-		/// @return True if the sipmessage contains the body element
-		inline bool hasBody() { return this->contains("b"); }
+            return std::string {};
+        };
 
-
-		/// @brief Get body element (relative to /b). Throws if body does not exist.
-		/// @tparam T Type
-		/// @param jp The key as json_pointer
-		/// @param defaultValue The default value
-		/// @return The item found or the default value.
-		template <typename T> T getBodyElement(const nlohmann::json::json_pointer& jp, const T& defaultValue)
-		{
-			return this->at("b").value<T>(jp, defaultValue);
-		};
-
-		inline auto isMessageRequest()
-		{
-			return (this->value("/s/type"_json_pointer, SIPMessageType::notspecified) == SIPMessageType::request);
-		};
-
-		inline auto isMessageResponse()
-		{
-			return (this->value("/s/type"_json_pointer, SIPMessageType::notspecified) == SIPMessageType::response);
-		};
-
-		// mutators
-	public:
-		/// @brief Sets a header key-value
-		/// @tparam T Type of object; this is typically inferred by the compiler.
-		/// @param key The header name
-		/// @param v The header value.
-		/// @return Self.
-		template <typename T> inline sipmessage& setHeader(const std::string& key, const T& v)
-		{
-			(*this)["h"][key] = v;
-			return *this;
-		};
-
-
-		/// @brief Sets the header elements from the source json object which is merge patched
-		/// @param arg source json object
-		/// @return the sipmessage
-		inline sipmessage& setHeader(const nlohmann::json& arg)
-		{
-			if (!this->contains("h"))
-				(*this)["h"] = arg;
-			else
-				(*this)["h"].merge_patch(arg);
-			return *this;
-		};
+        inline auto getCallID() { return getHeader<std::string>("Call-ID"); };
+        inline auto getMethod() { return this->value("/s/method"_json_pointer, ""); };
+        inline auto getUri() { return this->value("/s/uri"_json_pointer, ""); };
+        inline auto getStatusCode() { return this->value("/s/status"_json_pointer, 0); };
+        inline auto getReason() { return this->value("/s/reason"_json_pointer, ""); };
 
 
-		/// @brief Set element within the body to the given value.
-		/// @tparam T Type of object; this is typically inferred by the compiler.
-		/// @param key The key within the body section.
-		/// @param v The value. Json, string (for text/plain)
-		/// @return Self
-		template <typename T> inline sipmessage& setBody(const nlohmann::json::json_pointer& key, const T& v)
-		{
-			(*this)["b"][key] = v;
-			return *this;
-		};
+        /// @brief Returns a reference to the body object. This method should be used to change the body contents to text/plain or non-SDP content-type.
+        /// @return Returns reference to the body element b
+        inline auto& body() noexcept(false) { return this->at("b"); };
 
 
-		/// @brief Sets the sip elements from the source json object which is updated. Previous keys are replaced!
-		/// @param arg source json object must be /sdp/0/...
-		/// @return the sipmessage
-		inline sipmessage& setBody(const nlohmann::json& arg)
-		{
-			if (!this->contains("b"))
-				(*this)["b"] = arg;
-			else
-				(*this).at("b").update(arg); 
+        /// @brief Checks if we have the "b" body element
+        /// @return True if the sipmessage contains the body element
+        inline bool hasBody() { return this->contains("b"); }
 
-			return *this;
-		};
 
-	}; // class sipmessage
+        /// @brief Get body element (relative to /b). Throws if body does not exist.
+        /// @tparam T Type
+        /// @param jp The key as json_pointer
+        /// @param defaultValue The default value
+        /// @return The item found or the default value.
+        template <typename T> T getBodyElement(const nlohmann::json::json_pointer& jp, const T& defaultValue)
+        {
+            return this->at("b").value<T>(jp, defaultValue);
+        };
+
+        inline auto isMessageRequest()
+        {
+            return (this->value("/s/type"_json_pointer, SIPMessageType::notspecified) == SIPMessageType::request);
+        };
+
+        inline auto isMessageResponse()
+        {
+            return (this->value("/s/type"_json_pointer, SIPMessageType::notspecified) == SIPMessageType::response);
+        };
+
+        // mutators
+    public:
+        /// @brief Sets a header key-value
+        /// @tparam T Type of object; this is typically inferred by the compiler.
+        /// @param key The header name
+        /// @param v The header value.
+        /// @return Self.
+        template <typename T> inline sipmessage& setHeader(const std::string& key, const T& v)
+        {
+            (*this)["h"][key] = v;
+            return *this;
+        };
+
+
+        /// @brief Sets the header elements from the source json object which is merge patched
+        /// @param arg source json object
+        /// @return the sipmessage
+        inline sipmessage& setHeader(const nlohmann::json& arg)
+        {
+            if (!this->contains("h"))
+                (*this)["h"] = arg;
+            else
+                (*this)["h"].merge_patch(arg);
+            return *this;
+        };
+
+
+        /// @brief Set element within the body to the given value.
+        /// @tparam T Type of object; this is typically inferred by the compiler.
+        /// @param key The key within the body section.
+        /// @param v The value. Json, string (for text/plain)
+        /// @return Self
+        template <typename T> inline sipmessage& setBody(const nlohmann::json::json_pointer& key, const T& v)
+        {
+            (*this)["b"][key] = v;
+            return *this;
+        };
+
+
+        /// @brief Sets the sip elements from the source json object which is updated. Previous keys are replaced!
+        /// @param arg source json object must be /sdp/0/...
+        /// @return the sipmessage
+        inline sipmessage& setBody(const nlohmann::json& arg)
+        {
+            if (!this->contains("b"))
+                (*this)["b"] = arg;
+            else
+                (*this).at("b").update(arg);
+
+            return *this;
+        };
+
+    }; // class sipmessage
 } // namespace siddiqsoft

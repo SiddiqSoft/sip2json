@@ -45,195 +45,195 @@
 
 namespace siddiqsoft
 {
-	enum class sip2jsonErrors : uint32_t
-	{
-		ok = 0,
-		/* parse errors */
-		incomplete_buffer_for_parse,
-		incomplete_buffer_for_content,
-		incomplete_buffer_for_header,
-		invalid_startline,
-		unsupported_contenttype,
-		missing_required_element,
-		/* serialization errors */
-		invalid_document,
-		invalid_document_unsupported_method,
-		invalid_document_unsupported_content,
-		empty_message,
-		unknown = 0xFFFFFFFF
-	};
+    enum class sip2jsonErrors : uint32_t
+    {
+        ok = 0,
+        /* parse errors */
+        incomplete_buffer_for_parse,
+        incomplete_buffer_for_content,
+        incomplete_buffer_for_header,
+        invalid_startline,
+        unsupported_contenttype,
+        missing_required_element,
+        /* serialization errors */
+        invalid_document,
+        invalid_document_unsupported_method,
+        invalid_document_unsupported_content,
+        empty_message,
+        unknown = 0xFFFFFFFF
+    };
 
 
-	NLOHMANN_JSON_SERIALIZE_ENUM(sip2jsonErrors,
-								 {{sip2jsonErrors::ok, "ok"},
-								  {sip2jsonErrors::incomplete_buffer_for_parse, "incomplete_buffer_for_parse"},
-								  {sip2jsonErrors::incomplete_buffer_for_content, "incomplete_buffer_for_content"},
-								  {sip2jsonErrors::incomplete_buffer_for_header, "incomplete_buffer_for_header"},
-								  {sip2jsonErrors::invalid_startline, "invalid_startline"},
-								  {sip2jsonErrors::unsupported_contenttype, "unsupported_contenttype"},
-								  {sip2jsonErrors::missing_required_element, "missing_required_element"},
-								  {sip2jsonErrors::invalid_document, "invalid_document"},
-								  {sip2jsonErrors::invalid_document_unsupported_method, "invalid_document_unsupported_method"},
-								  {sip2jsonErrors::invalid_document_unsupported_content, "invalid_document_unsupported_content"},
-								  {sip2jsonErrors::empty_message, "empty_message"},
-								  {sip2jsonErrors::unknown, "unknown"}});
+    NLOHMANN_JSON_SERIALIZE_ENUM(sip2jsonErrors,
+                                 {{sip2jsonErrors::ok, "ok"},
+                                  {sip2jsonErrors::incomplete_buffer_for_parse, "incomplete_buffer_for_parse"},
+                                  {sip2jsonErrors::incomplete_buffer_for_content, "incomplete_buffer_for_content"},
+                                  {sip2jsonErrors::incomplete_buffer_for_header, "incomplete_buffer_for_header"},
+                                  {sip2jsonErrors::invalid_startline, "invalid_startline"},
+                                  {sip2jsonErrors::unsupported_contenttype, "unsupported_contenttype"},
+                                  {sip2jsonErrors::missing_required_element, "missing_required_element"},
+                                  {sip2jsonErrors::invalid_document, "invalid_document"},
+                                  {sip2jsonErrors::invalid_document_unsupported_method, "invalid_document_unsupported_method"},
+                                  {sip2jsonErrors::invalid_document_unsupported_content, "invalid_document_unsupported_content"},
+                                  {sip2jsonErrors::empty_message, "empty_message"},
+                                  {sip2jsonErrors::unknown, "unknown"}});
 
-	class sip2json_exception : public std::runtime_error
-	{
-	public:
-		sip2jsonErrors errCode = sip2jsonErrors::unknown;
+    class sip2json_exception : public std::runtime_error
+    {
+    public:
+        sip2jsonErrors errCode = sip2jsonErrors::unknown;
 
-		sip2json_exception(const std::string& msg)
-			: std::runtime_error(msg)
-		{
-		}
+        sip2json_exception(const std::string& msg)
+            : std::runtime_error(msg)
+        {
+        }
 
-		sip2json_exception(const std::exception& e)
-			: std::runtime_error(e.what())
-		{
-		}
-	};
+        sip2json_exception(const std::exception& e)
+            : std::runtime_error(e.what())
+        {
+        }
+    };
 
-	class missing_required_element : public sip2json_exception
-	{
-	public:
-		missing_required_element(const std::string& msg)
-			: sip2json_exception(msg)
-		{
-			errCode = sip2jsonErrors::missing_required_element;
-		}
-	};
-
-
-	class incomplete_buffer_for_parse_error : public sip2json_exception
-	{
-	public:
-		incomplete_buffer_for_parse_error(const std::string& msg)
-			: sip2json_exception(msg)
-		{
-			errCode = sip2jsonErrors::incomplete_buffer_for_parse;
-		}
-	};
+    class missing_required_element : public sip2json_exception
+    {
+    public:
+        missing_required_element(const std::string& msg)
+            : sip2json_exception(msg)
+        {
+            errCode = sip2jsonErrors::missing_required_element;
+        }
+    };
 
 
-	class incomplete_buffer_for_content_error : public sip2json_exception
-	{
-	public:
-		incomplete_buffer_for_content_error(const std::string& msg)
-			: sip2json_exception(msg)
-		{
-			errCode = sip2jsonErrors::incomplete_buffer_for_content;
-		}
-	};
+    class incomplete_buffer_for_parse_error : public sip2json_exception
+    {
+    public:
+        incomplete_buffer_for_parse_error(const std::string& msg)
+            : sip2json_exception(msg)
+        {
+            errCode = sip2jsonErrors::incomplete_buffer_for_parse;
+        }
+    };
 
 
-	class incomplete_buffer_for_header_error : public sip2json_exception
-	{
-	public:
-		incomplete_buffer_for_header_error(const std::string& msg)
-			: sip2json_exception(msg)
-		{
-			errCode = sip2jsonErrors::incomplete_buffer_for_header;
-		}
-	};
+    class incomplete_buffer_for_content_error : public sip2json_exception
+    {
+    public:
+        incomplete_buffer_for_content_error(const std::string& msg)
+            : sip2json_exception(msg)
+        {
+            errCode = sip2jsonErrors::incomplete_buffer_for_content;
+        }
+    };
 
 
-	class invalid_startline_error : public sip2json_exception
-	{
-	public:
-		invalid_startline_error(const std::string& msg)
-			: sip2json_exception(msg)
-		{
-			errCode = sip2jsonErrors::invalid_startline;
-		}
-	};
+    class incomplete_buffer_for_header_error : public sip2json_exception
+    {
+    public:
+        incomplete_buffer_for_header_error(const std::string& msg)
+            : sip2json_exception(msg)
+        {
+            errCode = sip2jsonErrors::incomplete_buffer_for_header;
+        }
+    };
 
 
-	class unsupported_contenttype_error : public sip2json_exception
-	{
-	public:
-		unsupported_contenttype_error(const std::string& msg)
-			: sip2json_exception(msg)
-		{
-			errCode = sip2jsonErrors::unsupported_contenttype;
-		}
-	};
+    class invalid_startline_error : public sip2json_exception
+    {
+    public:
+        invalid_startline_error(const std::string& msg)
+            : sip2json_exception(msg)
+        {
+            errCode = sip2jsonErrors::invalid_startline;
+        }
+    };
 
 
-	class invalid_document_error : public sip2json_exception
-	{
-	public:
-		invalid_document_error(const std::string& msg)
-			: sip2json_exception(msg)
-		{
-			errCode = sip2jsonErrors::invalid_document;
-		}
-	};
+    class unsupported_contenttype_error : public sip2json_exception
+    {
+    public:
+        unsupported_contenttype_error(const std::string& msg)
+            : sip2json_exception(msg)
+        {
+            errCode = sip2jsonErrors::unsupported_contenttype;
+        }
+    };
 
 
-	class empty_message_error : public sip2json_exception
-	{
-	public:
-		empty_message_error(const std::string& msg)
-			: sip2json_exception(msg)
-		{
-			errCode = sip2jsonErrors::empty_message;
-		}
-	};
+    class invalid_document_error : public sip2json_exception
+    {
+    public:
+        invalid_document_error(const std::string& msg)
+            : sip2json_exception(msg)
+        {
+            errCode = sip2jsonErrors::invalid_document;
+        }
+    };
 
 
-	/// @brief Create and throw a sip2json_error object.
-	/// @tparam ...Args Automatically deduced template argument
-	/// @param ec Error Code (type of error to be created)
-	/// @param formatSpec std::format spec
-	/// @param ...args std::format arguments
-	/// @return Throws an object sip2json_error object.
-	template <class E, typename... Args> void sip2json_throw(const std::string& formatSpec, Args... args) noexcept(false)
-	{
-		auto e = E(std::format(formatSpec, args...));
-		throw e;
-	}
+    class empty_message_error : public sip2json_exception
+    {
+    public:
+        empty_message_error(const std::string& msg)
+            : sip2json_exception(msg)
+        {
+            errCode = sip2jsonErrors::empty_message;
+        }
+    };
 
 
-	template <class E, typename... Args>
-	void sip2json_throw_if(bool predicate, const std::string& formatSpec, Args... args) noexcept(false)
-	{
-		if (predicate)
-		{
-			auto e = E(std::format(formatSpec, args...));
-			throw e;
-		}
-	}
+    /// @brief Create and throw a sip2json_error object.
+    /// @tparam ...Args Automatically deduced template argument
+    /// @param ec Error Code (type of error to be created)
+    /// @param formatSpec std::format spec
+    /// @param ...args std::format arguments
+    /// @return Throws an object sip2json_error object.
+    template <class E, typename... Args> void sip2json_throw(const std::string& formatSpec, Args... args) noexcept(false)
+    {
+        auto e = E(std::format(formatSpec, args...));
+        throw e;
+    }
+
+
+    template <class E, typename... Args>
+    void sip2json_throw_if(bool predicate, const std::string& formatSpec, Args... args) noexcept(false)
+    {
+        if (predicate)
+        {
+            auto e = E(std::format(formatSpec, args...));
+            throw e;
+        }
+    }
 
 } // namespace siddiqsoft
 
 
 template <> struct std::formatter<siddiqsoft::sip2jsonErrors> : std::formatter<std::string>
 {
-	auto format(siddiqsoft::sip2jsonErrors e, std::format_context& ctx)
-	{
-		switch (e)
-		{
-		case siddiqsoft::sip2jsonErrors::ok: return std::formatter<std::string>::format("ok", ctx);
-		case siddiqsoft::sip2jsonErrors::incomplete_buffer_for_parse:
-			return std::formatter<std::string>::format("incomplete_buffer_for_parse", ctx);
-		case siddiqsoft::sip2jsonErrors::incomplete_buffer_for_content:
-			return std::formatter<std::string>::format("incomplete_buffer_for_content", ctx);
-		case siddiqsoft::sip2jsonErrors::incomplete_buffer_for_header:
-			return std::formatter<std::string>::format("incomplete_buffer_for_header", ctx);
-		case siddiqsoft::sip2jsonErrors::invalid_startline: return std::formatter<std::string>::format("invalid_startline", ctx);
-		case siddiqsoft::sip2jsonErrors::unsupported_contenttype:
-			return std::formatter<std::string>::format("unsupported_contenttype", ctx);
-		case siddiqsoft::sip2jsonErrors::missing_required_element:
-			return std::formatter<std::string>::format("missing_required_element", ctx);
-		case siddiqsoft::sip2jsonErrors::invalid_document: return std::formatter<std::string>::format("invalid_document", ctx);
-		case siddiqsoft::sip2jsonErrors::invalid_document_unsupported_method:
-			return std::formatter<std::string>::format("invalid_document_unsupported_method", ctx);
-		case siddiqsoft::sip2jsonErrors::invalid_document_unsupported_content:
-			return std::formatter<std::string>::format("invalid_document_unsupported_content", ctx);
-		case siddiqsoft::sip2jsonErrors::empty_message: return std::formatter<std::string>::format("empty_message", ctx);
-		}
+    auto format(siddiqsoft::sip2jsonErrors e, std::format_context& ctx)
+    {
+        switch (e)
+        {
+        case siddiqsoft::sip2jsonErrors::ok: return std::formatter<std::string>::format("ok", ctx);
+        case siddiqsoft::sip2jsonErrors::incomplete_buffer_for_parse:
+            return std::formatter<std::string>::format("incomplete_buffer_for_parse", ctx);
+        case siddiqsoft::sip2jsonErrors::incomplete_buffer_for_content:
+            return std::formatter<std::string>::format("incomplete_buffer_for_content", ctx);
+        case siddiqsoft::sip2jsonErrors::incomplete_buffer_for_header:
+            return std::formatter<std::string>::format("incomplete_buffer_for_header", ctx);
+        case siddiqsoft::sip2jsonErrors::invalid_startline: return std::formatter<std::string>::format("invalid_startline", ctx);
+        case siddiqsoft::sip2jsonErrors::unsupported_contenttype:
+            return std::formatter<std::string>::format("unsupported_contenttype", ctx);
+        case siddiqsoft::sip2jsonErrors::missing_required_element:
+            return std::formatter<std::string>::format("missing_required_element", ctx);
+        case siddiqsoft::sip2jsonErrors::invalid_document: return std::formatter<std::string>::format("invalid_document", ctx);
+        case siddiqsoft::sip2jsonErrors::invalid_document_unsupported_method:
+            return std::formatter<std::string>::format("invalid_document_unsupported_method", ctx);
+        case siddiqsoft::sip2jsonErrors::invalid_document_unsupported_content:
+            return std::formatter<std::string>::format("invalid_document_unsupported_content", ctx);
+        case siddiqsoft::sip2jsonErrors::empty_message: return std::formatter<std::string>::format("empty_message", ctx);
+        }
 
-		return std::formatter<std::string>::format("unknown", ctx);
-	}
+        return std::formatter<std::string>::format("unknown", ctx);
+    }
 };
