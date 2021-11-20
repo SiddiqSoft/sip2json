@@ -326,8 +326,10 @@ namespace siddiqsoft
                             }
                             else if (sipm[pkey].is_array())
                                 sipm[pkey].push_back(alineMatcher[2].str());
+                            else if (alineMatcher.length() > 0)
+                                sipm[pkey] = alineMatcher[2].str();
                             else
-                                sipm[pkey] = alineMatcher.length() > 0 ? alineMatcher[2].str() : nullptr;
+                                sipm[pkey] = nullptr;
                         }
                         else if (!value.empty())
                         {
@@ -726,10 +728,10 @@ namespace siddiqsoft
                             std::format_to(std::back_inserter(buffer), "{}: {}\r\n"s, key, iv.get<std::string>());
                         }
                     }
-                    else
-                    {
-                        std::format_to(std::back_inserter(buffer), "{}: {{}}\r\n"s, key, val);
-                    }
+                    //else
+                    //{ // unsupported/unknown
+                    //    std::format_to(std::back_inserter(buffer), "{}: {{}}\r\n"s, key, val);
+                    //}
                 };
 
                 // End of the message header section
