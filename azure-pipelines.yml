@@ -29,8 +29,10 @@ steps:
     versionSpec: '6.0.0'
     checkLatest: true
 
-- task: gittools.gitversion.gitversion-task.GitVersion@5
-  displayName: GitVersion
+- task: GitVersion@5
+  inputs:
+    runtime: 'full'
+    configFilePath: 'GitVersion.yml'
 
 - script: echo %Action%%BuildVersion%
   displayName: 'Set build version'
