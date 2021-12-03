@@ -5,8 +5,8 @@
 <!-- badges -->
 [![Build Status](https://dev.azure.com/siddiqsoft/siddiqsoft/_apis/build/status/siddiqsoftware.sip2json?branchName=master)](https://dev.azure.com/siddiqsoft/siddiqsoft/_build/latest?definitionId=21&branchName=master)
 ![](https://img.shields.io/github/v/tag/siddiqsoftware/sip2json)
-![](https://img.shields.io/nuget/v/siddiqsoftware/sip2json)
-![](https://img.shields.io/nuget/dt/siddiqsoftware/sip2json)
+![](https://img.shields.io/nuget/v/SiddiqSoft/sip2json)
+![](https://img.shields.io/nuget/dt/SiddiqSoft/sip2json)
 ![](https://img.shields.io/azure-devops/tests/siddiqsoft/siddiqsoft/21)
 ![](https://img.shields.io/github/license/siddiqsoftware/sip2json)
 <!-- end badges -->
