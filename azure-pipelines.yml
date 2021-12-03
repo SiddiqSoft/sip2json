@@ -13,8 +13,7 @@ trigger:
     - README.md
 
 pool:
-  name: Azure Pipelines
-  vmImage: 'windows-2019'
+  name: Default
   demands:
   - msbuild
   - visualstudio
