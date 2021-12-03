@@ -1,14 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30204.135
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31919.166
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{0833CF10-6FB8-4734-9619-7E657E41CC84}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nuget", "nuget", "{0833CF10-6FB8-4734-9619-7E657E41CC84}"
 	ProjectSection(SolutionItems) = preProject
-		build\sip2json.nuspec = build\sip2json.nuspec
-		build\sip2json.symbols.nuspec = build\sip2json.symbols.nuspec
-		build\sip2json.symbols.targets = build\sip2json.symbols.targets
-		build\sip2json.targets = build\sip2json.targets
+		nuget\sip2json.nuspec = nuget\sip2json.nuspec
+		nuget\sip2json.symbols.nuspec = nuget\sip2json.symbols.nuspec
+		nuget\sip2json.symbols.targets = nuget\sip2json.symbols.targets
+		nuget\sip2json.targets = nuget\sip2json.targets
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{E3DA636E-8C31-4F79-8942-BFCD04F22CE5}"

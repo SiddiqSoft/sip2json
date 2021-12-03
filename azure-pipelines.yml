@@ -90,7 +90,7 @@ steps:
   displayName: 'NuGet pack'
   inputs:
     command: pack
-    packagesToPack: 'build/sip2json.nuspec;!build/sip2json.symbols.nuspec'
+    packagesToPack: 'nuget/sip2json.nuspec;!nuget/sip2json.symbols.nuspec'
     buildProperties: 'VERSION=$(build.buildNumber)'
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
