@@ -2,13 +2,13 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
 
   <!--
-		First meta data information about the package itself.
-		Documentation can be found at: (or via nuget.org)
-		https://docs.microsoft.com/en-us/nuget/reference/nuspec#optional-metadata-elements
-	-->
+        First meta data information about the package itself.
+        Documentation can be found at: (or via nuget.org)
+        https://docs.microsoft.com/en-us/nuget/reference/nuspec#optional-metadata-elements
+    -->
   <metadata>
     <!-- required: -->
-    <id>sip2json.symbols</id>
+    <id>SiddiqSoft.sip2json.symbols</id>
     <version>$VERSION$</version>
     <authors>Abdulkareem Siddiq</authors>
     <description>SIP Parser for Modern C++</description>
@@ -21,11 +21,11 @@
   </metadata>
 
   <!--
-		Specify the content for your package.
-		This is only a packing list, no build semantic is defined here!
-		Stick to conventions described by nuget.org:
-		https://docs.microsoft.com/en-us/nuget/create-packages/creating-a-package#from-a-convention-based-working-directory
-	-->
+        Specify the content for your package.
+        This is only a packing list, no build semantic is defined here!
+        Stick to conventions described by nuget.org:
+        https://docs.microsoft.com/en-us/nuget/create-packages/creating-a-package#from-a-convention-based-working-directory
+    -->
   <files>
     <!--
     <file src="..\output\Debug\sip2json.pdb" target="build\native\lib\Debug" />

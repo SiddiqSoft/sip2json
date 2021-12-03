@@ -8,7 +8,7 @@
     -->
     <metadata>
         <!-- required: -->
-        <id>sip2json</id>
+        <id>SiddiqSoft.sip2json</id>
         <version>$VERSION$</version>
         <authors>Abdulkareem Siddiq</authors>
         <description>SIP Parser for Modern C++</description>
