@@ -33,6 +33,6 @@
     -->
 
     <!-- MSBuild .targets files -->
-    <file src="sip2json.symbols.targets" target="build\native" />
+    <file src="SiddiqSoft.sip2json.symbols.targets" target="build\native" />
   </files>
 </package>

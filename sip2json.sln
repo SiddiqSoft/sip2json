@@ -5,10 +5,10 @@ VisualStudioVersion = 17.0.31919.166
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nuget", "nuget", "{0833CF10-6FB8-4734-9619-7E657E41CC84}"
 	ProjectSection(SolutionItems) = preProject
-		nuget\sip2json.nuspec = nuget\sip2json.nuspec
-		nuget\sip2json.symbols.nuspec = nuget\sip2json.symbols.nuspec
-		nuget\sip2json.symbols.targets = nuget\sip2json.symbols.targets
-		nuget\sip2json.targets = nuget\sip2json.targets
+		nuget\SiddiqSoft.sip2json.nuspec = nuget\SiddiqSoft.sip2json.nuspec
+		nuget\SiddiqSoft.sip2json.symbols.nuspec = nuget\SiddiqSoft.sip2json.symbols.nuspec
+		nuget\SiddiqSoft.sip2json.symbols.targets = nuget\SiddiqSoft.sip2json.symbols.targets
+		nuget\SiddiqSoft.sip2json.targets = nuget\SiddiqSoft.sip2json.targets
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{E3DA636E-8C31-4F79-8942-BFCD04F22CE5}"

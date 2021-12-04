@@ -41,6 +41,6 @@
         <file src="..\README.md" target="docs\" />
 
         <!-- MSBuild .targets files -->
-        <file src="sip2json.targets" target="build\native" />
+        <file src="SiddiqSoft.sip2json.targets" target="build\native" />
     </files>
 </package>
