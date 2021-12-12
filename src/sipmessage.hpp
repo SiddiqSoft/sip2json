@@ -72,7 +72,7 @@ namespace siddiqsoft
     {
         static const inline std::string MetaLibName       = "sip2json";
         static const inline std::string MetaSchemaVersion = "1.0.2";
-        static const inline std::string MetaParserVersion = "1.14.0";
+        static const inline std::string MetaParserVersion = "1.14.9";
 
     public:
         sipmessage()
@@ -92,6 +92,10 @@ namespace siddiqsoft
 
         sipmessage& operator=(sipmessage&& src) = default;
         sipmessage& operator                    =(nlohmann::json&& src) { nlohmann::json((*this)).operator=(std::move(src)); }
+
+
+        explicit operator nlohmann::json&() { return static_cast<nlohmann::json&>(*this); }
+
 
         /// @brief Instantiates request message given method and uri with option callId and cseq
         /// @param method One of the supported SIP methods
@@ -300,4 +304,10 @@ namespace siddiqsoft
         };
 
     }; // class sipmessage
+
+
+    /// @brief Conversion from sipmessage to json
+    /// @param dest 
+    /// @param src 
+    void to_json(nlohmann::json& dest, const sipmessage& src) { dest = static_cast<nlohmann::json>(src); }
 } // namespace siddiqsoft
