@@ -309,5 +309,5 @@ namespace siddiqsoft
     /// @brief Conversion from sipmessage to json
     /// @param dest 
     /// @param src 
-    void to_json(nlohmann::json& dest, const sipmessage& src) { dest = static_cast<nlohmann::json>(src); }
+    static void to_json(nlohmann::json& dest, const sipmessage& src) { dest = static_cast<nlohmann::json>(src); }
 } // namespace siddiqsoft
