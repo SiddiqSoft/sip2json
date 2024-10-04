@@ -1,4 +1,4 @@
-﻿/*
+/*
   A SIP Parser for Modern C++ / Version 1.0.0
   https://github.com/siddiqsoftware/sip2json/
   Copyright 2003-2020 Abdelkareem Siddiq.
@@ -739,7 +739,7 @@ TEST(siphelpers, Test_body_method)
 {
     using namespace std;
 
-    auto       iName = "Test body HЯ⾀ method"s;
+    auto       iName = "MY_INAME"s;
     sipmessage sipm("INVITE", "sip:hello@world.com", createCallId(), 1);
 
     sipm.setHeader("Content-Type", CONTENT_TYPE_APP_SDP);
@@ -766,6 +766,7 @@ TEST(siphelpers, Test_body_method)
     // Check again for the body. it should be non-null
     EXPECT_TRUE(sipm.body().is_object());
 
+    EXPECT_EQ(iName, sipm.body()["sdp"][0]["i"]["name"]);
     EXPECT_EQ(0, sipm.body()["sdp"][0]["v"].get<uint32_t>());
     EXPECT_EQ("subject", sipm.body()["sdp"][0]["s"].get<std::string>());
     EXPECT_EQ(100001, sipm.body()["sdp"][0]["t"][0].get<uint32_t>());
@@ -774,8 +775,13 @@ TEST(siphelpers, Test_body_method)
     try
     {
         auto buffer = sip2json::serialize(sipm);
+        
+        std::cerr << "Serialized:\n" << buffer << "\n";
 
-        // Returns the remaining buffer!
+        // Now that we have a serialized message
+        // We will attempt to parse it back into a new message.
+        // The callback will be invoked and this is where we will check
+        // for our correctness.
         buffer = sip2json::parseAsync(buffer,
                                       [&](auto&& dsipm)
                                       {
@@ -787,6 +793,7 @@ TEST(siphelpers, Test_body_method)
                                           EXPECT_EQ(100001, dsipm.body()["sdp"][0]["t"][0].get<uint32_t>());
                                           EXPECT_EQ(200002, dsipm.body()["sdp"][0]["t"][1].get<uint32_t>());
                                       });
+        // All the message buffer should be consumed with no lef-overs.
         EXPECT_EQ(0, buffer.length()) << buffer;
     }
     catch (const std::exception& e)

@@ -103,10 +103,7 @@ namespace siddiqsoft
                 // We may have junk or left-over crud at the start (especially if we're using text files)
                 bufferStart += (matchStartLine.length() + matchStartLine.prefix().length() + ELEM_NEWLINE.size());
             }
-            else
-            {
-                sip2json_throw<invalid_startline_error>("{} - SIP Startline not found.", __func__);
-            }
+            else { throw invalid_startline_error {std::format("{} - SIP Startline not found.", __func__)}; }
 
             return found;
         }
@@ -134,14 +131,8 @@ namespace siddiqsoft
                 // Some encoders send Content-type instead of the standard Content-Type; here we need to normalize it.
                 sipm["h"][HF_CONTENT_TYPE] = value;
             }
-            else if (key.find(HF_CONTENT_LENGTH) == 0)
-            {
-                sipm["h"][key] = std::stoi(value);
-            }
-            else if (key.find(HF_EXPIRES) == 0)
-            {
-                sipm["h"][key] = std::stoi(value);
-            }
+            else if (key.find(HF_CONTENT_LENGTH) == 0) { sipm["h"][key] = std::stoi(value); }
+            else if (key.find(HF_EXPIRES) == 0) { sipm["h"][key] = std::stoi(value); }
             // This helper causes issues when the payload may contain "true" or "false" as a string value not intended as boolean
             // This approach allows the client the ultimate authority for decoding the data.
             //else if (value.find("true") == 0)
@@ -152,14 +143,8 @@ namespace siddiqsoft
             //{
             //	sipm["h"][key] = false;
             //}
-            else if (value.empty())
-            {
-                sipm["h"][key] = "";
-            }
-            else
-            {
-                sipm["h"][key] = value;
-            }
+            else if (value.empty()) { sipm["h"][key] = ""; }
+            else { sipm["h"][key] = value; }
 
             return true;
         }
@@ -173,8 +158,8 @@ namespace siddiqsoft
         static bool
         parseHeaders(sipmessage& sipm, std::string::iterator& bufferStart, const std::string::iterator& bufferEnd) noexcept(false)
         {
-            bool done  = false;
-            bool found = false;
+            bool done {false};
+            bool found {false};
 
             // WARNING
             // The bufferStart must point to the start of the first sequence (excluding the CRLF) after the startline is processed!
@@ -185,10 +170,8 @@ namespace siddiqsoft
                     std::search(bufferStart, bufferEnd, ELEM_HEADERSECTIONDELIMITER.begin(), ELEM_HEADERSECTIONDELIMITER.end());
 
             // Assert header end delimiter must exist!
-            sip2json_throw_if<incomplete_buffer_for_header_error>(size_t(bufferEnd - headerEnd) <
-                                                                          ELEM_HEADERSECTIONDELIMITER.size(),
-                                                                  "{}:Cannot find header section delimiter.",
-                                                                  __func__);
+            if (size_t(bufferEnd - headerEnd) < ELEM_HEADERSECTIONDELIMITER.size())
+                throw incomplete_buffer_for_header_error {std::format("{}:Cannot find header section delimiter.", __func__)};
 
             while (!done)
             {
@@ -352,10 +335,7 @@ namespace siddiqsoft
                                 sipm[pkey] = nlohmann::json {
                                         {"type"s, clineMatcher[1]}, {"subtype"s, clineMatcher[2]}, {"dn"s, clineMatcher[3]}};
                             }
-                            else if (!value.empty())
-                            {
-                                sipm[pkey] = value;
-                            }
+                            else if (!value.empty()) { sipm[pkey] = value; }
                         }
                         else if (key == "o"s)
                         {
@@ -370,10 +350,7 @@ namespace siddiqsoft
                                                              {"subtype"s, olineMatcher[5]},
                                                              {"host"s, olineMatcher[6]}};
                             }
-                            else if (!value.empty())
-                            {
-                                sipm[pkey] = value;
-                            }
+                            else if (!value.empty()) { sipm[pkey] = value; }
                         }
                         else if (key.compare("i") == 0)
                         {
@@ -389,14 +366,8 @@ namespace siddiqsoft
                                         {"dn"s, ilineMatcher[2]},
                                         {"type"s, ilineMatcher[3]}};
                             }
-                            else if (!value.empty())
-                            {
-                                sipm[pkey] = value;
-                            }
-                            else
-                            {
-                                sipm[pkey] = "";
-                            }
+                            else if (!value.empty()) { sipm[pkey] = value; }
+                            else { sipm[pkey] = ""; }
                         }
                         else if (key == "t"s)
                         {
@@ -408,14 +379,8 @@ namespace siddiqsoft
                                 sipm[pkey].push_back(te);
                             }
                         }
-                        else if (!key.empty() && value.empty())
-                        {
-                            sipm[pkey] = "";
-                        }
-                        else if (!key.empty())
-                        {
-                            sipm[pkey] = value;
-                        }
+                        else if (!key.empty() && value.empty()) { sipm[pkey] = ""; }
+                        else if (!key.empty()) { sipm[pkey] = value; }
                     }
                 }
                 // Offset the start to the point after the start-line.
@@ -602,19 +567,19 @@ namespace siddiqsoft
                                         else
                                         {
                                             bufferStart = previousBufferStart;
-                                            sip2json_throw<incomplete_buffer_for_content_error>(
-                                                    "{}: Available buffer length:{} < Content-Length:{}",
-                                                    __func__,
-                                                    availableRemainingBufferSize,
-                                                    sipm.getContentLength());
+                                            throw incomplete_buffer_for_content_error {
+                                                    std::format("{}: Available buffer length:{} < Content-Length:{}",
+                                                                __func__,
+                                                                availableRemainingBufferSize,
+                                                                sipm.getContentLength())};
                                         }
                                     }
                                 }
                                 else if (!sipm.getContentType().empty())
                                 {
                                     bufferStart = previousBufferStart;
-                                    sip2json_throw<unsupported_contenttype_error>(
-                                            "{}:Content-Type {} not supported", __func__, sipm.getContentType());
+                                    throw unsupported_contenttype_error {
+                                            std::format("{}:Content-Type {} not supported", __func__, sipm.getContentType())};
                                 }
                             }
                         }
@@ -631,7 +596,7 @@ namespace siddiqsoft
                 {
                     // This will end our scan.
                     bufferStart = previousBufferStart;
-                    sip2json_throw<incomplete_buffer_for_parse_error>("{}:Incomplete Buffer for parse to continue.", __func__);
+                    throw incomplete_buffer_for_parse_error {std::format("{}:Incomplete Buffer for parse to continue.", __func__)};
                 }
             }
 
@@ -652,33 +617,34 @@ namespace siddiqsoft
             std::string buffer {};
             std::string contentType {};
 
+            // Reserve the size of a typical SIP Message. Typical message size of 3K
+            buffer.reserve(3*1024);
+            
             // Assert: non-empty json document
-            sip2json_throw_if<empty_message_error>(sipm.size() == 0, "{}:sipm is empty."s, __func__);
+            if (sipm.size() == 0) throw empty_message_error {std::format("{}:sipm is empty.", __func__)};
             // Assert: non-empty json document; starting with v1.9 we have a meta element for diagnostics; this is to be treated as "empty".
-            sip2json_throw_if<empty_message_error>(
-                    (sipm.contains("meta") && sipm.size() == 1), "{}:sipm is empty (except for meta)."s, __func__);
+            if (sipm.contains("meta") && sipm.size() == 1)
+                throw empty_message_error {std::format("{}:sipm is empty (except for meta).", __func__)};
             // Assert: Method is one of the supported items
-            sip2json_throw_if<invalid_document_error>(supportedMethods.find(sipm.getMethod()) == std::string::npos,
-                                                      "{}:Unsupported method:{}"s,
-                                                      __func__,
-                                                      sipm.getMethod());
+            if (supportedMethods.find(sipm.getMethod()) == std::string::npos)
+                throw invalid_document_error {std::format("{}:Unsupported method:{}", __func__, sipm.getMethod())};
             // Assert: Header must exist
-            sip2json_throw_if<invalid_document_error>(!sipm.contains("h"s), "{}:sipm does not contain `h`eaders."s, __func__);
+            if (!sipm.contains("h"s)) throw invalid_document_error {std::format("{}:sipm does not contain `h`eaders.", __func__)};
 
             if (sipm.isMessageRequest())
             {
                 // Request Line
-                std::format_to(std::back_inserter(buffer), "{} {} SIP/2.0\r\n"s, sipm.getMethod(), sipm.getUri());
+                std::format_to(std::back_inserter(buffer), "{} {} SIP/2.0\r\n", sipm.getMethod(), sipm.getUri());
             }
             else if (sipm.isMessageResponse())
             {
                 // Status Line
-                std::format_to(std::back_inserter(buffer), "SIP/2.0 {} {}\r\n"s, sipm.getStatusCode(), sipm.getReason());
+                std::format_to(std::back_inserter(buffer), "SIP/2.0 {} {}\r\n", sipm.getStatusCode(), sipm.getReason());
             }
             else
             {
-                sip2json_throw<invalid_document_error>(
-                        "{}:sipm /type is neither `{}` nor `{}`."s, __func__, SIPMessageType::request, SIPMessageType::response);
+                throw invalid_document_error {std::format(
+                        "{}:sipm /type is neither `{}` nor `{}`.", __func__, SIPMessageType::request, SIPMessageType::response)};
             }
 
             // Encode the body first so we can get the content-length properly.
@@ -696,27 +662,27 @@ namespace siddiqsoft
                     if (val.is_null())
                     {
                         // For null entries, put a blank entry. This is the same as our decode
-                        std::format_to(std::back_inserter(buffer), "{}: \r\n"s, key);
+                        std::format_to(std::back_inserter(buffer), "{}: \r\n", key.c_str());
                     }
                     else if (val.is_number_unsigned())
                     {
-                        std::format_to(std::back_inserter(buffer), "{}: {}\r\n"s, key, val.get<uint64_t>());
+                        std::format_to(std::back_inserter(buffer), "{}: {}\r\n", key, val.get<uint64_t>());
                     }
                     else if (val.is_number_integer() || val.is_number())
                     {
-                        std::format_to(std::back_inserter(buffer), "{}: {}\r\n"s, key, val.get<int64_t>());
+                        std::format_to(std::back_inserter(buffer), "{}: {}\r\n", key, val.get<int64_t>());
                     }
                     else if (val.is_number_float())
                     {
-                        std::format_to(std::back_inserter(buffer), "{}: {}\r\n"s, key, val.get<float>());
+                        std::format_to(std::back_inserter(buffer), "{}: {}\r\n", key, val.get<float>());
                     }
                     else if (val.is_string())
                     {
-                        std::format_to(std::back_inserter(buffer), "{}: {}\r\n"s, key, val.get<std::string>());
+                        std::format_to(std::back_inserter(buffer), "{}: {}\r\n", key, val.get<std::string>().c_str());
                     }
                     else if (val.is_boolean())
                     {
-                        std::format_to(std::back_inserter(buffer), "{}: {}\r\n"s, key, val ? "true" : "false");
+                        std::format_to(std::back_inserter(buffer), "{}: {}\r\n", key, val ? "true" : "false");
                     }
                     else if (val.is_array())
                     {
@@ -725,7 +691,7 @@ namespace siddiqsoft
                         for (auto& item : val.items())
                         {
                             auto iv = item.value();
-                            std::format_to(std::back_inserter(buffer), "{}: {}\r\n"s, key, iv.get<std::string>());
+                            std::format_to(std::back_inserter(buffer), "{}: {}\r\n", key, iv.get<std::string>().c_str());
                         }
                     }
                     //else
@@ -741,6 +707,7 @@ namespace siddiqsoft
             // Add the body
             buffer += body;
 
+            // At the end we must have a complete and true serialized (ready for the wire) sip message
             return buffer;
         }
 
@@ -758,11 +725,9 @@ namespace siddiqsoft
             // If content-type is not set, then just return regardless of the body element contents.
             if (contentType.empty()) return buffer;
 
-            sip2json_throw_if<invalid_document_error>((contentType.compare(CONTENT_TYPE_APP_SDP) == std::string::npos) &&
-                                                              (contentType.compare(CONTENT_TYPE_TEXT_PLAIN) == std::string::npos),
-                                                      "{}:Unsupported content-type:{}"s,
-                                                      __func__,
-                                                      contentType);
+            if ((contentType.compare(CONTENT_TYPE_APP_SDP) == std::string::npos) &&
+                (contentType.compare(CONTENT_TYPE_TEXT_PLAIN) == std::string::npos))
+                throw invalid_document_error {std::format("{}:Unsupported content-type:{}", __func__, contentType)};
 
             // Body
             // NOTE: we extract the contentType value during the header serialization.
@@ -778,33 +743,30 @@ namespace siddiqsoft
                         {
                             // Build each block; order is critical. We do not support session-level attributes (only media-level attributes)
                             std::format_to(std::back_inserter(buffer),
-                                           "v=0\r\no={}\r\ns={}\r\ni={}\r\n"s,
-                                           serializeSDPelement(block, "o"s),
-                                           serializeSDPelement(block, "s"s),
-                                           serializeSDPelement(block, "i"s));
+                                           "v=0\r\no={}\r\ns={}\r\ni={}\r\n",
+                                           serializeSDPelement(block, "o"),
+                                           serializeSDPelement(block, "s"),
+                                           serializeSDPelement(block, "i"));
                             // Optional..
                             if (block.contains("u"))
-                                std::format_to(std::back_inserter(buffer), "u={}\r\n"s, serializeSDPelement(block, "u"s));
+                                std::format_to(std::back_inserter(buffer), "u={}\r\n", serializeSDPelement(block, "u"s));
                             // Optional..
                             if (block.contains("e"))
-                                std::format_to(std::back_inserter(buffer), "e={}\r\n"s, serializeSDPelement(block, "e"s));
+                                std::format_to(std::back_inserter(buffer), "e={}\r\n", serializeSDPelement(block, "e"s));
                             // Optional..
                             if (block.contains("p"))
-                                std::format_to(std::back_inserter(buffer), "p={}\r\n"s, serializeSDPelement(block, "p"s));
+                                std::format_to(std::back_inserter(buffer), "p={}\r\n", serializeSDPelement(block, "p"s));
                             // Mandatory (typical); No support for session a-lines.
                             std::format_to(std::back_inserter(buffer),
-                                           "c={}\r\nt={}\r\nm={}\r\n"s,
-                                           serializeSDPelement(block, "c"s),
-                                           serializeSDPelement(block, "t"s),
-                                           serializeSDPelement(block, "m"s));
+                                           "c={}\r\nt={}\r\nm={}\r\n",
+                                           serializeSDPelement(block, "c"),
+                                           serializeSDPelement(block, "t"),
+                                           serializeSDPelement(block, "m"));
                             // Media a-lines
                             buffer += serializeSDPelement(block, "a"s);
                         }
                     }
-                    else
-                    {
-                        sip2json_throw<invalid_document_error>("{}:sipm `b`ody does not have sdp element."s, __func__);
-                    }
+                    else { throw invalid_document_error {std::format("{}:sipm `b`ody does not have sdp element.", __func__)}; }
                 }
                 else
                 {
@@ -830,12 +792,10 @@ namespace siddiqsoft
         {
             using namespace std;
 
-            sip2json_throw_if<missing_required_element>(!sdpBlock.contains("v"s) && !sdpBlock.contains("o"s) &&
-                                                                !sdpBlock.contains("s"s) && !sdpBlock.contains("t"s) &&
-                                                                !sdpBlock.contains("m"s),
-                                                        "{}:Required Element {} not present."s,
-                                                        __func__,
-                                                        element);
+            if (!sdpBlock.contains("v"s) && !sdpBlock.contains("o"s) && !sdpBlock.contains("s"s) && !sdpBlock.contains("t"s) &&
+                !sdpBlock.contains("m"s))
+                throw missing_required_element {std::format("{}:Required Element {} not present.", __func__, element)};
+
             // If we donot have it then just return..
             if (sdpBlock.contains(element))
             {
@@ -855,38 +815,38 @@ namespace siddiqsoft
                                     auto& vi = i.value();
                                     //std::format_to(std::back_inserter(ret), "a={}:{}\r\n"s, kv, i.value().get<std::string>());
                                     if (vi.is_string())
-                                        std::format_to(std::back_inserter(ret), "a={}:{}\r\n"s, kv, vi.get<std::string>());
+                                        std::format_to(std::back_inserter(ret), "a={}:{}\r\n", kv, vi.get<std::string>());
                                     else if (vi.is_number() || vi.is_number_integer())
-                                        std::format_to(std::back_inserter(ret), "a={}:{}\r\n"s, kv, vi.get<int64_t>());
+                                        std::format_to(std::back_inserter(ret), "a={}:{}\r\n", kv, vi.get<int64_t>());
                                     else if (vi.is_number_unsigned())
-                                        std::format_to(std::back_inserter(ret), "a={}:{}\r\n"s, kv, vi.get<uint64_t>());
+                                        std::format_to(std::back_inserter(ret), "a={}:{}\r\n", kv, vi.get<uint64_t>());
                                     else if (vi.is_number_float())
-                                        std::format_to(std::back_inserter(ret), "a={}:{}\r\n"s, kv, vi.get<double>());
+                                        std::format_to(std::back_inserter(ret), "a={}:{}\r\n", kv, vi.get<double>());
                                     else if (vi.is_boolean() && vi == true)
-                                        std::format_to(std::back_inserter(ret), "a={}\r\n"s, kv);
+                                        std::format_to(std::back_inserter(ret), "a={}\r\n", kv);
                                     else
-                                        std::format_to(std::back_inserter(ret), "a={}\r\n"s, kv);
+                                        std::format_to(std::back_inserter(ret), "a={}\r\n", kv);
                                 }
                             }
                             else if (v.is_string())
-                                std::format_to(std::back_inserter(ret), "a={}:{}\r\n"s, kv, v.get<std::string>());
+                                std::format_to(std::back_inserter(ret), "a={}:{}\r\n", kv, v.get<std::string>());
                             else if (v.is_number() || v.is_number_integer())
-                                std::format_to(std::back_inserter(ret), "a={}:{}\r\n"s, kv, v.get<int64_t>());
+                                std::format_to(std::back_inserter(ret), "a={}:{}\r\n", kv, v.get<int64_t>());
                             else if (v.is_number_unsigned())
-                                std::format_to(std::back_inserter(ret), "a={}:{}\r\n"s, kv, v.get<uint64_t>());
+                                std::format_to(std::back_inserter(ret), "a={}:{}\r\n", kv, v.get<uint64_t>());
                             else if (v.is_number_float())
-                                std::format_to(std::back_inserter(ret), "a={}:{}\r\n"s, kv, v.get<double>());
+                                std::format_to(std::back_inserter(ret), "a={}:{}\r\n", kv, v.get<double>());
                             else if (v.is_boolean() && v == true)
-                                std::format_to(std::back_inserter(ret), "a={}\r\n"s, kv);
+                                std::format_to(std::back_inserter(ret), "a={}\r\n", kv);
                             else
-                                std::format_to(std::back_inserter(ret), "a={}\r\n"s, kv);
+                                std::format_to(std::back_inserter(ret), "a={}\r\n", kv);
                         }
 
                         return ret;
                     }
                     if (element == "o"s)
                     {
-                        return std::format("{} {} {} {} {} {}"s,
+                        return std::format("{} {} {} {} {} {}",
                                            item.value("user"s, ""s),
                                            item.value("t1"s, ""s),
                                            item.value("t2"s, ""s),
@@ -897,16 +857,16 @@ namespace siddiqsoft
                     if (element == "i"s)
                     {
                         return std::format(
-                                "\"{}\" ({}) {}"s, item.value("name"s, ""), item.value("dn"s, ""), item.value("type"s, ""));
+                                "\"{}\" ({}) {}", item.value("name"s, ""), item.value("dn"s, ""), item.value("type"s, ""));
                     }
                     if (element == "c"s)
                     {
-                        return std::format("{} {} {}"s, item.value("type"s, ""), item.value("subtype"s, ""), item.value("dn"s, ""));
+                        return std::format("{} {} {}", item.value("type"s, ""), item.value("subtype"s, ""), item.value("dn"s, ""));
                     }
                 }
                 else if (item.is_array())
                 {
-                    if (element == "t"s) { return std::format("{} {}"s, item[0].get<uint32_t>(), item[1].get<uint32_t>()); }
+                    if (element == "t"s) { return std::format("{} {}", item[0].get<uint32_t>(), item[1].get<uint32_t>()); }
                 }
                 else if (item.is_string())
                 {

@@ -70,9 +70,9 @@ namespace siddiqsoft
 
     class sipmessage : public nlohmann::json
     {
-        static const inline std::string MetaLibName       = "sip2json";
-        static const inline std::string MetaSchemaVersion = "1.0.2";
-        static const inline std::string MetaParserVersion = "1.14.9";
+        static constexpr std::string_view MetaLibName {"sip2json"};
+        static constexpr std::string_view MetaSchemaVersion {"1.0.2"};
+        static constexpr std::string_view MetaParserVersion {"1.14.10"};
 
     public:
         sipmessage()
@@ -91,7 +91,7 @@ namespace siddiqsoft
         sipmessage(const sipmessage& src) { this->update(nlohmann::json(src)); }
 
         sipmessage& operator=(sipmessage&& src) = default;
-        sipmessage& operator                    =(nlohmann::json&& src) { nlohmann::json((*this)).operator=(std::move(src)); }
+        sipmessage& operator=(nlohmann::json&& src) { nlohmann::json((*this)).operator=(std::move(src)); }
 
 
         explicit operator nlohmann::json&() { return static_cast<nlohmann::json&>(*this); }
@@ -114,13 +114,13 @@ namespace siddiqsoft
                       {"time"s, TimeAsISO8601()},
                       {"ttx"s, 0}}},
                     {"h"s,
-                     {{"User-Agent"s, std::format("{}/{} (schema:{})"s, MetaLibName, MetaParserVersion, MetaSchemaVersion)},
+                     {{"User-Agent"s, std::format("{}/{} (schema:{})", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
                       {"Date"s, TimeAsRFC1123()}}}});
 
             // request-line: METHOD Request-URI SIP/2.0
             // message-headers
             if (!callId.empty()) setHeader("Call-ID"s, callId);
-            if (cseq > 0) setHeader("CSeq"s, std::format("{} {}"s, cseq, method));
+            if (cseq > 0) setHeader("CSeq"s, std::format("{} {}", cseq, method));
         }
 
         /// @brief Instantiates a response message from scratch or optionally from existing sipmessage request
@@ -141,12 +141,10 @@ namespace siddiqsoft
             //// We must clear these values in case we are updating an existing object.
             //erase("s"s);
             // "status-line" (Status Reason Version)
-            (*this)["s"s] = {{"type"s, SIPMessageType::response},
-                             {"status"s, statusCode},
-                             {"reason"s, getReasonPhrase(statusCode)},
-                             {"version"s, SIPVER_20}};
+            (*this)["s"s] = {
+                    {"type", "response"}, {"status", statusCode}, {"reason", getReasonPhrase(statusCode)}, {"version", SIPVER_20}};
 
-            (*this)["h"s]["User-Agent"s] = std::format("{}/{} (schema:{})"s, MetaLibName, MetaParserVersion, MetaSchemaVersion);
+            (*this)["h"s]["User-Agent"s] = std::format("{}/{} (schema:{})", MetaLibName, MetaParserVersion, MetaSchemaVersion);
             setHeader("Date"s, TimeAsRFC1123());
         }
 
@@ -171,7 +169,7 @@ namespace siddiqsoft
                       {"time"s, TimeAsISO8601()},
                       {"ttx"s, 0}}},
                     {"h"s,
-                     {{"User-Agent"s, std::format("{}/{} (schema:{})"s, MetaLibName, MetaParserVersion, MetaSchemaVersion)},
+                     {{"User-Agent"s, std::format("{}/{} (schema:{})", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
                       {"Date"s, TimeAsRFC1123()}}}});
         }
 

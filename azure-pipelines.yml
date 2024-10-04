@@ -6,14 +6,13 @@ trigger:
     - main
     - bufix/*
     - feature/*
-    - hotfix/*
-    - release/*
   paths:
     exclude:
     - README.md
 
 pool:
-  name: Default
+  name: Azure Pipelines
+  vmImage: Windows-2022
   demands:
   - msbuild
   - visualstudio
@@ -23,22 +22,26 @@ variables:
   buildPlatform: 'x64'
   
 steps:
-- task: NuGetToolInstaller@1
-  displayName: 'Use NuGet 6.0.0'
+- task: UseDotNet@2
   inputs:
-    versionSpec: '6.0.0'
-    checkLatest: true
+    version: '8.x'
 
-- task: GitVersion@5
+- task: NuGetToolInstaller@1
+  displayName: 'Use NuGet latest'
   inputs:
-    runtime: 'full'
-    configFilePath: 'GitVersion.yml'
+    versionSpec: '6.*'
+
+- task: gitversion/setup@3.0.0
+  displayName: 'Install GitVersion'
+
+- task: gitversion/execute@3.0.0
+  displayName: 'Determine version'
 
 - script: echo %Action%%BuildVersion%
   displayName: 'Set build version'
   env:
     Action: '##vso[build.updatebuildnumber]'
-    BuildVersion: $(GitVersion.NugetVersionV2)
+    BuildVersion: $(GitVersion.MajorMinorPatch).$(GitVersion.CommitsSinceVersionSource)
 
 - task: NuGetCommand@2
   displayName: 'NuGet restore'
@@ -47,15 +50,29 @@ steps:
   continueOnError: true
 
 - task: VSBuild@1
-  displayName: 'Build solution sip2json.sln RELEASE'
+  displayName: 'Build solution DEBUG'
   inputs:
-    solution: 'sip2json.sln'
-    platform: 'x64'
-    configuration: 'Release'
+    solution: '**/*.sln'
+    vsVersion: 17.0
+    platform: x64
+    msbuildArgs: ''
+    configuration: Debug
     maximumCpuCount: true
-    msbuildArchitecture: 'x64'
+    msbuildArchitecture: x64
 
-- task: VSTest@2
+- task: VSBuild@1
+  displayName: 'Build solution Release'
+  inputs:
+    solution: '**/*.sln'
+    vsVersion: 17.0
+    platform: x64
+    msbuildArgs: ''
+    configuration: Release
+    maximumCpuCount: true
+    msbuildArchitecture: x64
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+
+- task: VSTest@3
   inputs:
     testSelector: 'testAssemblies'
     testAssemblyVer2: '$(System.DefaultWorkingDirectory)\test\validation_tests\Release\validation_tests.exe --gtest_output=xml:$(System.DefaultWorkingDirectory)\TestResults'

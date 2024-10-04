@@ -180,31 +180,6 @@ namespace siddiqsoft
             errCode = sip2jsonErrors::empty_message;
         }
     };
-
-
-    /// @brief Create and throw a sip2json_error object.
-    /// @tparam ...Args Automatically deduced template argument
-    /// @param ec Error Code (type of error to be created)
-    /// @param formatSpec std::format spec
-    /// @param ...args std::format arguments
-    /// @return Throws an object sip2json_error object.
-    template <class E, typename... Args> void sip2json_throw(const std::string& formatSpec, Args... args) noexcept(false)
-    {
-        auto e = E(std::format(formatSpec, args...));
-        throw e;
-    }
-
-
-    template <class E, typename... Args>
-    void sip2json_throw_if(bool predicate, const std::string& formatSpec, Args... args) noexcept(false)
-    {
-        if (predicate)
-        {
-            auto e = E(std::format(formatSpec, args...));
-            throw e;
-        }
-    }
-
 } // namespace siddiqsoft
 
 
