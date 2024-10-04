@@ -22,31 +22,31 @@ variables:
   buildPlatform: 'x64'
   
 steps:
-- task: UseDotNet@2
-  inputs:
-    version: '8.x'
-
 - task: NuGetToolInstaller@1
-  displayName: 'Use NuGet latest'
+  displayName: 'Use NuGet 6.0.0'
   inputs:
-    versionSpec: '6.*'
+    versionSpec: '6.0.0'
 
-- task: gitversion/setup@3.0.0
-  displayName: 'Install GitVersion'
-
-- task: gitversion/execute@3.0.0
-  displayName: 'Determine version'
+- task: GitVersion@5
+  inputs:
+    runtime: 'core'
+    preferBundledVersion: false
+    configFilePath: 'GitVersion.yml'
 
 - script: echo %Action%%BuildVersion%
   displayName: 'Set build version'
   env:
     Action: '##vso[build.updatebuildnumber]'
-    BuildVersion: $(GitVersion.MajorMinorPatch).$(GitVersion.CommitsSinceVersionSource)
+    BuildVersion: $(GitVersion.MajorMinorPatch)
 
 - task: NuGetCommand@2
   displayName: 'NuGet restore'
   inputs:
-    vstsFeed: 'a0302836-2c67-4470-bcb5-10149e5447f9'
+    command: 'restore'
+    restoreSolution: '**/*.sln'
+    feedsToUse: 'select'
+    vstsFeed: 'ec2759e0-0587-4306-8a8d-8695f15e2336'
+    noCache: true
   continueOnError: true
 
 - task: VSBuild@1
