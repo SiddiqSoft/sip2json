@@ -5,6 +5,7 @@ trigger:
     - master
     - main
     - bufix/*
+    - release/*
     - feature/*
   paths:
     exclude:
