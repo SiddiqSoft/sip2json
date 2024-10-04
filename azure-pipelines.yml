@@ -61,6 +61,29 @@ steps:
     maximumCpuCount: true
     msbuildArchitecture: x64
 
+- task: VSTest@3
+  displayName: 'Running tests from Debug build..'
+  inputs:
+    testSelector: 'testAssemblies'
+    testAssemblyVer2: '$(System.DefaultWorkingDirectory)\test\validation_tests\Debug\validation_tests.exe --gtest_output=xml:$(System.DefaultWorkingDirectory)\TestResults'
+    searchFolder: '$(System.DefaultWorkingDirectory)'
+    resultsFolder: '$(System.DefaultWorkingDirectory)\TestResults'
+    runInParallel: true
+    codeCoverageEnabled: true
+    platform: 'x64'
+    configuration: 'Debug'
+  condition: succeeded()
+
+- task: CmdLine@2
+  inputs:
+    script: |
+      echo 'Running googletest in Debug'
+      cd test
+      cd validation_tests
+      cd Debug
+      validation_tests.exe --gtest_output=xml:..\..\..\TestResults\
+  condition: succeeded()
+
 - task: VSBuild@1
   displayName: 'Build solution Release'
   inputs:
@@ -74,7 +97,7 @@ steps:
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
 - task: VSTest@3
-  displayName: 'Running tests from $(configuration) build..'
+  displayName: 'Running tests from Release build..'
   inputs:
     testSelector: 'testAssemblies'
     testAssemblyVer2: '$(System.DefaultWorkingDirectory)\test\validation_tests\Release\validation_tests.exe --gtest_output=xml:$(System.DefaultWorkingDirectory)\TestResults'
@@ -84,17 +107,17 @@ steps:
     codeCoverageEnabled: true
     platform: 'x64'
     configuration: 'Release'
-  condition: succeeded()
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
 - task: CmdLine@2
   inputs:
     script: |
-      echo 'Running googletest in $(buildConfiguration) $(configuration)'
+      echo 'Running googletest in Release'
       cd test
       cd validation_tests
-      cd '$(buildConfiguration)'
+      cd Release
       validation_tests.exe --gtest_output=xml:..\..\..\TestResults\
-  condition: succeeded()
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
 - task: PublishTestResults@2
   displayName: 'Publish Release Test Results **/TEST-*.xml'
@@ -103,7 +126,7 @@ steps:
     testResultsFiles: '**/validation_tests.xml'
     mergeTestResults: true
     buildPlatform: 'x64'
-    buildConfiguration: 'release'
+    buildConfiguration: 'Release'
   continueOnError: true
   condition: succeeded()
 
