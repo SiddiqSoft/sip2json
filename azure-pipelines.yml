@@ -119,7 +119,7 @@ steps:
     nuGetFeedType: 'external'
     publishFeedCredentials: 'sqs-nuget'
 
-  - task: GitHubRelease@1
+- task: GitHubRelease@1
   inputs:
     gitHubConnection: 'github-packages-sqs'
     repositoryName: 'siddiqsoftware/sip2json'
