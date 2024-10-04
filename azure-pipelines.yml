@@ -11,8 +11,8 @@ trigger:
     - README.md
 
 pool:
-  name: Azure Pipelines
-  vmImage: Windows-2022
+  name: Default
+  #vmImage: Windows-2022
   demands:
   - msbuild
   - visualstudio
@@ -106,10 +106,10 @@ steps:
 - task: NuGetCommand@2
   displayName: 'NuGet pack'
   inputs:
-    command: pack
-    packagesToPack: 'nuget/SiddiqSoft.sip2json.nuspec;!nuget/SiddiqSoft.sip2json.symbols.nuspec'
+    command: 'pack'
+    packagesToPack: 'nuget/*.nuspec'
+    versioningScheme: 'off'
     buildProperties: 'VERSION=$(build.buildNumber)'
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
 - task: NuGetCommand@2
   displayName: 'NuGet push'
@@ -118,9 +118,8 @@ steps:
     packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg;build/*.nupkg;!build/*symbols.nupkg'
     nuGetFeedType: 'external'
     publishFeedCredentials: 'sqs-nuget'
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
-- task: GitHubRelease@1
+  - task: GitHubRelease@1
   inputs:
     gitHubConnection: 'github-packages-sqs'
     repositoryName: 'siddiqsoftware/sip2json'
@@ -130,8 +129,8 @@ steps:
     tag: '$(build.buildNumber)'
     title: 'v$(build.buildNumber)'
     releaseNotesSource: 'inline'
+    releaseNotesInline: 'Documentation https://siddiqsoftware.github.io/sip2json'
     isPreRelease: true
     changeLogCompareToRelease: 'lastFullRelease'
     changeLogType: 'commitBased'
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-  
