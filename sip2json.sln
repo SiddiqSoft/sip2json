@@ -6,8 +6,6 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nuget", "nuget", "{0833CF10-6FB8-4734-9619-7E657E41CC84}"
 	ProjectSection(SolutionItems) = preProject
 		nuget\SiddiqSoft.sip2json.nuspec = nuget\SiddiqSoft.sip2json.nuspec
-		nuget\SiddiqSoft.sip2json.symbols.nuspec = nuget\SiddiqSoft.sip2json.symbols.nuspec
-		nuget\SiddiqSoft.sip2json.symbols.targets = nuget\SiddiqSoft.sip2json.symbols.targets
 		nuget\SiddiqSoft.sip2json.targets = nuget\SiddiqSoft.sip2json.targets
 	EndProjectSection
 EndProject
