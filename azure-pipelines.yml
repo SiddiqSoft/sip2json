@@ -83,7 +83,7 @@ steps:
     codeCoverageEnabled: true
     platform: 'x64'
     configuration: 'Release'
-  condition: and(succeeded())
+  condition: succeeded()
 
 - task: CmdLine@2
   inputs:
@@ -93,7 +93,7 @@ steps:
       cd validation_tests
       cd '$(buildConfiguration)'
       validation_tests.exe --gtest_output=xml:..\..\..\TestResults\
-  condition: and(succeeded())
+  condition: succeeded()
 
 - task: PublishTestResults@2
   displayName: 'Publish Release Test Results **/TEST-*.xml'
@@ -104,7 +104,7 @@ steps:
     buildPlatform: 'x64'
     buildConfiguration: 'release'
   continueOnError: true
-  condition: and(succeeded())
+  condition: succeeded()
 
 - task: NuGetCommand@2
   displayName: 'NuGet pack'
