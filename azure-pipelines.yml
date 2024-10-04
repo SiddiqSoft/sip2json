@@ -120,7 +120,7 @@ steps:
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
 - task: PublishTestResults@2
-  displayName: 'Publish Release Test Results **/TEST-*.xml'
+  displayName: 'Publish Test Results **/TEST-*.xml'
   inputs:
     testResultsFormat: 'JUnit'
     testResultsFiles: '**/validation_tests.xml'
