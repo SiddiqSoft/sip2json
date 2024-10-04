@@ -83,17 +83,17 @@ steps:
     codeCoverageEnabled: true
     platform: 'x64'
     configuration: 'Release'
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  condition: and(succeeded())
 
 - task: CmdLine@2
   inputs:
     script: |
-      echo 'Running googletest in $Configuration'
+      echo 'Running googletest in $(buildConfiguration)'
       cd test
       cd validation_tests
-      cd '$Configuration'
+      cd '$(buildConfiguration)'
       validation_tests.exe --gtest_output=xml:..\..\..\TestResults\
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  condition: and(succeeded())
 
 - task: PublishTestResults@2
   displayName: 'Publish Release Test Results **/TEST-*.xml'
@@ -104,7 +104,7 @@ steps:
     buildPlatform: 'x64'
     buildConfiguration: 'release'
   continueOnError: true
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  condition: and(succeeded())
 
 - task: NuGetCommand@2
   displayName: 'NuGet pack'
