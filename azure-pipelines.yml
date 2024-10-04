@@ -5,6 +5,7 @@ trigger:
     - master
     - main
     - bufix/*
+    - release/*
     - feature/*
   paths:
     exclude:
@@ -22,31 +23,31 @@ variables:
   buildPlatform: 'x64'
   
 steps:
-- task: UseDotNet@2
-  inputs:
-    version: '8.x'
-
 - task: NuGetToolInstaller@1
-  displayName: 'Use NuGet latest'
+  displayName: 'Use NuGet 6.0.0'
   inputs:
-    versionSpec: '6.*'
+    versionSpec: '6.0.0'
 
-- task: gitversion/setup@3.0.0
-  displayName: 'Install GitVersion'
-
-- task: gitversion/execute@3.0.0
-  displayName: 'Determine version'
+- task: GitVersion@5
+  inputs:
+    runtime: 'core'
+    preferBundledVersion: false
+    configFilePath: 'GitVersion.yml'
 
 - script: echo %Action%%BuildVersion%
   displayName: 'Set build version'
   env:
     Action: '##vso[build.updatebuildnumber]'
-    BuildVersion: $(GitVersion.MajorMinorPatch).$(GitVersion.CommitsSinceVersionSource)
+    BuildVersion: $(GitVersion.MajorMinorPatch)
 
 - task: NuGetCommand@2
   displayName: 'NuGet restore'
   inputs:
-    vstsFeed: 'a0302836-2c67-4470-bcb5-10149e5447f9'
+    command: 'restore'
+    restoreSolution: '**/*.sln'
+    feedsToUse: 'select'
+    vstsFeed: 'ec2759e0-0587-4306-8a8d-8695f15e2336'
+    noCache: true
   continueOnError: true
 
 - task: VSBuild@1
@@ -59,6 +60,29 @@ steps:
     configuration: Debug
     maximumCpuCount: true
     msbuildArchitecture: x64
+
+- task: VSTest@3
+  displayName: 'Running tests from Debug build..'
+  inputs:
+    testSelector: 'testAssemblies'
+    testAssemblyVer2: '$(System.DefaultWorkingDirectory)\test\validation_tests\Debug\validation_tests.exe --gtest_output=xml:$(System.DefaultWorkingDirectory)\TestResults'
+    searchFolder: '$(System.DefaultWorkingDirectory)'
+    resultsFolder: '$(System.DefaultWorkingDirectory)\TestResults'
+    runInParallel: true
+    codeCoverageEnabled: true
+    platform: 'x64'
+    configuration: 'Debug'
+  condition: succeeded()
+
+- task: CmdLine@2
+  inputs:
+    script: |
+      echo 'Running googletest in Debug'
+      cd test
+      cd validation_tests
+      cd Debug
+      validation_tests.exe --gtest_output=xml:..\..\..\TestResults\
+  condition: succeeded()
 
 - task: VSBuild@1
   displayName: 'Build solution Release'
@@ -73,6 +97,7 @@ steps:
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
 - task: VSTest@3
+  displayName: 'Running tests from Release build..'
   inputs:
     testSelector: 'testAssemblies'
     testAssemblyVer2: '$(System.DefaultWorkingDirectory)\test\validation_tests\Release\validation_tests.exe --gtest_output=xml:$(System.DefaultWorkingDirectory)\TestResults'
@@ -82,16 +107,17 @@ steps:
     codeCoverageEnabled: true
     platform: 'x64'
     configuration: 'Release'
-
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
 - task: CmdLine@2
   inputs:
     script: |
-      echo Running googltest
+      echo 'Running googletest in Release'
       cd test
       cd validation_tests
       cd Release
       validation_tests.exe --gtest_output=xml:..\..\..\TestResults\
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
 - task: PublishTestResults@2
   displayName: 'Publish Release Test Results **/TEST-*.xml'
@@ -100,8 +126,9 @@ steps:
     testResultsFiles: '**/validation_tests.xml'
     mergeTestResults: true
     buildPlatform: 'x64'
-    buildConfiguration: 'release'
+    buildConfiguration: 'Release'
   continueOnError: true
+  condition: succeeded()
 
 - task: NuGetCommand@2
   displayName: 'NuGet pack'
@@ -110,6 +137,7 @@ steps:
     packagesToPack: 'nuget/*.nuspec'
     versioningScheme: 'off'
     buildProperties: 'VERSION=$(build.buildNumber)'
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
 - task: NuGetCommand@2
   displayName: 'NuGet push'
@@ -118,6 +146,7 @@ steps:
     packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg;build/*.nupkg;!build/*symbols.nupkg'
     nuGetFeedType: 'external'
     publishFeedCredentials: 'sqs-nuget'
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
 - task: GitHubRelease@1
   inputs:
