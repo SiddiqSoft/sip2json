@@ -74,6 +74,7 @@ steps:
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
 - task: VSTest@3
+  displayName: 'Running tests from $(configuration) build..'
   inputs:
     testSelector: 'testAssemblies'
     testAssemblyVer2: '$(System.DefaultWorkingDirectory)\test\validation_tests\Release\validation_tests.exe --gtest_output=xml:$(System.DefaultWorkingDirectory)\TestResults'
@@ -88,7 +89,7 @@ steps:
 - task: CmdLine@2
   inputs:
     script: |
-      echo 'Running googletest in $(buildConfiguration)'
+      echo 'Running googletest in $(buildConfiguration) $(configuration)'
       cd test
       cd validation_tests
       cd '$(buildConfiguration)'
