@@ -36,6 +36,9 @@
 
 #pragma once
 
+#ifndef SIP2JSON_HPP
+#define SIP2JSON_HPP
+
 #include <algorithm>
 #include <string>
 #include <regex>
@@ -618,8 +621,8 @@ namespace siddiqsoft
             std::string contentType {};
 
             // Reserve the size of a typical SIP Message. Typical message size of 3K
-            buffer.reserve(3*1024);
-            
+            buffer.reserve(3 * 1024);
+
             // Assert: non-empty json document
             if (sipm.size() == 0) throw empty_message_error {std::format("{}:sipm is empty.", __func__)};
             // Assert: non-empty json document; starting with v1.9 we have a meta element for diagnostics; this is to be treated as "empty".
@@ -644,7 +647,7 @@ namespace siddiqsoft
             else
             {
                 throw invalid_document_error {std::format(
-                        "{}:sipm /type is neither `{}` nor `{}`.", __func__, SIPMessageType::request, SIPMessageType::response)};
+                        "{}:sipm /type is neither `SIPMessageType::request` nor `SIPMessageType::response`.", __func__)};
             }
 
             // Encode the body first so we can get the content-length properly.
@@ -890,10 +893,4 @@ namespace siddiqsoft
 } // namespace siddiqsoft
 
 
-template <> struct std::formatter<siddiqsoft::SIPMessageType> : std::formatter<std::string>
-{
-    auto format(const siddiqsoft::SIPMessageType& mt, std::format_context& ctx)
-    {
-        return std::formatter<string>::format("notset"s, ctx);
-    }
-};
+#endif

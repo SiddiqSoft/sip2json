@@ -775,7 +775,7 @@ TEST(siphelpers, Test_body_method)
     try
     {
         auto buffer = sip2json::serialize(sipm);
-        
+
         std::cerr << "Serialized:\n" << buffer << "\n";
 
         // Now that we have a serialized message
@@ -849,10 +849,11 @@ TEST(siphelpers, Test_async_incomplete_buffer_for_content)
 
     sip2json::parseAsync(buffer,
                          {},
-                         [&](const sip2json_exception& e, std::string::iterator&, const std::string::iterator&)
+                         [&](const siddiqsoft::sip2json_exception& e, std::string::iterator&, const std::string::iterator&)
                          {
                              // We would get multiple exceptions/callbacks so we should watch out for our specific code.
-                             std::clog << std::format("Test_incomplete_buffer_for_content: got error:{}\n", e.errCode);
+                             std::cerr << std::format("Test_incomplete_buffer_for_content: got error:{}\n",
+                                                      e.errCode);
                              if (e.errCode == sip2jsonErrors::incomplete_buffer_for_content) passTest = true;
                          });
     EXPECT_TRUE(passTest);

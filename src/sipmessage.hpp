@@ -35,6 +35,8 @@
 */
 
 #pragma once
+#ifndef SIPMESSAGE_HPP
+#define SIPMESSAGE_HPP
 
 #include <algorithm>
 #include <string>
@@ -62,6 +64,7 @@ namespace siddiqsoft
         request  = 1,
         response = 2
     };
+
 
     NLOHMANN_JSON_SERIALIZE_ENUM(SIPMessageType,
                                  {{SIPMessageType::request, "request"},
@@ -303,3 +306,30 @@ namespace siddiqsoft
 
     }; // class sipmessage
 } // namespace siddiqsoft
+
+
+std::ostream& operator<<(std::ostream& os, const siddiqsoft::SIPMessageType mt)
+{
+    switch (mt)
+    {
+    case siddiqsoft::SIPMessageType::response: return os << "response";
+    case siddiqsoft::SIPMessageType::request: return os << "request";
+    default: return os << "notspecified";
+    }
+}
+
+template <> struct std::formatter<siddiqsoft::SIPMessageType> : std::formatter<std::string_view>
+{
+    template <typename Context> auto format(const siddiqsoft::SIPMessageType mt, Context& ctx) const
+    {
+        switch (mt)
+        {
+        case siddiqsoft::SIPMessageType::response: return std::formatter<std::string_view>::format("response", ctx); break;
+        case siddiqsoft::SIPMessageType::request: return std::formatter<std::string_view>::format("request", ctx); break;
+        default: return std::formatter<std::string_view>::format("notspecified", ctx);
+        }
+    }
+};
+
+
+#endif // !SIPMESSAGE_HPP
