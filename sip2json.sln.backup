@@ -71,7 +71,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{6C56
 		test\samples\Trying_INVITE_1.sip = test\samples\Trying_INVITE_1.sip
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "validation_tests", "test\validation_tests\validation_tests.vcxproj", "{0619F397-3A26-4BE8-8B5E-D186CF369FFB}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "validation_tests", "test\validation_tests.vcxproj", "{0619F397-3A26-4BE8-8B5E-D186CF369FFB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
