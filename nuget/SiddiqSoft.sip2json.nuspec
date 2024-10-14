@@ -23,7 +23,7 @@
         <copyright>Copyright (c) 2003-2024 Abdulkareem Siddiq</copyright>
         <!-- Dependencies -->
         <dependencies>
-            <dependency id="nlohmann.json" version="3.11"/>
+            <dependency id="nlohmann.json" version="3.11.2"/>
         </dependencies>
     </metadata>
 

@@ -185,7 +185,7 @@ namespace siddiqsoft
 
 template <> struct std::formatter<siddiqsoft::sip2jsonErrors> : std::formatter<std::string>
 {
-    auto format(siddiqsoft::sip2jsonErrors e, std::format_context& ctx)
+    auto format(siddiqsoft::sip2jsonErrors e, std::format_context& ctx) const
     {
         switch (e)
         {
