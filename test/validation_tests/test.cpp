@@ -1055,3 +1055,11 @@ TEST(validation, Test_parse_invalid_string_position)
     EXPECT_EQ(1192, parseResult[2].getContentLength());
     EXPECT_EQ("+19362329469", parseResult[2].getBodyElement("/sdp/0/c/dn"_json_pointer, ""s));
 }
+
+// NOLINTNEXTLINE
+TEST(ImplementationChecks, Test_formatters_1)
+{
+    // This should compile without issue.
+    auto msg = std::format("{} Format `{}` nor `{}`.", __func__, SIPMessageType::request, SIPMessageType::response);
+    cerr << msg << std::endl;
+}

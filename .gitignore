@@ -349,3 +349,5 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 *.out
+/src/version.h
+/test/validation_tests/validation_tests.tlog
