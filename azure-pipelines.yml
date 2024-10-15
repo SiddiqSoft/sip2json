@@ -12,8 +12,10 @@ trigger:
     exclude:
     - README.md
 
+# This cannot be built (so long as we're using private repo) on the Azure build machines.
 pool:
-  vmImage: Windows-2022
+  name: Default
+  #vmImage: Windows-2022
   demands:
   - msbuild
   - visualstudio
