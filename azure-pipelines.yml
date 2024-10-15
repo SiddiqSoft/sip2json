@@ -101,13 +101,11 @@ steps:
 - task: CmdLine@2
   inputs:
     script: |
-      dir .
-      dir output
       dir output\Release
-      dir test\
+      dir test\validation_tests
       echo 'Running googletest in Release'
       cd output\Release
-      "validation_tests.exe --gtest_output=xml:$(System.DefaultWorkingDirectory)\TestResults"
+      validation_tests.exe --gtest_output='xml:$(System.DefaultWorkingDirectory)\TestResults'
   condition: succeeded()
 
 - task: VSTest@3
