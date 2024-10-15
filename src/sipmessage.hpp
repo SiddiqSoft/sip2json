@@ -1,11 +1,11 @@
 /*
     A SIP Parser for Modern C++
-    Version 1.0.0
+    Version 1.15.0
     https://github.com/siddiqsoftware/sip2json/
 
     BSD 3-Clause License
 
-    Copyright (c) 2003-2020, Abdelkareem Siddiq
+    Copyright (c) 2003-2024, Abdelkareem Siddiq
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -35,6 +35,8 @@
 */
 
 #pragma once
+#ifndef SIPMESSAGE_HPP
+#define SIPMESSAGE_HPP
 
 #include <algorithm>
 #include <string>
@@ -72,7 +74,7 @@ namespace siddiqsoft
     {
         static constexpr std::string_view MetaLibName {"sip2json"};
         static constexpr std::string_view MetaSchemaVersion {"1.0.2"};
-        static constexpr std::string_view MetaParserVersion {"1.14.10"};
+        static constexpr std::string_view MetaParserVersion {"1.15"};
 
     public:
         sipmessage()
@@ -303,3 +305,22 @@ namespace siddiqsoft
 
     }; // class sipmessage
 } // namespace siddiqsoft
+
+template <> struct std::formatter<siddiqsoft::SIPMessageType> : std::formatter<std::string>
+{
+    auto format(const siddiqsoft::SIPMessageType& mt, std::format_context& ctx) const
+    {
+        return std::formatter<std::string>::format(((nlohmann::json)mt).dump(), ctx);
+    }
+};
+
+
+template <> struct std::formatter<siddiqsoft::sipmessage> : std::formatter<std::string>
+{
+    auto format(const siddiqsoft::sipmessage& msg, std::format_context& ctx) const
+    {
+        return std::formatter<std::string>::format(msg.dump(), ctx);
+    }
+};
+
+#endif

@@ -35,6 +35,8 @@
 */
 
 #pragma once
+#ifndef SIP2JSON_HPP
+#define SIP2JSON_HPP
 
 #include <algorithm>
 #include <string>
@@ -46,8 +48,8 @@
 #include <sstream>
 #include <functional>
 #include <optional>
-
 #include <format>
+
 #include "nlohmann/json.hpp"
 
 #include "sip2json_exception.hpp"
@@ -886,11 +888,6 @@ namespace siddiqsoft
     // SDP Message format: https://en.wikipedia.org/wiki/Session_Description_Protocol
     // SIP Response Codes: https://en.wikipedia.org/wiki/List_of_SIP_response_codes
     // JSON Library: https://nlohmann.github.io/json/
-    // FMT Library : https://fmt.dev/latest/index.html
 } // namespace siddiqsoft
 
-
-template <> struct std::formatter<siddiqsoft::SIPMessageType> : std::formatter<std::string>
-{
-    auto format(const siddiqsoft::SIPMessageType& mt, std::format_context& ctx) const { return string > ::format("notset"s, ctx); }
-};
+#endif

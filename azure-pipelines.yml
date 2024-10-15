@@ -6,14 +6,14 @@ trigger:
     - main
     - bufix/*
     - release/*
+    - hotfix/*
     - feature/*
   paths:
     exclude:
     - README.md
 
 pool:
-  name: Default
-  #vmImage: Windows-2022
+  vmImage: Windows-2022
   demands:
   - msbuild
   - visualstudio
@@ -32,7 +32,7 @@ steps:
   inputs:
     runtime: 'core'
     preferBundledVersion: false
-    configFilePath: 'GitVersion.yml'
+    # configFilePath: 'GitVersion.yml'
 
 - script: echo %Action%%BuildVersion%
   displayName: 'Set build version'
@@ -78,9 +78,7 @@ steps:
   inputs:
     script: |
       echo 'Running googletest in Debug'
-      cd test
-      cd validation_tests
-      cd Debug
+      cd test\validation_tests\Debug
       validation_tests.exe --gtest_output=xml:..\..\..\TestResults\
   condition: succeeded()
 
@@ -113,9 +111,7 @@ steps:
   inputs:
     script: |
       echo 'Running googletest in Release'
-      cd test
-      cd validation_tests
-      cd Release
+      cd test\validation_tests\Release
       validation_tests.exe --gtest_output=xml:..\..\..\TestResults\
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
