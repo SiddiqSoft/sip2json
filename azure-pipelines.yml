@@ -6,11 +6,13 @@ trigger:
     - main
     - bufix/*
     - release/*
+    - hotfix/*
     - feature/*
   paths:
     exclude:
     - README.md
 
+# This cannot be built (so long as we're using private repo) on the Azure build machines.
 pool:
   name: Default
   #vmImage: Windows-2022
@@ -32,7 +34,7 @@ steps:
   inputs:
     runtime: 'core'
     preferBundledVersion: false
-    configFilePath: 'GitVersion.yml'
+    # configFilePath: 'GitVersion.yml'
 
 - script: echo %Action%%BuildVersion%
   displayName: 'Set build version'
@@ -50,39 +52,38 @@ steps:
     noCache: true
   continueOnError: true
 
-- task: VSBuild@1
-  displayName: 'Build solution DEBUG'
-  inputs:
-    solution: '**/*.sln'
-    vsVersion: 17.0
-    platform: x64
-    msbuildArgs: ''
-    configuration: Debug
-    maximumCpuCount: true
-    msbuildArchitecture: x64
+# - task: VSBuild@1
+#   displayName: 'Build solution DEBUG'
+#   inputs:
+#     solution: '**/*.sln'
+#     vsVersion: 17.0
+#     platform: x64
+#     msbuildArgs: ''
+#     configuration: Debug
+#     maximumCpuCount: true
+#     msbuildArchitecture: x64
+#     clean: true
 
-- task: VSTest@3
-  displayName: 'Running tests from Debug build..'
-  inputs:
-    testSelector: 'testAssemblies'
-    testAssemblyVer2: '$(System.DefaultWorkingDirectory)\test\validation_tests\Debug\validation_tests.exe --gtest_output=xml:$(System.DefaultWorkingDirectory)\TestResults'
-    searchFolder: '$(System.DefaultWorkingDirectory)'
-    resultsFolder: '$(System.DefaultWorkingDirectory)\TestResults'
-    runInParallel: true
-    codeCoverageEnabled: true
-    platform: 'x64'
-    configuration: 'Debug'
-  condition: succeeded()
+# - task: VSTest@3
+#   displayName: 'Running tests from Debug build..'
+#   inputs:
+#     testSelector: 'testAssemblies'
+#     testAssemblyVer2: '$(System.DefaultWorkingDirectory)\test\validation_tests\Debug\validation_tests.exe --gtest_output=xml:$(System.DefaultWorkingDirectory)\TestResults'
+#     searchFolder: '$(System.DefaultWorkingDirectory)'
+#     resultsFolder: '$(System.DefaultWorkingDirectory)\TestResults'
+#     runInParallel: true
+#     codeCoverageEnabled: true
+#     platform: 'x64'
+#     configuration: 'Debug'
+#   condition: succeeded()
 
-- task: CmdLine@2
-  inputs:
-    script: |
-      echo 'Running googletest in Debug'
-      cd test
-      cd validation_tests
-      cd Debug
-      validation_tests.exe --gtest_output=xml:..\..\..\TestResults\
-  condition: succeeded()
+# - task: CmdLine@2
+#   inputs:
+#     script: |
+#       echo 'Running googletest in Debug'
+#       cd test\validation_tests\Debug
+#       validation_tests.exe --gtest_output=xml:..\..\..\TestResults\
+#   condition: succeeded()
 
 - task: VSBuild@1
   displayName: 'Build solution Release'
@@ -94,41 +95,40 @@ steps:
     configuration: Release
     maximumCpuCount: true
     msbuildArchitecture: x64
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    clean: true
+  condition: succeeded()
+
+- task: CmdLine@2
+  displayName: Running the googletest validation_tests
+  inputs:
+    script: |
+      echo "Running googletest in Release: `validation_tests.exe --gtest_output=xml`"
+      cd output\Release
+      echo "The default file will be test_detail.xml and will be located in the same directory as the exe"
+      validation_tests.exe --gtest_output=xml
+  condition: succeeded()
 
 - task: VSTest@3
-  displayName: 'Running tests from Release build..'
   inputs:
     testSelector: 'testAssemblies'
-    testAssemblyVer2: '$(System.DefaultWorkingDirectory)\test\validation_tests\Release\validation_tests.exe --gtest_output=xml:$(System.DefaultWorkingDirectory)\TestResults'
-    searchFolder: '$(System.DefaultWorkingDirectory)'
-    resultsFolder: '$(System.DefaultWorkingDirectory)\TestResults'
+    testAssemblyDirectory: '$(System.DefaultWorkingDirectory)\output\Release'
+    testAssemblyVer2: '$(System.DefaultWorkingDirectory)\output\Release\validation_tests.exe --gtest_output=xml'
+    searchFolder: '$(System.DefaultWorkingDirectory)\output\Release'
+    resultsFolder: '$(System.DefaultWorkingDirectory)\output\Release\test_detail.xml'
     runInParallel: true
     codeCoverageEnabled: true
     platform: 'x64'
     configuration: 'Release'
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-
-- task: CmdLine@2
-  inputs:
-    script: |
-      echo 'Running googletest in Release'
-      cd test
-      cd validation_tests
-      cd Release
-      validation_tests.exe --gtest_output=xml:..\..\..\TestResults\
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
 - task: PublishTestResults@2
-  displayName: 'Publish Test Results **/TEST-*.xml'
+  displayName: 'Publish Release Test Results test_detail.xml'
   inputs:
     testResultsFormat: 'JUnit'
-    testResultsFiles: '**/validation_tests.xml'
+    testResultsFiles: '$(System.DefaultWorkingDirectory)\output\Release\test_detail.xml'
     mergeTestResults: true
     buildPlatform: 'x64'
     buildConfiguration: 'Release'
   continueOnError: true
-  condition: succeeded()
 
 - task: NuGetCommand@2
   displayName: 'NuGet pack'
@@ -137,7 +137,7 @@ steps:
     packagesToPack: 'nuget/*.nuspec'
     versioningScheme: 'off'
     buildProperties: 'VERSION=$(build.buildNumber)'
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  condition: succeeded()
 
 - task: NuGetCommand@2
   displayName: 'NuGet push'

@@ -1,11 +1,11 @@
 /*
     A SIP Parser for Modern C++
-    Version 1.0.0
+    Version 1.15.0
     https://github.com/siddiqsoftware/sip2json/
 
     BSD 3-Clause License
 
-    Copyright (c) 2003-2020, Abdelkareem Siddiq
+    Copyright (c) 2003-2024, Abdelkareem Siddiq
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -75,7 +75,7 @@ namespace siddiqsoft
     {
         static constexpr std::string_view MetaLibName {"sip2json"};
         static constexpr std::string_view MetaSchemaVersion {"1.0.2"};
-        static constexpr std::string_view MetaParserVersion {"1.14.10"};
+        static constexpr std::string_view MetaParserVersion {"1.15"};
 
     public:
         sipmessage()
@@ -307,29 +307,21 @@ namespace siddiqsoft
     }; // class sipmessage
 } // namespace siddiqsoft
 
-
-std::ostream& operator<<(std::ostream& os, const siddiqsoft::SIPMessageType mt)
+template <> struct std::formatter<siddiqsoft::SIPMessageType> : std::formatter<std::string>
 {
-    switch (mt)
+    auto format(const siddiqsoft::SIPMessageType& mt, std::format_context& ctx) const
     {
-    case siddiqsoft::SIPMessageType::response: return os << "response";
-    case siddiqsoft::SIPMessageType::request: return os << "request";
-    default: return os << "notspecified";
-    }
-}
-
-template <> struct std::formatter<siddiqsoft::SIPMessageType> : std::formatter<std::string_view>
-{
-    template <typename Context> auto format(const siddiqsoft::SIPMessageType mt, Context& ctx) const
-    {
-        switch (mt)
-        {
-        case siddiqsoft::SIPMessageType::response: return std::formatter<std::string_view>::format("response", ctx); break;
-        case siddiqsoft::SIPMessageType::request: return std::formatter<std::string_view>::format("request", ctx); break;
-        default: return std::formatter<std::string_view>::format("notspecified", ctx);
-        }
+        return std::formatter<std::string>::format(((nlohmann::json)mt).dump(), ctx);
     }
 };
 
 
-#endif // !SIPMESSAGE_HPP
+template <> struct std::formatter<siddiqsoft::sipmessage> : std::formatter<std::string>
+{
+    auto format(const siddiqsoft::sipmessage& msg, std::format_context& ctx) const
+    {
+        return std::formatter<std::string>::format(msg.dump(), ctx);
+    }
+};
+
+#endif
