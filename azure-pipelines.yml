@@ -110,8 +110,8 @@ steps:
       dir .
       echo "List contents of output.."
       dir output
-      echo "List contents of output\TestResults"
-      dir output\TestResults
+      echo "List contents of output\Release"
+      dir output\Release
   condition: succeeded()
 
 - task: VSTest@3
