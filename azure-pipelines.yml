@@ -106,7 +106,10 @@ steps:
       echo 'Running googletest in Release'
       cd output\Release
       validation_tests.exe --gtest_output='xml:$(System.DefaultWorkingDirectory)\output\TestResults'
-      echo '$(System.DefaultWorkingDirectory)\TestResults'
+      echo '$(System.DefaultWorkingDirectory)\output\TestResults'
+      cd "$(System.DefaultWorkingDirectory)"
+      dir .
+      dir output
       dir output\TestResults
   condition: succeeded()
 
