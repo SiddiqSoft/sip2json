@@ -62,6 +62,7 @@ steps:
 #     configuration: Debug
 #     maximumCpuCount: true
 #     msbuildArchitecture: x64
+#     clean: true
 
 # - task: VSTest@3
 #   displayName: 'Running tests from Debug build..'
@@ -94,6 +95,7 @@ steps:
     configuration: Release
     maximumCpuCount: true
     msbuildArchitecture: x64
+    clean: true
   condition: succeeded()
 
 - task: VSTest@3
