@@ -98,25 +98,25 @@ steps:
     clean: true
   condition: succeeded()
 
+- task: CmdLine@2
+  inputs:
+    script: |
+      echo 'Running googletest in Release'
+      cd output\Release
+      "validation_tests.exe --gtest_output=xml:$(System.DefaultWorkingDirectory)\TestResults"
+  condition: succeeded()
+
 - task: VSTest@3
   displayName: 'Running tests from Release build..'
   inputs:
     testSelector: 'testAssemblies'
-    testAssemblyVer2: '$(System.DefaultWorkingDirectory)\test\validation_tests\Release\validation_tests.exe --gtest_output=xml:$(System.DefaultWorkingDirectory)\TestResults'
+    testAssemblyVer2: '$(System.DefaultWorkingDirectory)\output\Release\validation_tests.exe --gtest_output=xml:$(System.DefaultWorkingDirectory)\TestResults'
     searchFolder: '$(System.DefaultWorkingDirectory)'
     resultsFolder: '$(System.DefaultWorkingDirectory)\TestResults'
     runInParallel: true
     codeCoverageEnabled: true
     platform: 'x64'
     configuration: 'Release'
-  condition: succeeded()
-
-- task: CmdLine@2
-  inputs:
-    script: |
-      echo 'Running googletest in Release'
-      cd test\validation_tests\Release
-      validation_tests.exe --gtest_output=xml:..\..\..\TestResults\
   condition: succeeded()
 
 - task: PublishTestResults@2
