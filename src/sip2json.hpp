@@ -5,7 +5,7 @@
 
     BSD 3-Clause License
 
-    Copyright (c) 2003-2020, Abdelkareem Siddiq
+    Copyright (c) 2003-2024, Abdelkareem Siddiq
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -35,6 +35,8 @@
 */
 
 #pragma once
+#ifndef SIP2JSON_HPP
+#define SIP2JSON_HPP
 
 #include <algorithm>
 #include <string>
@@ -46,8 +48,8 @@
 #include <sstream>
 #include <functional>
 #include <optional>
-
 #include <format>
+
 #include "nlohmann/json.hpp"
 
 #include "sip2json_exception.hpp"
@@ -618,8 +620,8 @@ namespace siddiqsoft
             std::string contentType {};
 
             // Reserve the size of a typical SIP Message. Typical message size of 3K
-            buffer.reserve(3*1024);
-            
+            buffer.reserve(3 * 1024);
+
             // Assert: non-empty json document
             if (sipm.size() == 0) throw empty_message_error {std::format("{}:sipm is empty.", __func__)};
             // Assert: non-empty json document; starting with v1.9 we have a meta element for diagnostics; this is to be treated as "empty".
@@ -886,14 +888,6 @@ namespace siddiqsoft
     // SDP Message format: https://en.wikipedia.org/wiki/Session_Description_Protocol
     // SIP Response Codes: https://en.wikipedia.org/wiki/List_of_SIP_response_codes
     // JSON Library: https://nlohmann.github.io/json/
-    // FMT Library : https://fmt.dev/latest/index.html
 } // namespace siddiqsoft
 
-
-template <> struct std::formatter<siddiqsoft::SIPMessageType> : std::formatter<std::string>
-{
-    auto format(const siddiqsoft::SIPMessageType& mt, std::format_context& ctx)
-    {
-        return std::formatter<string>::format("notset"s, ctx);
-    }
-};
+#endif
