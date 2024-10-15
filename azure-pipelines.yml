@@ -99,43 +99,42 @@ steps:
   condition: succeeded()
 
 - task: CmdLine@2
+  displayName: Running the googletest validation_tests
   inputs:
     script: |
-      dir output\Release
-      dir test\validation_tests
-      echo 'Running googletest in Release'
+      echo "Running googletest in Release: `validation_tests.exe --gtest_output=xml`"
       cd output\Release
-      validation_tests.exe --gtest_output=xml:..\TestResults
-      echo '$(System.DefaultWorkingDirectory)\output\TestResults'
+      validation_tests.exe --gtest_output=xml
       cd "$(System.DefaultWorkingDirectory)"
+      echo "List current directory.."
       dir .
+      echo "List contents of output.."
       dir output
+      echo "List contents of output\TestResults"
       dir output\TestResults
   condition: succeeded()
 
 - task: VSTest@3
-  displayName: 'Running tests from Release build..'
   inputs:
     testSelector: 'testAssemblies'
-    testAssemblyVer2: '$(System.DefaultWorkingDirectory)\output\Release\validation_tests.exe --gtest_output=xml:$(System.DefaultWorkingDirectory)\output\TestResults'
-    searchFolder: '$(System.DefaultWorkingDirectory)\output'
-    resultsFolder: '$(System.DefaultWorkingDirectory)\output\TestResults'
+    testAssemblyDirectory: '$(System.DefaultWorkingDirectory)\output\Release'
+    testAssemblyVer2: '$(System.DefaultWorkingDirectory)\output\Release\validation_tests.exe --gtest_output=xml'
+    searchFolder: '$(System.DefaultWorkingDirectory)\output\Release'
+    resultsFolder: '$(System.DefaultWorkingDirectory)\output\Release\validation_tests_detail.xml'
     runInParallel: true
     codeCoverageEnabled: true
     platform: 'x64'
     configuration: 'Release'
-  condition: succeeded()
 
 - task: PublishTestResults@2
-  displayName: 'Publish Test Results **/TEST-*.xml'
+  displayName: 'Publish Release Test Results validation_tests_detail.xml'
   inputs:
     testResultsFormat: 'JUnit'
-    testResultsFiles: '**/validation_tests.xml'
+    testResultsFiles: '$(System.DefaultWorkingDirectory)\output\Release\validation_tests_detail.xml'
     mergeTestResults: true
     buildPlatform: 'x64'
     buildConfiguration: 'Release'
   continueOnError: true
-  condition: succeeded()
 
 - task: NuGetCommand@2
   displayName: 'NuGet pack'
