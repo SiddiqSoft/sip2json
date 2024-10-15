@@ -105,7 +105,7 @@ steps:
       dir test\validation_tests
       echo 'Running googletest in Release'
       cd output\Release
-      validation_tests.exe --gtest_output='xml:$(System.DefaultWorkingDirectory)\TestResults'
+      validation_tests.exe --gtest_output='xml:$(System.DefaultWorkingDirectory)\output\TestResults'
       echo '$(System.DefaultWorkingDirectory)\TestResults'
       dir output\TestResults
   condition: succeeded()
@@ -114,9 +114,9 @@ steps:
   displayName: 'Running tests from Release build..'
   inputs:
     testSelector: 'testAssemblies'
-    testAssemblyVer2: '$(System.DefaultWorkingDirectory)\output\Release\validation_tests.exe --gtest_output=xml:$(System.DefaultWorkingDirectory)\TestResults'
-    searchFolder: '$(System.DefaultWorkingDirectory)'
-    resultsFolder: '$(System.DefaultWorkingDirectory)\TestResults'
+    testAssemblyVer2: '$(System.DefaultWorkingDirectory)\output\Release\validation_tests.exe --gtest_output=xml:$(System.DefaultWorkingDirectory)\output\TestResults'
+    searchFolder: '$(System.DefaultWorkingDirectory)\output'
+    resultsFolder: '$(System.DefaultWorkingDirectory)\output\TestResults'
     runInParallel: true
     codeCoverageEnabled: true
     platform: 'x64'
