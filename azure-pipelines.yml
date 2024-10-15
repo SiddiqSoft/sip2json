@@ -105,7 +105,7 @@ steps:
       dir test\validation_tests
       echo 'Running googletest in Release'
       cd output\Release
-      validation_tests.exe --gtest_output='xml:$(System.DefaultWorkingDirectory)\output\TestResults'
+      validation_tests.exe --gtest_output=xml:..\output\TestResults
       echo '$(System.DefaultWorkingDirectory)\output\TestResults'
       cd "$(System.DefaultWorkingDirectory)"
       dir .
