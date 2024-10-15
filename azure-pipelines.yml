@@ -94,7 +94,7 @@ steps:
     configuration: Release
     maximumCpuCount: true
     msbuildArchitecture: x64
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  condition: succeeded()
 
 - task: VSTest@3
   displayName: 'Running tests from Release build..'
@@ -107,7 +107,7 @@ steps:
     codeCoverageEnabled: true
     platform: 'x64'
     configuration: 'Release'
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  condition: succeeded()
 
 - task: CmdLine@2
   inputs:
@@ -115,7 +115,7 @@ steps:
       echo 'Running googletest in Release'
       cd test\validation_tests\Release
       validation_tests.exe --gtest_output=xml:..\..\..\TestResults\
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  condition: succeeded()
 
 - task: PublishTestResults@2
   displayName: 'Publish Test Results **/TEST-*.xml'
@@ -135,7 +135,7 @@ steps:
     packagesToPack: 'nuget/*.nuspec'
     versioningScheme: 'off'
     buildProperties: 'VERSION=$(build.buildNumber)'
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  condition: succeeded()
 
 - task: NuGetCommand@2
   displayName: 'NuGet push'
