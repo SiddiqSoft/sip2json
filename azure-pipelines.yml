@@ -50,37 +50,37 @@ steps:
     noCache: true
   continueOnError: true
 
-- task: VSBuild@1
-  displayName: 'Build solution DEBUG'
-  inputs:
-    solution: '**/*.sln'
-    vsVersion: 17.0
-    platform: x64
-    msbuildArgs: ''
-    configuration: Debug
-    maximumCpuCount: true
-    msbuildArchitecture: x64
+# - task: VSBuild@1
+#   displayName: 'Build solution DEBUG'
+#   inputs:
+#     solution: '**/*.sln'
+#     vsVersion: 17.0
+#     platform: x64
+#     msbuildArgs: ''
+#     configuration: Debug
+#     maximumCpuCount: true
+#     msbuildArchitecture: x64
 
-- task: VSTest@3
-  displayName: 'Running tests from Debug build..'
-  inputs:
-    testSelector: 'testAssemblies'
-    testAssemblyVer2: '$(System.DefaultWorkingDirectory)\test\validation_tests\Debug\validation_tests.exe --gtest_output=xml:$(System.DefaultWorkingDirectory)\TestResults'
-    searchFolder: '$(System.DefaultWorkingDirectory)'
-    resultsFolder: '$(System.DefaultWorkingDirectory)\TestResults'
-    runInParallel: true
-    codeCoverageEnabled: true
-    platform: 'x64'
-    configuration: 'Debug'
-  condition: succeeded()
+# - task: VSTest@3
+#   displayName: 'Running tests from Debug build..'
+#   inputs:
+#     testSelector: 'testAssemblies'
+#     testAssemblyVer2: '$(System.DefaultWorkingDirectory)\test\validation_tests\Debug\validation_tests.exe --gtest_output=xml:$(System.DefaultWorkingDirectory)\TestResults'
+#     searchFolder: '$(System.DefaultWorkingDirectory)'
+#     resultsFolder: '$(System.DefaultWorkingDirectory)\TestResults'
+#     runInParallel: true
+#     codeCoverageEnabled: true
+#     platform: 'x64'
+#     configuration: 'Debug'
+#   condition: succeeded()
 
-- task: CmdLine@2
-  inputs:
-    script: |
-      echo 'Running googletest in Debug'
-      cd test\validation_tests\Debug
-      validation_tests.exe --gtest_output=xml:..\..\..\TestResults\
-  condition: succeeded()
+# - task: CmdLine@2
+#   inputs:
+#     script: |
+#       echo 'Running googletest in Debug'
+#       cd test\validation_tests\Debug
+#       validation_tests.exe --gtest_output=xml:..\..\..\TestResults\
+#   condition: succeeded()
 
 - task: VSBuild@1
   displayName: 'Build solution Release'
