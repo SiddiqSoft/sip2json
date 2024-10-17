@@ -1098,3 +1098,29 @@ TEST(ImplementationChecks, Test_formatters_1)
     EXPECT_TRUE(msg.find("response") != std::string::npos);
     std::cerr << msg << std::endl;
 }
+
+// NOLINTNEXTLINE
+TEST(siphelpers, TestVia)
+{
+    
+    auto buffer     = loadSampleFile("Test_extension_nelson"); // NOLINT
+    auto bs         = buffer.begin();
+    auto parseCount = 0;
+
+    auto sipm = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end());
+    if (sipm.contains("/h/Via"_json_pointer))
+    {
+        if (auto via = sipm["h"]["Via"]; via.is_string())
+        {
+            // swap out an push to array
+            auto previous = via.get<std::string>();
+            sipm["h"].erase("Via");
+            sipm["h"]["Via"].push_back(previous);
+            sipm["h"]["Via"].push_back(std::format("SIP/2.0/TCP {}", "x@y.z"));
+        }
+        else if (via.is_array()) { via.push_back(std::format("SIP/2.0/TCP {}", "a@b.c")); }
+    }
+    else { sipm["h"]["Via"] = std::format("SIP/2.0/TCP {}", "10.10.30.40"); }
+
+    EXPECT_TRUE(sipm.contains("/h/Via"_json_pointer));
+}
