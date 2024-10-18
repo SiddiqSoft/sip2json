@@ -1098,3 +1098,40 @@ TEST(ImplementationChecks, Test_formatters_1)
     EXPECT_TRUE(msg.find("response") != std::string::npos);
     std::cerr << msg << std::endl;
 }
+
+// NOLINTNEXTLINE
+TEST(siphelpers, Test_check_Via)
+{
+    auto buffer     = loadSampleFile("Test_extension_nelson"); // NOLINT
+    auto bs         = buffer.begin();
+    auto parseCount = 0;
+
+    auto sipm = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end());
+    if (sipm.contains("/h/Via"_json_pointer))
+    {
+        auto via = sipm["h"]["Via"];
+
+        EXPECT_TRUE(via.is_array()) << via.dump();
+
+        if (via.is_string())
+        {
+            // swap out an push to array
+            auto previous = via.get<std::string>();
+            sipm["h"].erase("Via");
+            sipm["h"]["Via"].push_back(previous);
+            sipm["h"]["Via"].push_back(std::format("SIP/2.0/TCP {}", "x@y.z"));
+            EXPECT_EQ(sipm["h"]["Via"].get<std::vector<std::string>>().size(), 2) << sipm["h"]["Via"].dump();
+            auto elemJustAdded = sipm["h"]["Via"].get<std::vector<std::string>>()[1];
+            EXPECT_TRUE(elemJustAdded.find("x@y.z")!=std::string::npos) << sipm["h"]["Via"].dump();
+        }
+        else if (via.is_array())
+        {
+            // Add another element..
+            sipm["h"]["Via"].push_back(std::format("SIP/2.0/TCP {}", "a@b.c"));
+            EXPECT_EQ(sipm["h"]["Via"].get<std::vector<std::string>>().size(), 3) << sipm["h"]["Via"].dump();
+        }
+    }
+    else { sipm["h"]["Via"] = std::format("SIP/2.0/TCP {}", "10.10.30.40"); }
+
+    EXPECT_TRUE(sipm.contains("/h/Via"_json_pointer));
+}

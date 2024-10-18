@@ -360,3 +360,4 @@ build/**
 *.sarif
 *.tlog
 /test/validation_tests/CodeAnalysisResultManifest.txt
+/test/validation_tests/test.nativecodeanalysis.xml
