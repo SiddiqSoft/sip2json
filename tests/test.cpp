@@ -15,23 +15,25 @@
 #include <format>
 #include "nlohmann/json.hpp"
 
-#include "../../src/sip2json.hpp"
-#include "../../src/sip2json_exception.hpp"
+#include "../src/sip2json.hpp"
+#include "../src/sip2json_exception.hpp"
 
 #include "gtest/gtest.h"
 
 
 static std::string loadSampleFile(const std::string_view& fileName)
 {
+    using namespace std::string_literals;
+
     std::stringstream testFile;
-    std::ifstream     sampleInputFile(format("../../test/samples/{}.sip", fileName), std::ios::binary);
+    std::ifstream     sampleInputFile(std::format("../../test/samples/{}.sip"s, fileName), std::ios::binary);
 
     if (sampleInputFile.is_open())
     {
         testFile << sampleInputFile.rdbuf();
         sampleInputFile.close();
     }
-    else { throw std::exception(std::format("Failed opening file: `{}`!", fileName).c_str()); }
+    else { throw std::exception(std::format("Failed opening file: `{}`!"s, fileName).c_str()); }
 
     return testFile.str();
 }

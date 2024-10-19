@@ -35,8 +35,6 @@
 */
 
 #pragma once
-#ifndef SIP2JSON_HPP
-#define SIP2JSON_HPP
 
 #ifndef SIP2JSON_HPP
 #define SIP2JSON_HPP

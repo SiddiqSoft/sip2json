@@ -30,6 +30,9 @@ add_executable(sip2json_test ${testSRC})
 target_link_libraries(sip2json_test
  PRIVATE GTest::gtest_main)
 
+target_link_libraries(sip2json_test
+ PRIVATE nlohmann_json::nlohmann_json)
+
 include(GoogleTest)
 gtest_discover_tests(sip2json_test
                      XML_OUTPUT_DIR "${PROJECT_SOURCE_DIR}/TestResults"

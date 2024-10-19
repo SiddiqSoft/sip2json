@@ -96,7 +96,7 @@ namespace siddiqsoft
         tm         timeInfo {};
 
         // Get the UTC time packet.
-        auto ec = gmtime_s(&timeInfo, &rawtime);
+        auto ec = std::gmtime_s(&timeInfo, &rawtime);
 
         if constexpr (std::is_same_v<T, std::string>)
         {

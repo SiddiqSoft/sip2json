@@ -24,6 +24,15 @@ find_package(Git REQUIRED)
 include(FetchContent)
 include(GNUInstallDirs)
 
+message(STATUS "-- Importing the nlohmann package directly..")
+FetchContent_Declare(
+    nlohmann_json
+    GIT_REPOSITORY https://github.com/nlohmann/json.git
+    GIT_TAG v3.11.3
+)
+FetchContent_MakeAvailable(nlohmann_json)
+
+
 # Get the branch name and the version tag (requires that we have a semver tag at some point!)
 execute_process(COMMAND ${GIT_EXECUTABLE} describe --tags --always --abbrev=1 OUTPUT_VARIABLE GIT_COMMIT_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE)
 execute_process(COMMAND ${GIT_EXECUTABLE} branch --show-current OUTPUT_VARIABLE GIT_BRANCHNAME OUTPUT_STRIP_TRAILING_WHITESPACE)
