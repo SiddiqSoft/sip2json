@@ -1,0 +1,114 @@
+name: 'sip2json build'
+
+trigger:
+  batch: true
+  branches:
+    include:
+    - master
+    - main
+    - bufix/*
+    - release/*
+    - hotfix/*
+    - feature/*
+  paths:
+    exclude:
+    - README.md
+
+# This cannot be built (so long as we're using private repo) on the Azure build machines.
+pool:
+  name: Default
+  #vmImage: Windows-2022
+  demands:
+  - cmake
+
+variables:
+  buildConfiguration: 'Release'
+  buildLatestTag: '0.0.0'
+
+steps:
+- task: PowerShell@2
+  displayName: 'Figure out the latest git tag'
+  inputs:
+    targetType: 'inline'
+    script: |
+      $buildLatestTag = git describe --tags $(git rev-list --tags --max-count=1)
+      Write-Host "##vso[task.setvariable variable=buildLatestTag;]$buildLatestTag"
+      Write-Host "##vso[build.updatebuildnumber]$buildLatestTag"
+
+- task: NuGetToolInstaller@1
+  displayName: 'Install Nuget'
+  inputs:
+    versionSpec: '>=5.0.0-0'
+    checkLatest: true
+
+#- task: NuGetCommand@2
+#  displayName: 'NuGet restore'
+#  inputs:
+#    command: 'restore'
+#    restoreSolution: '**/*.sln'
+#    feedsToUse: 'select'
+#    vstsFeed: 'ec2759e0-0587-4306-8a8d-8695f15e2336'
+#    noCache: true
+#  continueOnError: true
+
+- task: CMake@1
+  displayName: 'CMake ..'
+  inputs:
+    cmakeArgs: '..'
+
+- task: CMake@1
+  displayName: 'CMake --build . --config $(buildConfiguration)'
+  inputs:
+    cmakeArgs: '--build . --config $(buildConfiguration)'
+  condition: succeeded()
+
+- task: CMake@1
+  displayName: 'CMake -E chdir $(System.DefaultWorkingDirectory)\build\tests\ ctest'
+  inputs:
+    cmakeArgs: '-E chdir $(System.DefaultWorkingDirectory)\build\tests\ ctest . --output-junit $(System.DefaultWorkingDirectory)\build\tests\test_detail.xml --output-on-failure'
+  condition: succeeded()
+  continueOnError: true
+
+- task: PublishTestResults@2
+  displayName: 'Publish $(buildConfiguration) Test Results test_detail.xml'
+  inputs:
+    testResultsFormat: 'JUnit'
+    testResultsFiles: '$(System.DefaultWorkingDirectory)\build\tests\test_detail.xml'
+    mergeTestResults: true
+    buildConfiguration: '$(buildConfiguration)'
+  continueOnError: false
+  condition: succeeded()
+
+- task: NuGetCommand@2
+  displayName: 'NuGet pack'
+  inputs:
+    command: 'pack'
+    packagesToPack: 'nuget/*.nuspec'
+    versioningScheme: 'off'
+    buildProperties: 'VERSION=$(build.buildNumber)'
+  condition: succeeded()
+
+- task: NuGetCommand@2
+  displayName: 'NuGet push'
+  inputs:
+    command: 'push'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;build/*.nupkg'
+    nuGetFeedType: 'external'
+    publishFeedCredentials: 'sqs-nuget'
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+
+- task: GitHubRelease@1
+  inputs:
+    gitHubConnection: 'github-packages-sqs'
+    repositoryName: 'siddiqsoftware/sip2json'
+    action: 'create'
+    target: '$(Build.SourceVersion)'
+    tagSource: 'userSpecifiedTag'
+    tag: '$(build.buildNumber)'
+    title: 'v$(build.buildNumber)'
+    releaseNotesSource: 'inline'
+    releaseNotesInline: 'Documentation https://siddiqsoftware.github.io/sip2json'
+    isPreRelease: true
+    changeLogCompareToRelease: 'lastFullRelease'
+    changeLogType: 'commitBased'
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
