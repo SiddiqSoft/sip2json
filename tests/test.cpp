@@ -21,19 +21,17 @@
 #include "gtest/gtest.h"
 
 
-static std::string loadSampleFile(const std::string_view& fileName)
+static std::string loadSampleFile(const std::string& fileName)
 {
-    using namespace std::string_literals;
-
     std::stringstream testFile;
-    std::ifstream     sampleInputFile(std::format("../../test/samples/{}.sip"s, fileName), std::ios::binary);
+    std::ifstream     sampleInputFile {std::format("../../test/samples/{}.sip", fileName), std::ios::binary};
 
     if (sampleInputFile.is_open())
     {
         testFile << sampleInputFile.rdbuf();
         sampleInputFile.close();
     }
-    else { throw std::exception(std::format("Failed opening file: `{}`!"s, fileName).c_str()); }
+    else { throw std::exception(std::format("Failed opening file: `{}`!", fileName)); }
 
     return testFile.str();
 }
@@ -135,8 +133,11 @@ TEST(core_parser_tests, Test_TimeAsRFC1123_args)
     knowntm.tm_wday  = 6;      // Sat
     knowntm.tm_isdst = 0;
 
+    auto thistm = mktime(&knowntm);
+    setenv("TZ", "GMT", 1);
+    tm* timegmt = std::localtime(&thistm);
 
-    auto todays_date = siddiqsoft::TimeAsRFC1123(std::chrono::system_clock::from_time_t(_mkgmtime(&knowntm)));
+    auto todays_date = siddiqsoft::TimeAsRFC1123(std::chrono::system_clock::from_time_t(thistm));
     EXPECT_EQ("Sat, 13 Nov 2010 23:29:00 GMT", todays_date);
 }
 
@@ -153,8 +154,9 @@ TEST(core_parser_tests, Test_TimeAsRFC3339_args)
     knowntm.tm_wday  = 6;      // Sat
     knowntm.tm_isdst = 0;
 
-
-    auto todays_date = siddiqsoft::TimeAsRFC3339(std::chrono::system_clock::from_time_t(_mkgmtime(&knowntm)));
+    auto tv1         = mktime(&knowntm);
+    auto tvgmt       = std::gmtime(&tv1);
+    auto todays_date = siddiqsoft::TimeAsRFC3339(std::chrono::system_clock::from_time_t(tv1));
     EXPECT_EQ("2010-11-13T23:29:00.000Z", todays_date);
 }
 
@@ -178,7 +180,9 @@ TEST(core_parser_tests, Test_TimeAsISO8601_args)
     knowntm.tm_wday  = 6;      // Sat
     knowntm.tm_isdst = 0;
 
-    auto knownDate = siddiqsoft::TimeAsISO8601(std::chrono::system_clock::from_time_t(_mkgmtime(&knowntm)));
+    auto tv1       = std::mktime(&knowntm);
+
+    auto knownDate = siddiqsoft::TimeAsISO8601(std::chrono::system_clock::from_time_t(tv1));
     EXPECT_EQ("2010-11-13T23:29:00.0000000Z", knownDate);
 }
 
@@ -1093,7 +1097,7 @@ TEST(ImplementationChecks, Test_formatters_1)
 {
     // This should compile without issue.
     auto msg = std::format("{} Format `{}` nor `{}`.",
-                           std::string {__func__},
+                           __func__,
                            siddiqsoft::SIPMessageType::request,
                            siddiqsoft::SIPMessageType::response);
     EXPECT_TRUE(msg.find("request") != std::string::npos);
@@ -1124,7 +1128,7 @@ TEST(siphelpers, Test_check_Via)
             sipm["h"]["Via"].push_back(std::format("SIP/2.0/TCP {}", "x@y.z"));
             EXPECT_EQ(sipm["h"]["Via"].get<std::vector<std::string>>().size(), 2) << sipm["h"]["Via"].dump();
             auto elemJustAdded = sipm["h"]["Via"].get<std::vector<std::string>>()[1];
-            EXPECT_TRUE(elemJustAdded.find("x@y.z")!=std::string::npos) << sipm["h"]["Via"].dump();
+            EXPECT_TRUE(elemJustAdded.find("x@y.z") != std::string::npos) << sipm["h"]["Via"].dump();
         }
         else if (via.is_array())
         {
