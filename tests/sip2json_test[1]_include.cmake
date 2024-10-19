@@ -1,0 +1,5 @@
+if(EXISTS "/Users/maas/source/repos/siddiqsoft/sip2json/test/sip2json_test[1]_tests.cmake")
+  include("/Users/maas/source/repos/siddiqsoft/sip2json/test/sip2json_test[1]_tests.cmake")
+else()
+  add_test(sip2json_test_NOT_BUILT sip2json_test_NOT_BUILT)
+endif()
