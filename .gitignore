@@ -18,6 +18,9 @@ CMakeCache.txt
 **/*.cmake
 **/*.vcxproj
 **/*.sln
+**/Makefile
+*.cmake
+Makefile
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
