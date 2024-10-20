@@ -31,7 +31,7 @@ static std::string loadSampleFile(const std::string& fileName)
         testFile << sampleInputFile.rdbuf();
         sampleInputFile.close();
     }
-    else { throw std::exception(std::format("Failed opening file: `{}`!", fileName)); }
+    else { throw std::exception {std::format("Failed opening file: `{}`!", fileName).c_str()}; }
 
     return testFile.str();
 }
@@ -134,9 +134,6 @@ TEST(core_parser_tests, Test_TimeAsRFC1123_args)
     knowntm.tm_isdst = 0;
 
     auto thistm = mktime(&knowntm);
-    setenv("TZ", "GMT", 1);
-    tm* timegmt = std::localtime(&thistm);
-
     auto todays_date = siddiqsoft::TimeAsRFC1123(std::chrono::system_clock::from_time_t(thistm));
     EXPECT_EQ("Sat, 13 Nov 2010 23:29:00 GMT", todays_date);
 }
@@ -155,7 +152,6 @@ TEST(core_parser_tests, Test_TimeAsRFC3339_args)
     knowntm.tm_isdst = 0;
 
     auto tv1         = mktime(&knowntm);
-    auto tvgmt       = std::gmtime(&tv1);
     auto todays_date = siddiqsoft::TimeAsRFC3339(std::chrono::system_clock::from_time_t(tv1));
     EXPECT_EQ("2010-11-13T23:29:00.000Z", todays_date);
 }

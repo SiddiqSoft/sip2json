@@ -103,7 +103,7 @@ namespace siddiqsoft
             // Note that since we are getting the UTC time we should not use the %z or %Z in the strftime format
             // as it returns the local timezone and not GMT.
             char buff[sizeof "Tue, 01 Nov 1994 08:12:31 GMT"] {};
-            if (timeInfo != nullptr) strftime(buff, sizeof(buff), "%a, %d %h %Y %T GMT", &timeInfo);
+            if (timeInfo != nullptr) strftime(buff, sizeof(buff), "%a, %d %h %Y %T GMT", timeInfo);
 
             return buff;
         }
@@ -113,7 +113,7 @@ namespace siddiqsoft
             // Note that since we are getting the UTC time we should not use the %z or %Z in the strftime format
             // as it returns the local timezone and not GMT.
             wchar_t buff[sizeof L"Tue, 01 Nov 1994 08:12:31 GMT"] {};
-            if (timeInfo != nullptr) wcsftime(buff, sizeof(buff), L"%a, %d %h %Y %T GMT", &timeInfo);
+            if (timeInfo != nullptr) wcsftime(buff, sizeof(buff), L"%a, %d %h %Y %T GMT", timeInfo);
             return buff;
         }
 
@@ -140,7 +140,7 @@ namespace siddiqsoft
             // yyyy-mm-ddThh:mm:ss.mmmZ
             char buff[sizeof "yyyy-mm-ddThh:mm:ss.0000000Z"] {};
 
-            if (timeInfo != nulltpr) strftime(buff, sizeof(buff), "%FT%T", &timeInfo);
+            if (timeInfo != nullptr) strftime(buff, sizeof(buff), "%FT%T", timeInfo);
             return std::format("{}.{:03}Z", buff, msTime);
         }
         else if constexpr (std::is_same_v<T, std::wstring>)
@@ -148,7 +148,7 @@ namespace siddiqsoft
             // https://en.wikipedia.org/wiki/ISO_8601
             // yyyy-mm-ddThh:mm:ss.mmmZ
             wchar_t buff[sizeof L"yyyy-mm-ddThh:mm:ss.0000000Z"] {};
-            if (timeInfo != nulltpr) wcsftime(buff, sizeof(buff), L"%FT%T", &timeInfo);
+            if (timeInfo != nullptr) wcsftime(buff, sizeof(buff), L"%FT%T", timeInfo);
             return std::format(L"{}.{:03}Z", buff, msTime);
         }
 
