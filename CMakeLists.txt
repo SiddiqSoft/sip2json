@@ -35,11 +35,10 @@ FetchContent_MakeAvailable(nlohmann_json)
 
 # Get the branch name and the version tag (requires that we have a semver tag at some point!)
 execute_process(COMMAND ${GIT_EXECUTABLE} describe --tags --always --abbrev=1 OUTPUT_VARIABLE GIT_COMMIT_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE)
-execute_process(COMMAND ${GIT_EXECUTABLE} branch --show-current OUTPUT_VARIABLE GIT_BRANCHNAME OUTPUT_STRIP_TRAILING_WHITESPACE)
+message(STATUS "-- Git Version: ${GIT_COMMIT_VERSION}")
 string(REGEX MATCH "^[0-9]\.[0-9]\.[0-9]" GIT_VERSION ${GIT_COMMIT_VERSION})
 # Produce the version based on the version configured here in the project(xxx VERSION xx.yy.zz) section above
 # It is important to use the ${PROJECT_SOURCE_DIR} in order to ensure that the github build works properly!
-message(STATUS "-- Git Branch : ${GIT_BRANCHNAME}")
 message(STATUS "-- Git Version: ${GIT_VERSION}")
 # We will reset the project version to the gitversion tag
 message(STATUS "-- Before update the project version : " ${CMAKE_PROJECT_VERSION} )
