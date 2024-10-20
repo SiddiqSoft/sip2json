@@ -69,6 +69,15 @@ steps:
   condition: succeeded()
   continueOnError: true
 
+- task: CmdLine@2
+  displayName: 'Run the googletest binary..'
+  inputs:
+    script: |
+      echo " -- Working Directory : "
+      echo " -- Arguments         : "
+  condition: succeeded()
+  continueOnError: true
+
 - task: PublishTestResults@2
   displayName: 'Publish $(buildConfiguration) Test Results test_detail.xml'
   inputs:

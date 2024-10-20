@@ -12,6 +12,9 @@
 #include <string_view>
 #include <filesystem>
 
+#include <iomanip>
+#include <sstream>
+
 #include <format>
 #include "nlohmann/json.hpp"
 
@@ -20,11 +23,41 @@
 
 #include "gtest/gtest.h"
 
+#if defined(_WIN32)
+#include <Windows.h>
+#include <processenv.h>
+#else
+#include <unistd.h>
+#endif
+
 
 static std::string loadSampleFile(const std::string& fileName)
 {
+#if (defined(_WIN32) || defined(_WIN64))
+    std::string cmdline {GetCommandLine()};
+#else if defined(_UNIX)
+    std::string cmdline {};
+#endif
+
+    // Figure out the argument which should be the location of the samples folder.
+    std::clog << " -- Discovered commandline: " << cmdline << std::endl;
+    std::stringstream sstr {cmdline};
+    std::string       word {};
+    std::string       samplesDirectoryPath {};
+    while (sstr >> std::quoted(word))
+    {
+        std::clog << "Argument: " << word << std::endl;
+        if (word.find("samples") != std::string::npos)
+        {
+            samplesDirectoryPath = word;
+            break;
+        }
+    }
+
+    std::clog << " -- Using the samples directory at: " << samplesDirectoryPath << std::endl;
+
     std::stringstream testFile;
-    std::ifstream     sampleInputFile {std::format("../../test/samples/{}.sip", fileName), std::ios::binary};
+    std::ifstream     sampleInputFile {std::format("{}/{}.sip", samplesDirectoryPath, fileName), std::ios::binary};
 
     if (sampleInputFile.is_open())
     {
@@ -133,7 +166,15 @@ TEST(core_parser_tests, Test_TimeAsRFC1123_args)
     knowntm.tm_wday  = 6;      // Sat
     knowntm.tm_isdst = 0;
 
-    auto thistm = mktime(&knowntm);
+    auto thistm {mktime(&knowntm)};
+
+    char knowntmRepresentation[128] {'\0'};
+    std::strftime(knowntmRepresentation, sizeof(knowntmRepresentation), "%A %c", &knowntm);
+    std::clog << "     %A %c: " << knowntmRepresentation << std::endl;
+    std::strftime(knowntmRepresentation, sizeof(knowntmRepresentation), "%FT%TZ", &knowntm);
+    std::clog << "  strftime: " << knowntmRepresentation << std::endl;
+    std::clog << "     ctime: " << ctime(&thistm) << std::endl;
+
     auto todays_date = siddiqsoft::TimeAsRFC1123(std::chrono::system_clock::from_time_t(thistm));
     EXPECT_EQ("Sat, 13 Nov 2010 23:29:00 GMT", todays_date);
 }
@@ -151,7 +192,15 @@ TEST(core_parser_tests, Test_TimeAsRFC3339_args)
     knowntm.tm_wday  = 6;      // Sat
     knowntm.tm_isdst = 0;
 
-    auto tv1         = mktime(&knowntm);
+    auto tv1 = mktime(&knowntm);
+
+    char knowntmRepresentation[128] {'\0'};
+    std::strftime(knowntmRepresentation, sizeof(knowntmRepresentation), "%A %c", &knowntm);
+    std::clog << "     %A %c: " << knowntmRepresentation << std::endl;
+    std::strftime(knowntmRepresentation, sizeof(knowntmRepresentation), "%FT%TZ", &knowntm);
+    std::clog << "  strftime: " << knowntmRepresentation << std::endl;
+    std::clog << "     ctime: " << ctime(&tv1) << std::endl;
+
     auto todays_date = siddiqsoft::TimeAsRFC3339(std::chrono::system_clock::from_time_t(tv1));
     EXPECT_EQ("2010-11-13T23:29:00.000Z", todays_date);
 }
@@ -172,14 +221,21 @@ TEST(core_parser_tests, Test_TimeAsISO8601_args)
     knowntm.tm_mday  = 13;     // 13th
     knowntm.tm_hour  = 23;     // 23h
     knowntm.tm_min   = 29;     // 29m
-    knowntm.tm_sec   = 0;      // 0s
+    knowntm.tm_sec   = 59;     // 59s
     knowntm.tm_wday  = 6;      // Sat
     knowntm.tm_isdst = 0;
 
-    auto tv1       = std::mktime(&knowntm);
+    auto tv1 = std::mktime(&knowntm);
+
+    char knowntmRepresentation[128] {'\0'};
+    std::strftime(knowntmRepresentation, sizeof(knowntmRepresentation), "%A %c", &knowntm);
+    std::clog << "     %A %c: " << knowntmRepresentation << std::endl;
+    std::strftime(knowntmRepresentation, sizeof(knowntmRepresentation), "%FT%TZ", &knowntm);
+    std::clog << "  strftime: " << knowntmRepresentation << std::endl;
+    std::clog << "     ctime: " << ctime(&tv1) << std::endl;
 
     auto knownDate = siddiqsoft::TimeAsISO8601(std::chrono::system_clock::from_time_t(tv1));
-    EXPECT_EQ("2010-11-13T23:29:00.0000000Z", knownDate);
+    EXPECT_EQ("2010-11-13T23:29:59.0000000Z", knownDate);
 }
 
 
@@ -337,7 +393,7 @@ TEST(siphelpers, Test_serialize_empty_mb_valid_2)
 TEST(siphelpers, Test_loadTestFile)
 {
     std::stringstream testFile;
-    std::ifstream     sampleInputFile("../../test/samples/NOTIFY_LegDrop.sip");
+    std::ifstream     sampleInputFile("NOTIFY_LegDrop.sip");
 
     if (sampleInputFile.is_open())
     {
@@ -1092,10 +1148,8 @@ TEST(validation, Test_parse_invalid_string_position)
 TEST(ImplementationChecks, Test_formatters_1)
 {
     // This should compile without issue.
-    auto msg = std::format("{} Format `{}` nor `{}`.",
-                           __func__,
-                           siddiqsoft::SIPMessageType::request,
-                           siddiqsoft::SIPMessageType::response);
+    auto msg = std::format(
+            "{} Format `{}` nor `{}`.", __func__, siddiqsoft::SIPMessageType::request, siddiqsoft::SIPMessageType::response);
     EXPECT_TRUE(msg.find("request") != std::string::npos);
     EXPECT_TRUE(msg.find("response") != std::string::npos);
     std::cerr << msg << std::endl;
