@@ -19,6 +19,7 @@ pool:
   name: Default
   demands:
   - cmake
+  - Agent.OSArchitecture -equals 'X64'
 
 variables:
   buildConfiguration: 'Release'
