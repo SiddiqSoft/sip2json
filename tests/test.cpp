@@ -68,6 +68,26 @@ static std::string loadSampleFile(const std::string& fileName)
     throw std::exception {"Environment variable SAMPLES_DIR must point to directory for SIP samples!"};
 }
 
+// NOLINTNEXTLINE
+TEST(ImplementationChecks, Test_loadSampleFile)
+{
+    auto contents = loadSampleFile("NOTIFY_LegDrop");
+
+    EXPECT_TRUE(contents.length() > 0);
+}
+
+// NOLINTNEXTLINE
+TEST(ImplementationChecks, Test_checkEnvironmentVars)
+{
+    std::string samplesDirectoryPath {};
+    auto        env_samples_dir = std::getenv("SAMPLES_DIR");
+
+    EXPECT_TRUE(env_samples_dir != nullptr);
+
+    if (env_samples_dir != nullptr) { samplesDirectoryPath = env_samples_dir; }
+
+    EXPECT_TRUE(std::filesystem::exists(samplesDirectoryPath));
+}
 
 // NOLINTNEXTLINE
 TEST(core_parser_tests, Test_UserAgent)
@@ -421,15 +441,6 @@ TEST(siphelpers, Test_serialize_empty_mb_valid_2)
     // Should not throw; body is null despite the header being SDP there is no body element set.
     // This is a supported use-case
     EXPECT_NO_THROW(siddiqsoft::sip2json::serialize(registerMessage));
-}
-
-
-// NOLINTNEXTLINE
-TEST(validation, Test_loadSampleFile)
-{
-    auto contents = loadSampleFile("NOTIFY_LegDrop");
-
-    EXPECT_TRUE(contents.length() > 0);
 }
 
 

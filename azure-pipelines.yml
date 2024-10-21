@@ -17,7 +17,6 @@ trigger:
 # This cannot be built (so long as we're using private repo) on the Azure build machines.
 pool:
   name: Default
-  #vmImage: Windows-2022
   demands:
   - cmake
 
@@ -40,16 +39,6 @@ steps:
   inputs:
     versionSpec: '>=5.0.0-0'
     checkLatest: true
-
-#- task: NuGetCommand@2
-#  displayName: 'NuGet restore'
-#  inputs:
-#    command: 'restore'
-#    restoreSolution: '**/*.sln'
-#    feedsToUse: 'select'
-#    vstsFeed: 'ec2759e0-0587-4306-8a8d-8695f15e2336'
-#    noCache: true
-#  continueOnError: true
 
 - task: CMake@1
   displayName: 'CMake ..'
