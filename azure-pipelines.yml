@@ -32,7 +32,8 @@ steps:
     script: |
       dotnet tool install --global GitVersion.Tool --version 5.*
       dotnet-gitversion /output buildserver
-      echo 'GitVersion detected: $(GitVersion.FullSemVer)'
+      gitversion /output buildserver
+      echo 'GitVersion detected: ${GitVersion.FullSemVer}'
 
 - task: PowerShell@2
   displayName: 'Figure out the latest git tag'
