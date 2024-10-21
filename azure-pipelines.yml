@@ -25,6 +25,13 @@ variables:
   buildLatestTag: '0.0.0'
 
 steps:
+- task: CmdLine@2
+  displayName: 'Install gitversion'
+  inputs:
+    script: |
+      dotnet tool install --global GitVersion.Tool --version 5.*
+      ditnet-gitversion /output buildserver
+
 - task: PowerShell@2
   displayName: 'Figure out the latest git tag'
   inputs:
