@@ -12,30 +12,82 @@
 #include <string_view>
 #include <filesystem>
 
+#include <iomanip>
+#include <sstream>
+
 #include <format>
 #include "nlohmann/json.hpp"
 
-#include "../../src/sip2json.hpp"
-#include "../../src/sip2json_exception.hpp"
+#include "../src/sip2json.hpp"
+#include "../src/sip2json_exception.hpp"
 
 #include "gtest/gtest.h"
 
+#if defined(_WIN32)
+#include <Windows.h>
+#include <processenv.h>
+#else
+#include <unistd.h>
+#endif
 
-static std::string loadSampleFile(const std::string_view& fileName)
+
+static std::string loadSampleFile(const std::string& fileName)
 {
-    std::stringstream testFile;
-    std::ifstream     sampleInputFile(format("../../test/samples/{}.sip", fileName), std::ios::binary);
+    std::string samplesDirectoryPath {};
 
-    if (sampleInputFile.is_open())
+
+    if (auto env_samples_dir = std::getenv("SAMPLES_DIR"); env_samples_dir != nullptr)
     {
-        testFile << sampleInputFile.rdbuf();
-        sampleInputFile.close();
+#ifdef DEBUG || _DEBUG
+        std::clog << " -- Environment SAMPLES_DIR  : " << env_samples_dir << std::endl;
+#endif
+        samplesDirectoryPath = env_samples_dir;
     }
-    else { throw std::exception(std::format("Failed opening file: `{}`!", fileName).c_str()); }
 
-    return testFile.str();
+    if (std::filesystem::exists(samplesDirectoryPath))
+    {
+#ifdef DEBUG || _DEBUG
+        std::clog << " -- Using the samples directory at: " << samplesDirectoryPath << std::endl;
+        std::clog << " -- Attempting to open the file   : " << std::format("{}/{}.sip", samplesDirectoryPath, fileName)
+                  << std::endl;
+#endif
+
+        std::stringstream testFile;
+        std::ifstream     sampleInputFile {std::format("{}/{}.sip", samplesDirectoryPath, fileName), std::ios::binary};
+
+        if (sampleInputFile.is_open())
+        {
+            testFile << sampleInputFile.rdbuf();
+            sampleInputFile.close();
+        }
+        else { throw std::exception {std::format("Failed opening file: `{}`!", fileName).c_str()}; }
+
+        return testFile.str();
+    }
+
+    throw std::exception {"Environment variable SAMPLES_DIR must point to directory for SIP samples!"};
 }
 
+// NOLINTNEXTLINE
+TEST(ImplementationChecks, Test_loadSampleFile)
+{
+    auto contents = loadSampleFile("NOTIFY_LegDrop");
+
+    EXPECT_TRUE(contents.length() > 0);
+}
+
+// NOLINTNEXTLINE
+TEST(ImplementationChecks, Test_checkEnvironmentVars)
+{
+    std::string samplesDirectoryPath {};
+    auto        env_samples_dir = std::getenv("SAMPLES_DIR");
+
+    EXPECT_TRUE(env_samples_dir != nullptr);
+
+    if (env_samples_dir != nullptr) { samplesDirectoryPath = env_samples_dir; }
+
+    EXPECT_TRUE(std::filesystem::exists(samplesDirectoryPath));
+}
 
 // NOLINTNEXTLINE
 TEST(core_parser_tests, Test_UserAgent)
@@ -133,8 +185,24 @@ TEST(core_parser_tests, Test_TimeAsRFC1123_args)
     knowntm.tm_wday  = 6;      // Sat
     knowntm.tm_isdst = 0;
 
+// When using mktime it screws up the conversion by always applying the local time to convert to UTC.
+// So if we have UTC already, it will adjust this time with the timezone difference on this computer!
+// Use _mkgmtime() on windows and timegm() on linux/macos
+#ifdef _WINDOWS
+    time_t tv1 {};
+    tv1 = ::_mkgmtime64(&knowntm);
+#else
+    auto tv1 = ::timegm(&knowntm);
+#endif
 
-    auto todays_date = siddiqsoft::TimeAsRFC1123(std::chrono::system_clock::from_time_t(_mkgmtime(&knowntm)));
+    char knowntmRepresentation[128] {'\0'};
+    std::strftime(knowntmRepresentation, sizeof(knowntmRepresentation), "%A %c", &knowntm);
+    std::clog << "     %A %c: " << knowntmRepresentation << std::endl;
+    std::strftime(knowntmRepresentation, sizeof(knowntmRepresentation), "%FT%TZ", &knowntm);
+    std::clog << "  strftime: " << knowntmRepresentation << std::endl;
+    std::clog << "     ctime: " << ctime(&tv1) << std::endl;
+
+    auto todays_date = siddiqsoft::TimeAsRFC1123(std::chrono::system_clock::from_time_t(tv1));
     EXPECT_EQ("Sat, 13 Nov 2010 23:29:00 GMT", todays_date);
 }
 
@@ -151,8 +219,24 @@ TEST(core_parser_tests, Test_TimeAsRFC3339_args)
     knowntm.tm_wday  = 6;      // Sat
     knowntm.tm_isdst = 0;
 
+// When using mktime it screws up the conversion by always applying the local time to convert to UTC.
+// So if we have UTC already, it will adjust this time with the timezone difference on this computer!
+// Use _mkgmtime() on windows and timegm() on linux/macos
+#ifdef _WINDOWS
+    time_t tv1 {};
+    tv1 = ::_mkgmtime64(&knowntm);
+#else
+    auto tv1 = ::timegm(&knowntm);
+#endif
 
-    auto todays_date = siddiqsoft::TimeAsRFC3339(std::chrono::system_clock::from_time_t(_mkgmtime(&knowntm)));
+    char knowntmRepresentation[128] {'\0'};
+    std::strftime(knowntmRepresentation, sizeof(knowntmRepresentation), "%A %c", &knowntm);
+    std::clog << "     %A %c: " << knowntmRepresentation << std::endl;
+    std::strftime(knowntmRepresentation, sizeof(knowntmRepresentation), "%FT%TZ", &knowntm);
+    std::clog << "  strftime: " << knowntmRepresentation << std::endl;
+    std::clog << "     ctime: " << ctime(&tv1) << std::endl;
+
+    auto todays_date = siddiqsoft::TimeAsRFC3339(std::chrono::system_clock::from_time_t(tv1));
     EXPECT_EQ("2010-11-13T23:29:00.000Z", todays_date);
 }
 
@@ -172,12 +256,41 @@ TEST(core_parser_tests, Test_TimeAsISO8601_args)
     knowntm.tm_mday  = 13;     // 13th
     knowntm.tm_hour  = 23;     // 23h
     knowntm.tm_min   = 29;     // 29m
-    knowntm.tm_sec   = 0;      // 0s
+    knowntm.tm_sec   = 59;     // 59s
     knowntm.tm_wday  = 6;      // Sat
     knowntm.tm_isdst = 0;
 
-    auto knownDate = siddiqsoft::TimeAsISO8601(std::chrono::system_clock::from_time_t(_mkgmtime(&knowntm)));
-    EXPECT_EQ("2010-11-13T23:29:00.0000000Z", knownDate);
+// When using mktime it screws up the conversion by always applying the local time to convert to UTC.
+// So if we have UTC already, it will adjust this time with the timezone difference on this computer!
+// Use _mkgmtime() on windows and timegm() on linux/macos
+#ifdef _WINDOWS
+    time_t tv1 {};
+    tv1 = ::_mkgmtime64(&knowntm);
+#else
+    auto tv1 = ::timegm(&knowntm);
+#endif
+
+    // When we convert, the resulting epoch should match!
+    EXPECT_EQ(tv1, 1289690999L) << "tv0: " << tv1 << std::endl;
+
+    char knowntmRepresentation[128] {'\0'};
+    std::strftime(knowntmRepresentation, sizeof(knowntmRepresentation), "%A %c", &knowntm);
+    std::clog << "     %A %c: " << knowntmRepresentation << std::endl;
+    std::strftime(knowntmRepresentation, sizeof(knowntmRepresentation), "%FT%TZ", &knowntm);
+    std::clog << "  strftime: " << knowntmRepresentation << std::endl;
+    std::clog << "     ctime: " << ctime(&tv1) << std::endl;
+
+    auto knownDate = siddiqsoft::TimeAsISO8601(std::chrono::system_clock::from_time_t(tv1));
+    EXPECT_EQ("2010-11-13T23:29:59.000Z", knownDate);
+}
+
+// NOLINTNEXTLINE
+TEST(core_parser_tests, Test_TimeAsISO8601_epoch)
+{
+    auto timeAsEpoch {1289690999L}; // Corresponds to Saturday, November 13, 2010 11:29:59 PM
+
+    auto knownDate = siddiqsoft::TimeAsISO8601(std::chrono::system_clock::from_time_t(timeAsEpoch));
+    EXPECT_EQ("2010-11-13T23:29:59.000Z", knownDate);
 }
 
 
@@ -328,25 +441,6 @@ TEST(siphelpers, Test_serialize_empty_mb_valid_2)
     // Should not throw; body is null despite the header being SDP there is no body element set.
     // This is a supported use-case
     EXPECT_NO_THROW(siddiqsoft::sip2json::serialize(registerMessage));
-}
-
-
-// NOLINTNEXTLINE
-TEST(siphelpers, Test_loadTestFile)
-{
-    std::stringstream testFile;
-    std::ifstream     sampleInputFile("../../test/samples/NOTIFY_LegDrop.sip");
-
-    if (sampleInputFile.is_open())
-    {
-        while (sampleInputFile.peek() != EOF)
-        {
-            testFile << (char)sampleInputFile.get();
-        }
-        sampleInputFile.close();
-    }
-
-    EXPECT_TRUE(testFile.str().length() > 0);
 }
 
 
@@ -1090,10 +1184,8 @@ TEST(validation, Test_parse_invalid_string_position)
 TEST(ImplementationChecks, Test_formatters_1)
 {
     // This should compile without issue.
-    auto msg = std::format("{} Format `{}` nor `{}`.",
-                           std::string {__func__},
-                           siddiqsoft::SIPMessageType::request,
-                           siddiqsoft::SIPMessageType::response);
+    auto msg = std::format(
+            "{} Format `{}` nor `{}`.", __func__, siddiqsoft::SIPMessageType::request, siddiqsoft::SIPMessageType::response);
     EXPECT_TRUE(msg.find("request") != std::string::npos);
     EXPECT_TRUE(msg.find("response") != std::string::npos);
     std::cerr << msg << std::endl;
@@ -1122,7 +1214,7 @@ TEST(siphelpers, Test_check_Via)
             sipm["h"]["Via"].push_back(std::format("SIP/2.0/TCP {}", "x@y.z"));
             EXPECT_EQ(sipm["h"]["Via"].get<std::vector<std::string>>().size(), 2) << sipm["h"]["Via"].dump();
             auto elemJustAdded = sipm["h"]["Via"].get<std::vector<std::string>>()[1];
-            EXPECT_TRUE(elemJustAdded.find("x@y.z")!=std::string::npos) << sipm["h"]["Via"].dump();
+            EXPECT_TRUE(elemJustAdded.find("x@y.z") != std::string::npos) << sipm["h"]["Via"].dump();
         }
         else if (via.is_array())
         {

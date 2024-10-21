@@ -65,6 +65,7 @@ namespace siddiqsoft
         response = 2
     };
 
+
     NLOHMANN_JSON_SERIALIZE_ENUM(SIPMessageType,
                                  {{SIPMessageType::request, "request"},
                                   {SIPMessageType::response, "response"},

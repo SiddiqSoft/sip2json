@@ -9,6 +9,19 @@
 *.user
 *.userosscache
 *.sln.docstates
+*.tcl
+_deps/
+CMakeFiles/
+out/
+Testing/
+CMakeCache.txt
+**/*.cmake
+**/*.vcxproj
+**/*.sln
+**/Makefile
+*.cmake
+Makefile
+lib/
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
@@ -349,6 +362,10 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 *.out
+/out/*
+/src/version.h
+out/**
+build/**
 /src/version.h
 /test/validation_tests/validation_tests.tlog
 /test/validation_tests/vc.nativecodeanalysis.all.xml
@@ -357,3 +374,4 @@ MigrationBackup/
 *.tlog
 /test/validation_tests/CodeAnalysisResultManifest.txt
 /test/validation_tests/test.nativecodeanalysis.xml
+*.filters

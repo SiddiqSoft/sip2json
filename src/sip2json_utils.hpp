@@ -91,34 +91,16 @@ namespace siddiqsoft
     template <class T = std::string>
     static T TimeAsRFC1123(std::optional<std::chrono::system_clock::time_point> src = {}) noexcept(false)
     {
-        const auto rawtp   = src.value_or(std::chrono::system_clock::now());
-        auto       rawtime = std::chrono::system_clock::to_time_t(rawtp);
-        tm         timeInfo {};
+        // This cast is critical since the RFC1123 does not have a fractional portion!
+        const auto rawtp = std::chrono::time_point_cast<std::chrono::seconds>(src.value_or(std::chrono::system_clock::now()));
 
-        // Get the UTC time packet.
-        auto ec = gmtime_s(&timeInfo, &rawtime);
 
         if constexpr (std::is_same_v<T, std::string>)
-        {
-            // HTTP-date as per RFC 7231:  Tue, 01 Nov 1994 08:12:31 GMT
-            // Note that since we are getting the UTC time we should not use the %z or %Z in the strftime format
-            // as it returns the local timezone and not GMT.
-            char buff[sizeof "Tue, 01 Nov 1994 08:12:31 GMT"] {};
-            if (ec != EINVAL) strftime(buff, sizeof(buff), "%a, %d %h %Y %T GMT", &timeInfo);
-
-            return buff;
-        }
+            return std::format("{0:%a, %d %h %Y %T GMT}", rawtp);
         else if constexpr (std::is_same_v<T, std::wstring>)
-        {
-            // HTTP-date as per RFC 7231:  Tue, 01 Nov 1994 08:12:31 GMT
-            // Note that since we are getting the UTC time we should not use the %z or %Z in the strftime format
-            // as it returns the local timezone and not GMT.
-            wchar_t buff[sizeof L"Tue, 01 Nov 1994 08:12:31 GMT"] {};
-            if (ec != EINVAL) wcsftime(buff, sizeof(buff), L"%a, %d %h %Y %T GMT", &timeInfo);
-            return buff;
-        }
-
-        return T {};
+            return std::format(L"{0:%a, %d %h %Y %T GMT}", rawtp);
+        else
+            return T {};
     }
 
     /// @brief Creates a string representaiton of the date time in RFC3339 format with millisecond precision.
@@ -127,31 +109,13 @@ namespace siddiqsoft
     template <class T = std::string>
     static T TimeAsRFC3339(std::optional<std::chrono::system_clock::time_point> src = {}) noexcept(false)
     {
-        const auto rawtp   = src.value_or(std::chrono::system_clock::now());
-        auto       rawtime = std::chrono::system_clock::to_time_t(rawtp);
-        tm         timeInfo {};
-        // We need to get the fractional milliseconds from the raw time point.
-        auto msTime = std::chrono::duration_cast<std::chrono::milliseconds>(rawtp.time_since_epoch()).count() % 1000;
-        // Get the UTC time packet.
-        auto ec = gmtime_s(&timeInfo, &rawtime);
+        // This cast is critical since the RFC3339 only asks for milliseconds!
+        const auto rawtp = std::chrono::time_point_cast<std::chrono::milliseconds>(src.value_or(std::chrono::system_clock::now()));
 
         if constexpr (std::is_same_v<T, std::string>)
-        {
-            // https://en.wikipedia.org/wiki/ISO_8601
-            // yyyy-mm-ddThh:mm:ss.mmmZ
-            char buff[sizeof "yyyy-mm-ddThh:mm:ss.0000000Z"] {};
-
-            if (ec != EINVAL) strftime(buff, sizeof(buff), "%FT%T", &timeInfo);
-            return std::format("{}.{:03}Z", buff, msTime);
-        }
-        else if constexpr (std::is_same_v<T, std::wstring>)
-        {
-            // https://en.wikipedia.org/wiki/ISO_8601
-            // yyyy-mm-ddThh:mm:ss.mmmZ
-            wchar_t buff[sizeof L"yyyy-mm-ddThh:mm:ss.0000000Z"] {};
-            if (ec != EINVAL) wcsftime(buff, sizeof(buff), L"%FT%T", &timeInfo);
-            return std::format(L"{}.{:03}Z", buff, msTime);
-        }
+            return std::format("{0:%Y-%m-%dT%H:%M:%S}Z", rawtp);
+        else
+            return std::format(L"{0:%Y-%m-%dT%H:%M:%S}Z", rawtp);
 
         return T {};
     }
@@ -162,7 +126,8 @@ namespace siddiqsoft
     template <class T = std::string>
     static T TimeAsISO8601(std::optional<std::chrono::system_clock::time_point> src = {}) noexcept(false)
     {
-        const auto tp = src.value_or(std::chrono::system_clock::now());
+        // This cast is critical since the ISO8601 only asks for milliseconds!
+        const auto tp = std::chrono::time_point_cast<std::chrono::milliseconds>(src.value_or(std::chrono::system_clock::now()));
 
         // NOTE: The resolution for %T includes siz-digits of microsecond detail!
         if constexpr (std::is_same_v<T, std::wstring>) { return std::format(L"{:%Y-%m-%dT%T}Z", tp); }

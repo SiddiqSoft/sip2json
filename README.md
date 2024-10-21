@@ -1,6 +1,6 @@
 # sip2json
 <b>SIP Parser for Modern C++</b><br/>
-<small>Copyright &copy;2020 Abdelkareem Siddiq. All rights reserved.</small>
+<small>Copyright &copy;2020-2024 Abdelkareem Siddiq. All rights reserved.</small>
 
 <!-- badges -->
 [![Build Status](https://dev.azure.com/siddiqsoft/siddiqsoft/_apis/build/status/siddiqsoftware.sip2json?branchName=master)](https://dev.azure.com/siddiqsoft/siddiqsoft/_build/latest?definitionId=21&branchName=master)
@@ -412,7 +412,17 @@ The source for the following is this [sample SIP](test/samples/NOTIFY_generic_1.
 }
 ```
 
-### External resources
+## Build and Testing
+
+### Build
+We've tested on Windows terminal using the `cmake .` and `cmake --build .` followed by `ctest .` with success.
+
+> TIP
+>
+> In order to clean a git repository of files and folders not part of the tracked stuff (to essentially clean the cmake stuff) use the following command: `git clean -d -x -f` and it will clean up the cmake files and cached files.
+
+
+## External resources
 - [JSON for Modern C++](https://nlohmann.github.io/json/)
 - [FMT Library](https://fmt.dev/latest/index.html)
 - [GoogleTest primer](https://github.com/google/googletest/blob/master/googletest/docs/primer.md)
