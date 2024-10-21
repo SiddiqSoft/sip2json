@@ -31,7 +31,7 @@ steps:
   inputs:
     script: |
       dotnet tool install --global GitVersion.Tool --version 5.*
-      ditnet-gitversion /output buildserver
+      dotnet-gitversion /output buildserver
 
 - task: PowerShell@2
   displayName: 'Figure out the latest git tag'
