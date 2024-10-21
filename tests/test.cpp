@@ -33,40 +33,39 @@
 
 static std::string loadSampleFile(const std::string& fileName)
 {
-#if (defined(_WIN32) || defined(_WIN64))
-    std::string cmdline {GetCommandLine()};
-#else if defined(_UNIX)
-    std::string cmdline {};
+    std::string samplesDirectoryPath {};
+
+
+    if (auto env_samples_dir = std::getenv("SAMPLES_DIR"); env_samples_dir != nullptr)
+    {
+#ifdef DEBUG || _DEBUG
+        std::clog << " -- Environment SAMPLES_DIR  : " << env_samples_dir << std::endl;
+#endif
+        samplesDirectoryPath = env_samples_dir;
+    }
+
+    if (std::filesystem::exists(samplesDirectoryPath))
+    {
+#ifdef DEBUG || _DEBUG
+        std::clog << " -- Using the samples directory at: " << samplesDirectoryPath << std::endl;
+        std::clog << " -- Attempting to open the file   : " << std::format("{}/{}.sip", samplesDirectoryPath, fileName)
+                  << std::endl;
 #endif
 
-    // Figure out the argument which should be the location of the samples folder.
-    std::clog << " -- Discovered commandline: " << cmdline << std::endl;
-    std::stringstream sstr {cmdline};
-    std::string       word {};
-    std::string       samplesDirectoryPath {};
-    while (sstr >> std::quoted(word))
-    {
-        std::clog << "Argument: " << word << std::endl;
-        if (word.find("samples") != std::string::npos)
+        std::stringstream testFile;
+        std::ifstream     sampleInputFile {std::format("{}/{}.sip", samplesDirectoryPath, fileName), std::ios::binary};
+
+        if (sampleInputFile.is_open())
         {
-            samplesDirectoryPath = word;
-            break;
+            testFile << sampleInputFile.rdbuf();
+            sampleInputFile.close();
         }
+        else { throw std::exception {std::format("Failed opening file: `{}`!", fileName).c_str()}; }
+
+        return testFile.str();
     }
 
-    std::clog << " -- Using the samples directory at: " << samplesDirectoryPath << std::endl;
-
-    std::stringstream testFile;
-    std::ifstream     sampleInputFile {std::format("{}/{}.sip", samplesDirectoryPath, fileName), std::ios::binary};
-
-    if (sampleInputFile.is_open())
-    {
-        testFile << sampleInputFile.rdbuf();
-        sampleInputFile.close();
-    }
-    else { throw std::exception {std::format("Failed opening file: `{}`!", fileName).c_str()}; }
-
-    return testFile.str();
+    throw std::exception {"Environment variable SAMPLES_DIR must point to directory for SIP samples!"};
 }
 
 
@@ -166,16 +165,24 @@ TEST(core_parser_tests, Test_TimeAsRFC1123_args)
     knowntm.tm_wday  = 6;      // Sat
     knowntm.tm_isdst = 0;
 
-    auto thistm {mktime(&knowntm)};
+// When using mktime it screws up the conversion by always applying the local time to convert to UTC.
+// So if we have UTC already, it will adjust this time with the timezone difference on this computer!
+// Use _mkgmtime() on windows and timegm() on linux/macos
+#ifdef _WINDOWS
+    time_t tv1 {};
+    tv1 = ::_mkgmtime64(&knowntm);
+#else
+    auto tv1 = ::timegm(&knowntm);
+#endif
 
     char knowntmRepresentation[128] {'\0'};
     std::strftime(knowntmRepresentation, sizeof(knowntmRepresentation), "%A %c", &knowntm);
     std::clog << "     %A %c: " << knowntmRepresentation << std::endl;
     std::strftime(knowntmRepresentation, sizeof(knowntmRepresentation), "%FT%TZ", &knowntm);
     std::clog << "  strftime: " << knowntmRepresentation << std::endl;
-    std::clog << "     ctime: " << ctime(&thistm) << std::endl;
+    std::clog << "     ctime: " << ctime(&tv1) << std::endl;
 
-    auto todays_date = siddiqsoft::TimeAsRFC1123(std::chrono::system_clock::from_time_t(thistm));
+    auto todays_date = siddiqsoft::TimeAsRFC1123(std::chrono::system_clock::from_time_t(tv1));
     EXPECT_EQ("Sat, 13 Nov 2010 23:29:00 GMT", todays_date);
 }
 
@@ -192,7 +199,15 @@ TEST(core_parser_tests, Test_TimeAsRFC3339_args)
     knowntm.tm_wday  = 6;      // Sat
     knowntm.tm_isdst = 0;
 
-    auto tv1 = mktime(&knowntm);
+// When using mktime it screws up the conversion by always applying the local time to convert to UTC.
+// So if we have UTC already, it will adjust this time with the timezone difference on this computer!
+// Use _mkgmtime() on windows and timegm() on linux/macos
+#ifdef _WINDOWS
+    time_t tv1 {};
+    tv1 = ::_mkgmtime64(&knowntm);
+#else
+    auto tv1 = ::timegm(&knowntm);
+#endif
 
     char knowntmRepresentation[128] {'\0'};
     std::strftime(knowntmRepresentation, sizeof(knowntmRepresentation), "%A %c", &knowntm);
@@ -225,7 +240,18 @@ TEST(core_parser_tests, Test_TimeAsISO8601_args)
     knowntm.tm_wday  = 6;      // Sat
     knowntm.tm_isdst = 0;
 
-    auto tv1 = std::mktime(&knowntm);
+// When using mktime it screws up the conversion by always applying the local time to convert to UTC.
+// So if we have UTC already, it will adjust this time with the timezone difference on this computer!
+// Use _mkgmtime() on windows and timegm() on linux/macos
+#ifdef _WINDOWS
+    time_t tv1 {};
+    tv1 = ::_mkgmtime64(&knowntm);
+#else
+    auto tv1 = ::timegm(&knowntm);
+#endif
+
+    // When we convert, the resulting epoch should match!
+    EXPECT_EQ(tv1, 1289690999L) << "tv0: " << tv1 << std::endl;
 
     char knowntmRepresentation[128] {'\0'};
     std::strftime(knowntmRepresentation, sizeof(knowntmRepresentation), "%A %c", &knowntm);
@@ -235,7 +261,16 @@ TEST(core_parser_tests, Test_TimeAsISO8601_args)
     std::clog << "     ctime: " << ctime(&tv1) << std::endl;
 
     auto knownDate = siddiqsoft::TimeAsISO8601(std::chrono::system_clock::from_time_t(tv1));
-    EXPECT_EQ("2010-11-13T23:29:59.0000000Z", knownDate);
+    EXPECT_EQ("2010-11-13T23:29:59.000Z", knownDate);
+}
+
+// NOLINTNEXTLINE
+TEST(core_parser_tests, Test_TimeAsISO8601_epoch)
+{
+    auto timeAsEpoch {1289690999L}; // Corresponds to Saturday, November 13, 2010 11:29:59 PM
+
+    auto knownDate = siddiqsoft::TimeAsISO8601(std::chrono::system_clock::from_time_t(timeAsEpoch));
+    EXPECT_EQ("2010-11-13T23:29:59.000Z", knownDate);
 }
 
 
@@ -390,21 +425,11 @@ TEST(siphelpers, Test_serialize_empty_mb_valid_2)
 
 
 // NOLINTNEXTLINE
-TEST(siphelpers, Test_loadTestFile)
+TEST(validation, Test_loadSampleFile)
 {
-    std::stringstream testFile;
-    std::ifstream     sampleInputFile("NOTIFY_LegDrop.sip");
+    auto contents = loadSampleFile("NOTIFY_LegDrop");
 
-    if (sampleInputFile.is_open())
-    {
-        while (sampleInputFile.peek() != EOF)
-        {
-            testFile << (char)sampleInputFile.get();
-        }
-        sampleInputFile.close();
-    }
-
-    EXPECT_TRUE(testFile.str().length() > 0);
+    EXPECT_TRUE(contents.length() > 0);
 }
 
 
