@@ -26,6 +26,15 @@ variables:
   buildLatestTag: '0.0.0'
 
 steps:
+- checkout: self
+  fetchDepth: 0
+
+- task: gitversion/setup@3.0.0
+  displayName: 'Install GitVersion..'
+
+- task: gitversion/execute@3.0.0
+  displayName: 'Determine Version..'
+
 - task: CmdLine@2
   displayName: 'Install gitversion'
   inputs:
