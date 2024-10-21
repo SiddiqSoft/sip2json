@@ -31,8 +31,8 @@ steps:
   inputs:
     script: |
       dotnet tool install --global GitVersion.Tool --version 5.*
-      dotnet-gitversion /output buildserver
-      gitversion /output buildserver
+      dotnet-gitversion /output buildserver /config GitVersion.yml
+      gitversion /output buildserver /config GitVersion.yml
       echo 'GitVersion detected: ${GitVersion.FullSemVer}'
 
 - task: PowerShell@2
