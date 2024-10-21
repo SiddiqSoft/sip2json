@@ -34,15 +34,9 @@ steps:
 
 - task: gitversion/execute@3.0.0
   displayName: 'Determine Version..'
-
-- task: CmdLine@2
-  displayName: 'Install gitversion'
   inputs:
-    script: |
-      dotnet tool install --global GitVersion.Tool --version 5.*
-      dotnet-gitversion /output buildserver /config GitVersion.yml
-      gitversion /output buildserver /config GitVersion.yml
-      echo 'GitVersion detected: ${GitVersion.FullSemVer}'
+    useConfigFile: true
+    configFilePath: './GitVersion.yml'
 
 - task: PowerShell@2
   displayName: 'Figure out the latest git tag'
