@@ -34,6 +34,8 @@ steps:
 
 - task: gitversion/execute@3.0.0
   displayName: 'Determine Version..'
+    inputs:
+      verbosity: Diagnostic
 
 - task: PowerShell@2
   displayName: 'Figure out the latest git tag'
