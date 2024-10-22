@@ -1185,13 +1185,34 @@ TEST(validation, Test_parse_invalid_string_position)
 }
 
 // NOLINTNEXTLINE
+TEST(ImplementationChecks, Test_stream_serializer_1)
+{
+    std::stringstream sstr {};
+
+    // This should compile without issue.
+    sstr << __func__ << " format " << siddiqsoft::SIPMessageType::request << " and " << siddiqsoft::SIPMessageType::response
+         << " checks out." << std::endl;
+
+    auto msg = sstr.str();
+
+    EXPECT_TRUE(msg.find("request") != std::string::npos);
+    EXPECT_TRUE(msg.find("response") != std::string::npos);
+
+    std::cerr << msg << std::endl;
+}
+
+// NOLINTNEXTLINE
 TEST(ImplementationChecks, Test_formatters_1)
 {
     // This should compile without issue.
-    auto msg = std::format(
-            "{} Format `{}` nor `{}`.", __func__, siddiqsoft::SIPMessageType::request, siddiqsoft::SIPMessageType::response);
+    auto msg0 = std::format("{} format ", __func__);
+    auto msg1 = std::format("{} and ", siddiqsoft::SIPMessageType::request);
+    auto msg2 = std::format("{} checks out.", siddiqsoft::SIPMessageType::response);
+    auto msg  = msg0.append(msg1).append(msg2);
+
     EXPECT_TRUE(msg.find("request") != std::string::npos);
     EXPECT_TRUE(msg.find("response") != std::string::npos);
+
     std::cerr << msg << std::endl;
 }
 

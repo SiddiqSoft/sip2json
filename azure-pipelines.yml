@@ -29,13 +29,13 @@ steps:
 - checkout: self
   fetchDepth: 0
 
-- task: gitversion/setup@3.0.0
+- task: gitversion/setup@0
   displayName: 'Install GitVersion..'
   inputs:
     versionSpec: '6.x'
     preferLatestVersion: true
 
-- task: gitversion/execute@3.0.0
+- task: gitversion/execute@0
   displayName: 'Determine Version..'
   inputs:
     useConfigFile: true

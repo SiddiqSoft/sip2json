@@ -809,7 +809,7 @@ namespace siddiqsoft
                 {
                     if (element == "a"s)
                     {
-                        std::string ret;
+                        std::string ret{};
 
                         for (auto& [kv, v] : item.items())
                         {
