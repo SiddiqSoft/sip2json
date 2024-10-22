@@ -327,8 +327,8 @@ template <> struct std::formatter<siddiqsoft::SIPMessageType> : std::formatter<s
     {
         if (mt == siddiqsoft::SIPMessageType::request)
             return std::formatter<std::string>::format("request", ctx);
-        else if (mt == siddiqsoft::SIPMessageType::request)
-            return std::formatter<std::string>::format("request", ctx);
+        else if (mt == siddiqsoft::SIPMessageType::response)
+            return std::formatter<std::string>::format("response", ctx);
         return std::formatter<std::string>::format("unknown", ctx);
     }
 };
