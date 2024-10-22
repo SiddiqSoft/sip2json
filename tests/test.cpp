@@ -38,7 +38,7 @@ static std::string loadSampleFile(const std::string& fileName)
 
     if (auto env_samples_dir = std::getenv("SAMPLES_DIR"); env_samples_dir != nullptr)
     {
-#ifdef DEBUG || _DEBUG
+#ifdef DEBUG
         std::clog << " -- Environment SAMPLES_DIR  : " << env_samples_dir << std::endl;
 #endif
         samplesDirectoryPath = env_samples_dir;
@@ -46,7 +46,7 @@ static std::string loadSampleFile(const std::string& fileName)
 
     if (std::filesystem::exists(samplesDirectoryPath))
     {
-#ifdef DEBUG || _DEBUG
+#ifdef DEBUG
         std::clog << " -- Using the samples directory at: " << samplesDirectoryPath << std::endl;
         std::clog << " -- Attempting to open the file   : " << std::format("{}/{}.sip", samplesDirectoryPath, fileName)
                   << std::endl;
@@ -60,12 +60,12 @@ static std::string loadSampleFile(const std::string& fileName)
             testFile << sampleInputFile.rdbuf();
             sampleInputFile.close();
         }
-        else { throw std::exception {std::format("Failed opening file: `{}`!", fileName).c_str()}; }
+        else { throw std::runtime_error {std::format("Failed opening file: `{}`!", fileName)}; }
 
         return testFile.str();
     }
 
-    throw std::exception {"Environment variable SAMPLES_DIR must point to directory for SIP samples!"};
+    throw std::runtime_error {"Environment variable SAMPLES_DIR must point to directory for SIP samples!"};
 }
 
 // NOLINTNEXTLINE
@@ -899,10 +899,14 @@ TEST(siphelpers, Test_body_method)
                                                       EXPECT_EQ(iName, dsipm.body().value("/sdp/0/i/name"_json_pointer, ""))
                                                               << dsipm.dump(2);
 
-                                                      EXPECT_EQ(0, dsipm.body()["sdp"][0]["v"].get<int>());
-                                                      EXPECT_EQ("subject", dsipm.body()["sdp"][0]["s"].get<std::string>());
-                                                      EXPECT_EQ(100001, dsipm.body()["sdp"][0]["t"][0].get<int>());
-                                                      EXPECT_EQ(200002, dsipm.body()["sdp"][0]["t"][1].get<int>());
+                                                      int expected_v = dsipm.body()["sdp"][0]["v"].template get<int>();
+                                                      EXPECT_EQ(0, expected_v);
+                                                      std::string expected_s = dsipm.body()["sdp"][0]["s"].template get<std::string>();
+                                                      EXPECT_EQ("subject", expected_s);
+                                                      int expected_t0 = dsipm.body()["sdp"][0]["t"][0].template get<int>();
+                                                      EXPECT_EQ(100001, expected_t0);
+                                                      int expected_t1 = dsipm.body()["sdp"][0]["t"][1].template get<int>();
+                                                      EXPECT_EQ(200002, expected_t1);
                                                   });
         // All the message buffer should be consumed with no lef-overs.
         EXPECT_EQ(0, buffer.length()) << buffer;
@@ -1062,7 +1066,7 @@ TEST(validation, Test_extension_aras)
                 {
                     EXPECT_EQ(2, sipm["/h/Via"_json_pointer].size()) << sipm.dump(2);
                     EXPECT_EQ(1153, sipm.getContentLength());
-                    EXPECT_EQ("+14152264822x,0830423985", sipm.getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
+                    EXPECT_EQ("+14152264822x,0830423985", sipm.template getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
                     EXPECT_EQ("1.11", sipm.value("/b/sdp/0/a/x-ring2-coords"_json_pointer, "")) << sipm.dump(2);
                 }
                 break;
@@ -1072,7 +1076,7 @@ TEST(validation, Test_extension_aras)
 
                     EXPECT_EQ(2, sipm["/h/Via"_json_pointer].size()) << sipm.dump(2);
                     EXPECT_EQ(1302, sipm.getContentLength());
-                    EXPECT_EQ("+14152264822x,0830423985", sipm.getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
+                    EXPECT_EQ("+14152264822x,0830423985", sipm.template getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
                     EXPECT_TRUE(sipm.contains("/b/sdp/0/a/x-ring2-coords"_json_pointer)) << sipm.dump(2);
                     EXPECT_EQ(2, sipm["/b/sdp/0/a/x-ring2-coords"_json_pointer].size()) << sipm.dump(2);
                     EXPECT_EQ("2.11", sipm.value("/b/sdp/0/a/x-ring2-coords/0"_json_pointer, "")) << sipm.dump(2);
@@ -1085,7 +1089,7 @@ TEST(validation, Test_extension_aras)
 
                     EXPECT_EQ(2, sipm["/h/Via"_json_pointer].size()) << sipm.dump(2);
                     EXPECT_EQ(1355, sipm.getContentLength());
-                    EXPECT_EQ("+14152264822x,0830423985", sipm.getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
+                    EXPECT_EQ("+14152264822x,0830423985", sipm.template getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
                     EXPECT_TRUE(sipm.contains("/b/sdp/0/a/x-ring2-coords"_json_pointer)) << sipm.dump(2);
                     EXPECT_EQ(3, sipm["/b/sdp/0/a/x-ring2-coords"_json_pointer].size()) << sipm.dump(2);
                     EXPECT_EQ("3.11", sipm.value("/b/sdp/0/a/x-ring2-coords/0"_json_pointer, "")) << sipm.dump(2);
