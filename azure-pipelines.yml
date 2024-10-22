@@ -47,8 +47,6 @@ steps:
     targetType: inline
     script: |
       $buildLatestTag = git describe --tags $(git rev-list --tags --max-count=1)
-#     echo "The GitVersion : $(GitVersion_FullSemVer)"
-#     echo "The GitVersion : $(GitVersion_MajorMinorPatch)"
       Write-Host "##vso[task.setvariable variable=buildLatestTag;]$buildLatestTag"
       Write-Host "##vso[build.updatebuildnumber]$buildLatestTag"
 
