@@ -31,19 +31,23 @@ steps:
 
 - task: gitversion/setup@3.0.0
   displayName: 'Install GitVersion..'
+  inputs:
+    versionSpec: '6.x'
+    preferLatestVersion: true
 
 - task: gitversion/execute@3.0.0
   displayName: 'Determine Version..'
     inputs:
-      verbosity: Diagnostic
+      useConfigFile: true
+      configFilePath: 'GitVersion.yml'
 
 - task: PowerShell@2
   displayName: 'Figure out the latest git tag'
   inputs:
     targetType: 'inline'
     script: |
-      echo "The GitVersion : ${GitVersion.FullSemVer}"
-      echo "The GitVersion : ${GitVersion.MajorMinorPatch}"
+      echo "The GitVersion : $(GitVersion_FullSemVer)"
+      echo "The GitVersion : $(GitVersion_MajorMinorPatch)"
       $buildLatestTag = git describe --tags $(git rev-list --tags --max-count=1)
       Write-Host "##vso[task.setvariable variable=buildLatestTag;]$buildLatestTag"
       Write-Host "##vso[build.updatebuildnumber]$buildLatestTag"
