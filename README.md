@@ -15,7 +15,9 @@
 
 ## Design goals
 
-A SIP parser for Modern C++. Here, we target `C++20`. Requires a C++20 compliant compiler.
+A SIP parser for Modern C++ targetting C++20.
+
+Requires a C++20 compliant compiler. This means you must have clang-17 or higher gcc-14 or higher and visualstudio-2022 or higher.
 
 A lot of parsers exist but they tend to be written (a long time ago) and are primarily in C or wrap around the C library.
 
