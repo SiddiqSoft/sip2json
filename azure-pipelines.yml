@@ -39,15 +39,6 @@ steps:
 - checkout: self
   fetchDepth: 0
 
-# - task: PowerShell@2
-#   displayName: 'Figure out the latest git tag'
-#   inputs:
-#     targetType: inline
-#     script: |
-#       $buildLatestTag = git describe --tags $(git rev-list --tags --max-count=1)
-#       Write-Host "##vso[task.setvariable variable=buildLatestTag;]$buildLatestTag"
-#       Write-Host "##vso[build.updatebuildnumber]$buildLatestTag"
-
 - task: NuGetToolInstaller@1
   displayName: 'Install Nuget'
   inputs:
