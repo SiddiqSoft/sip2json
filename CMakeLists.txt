@@ -61,7 +61,8 @@ message(STATUS "-- The PROJECT_BINARY_DIR directory........: ${PROJECT_BINARY_DI
 message(STATUS "-- The CMAKE_CURRENT_BINARY_DIR directory..: ${CMAKE_CURRENT_BINARY_DIR}")
 message(STATUS "-- The CMAKE_BINARY_DIR directory..........: ${CMAKE_BINARY_DIR}")
 message(STATUS "-- The CMAKE_RUNTIME_OUTPUT_DIRECTORY......: ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
-message(STATUS "-- The test..")
+
+message(STATUS "The test..")
 include(CTest)
 enable_testing()
 add_subdirectory("tests")

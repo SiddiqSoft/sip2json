@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.25)
 
 # Require C++20
-message(STATUS "Require C++20..")
+message(STATUS "Require C++20..for tests..")
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 

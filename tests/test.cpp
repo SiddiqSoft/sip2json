@@ -43,6 +43,7 @@ static std::string loadSampleFile(const std::string& fileName)
 #endif
         samplesDirectoryPath = env_samples_dir;
     }
+    else { std::clog << " -- Environment SAMPLES_DIR not found; " << env_samples_dir << ". cannot load " << fileName << std::endl; }
 
     if (std::filesystem::exists(samplesDirectoryPath))
     {
