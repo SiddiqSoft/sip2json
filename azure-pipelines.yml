@@ -78,6 +78,14 @@ steps:
   inputs:
     cmakeArgs: '..'
 
+- task: Cache@2
+  displayName: 'Cache SAVE cmake-deps path: $(buildCMakeDeps)..'
+  inputs:
+    key: 'cmake-deps | "$(Agent.OS)"'
+    path: $(buildCMakeDeps)
+    cacheHitVar: CACHE_RESTORED
+  condition: ne(variables.CACHE_RESTORED, 'true')
+
 - task: CMake@1
   displayName: 'CMake --build . --config $(buildConfiguration)'
   inputs:
