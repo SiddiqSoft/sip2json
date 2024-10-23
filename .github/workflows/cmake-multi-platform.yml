@@ -4,13 +4,17 @@ name: CMake on multiple platforms
 
 on:
   push:
-    branches: [ "master", "release", "hotfix", "feature" ]
+    branches: [ "master", "release/*", "hotfix/*", "feature/*" ]
   pull_request:
-    branches: [ "master", "release", "hotfix", "feature" ]
+    branches: [ "master", "release/*", "hotfix/*", "feature/*" ]
 
 jobs:
   build:
     runs-on: ${{ matrix.os }}
+
+    env:
+      TESTRESULTS_DIR: "${{ github.workspace }}/tests"
+      SAMPLES_DIR: "${{ github.workspace }}/tests/samples"
 
     strategy:
       # Set fail-fast to false to ensure that feedback is delivered for all matrix combinations. Consider changing this to true when your workflow is stable.
@@ -46,13 +50,16 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-
+      with:
+        fetch-depth: 0
+     
     - name: Set reusable strings
       # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
       id: strings
       shell: bash
       run: |
         echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+        echo ""
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
