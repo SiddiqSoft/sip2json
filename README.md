@@ -4,20 +4,17 @@
 
 <!-- badges -->
 [![Build Status](https://dev.azure.com/siddiqsoft/siddiqsoft/_apis/build/status/siddiqsoftware.sip2json?branchName=master)](https://dev.azure.com/siddiqsoft/siddiqsoft/_build/latest?definitionId=21&branchName=master)
-![](https://img.shields.io/github/v/tag/siddiqsoftware/sip2json)
-![](https://img.shields.io/nuget/v/siddiqsoft/sip2json)
-![](https://img.shields.io/nuget/dt/siddiqsoft/sip2json)
-![](https://img.shields.io/azure-devops/tests/siddiqsoft/siddiqsoft/21)
-![](https://img.shields.io/github/license/siddiqsoftware/sip2json)
+![](https://img.shields.io/nuget/v/siddiqsoft.sip2json
+)
+![](https://img.shields.io/nuget/dt/siddiqsoft.sip2json)
+![](https://img.shields.io/azure-devops/tests/siddiqsoft/siddiqsoft/21/master.svg)
 <!-- end badges -->
-
-
-[[__TOC__]]
-
 
 ## Design goals
 
-A SIP parser for Modern C++. Here, we target `C++20`. Requires a C++20 compliant compiler.
+A SIP parser for Modern C++ (C++20).
+
+Requires a C++20 compliant compiler. This means you must have clang-17 or higher gcc-14 or higher and visualstudio-2022 or higher.
 
 A lot of parsers exist but they tend to be written (a long time ago) and are primarily in C or wrap around the C library.
 

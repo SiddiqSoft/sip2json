@@ -29,6 +29,8 @@ FetchContent_Declare(
     nlohmann_json
     GIT_REPOSITORY https://github.com/nlohmann/json.git
     GIT_TAG v3.11.3
+    GIT_SHALLOW TRUE
+    GIT_NO_TAGS TRUE
 )
 FetchContent_MakeAvailable(nlohmann_json)
 
@@ -59,7 +61,8 @@ message(STATUS "-- The PROJECT_BINARY_DIR directory........: ${PROJECT_BINARY_DI
 message(STATUS "-- The CMAKE_CURRENT_BINARY_DIR directory..: ${CMAKE_CURRENT_BINARY_DIR}")
 message(STATUS "-- The CMAKE_BINARY_DIR directory..........: ${CMAKE_BINARY_DIR}")
 message(STATUS "-- The CMAKE_RUNTIME_OUTPUT_DIRECTORY......: ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
-message(STATUS "-- The test..")
+
+message(STATUS "The test..")
 include(CTest)
 enable_testing()
 add_subdirectory("tests")

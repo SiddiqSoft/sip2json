@@ -207,6 +207,7 @@ template <> struct std::formatter<siddiqsoft::sip2jsonErrors> : std::formatter<s
         case siddiqsoft::sip2jsonErrors::invalid_document_unsupported_content:
             return std::formatter<std::string>::format("invalid_document_unsupported_content", ctx);
         case siddiqsoft::sip2jsonErrors::empty_message: return std::formatter<std::string>::format("empty_message", ctx);
+        default: return std::formatter<std::string>::format("unknown", ctx);
         }
 
         return std::formatter<std::string>::format("unknown", ctx);

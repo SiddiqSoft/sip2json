@@ -307,11 +307,29 @@ namespace siddiqsoft
     }; // class sipmessage
 } // namespace siddiqsoft
 
+
+std::ostream& operator<<(std::ostream& os, const siddiqsoft::SIPMessageType& mt)
+{
+    switch (mt)
+    {
+    case siddiqsoft::SIPMessageType::request: os << "request"; break;
+    case siddiqsoft::SIPMessageType::response: os << "response"; break;
+    default: os << "unknown";
+    }
+
+    return os;
+}
+
+
 template <> struct std::formatter<siddiqsoft::SIPMessageType> : std::formatter<std::string>
 {
     auto format(const siddiqsoft::SIPMessageType& mt, std::format_context& ctx) const
     {
-        return std::formatter<std::string>::format(((nlohmann::json)mt).dump(), ctx);
+        if (mt == siddiqsoft::SIPMessageType::request)
+            return std::formatter<std::string>::format("request", ctx);
+        else if (mt == siddiqsoft::SIPMessageType::response)
+            return std::formatter<std::string>::format("response", ctx);
+        return std::formatter<std::string>::format("unknown", ctx);
     }
 };
 
