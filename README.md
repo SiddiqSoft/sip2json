@@ -8,7 +8,7 @@
 ![](https://img.shields.io/nuget/dt/siddiqsoftware/sip2json)
 ![](https://img.shields.io/azure-devops/tests/siddiqsoft/siddiqsoft/21)
 <!-- end badges -->
-![](https://buildstats.info/azurepipelines/chart/siddiqsoft/siddiqsoft[/21])
+![](https://buildstats.info/azurepipelines/chart/siddiqsoft/siddiqsoft/21)
 
 [[__TOC__]]
 
