@@ -4,14 +4,11 @@
 
 <!-- badges -->
 [![Build Status](https://dev.azure.com/siddiqsoft/siddiqsoft/_apis/build/status/siddiqsoftware.sip2json?branchName=master)](https://dev.azure.com/siddiqsoft/siddiqsoft/_build/latest?definitionId=21&branchName=master)
-![](https://img.shields.io/nuget/v/siddiqsoft/sip2json)
-![](https://img.shields.io/nuget/dt/siddiqsoft/sip2json)
-![](https://img.shields.io/azure-devops/tests/siddiqsoft/siddiqsoft/21)
+![](https://img.shields.io/nuget/v/siddiqsoft.sip2json
+)
+![](https://img.shields.io/nuget/dt/siddiqsoft.sip2json)
+![](https://img.shields.io/azure-devops/tests/siddiqsoft/siddiqsoft/21/master.svg)
 <!-- end badges -->
-![](https://buildstats.info/azurepipelines/chart/siddiqsoft/siddiqsoft/21)
-
-[[__TOC__]]
-
 
 ## Design goals
 

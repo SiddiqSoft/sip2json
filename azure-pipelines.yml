@@ -29,6 +29,7 @@ variables:
   buildConfiguration: 'Release'
   buildLatestTag: '0.0.0'
   buildCMakeDeps: $(Pipeline.Workspace)/_deps
+  CACHE_RESTORED: 'false'
 
 pool:
   name: $(poolName)
