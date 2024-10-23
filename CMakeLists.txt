@@ -30,6 +30,7 @@ FetchContent_Declare(
     GIT_REPOSITORY https://github.com/nlohmann/json.git
     GIT_TAG v3.11.3
     GIT_SHALLOW TRUE
+    GIT_NO_TAGS TRUE
 )
 FetchContent_MakeAvailable(nlohmann_json)
 
