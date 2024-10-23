@@ -16,20 +16,12 @@ trigger:
 
 strategy:
   matrix:
-    winX64:
+    Windows:
       poolName: Default
       poolImageName:
-      poolDemands:
-      - cmake
-      - Agent.OS -equals Windows
-      - Agent.OSArchitecture -equals X64
-    linuxX64:
+    Linux:
       poolName: Default
       poolImageName:
-      poolDemands:
-      - cmake
-      - Agent.OS -equals Linux
-      - Agent.OSArchitecture -equals X64
 
 variables:
   buildConfiguration: 'Release'
@@ -38,6 +30,8 @@ variables:
 pool:
   name: $(poolName)
   vmImage: $(poolImageName)
+  demands:
+    - Agent.OS -equals $(matrix.os)
 
 steps:
 - checkout: self
