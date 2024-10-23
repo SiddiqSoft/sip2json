@@ -19,6 +19,18 @@ file(GLOB testSRC "./test.cpp")
 
 add_executable(sip2json_test ${testSRC})
 
+if(WIN32)
+	message(STATUS "  Windows adding coverage options..")
+	target_link_libraries(sip2json_test PRIVATE gcov)
+	target_link_libraries(sip2json_test PRIVATE -coverage)
+elseif(UNIX)
+	message(STATUS "  UNIX adding coverage options..")
+	target_compile_options(sip2json_test PUBLIC "-O0" "-fprofile-arcs" "-ftest-coverage")
+	target_link_libraries(sip2json_test PRIVATE gcov)
+	target_link_libraries(sip2json_test PRIVATE -coverage)
+endif()
+
+# Common stuff..
 target_link_libraries(sip2json_test PRIVATE GTest::gtest_main)
 target_link_libraries(sip2json_test PRIVATE nlohmann_json::nlohmann_json)
 
