@@ -28,8 +28,6 @@ strategy:
 variables:
   buildConfiguration: 'Release'
   buildLatestTag: '0.0.0'
-  buildCMakeDeps: $(Pipeline.Workspace)/_deps
-  CACHE_RESTORED: 'false'
 
 pool:
   name: $(poolName)
@@ -68,24 +66,10 @@ steps:
     versionSpec: '>=5.0.0-0'
     checkLatest: true
 
-- task: Cache@2
-  displayName: 'Cache cmake-deps path: $(buildCMakeDeps)..'
-  inputs:
-    key: 'cmake-deps | "$(Agent.OS)"'
-    path: $(buildCMakeDeps)
-
 - task: CMake@1
   displayName: 'CMake ..'
   inputs:
     cmakeArgs: '..'
-
-- task: Cache@2
-  displayName: 'Cache SAVE cmake-deps path: $(buildCMakeDeps)..'
-  inputs:
-    key: 'cmake-deps | "$(Agent.OS)"'
-    path: $(buildCMakeDeps)
-    cacheHitVar: CACHE_RESTORED
-  condition: ne(variables.CACHE_RESTORED, 'true')
 
 - task: CMake@1
   displayName: 'CMake --build . --config $(buildConfiguration)'
