@@ -27,6 +27,6 @@ include(GoogleTest)
 # In order to properly locate the tests folder, we must provide the environment variable
 # SAMPLES_DIR. This should
 gtest_discover_tests(sip2json_test
-                     XML_OUTPUT_DIR "${PROJECT_SOURCE_DIR}/TestResults"
+                     XML_OUTPUT_DIR "${PROJECT_SOURCE_DIR}/tests"
 					 PROPERTIES ENVIRONMENT "SAMPLES_DIR=${PROJECT_SOURCE_DIR}/tests/samples"
 )
