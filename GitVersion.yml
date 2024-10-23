@@ -28,7 +28,7 @@ branches:
     track-merge-message: true
     regex: ^master$|^main$
     source-branches: []
-    is-source-branch-for: [ 'release', 'feature', 'hotfix', '']
+    is-source-branch-for: [ 'release', 'feature', 'unknown', 'hotfix', 'bugfix']
     tracks-release-branches: false
     is-release-branch: false
     is-main-branch: true
@@ -65,21 +65,33 @@ branches:
     is-source-branch-for: []
     is-main-branch: false
     pre-release-weight: 30000
-  pull-request:
-    mode: ContinuousDelivery
-    label: PullRequest
+  hotfix:
+    mode: ManualDeployment
+    label: '{BranchName}'
     increment: Inherit
     prevent-increment:
-      of-merged-branch: true
       when-current-commit-tagged: false
-    label-number-pattern: '[/-](?<number>\d+)'
     track-merge-message: true
-    regex: ^(pull|pull\-requests|pr)[/-]
+    regex: ^features?[/-](?<BranchName>.+)
     source-branches:
     - main
     - release
-    - feature
     is-source-branch-for: []
+    is-main-branch: false
+    pre-release-weight: 30000
+  bugfix:
+    mode: ManualDeployment
+    label: '{BranchName}'
+    increment: Inherit
+    prevent-increment:
+      when-current-commit-tagged: false
+    track-merge-message: true
+    regex: ^features?[/-](?<BranchName>.+)
+    source-branches:
+    - main
+    - release
+    is-source-branch-for: []
+    is-main-branch: false
     pre-release-weight: 30000
   unknown:
     mode: ManualDeployment
@@ -93,7 +105,6 @@ branches:
     - main
     - release
     - feature
-    - pull-request
     is-source-branch-for: []
     is-main-branch: false
 ignore:

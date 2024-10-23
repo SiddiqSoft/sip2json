@@ -54,13 +54,13 @@ steps:
     versionSpec: '>=5.0.0-0'
     checkLatest: true
 
-- task: gitversion/setup@0
+- task: gitversion/setup@3
   displayName: 'Install GitVersion..'
   inputs:
     versionSpec: '6.x'
     preferLatestVersion: true
 
-- task: gitversion/execute@0
+- task: gitversion/execute@3
   displayName: 'Determine Version..'
   inputs:
     useConfigFile: true
