@@ -38,20 +38,16 @@ static std::string loadSampleFile(const std::string& fileName)
 
     if (auto env_samples_dir = std::getenv("SAMPLES_DIR"); env_samples_dir != nullptr)
     {
-#ifdef DEBUG
         std::clog << " -- Environment SAMPLES_DIR  : " << env_samples_dir << std::endl;
-#endif
         samplesDirectoryPath = env_samples_dir;
     }
     else { std::clog << " -- Environment SAMPLES_DIR not found; " << env_samples_dir << ". cannot load " << fileName << std::endl; }
 
     if (std::filesystem::exists(samplesDirectoryPath))
     {
-#ifdef DEBUG
         std::clog << " -- Using the samples directory at: " << samplesDirectoryPath << std::endl;
         std::clog << " -- Attempting to open the file   : " << std::format("{}/{}.sip", samplesDirectoryPath, fileName)
                   << std::endl;
-#endif
 
         std::stringstream testFile;
         std::ifstream     sampleInputFile {std::format("{}/{}.sip", samplesDirectoryPath, fileName), std::ios::binary};
