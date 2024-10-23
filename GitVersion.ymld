@@ -1,0 +1,35 @@
+mode: ContinuousDelivery
+commit-message-incrementing: Enabled
+update-build-number: true
+branches:
+  master:
+    regex: (master|main)
+    mode: ContinuousDelivery
+    increment: Patch
+    is-main-branch: true
+    is-mainline: true
+    is-is-source-branch-for: ['feature','bugfix','hotfix','release']
+    prevent-increment-of-merged-branch-version: true
+    track-merge-target: false
+  feature:
+    regex: feature(s)?[/-]
+    source-branches: ['master','main']
+    mode: ContinuousDeployment
+  develop:
+    regex: dev(elop)?(ment)?$
+    mode: ContinuousDeployment
+    source-branches: ['master','main']
+    tag: alpha
+  hotfix:
+    regex: hotfix(es)?[/-]
+    mode: ContinuousDeployment
+    source-branches: ['master','main']
+    tag: beta
+  release:
+    regex: release(s)?[/-]
+    mode: ContinuousDeployment
+    source-branches: ['master','main']
+    tag: rc
+ignore:
+  sha: []
+merge-message-formats: {}
