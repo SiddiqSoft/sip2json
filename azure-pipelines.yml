@@ -17,9 +17,11 @@ trigger:
 strategy:
   matrix:
     Windows:
+      osName: Windows
       poolName: Default
       poolImageName:
     Linux:
+      osName: Linux
       poolName: Default
       poolImageName:
 
@@ -31,7 +33,7 @@ pool:
   name: $(poolName)
   vmImage: $(poolImageName)
   demands:
-    - Agent.OS -equals $(matrix.os)
+    - Agent.OS -equals $(osName)
 
 steps:
 - checkout: self
