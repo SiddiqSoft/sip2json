@@ -39,18 +39,6 @@ steps:
 - checkout: self
   fetchDepth: 0
 
-#- task: gitversion/setup@0
-#  displayName: 'Install GitVersion..'
-#  inputs:
-#    versionSpec: '6.x'
-#    preferLatestVersion: true
-
-#- task: gitversion/execute@0
-#  displayName: 'Determine Version..'
-#  inputs:
-#    useConfigFile: true
-#    configFilePath: 'GitVersion.yml'
-
 # - task: PowerShell@2
 #   displayName: 'Figure out the latest git tag'
 #   inputs:
@@ -66,10 +54,16 @@ steps:
     versionSpec: '>=5.0.0-0'
     checkLatest: true
 
-- task: GitVersion@5
+- task: gitversion/setup@0
+  displayName: 'Install GitVersion..'
   inputs:
-    runtime: 'core'
-    preferBundledVersion: false
+    versionSpec: '6.x'
+    preferLatestVersion: true
+
+- task: gitversion/execute@0
+  displayName: 'Determine Version..'
+  inputs:
+    useConfigFile: true
     configFilePath: 'GitVersion.yml'
 
 - script: echo %Action%%BuildVersion%
