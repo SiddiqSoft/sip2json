@@ -14,12 +14,22 @@ trigger:
     exclude:
     - README.md
 
-# This cannot be built (so long as we're using private repo) on the Azure build machines.
-pool:
-  name: Default
-  demands:
-  - cmake
-  - Agent.OSArchitecture -equals X64
+strategy:
+  matrix:
+    windowsX64:
+      pool:
+        name: Default
+        demands:
+        - cmake
+        - Agent.OS -equals Windows
+        - Agent.OSArchitecture -equals X64
+    linuxX64:
+      pool:
+        name: Default
+        demands:
+        - cmake
+        - Agent.OS -equals Linux
+        - Agent.OSArchitecture -equals X64
 
 variables:
   buildConfiguration: 'Release'
