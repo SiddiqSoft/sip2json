@@ -13,7 +13,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     env:
-      TESTRESULTS_DIR: "${{ github.workspace }}/tests"
+      TESTRESULTS_FILE: "${{ github.workspace }}/tests/test_detail.xml"
       SAMPLES_DIR: "${{ github.workspace }}/tests/samples"
 
     strategy:
@@ -76,7 +76,8 @@ jobs:
       run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
 
     - name: Test
-      working-directory: ${{ steps.strings.outputs.build-output-dir }}
+      working-directory: ${{ env.SAMPLES_DIR }}
+      #working-directory: ${{ steps.strings.outputs.build-output-dir }}
       # Execute tests defined by the CMake configuration. Note that --build-config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-      run: ctest --build-config ${{ matrix.build_type }}
+      run: ctest --build-config ${{ matrix.build_type }} --output-junit ${{ env.TESTRESULTS_FILE }} --output-on-failure
