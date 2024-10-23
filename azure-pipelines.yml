@@ -51,20 +51,32 @@ steps:
 #    useConfigFile: true
 #    configFilePath: 'GitVersion.yml'
 
-- task: PowerShell@2
-  displayName: 'Figure out the latest git tag'
-  inputs:
-    targetType: inline
-    script: |
-      $buildLatestTag = git describe --tags $(git rev-list --tags --max-count=1)
-      Write-Host "##vso[task.setvariable variable=buildLatestTag;]$buildLatestTag"
-      Write-Host "##vso[build.updatebuildnumber]$buildLatestTag"
+# - task: PowerShell@2
+#   displayName: 'Figure out the latest git tag'
+#   inputs:
+#     targetType: inline
+#     script: |
+#       $buildLatestTag = git describe --tags $(git rev-list --tags --max-count=1)
+#       Write-Host "##vso[task.setvariable variable=buildLatestTag;]$buildLatestTag"
+#       Write-Host "##vso[build.updatebuildnumber]$buildLatestTag"
 
 - task: NuGetToolInstaller@1
   displayName: 'Install Nuget'
   inputs:
     versionSpec: '>=5.0.0-0'
     checkLatest: true
+
+- task: GitVersion@5
+  inputs:
+    runtime: 'core'
+    preferBundledVersion: false
+    configFilePath: 'GitVersion.yml'
+
+- script: echo %Action%%BuildVersion%
+  displayName: 'Set build version to $(GitVersion.FullSemVer)'
+  env:
+    Action: '##vso[build.updatebuildnumber]'
+    BuildVersion: $(GitVersion.FullSemVer)
 
 - task: CMake@1
   displayName: 'CMake ..'
