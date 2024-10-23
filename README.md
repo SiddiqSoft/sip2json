@@ -4,13 +4,11 @@
 
 <!-- badges -->
 [![Build Status](https://dev.azure.com/siddiqsoft/siddiqsoft/_apis/build/status/siddiqsoftware.sip2json?branchName=master)](https://dev.azure.com/siddiqsoft/siddiqsoft/_build/latest?definitionId=21&branchName=master)
-[![CMake on multiple platforms](https://github.com/siddiqsoftware/sip2json/actions/workflows/cmake-multi-platform.yml/badge.svg)](https://github.com/siddiqsoftware/sip2json/actions/workflows/cmake-multi-platform.yml)
-![](https://img.shields.io/nuget/v/siddiqsoft/sip2json)
-![](https://img.shields.io/nuget/dt/siddiqsoft/sip2json)
+![](https://img.shields.io/nuget/v/siddiqsoftware/sip2json)
+![](https://img.shields.io/nuget/dt/siddiqsoftware/sip2json)
 ![](https://img.shields.io/azure-devops/tests/siddiqsoft/siddiqsoft/21)
-![](https://img.shields.io/github/license/siddiqsoftware/sip2json)
 <!-- end badges -->
-
+![](https://buildstats.info/azurepipelines/chart/siddiqsoft/siddiqsoft[/21])
 
 [[__TOC__]]
 
