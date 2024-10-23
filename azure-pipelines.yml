@@ -28,6 +28,7 @@ strategy:
 variables:
   buildConfiguration: 'Release'
   buildLatestTag: '0.0.0'
+  buildCMakeDeps: $(Pipeline.Workspace)/_deps
 
 pool:
   name: $(poolName)
@@ -65,6 +66,12 @@ steps:
   inputs:
     versionSpec: '>=5.0.0-0'
     checkLatest: true
+
+- task: Cache@2
+  displayName: 'Cache cmake-deps path: $(buildCMakeDeps)..'
+  inputs:
+    key: 'cmake-deps | "$(Agent.OS)"'
+    path: $(buildCMakeDeps)
 
 - task: CMake@1
   displayName: 'CMake ..'

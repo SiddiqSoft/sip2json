@@ -49,17 +49,25 @@ static std::string loadSampleFile(const std::string& fileName)
         std::clog << " -- Attempting to open the file   : " << std::format("{}/{}.sip", samplesDirectoryPath, fileName)
                   << std::endl;
 
-        std::stringstream testFile;
-        std::ifstream     sampleInputFile {std::format("{}/{}.sip", samplesDirectoryPath, fileName), std::ios::binary};
-
-        if (sampleInputFile.is_open())
+        try
         {
-            testFile << sampleInputFile.rdbuf();
-            sampleInputFile.close();
-        }
-        else { throw std::runtime_error {std::format("Failed opening file: `{}`!", fileName)}; }
+            std::stringstream testFile;
+            std::ifstream     sampleInputFile {std::format("{}/{}.sip", samplesDirectoryPath, fileName), std::ios::binary};
 
-        return testFile.str();
+            if (sampleInputFile.is_open())
+            {
+                testFile << sampleInputFile.rdbuf();
+                sampleInputFile.close();
+            }
+            else { throw std::runtime_error {std::format("Failed opening file: `{}`!", fileName)}; }
+
+            return testFile.str();
+        }
+        catch (std::exception& e)
+        {
+            std::cerr << "loadSampleFile exception: " << e.what() << std::endl;
+            throw e;
+        }
     }
 
     throw std::runtime_error {"Environment variable SAMPLES_DIR must point to directory for SIP samples!"};
