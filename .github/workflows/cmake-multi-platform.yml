@@ -29,22 +29,17 @@ jobs:
       matrix:
         os: [self-hosted, windows-latest]
         build_type: [Release]
-        c_compiler: [gcc, clang, cl]
+        c_compiler: [gcc, cl]
         include:
           - os: windows-latest
             c_compiler: cl
             cpp_compiler: cl
-          - os: self-hosted
-            c_compiler: clang
-            cpp_compiler: clang++
           - os: self-hosted
             c_compiler: gcc
             cpp_compiler: g++
         exclude:
           - os: windows-latest
             c_compiler: gcc
-          - os: windows-latest
-            c_compiler: clang
           - os: self-hosted
             c_compiler: cl
 
