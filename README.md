@@ -426,3 +426,4 @@ We've tested on Windows terminal using the `cmake .` and `cmake --build .` follo
 - [SIP Messages Definition](https://tools.ietf.org/html/rfc3261#section-7)
 - [SDP specification](https://en.wikipedia.org/wiki/Session_Description_Protocol)
 - [SIP Response Codes](https://en.wikipedia.org/wiki/List_of_SIP_response_codes)
+- Out gitversion scheme has been adapted from [GitVersion](https://gitversion.net/docs/reference/configuration) `GitFlow/v1`.
