@@ -97,7 +97,7 @@ steps:
     command: 'pack'
     packagesToPack: 'nuget/*.nuspec'
     versioningScheme: 'off'
-    buildProperties: 'VERSION=$(build.buildNumber)'
+    buildProperties: 'VERSION=$(GitVersion.MajorMinorPatch)'
   condition: and(succeeded(), startsWith(variables['Agent.OS'], 'Windows'))
 
 - task: NuGetCommand@2
