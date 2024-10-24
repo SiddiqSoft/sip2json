@@ -380,7 +380,7 @@ namespace siddiqsoft
                             // timing
                             uint32_t ts = 0, te = 0;
 #if defined(_WIN32) || defined(_WIN64) || defined(WINDOWS)
-                            if (std::sscanf_s(value.c_str(), "%d %d", &ts, &te) > 0)
+                            if (::sscanf_s(value.c_str(), "%d %d", &ts, &te) > 0)
 #else
                             if (std::sscanf(value.c_str(), "%d %d", &ts, &te) > 0)
 #endif
