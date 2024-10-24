@@ -308,7 +308,7 @@ namespace siddiqsoft
 } // namespace siddiqsoft
 
 
-std::ostream& operator<<(std::ostream& os, const siddiqsoft::SIPMessageType& mt)
+static std::ostream& operator<<(std::ostream& os, const siddiqsoft::SIPMessageType& mt)
 {
     switch (mt)
     {
