@@ -129,7 +129,7 @@ namespace siddiqsoft
                 // Some encoders send "uthorization" instead of "Authorization"
                 sipm["h"][HF_AUTHORIZATION] = value;
             }
-            else if (key.compare( HF_CONTENT_TYPE) == 0)
+            else if (key.compare(HF_CONTENT_TYPE) == 0)
             {
                 // Some encoders send Content-type instead of the standard Content-Type; here we need to normalize it.
                 sipm["h"][HF_CONTENT_TYPE] = value;
@@ -176,7 +176,8 @@ namespace siddiqsoft
 
             // Assert header end delimiter must exist!
             if (size_t(bufferEnd - headerEnd) < ELEM_HEADERSECTIONDELIMITER.size())
-                throw incomplete_buffer_for_header_error {std::format("{}:Cannot find header section delimiter.", __func__).c_str()};
+                throw incomplete_buffer_for_header_error {
+                        std::format("{}:Cannot find header section delimiter.", __func__).c_str()};
 
             while (!done)
             {
@@ -374,11 +375,15 @@ namespace siddiqsoft
                             else if (!value.empty()) { sipm[pkey] = value; }
                             else { sipm[pkey] = ""; }
                         }
-                        else if (key.compare("t"s)==0)
+                        else if (key.compare("t"s) == 0)
                         {
-                            uint32_t ts = 0, te = 0;
                             // timing
+                            uint32_t ts = 0, te = 0;
+#if defined(_WIN32) || defined(_WIN64) || defined(WINDOWS)
+                            if (std::sscanf_s(value.c_str(), "%d %d", &ts, &te) > 0)
+#else
                             if (std::sscanf(value.c_str(), "%d %d", &ts, &te) > 0)
+#endif
                             {
                                 sipm[pkey].push_back(ts);
                                 sipm[pkey].push_back(te);
@@ -809,7 +814,7 @@ namespace siddiqsoft
                 {
                     if (element == "a"s)
                     {
-                        std::string ret{};
+                        std::string ret {};
 
                         for (auto& [kv, v] : item.items())
                         {
