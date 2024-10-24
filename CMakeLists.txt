@@ -9,15 +9,17 @@ project(sip2json
         DESCRIPTION "sip2json SIP parser and encode header-only library"
 )
 
+if(WIN32)
+  message(STATUS "Selecting Visual Studio as generator")
+  set(CMAKE_GENERATOR "Visual Studio 17 2022")
+  set(CMAKE_GENERATOR_PLATFORM "x64,version=10.0.22621.0")
+  set(CMAKE_GENERATOR_TOOLSET "v143")
+  set(CMAKE_VS_PLATFORM_TOOLSET_VERSION "14.41.34120")
+endif(WIN32)
+
 message(STATUS "Require C++20")
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
-
-#if(WIN32)
-#  set(CMAKE_GENERATOR_PLATFORM "x64,version=10.0.22621.0")
-#  set(CMAKE_GENERATOR_TOOLSET "v143")
-#  set(CMAKE_VS_PLATFORM_TOOLSET_VERSION "14.41.34120")
-#endif(WIN32)
 
 message(STATUS "-- Importing git, gnuinstalldirs..")
 find_package(Git REQUIRED)
