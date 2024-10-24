@@ -20,10 +20,10 @@ strategy:
       osName: Windows_NT
       poolName: Default
       poolImageName:
-    Linux:
-      osName: Linux
-      poolName: Default
-      poolImageName:
+#    Linux:
+#      osName: Linux
+#      poolName: Default
+#      poolImageName:
 
 variables:
   buildConfiguration: 'Release'
