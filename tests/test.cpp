@@ -467,32 +467,20 @@ TEST(siphelpers, Test_incomplete_buffer_for_parse)
 // NOLINTNEXTLINE
 TEST(siphelpers, Test_incomplete_buffer_for_content)
 {
-    using namespace nlohmann::json_literals;
-
-    EXPECT_THROW(
-            []()
-            {
-                auto buffer = loadSampleFile("Test_incomplete_buffer_for_content"); // NOLINT
-                auto bs     = buffer.begin();
-                auto dummy  = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end());
-            }(),
-            siddiqsoft::incomplete_buffer_for_content_error);
+    auto buffer = loadSampleFile("Test_incomplete_buffer_for_content"); // NOLINT
+    auto bs     = buffer.begin();
+    EXPECT_THROW([&]() { auto dummy = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end()); }(),
+                 siddiqsoft::incomplete_buffer_for_content_error);
 }
 
 
 // NOLINTNEXTLINE
 TEST(siphelpers, Test_incomplete_buffer_for_header)
 {
-    using namespace nlohmann::json_literals;
-
-    EXPECT_THROW(
-            []()
-            {
-                auto buffer = loadSampleFile("Test_incomplete_buffer_for_header"); // NOLINT
-                auto bs     = buffer.begin();
-                auto dummy  = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end());
-            }(),
-            siddiqsoft::incomplete_buffer_for_header_error);
+    auto buffer = loadSampleFile("Test_incomplete_buffer_for_header"); // NOLINT
+    auto bs     = buffer.begin();
+    EXPECT_THROW([&]() { auto dummy = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end()); }(),
+                 siddiqsoft::incomplete_buffer_for_header_error);
 }
 
 

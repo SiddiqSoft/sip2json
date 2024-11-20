@@ -735,8 +735,8 @@ namespace siddiqsoft
             // If content-type is not set, then just return regardless of the body element contents.
             if (contentType.empty()) return buffer;
 
-            if ((contentType.compare(CONTENT_TYPE_APP_SDP) == std::string::npos) &&
-                (contentType.compare(CONTENT_TYPE_TEXT_PLAIN) == std::string::npos))
+            // Check for a valid/supported contenttype
+            if (!(contentType == CONTENT_TYPE_APP_SDP || contentType == CONTENT_TYPE_TEXT_PLAIN))
                 throw invalid_document_error {std::format("{}:Unsupported content-type:{}", __func__, contentType)};
 
             // Body
