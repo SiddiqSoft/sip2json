@@ -76,12 +76,12 @@ stages:
         configFilePath: 'GitVersion.yml'
 
     # Set the flags for testing, build here.
-    # SIP2JSON_BUILD_TESTS=ON
-    # SIP2JSON_BUILD_PACKAGE=OFF
+    # sip2json_BUILD_TESTS=ON
+    # sip2json_BUILD_PACKAGE=OFF
     - task: CMake@1
-      displayName: 'CMake Configure --preset $(cmake.preset) -DSIP2JSON_BUILD_TESTS=ON -DSIP2JSON_BUILD_PACKAGE=OFF -DCI_BUILDID=$(GitVersion.MajorMinorPatch).$(GitVersion.CommitsSinceVersionSource)'
+      displayName: 'CMake Configure --preset $(cmake.preset) -Dsip2json_BUILD_TESTS=ON -Dsip2json_BUILD_PACKAGE=OFF -DCI_BUILDID=$(GitVersion.MajorMinorPatch).$(GitVersion.CommitsSinceVersionSource)'
       inputs:
-        cmakeArgs: '--preset $(cmake.preset) -DSIP2JSON_BUILD_TESTS=ON -DSIP2JSON_BUILD_PACKAGE=OFF -DCI_BUILDID=$(GitVersion.MajorMinorPatch).$(GitVersion.CommitsSinceVersionSource)'
+        cmakeArgs: '--preset $(cmake.preset) -Dsip2json_BUILD_TESTS=ON -Dsip2json_BUILD_PACKAGE=OFF -DCI_BUILDID=$(GitVersion.MajorMinorPatch).$(GitVersion.CommitsSinceVersionSource)'
         workingDirectory: '$(System.DefaultWorkingDirectory)'
 
     - task: CMake@1
@@ -114,7 +114,7 @@ stages:
           echo "Profile data merge............"
           llvm-profdata merge -output=tests/merge.out -instr tests/default.profraw
           echo "Profile data show..html......."
-          llvm-cov show -format=html --ignore-filename-regex=tests/ tests/SIP2JSON_tests --instr-profile=tests/merge.out -o tests/results/coverage.info
+          llvm-cov show -format=html --ignore-filename-regex=tests/ tests/sip2json_tests --instr-profile=tests/merge.out -o tests/results/coverage.info
         workingDirectory: "$(System.DefaultWorkingDirectory)/build/$(cmake.preset)"
       condition: and(succeeded(), startsWith(variables['Agent.OS'], 'Linux'))
  
@@ -170,12 +170,12 @@ stages:
       fetchDepth: 1
 
     # Set the flags for testing, build here.
-    # SIP2JSON_BUILD_TESTS=OFF
-    # SIP2JSON_BUILD_PACKAGE=ON
+    # sip2json_BUILD_TESTS=OFF
+    # sip2json_BUILD_PACKAGE=ON
     - task: CMake@1
-      displayName: 'CMake Configure --preset $(cmake.preset) -DSIP2JSON_BUILD_TESTS=OFF -DSIP2JSON_BUILD_PACKAGE=ON -DCI_BUILDID=$(build.buildNumber)'
+      displayName: 'CMake Configure --preset $(cmake.preset) -Dsip2json_BUILD_TESTS=OFF -Dsip2json_BUILD_PACKAGE=ON -DCI_BUILDID=$(build.buildNumber)'
       inputs:
-        cmakeArgs: '--preset $(cmake.preset) -DSIP2JSON_BUILD_TESTS=OFF -DSIP2JSON_BUILD_PACKAGE=ON -DCI_BUILDID=$(build.buildNumber)'
+        cmakeArgs: '--preset $(cmake.preset) -Dsip2json_BUILD_TESTS=OFF -Dsip2json_BUILD_PACKAGE=ON -DCI_BUILDID=$(build.buildNumber)'
         workingDirectory: '$(System.DefaultWorkingDirectory)'
 
     # Powershell is not supported on Pi aarch64 yet so we have to use this method for Linux
