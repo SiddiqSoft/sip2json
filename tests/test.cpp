@@ -18,8 +18,8 @@
 #include <format>
 #include "nlohmann/json.hpp"
 
-#include "../src/sip2json.hpp"
-#include "../src/sip2json_exception.hpp"
+#include "../include/siddiqsoft/sip2json.hpp"
+#include "../include/siddiqsoft/sip2json_exception.hpp"
 
 #include "gtest/gtest.h"
 

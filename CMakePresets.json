@@ -1,0 +1,277 @@
+{
+    "version": 8,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 25
+    },
+    "configurePresets": [
+        {
+            "name": "Apple-Debug",
+            "displayName": "Apple-Debug (Clang19)",
+            "description": "Using compilers: C = /opt/homebrew/opt/llvm/bin/clang, CXX = /opt/homebrew/opt/llvm/bin/clang++",
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/install/${presetName}",
+                "CMAKE_C_COMPILER": "/opt/homebrew/opt/llvm/bin/clang",
+                "CMAKE_CXX_COMPILER": "/opt/homebrew/opt/llvm/bin/clang++",
+                "CMAKE_BUILD_TYPE": "Debug",
+                "sip2json_BUILD_TESTS": "ON"
+            },
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Darwin"
+            }
+        },
+        {
+            "name": "Apple-Release",
+            "displayName": "Apple-Release (Clang19)",
+            "description": "Using compilers: C = /opt/homebrew/opt/llvm/bin/clang, CXX = /opt/homebrew/opt/llvm/bin/clang++",
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/install/${presetName}",
+                "CMAKE_C_COMPILER": "/opt/homebrew/opt/llvm/bin/clang",
+                "CMAKE_CXX_COMPILER": "/opt/homebrew/opt/llvm/bin/clang++",
+                "CMAKE_BUILD_TYPE": "Release"
+            },
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Darwin"
+            }
+        },
+        {
+            "name": "Linux-Debug",
+            "displayName": "Linux Debug",
+            "description": "Target Linux (Debug)",
+            "generator": "Unix Makefiles",
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "installDir": "${sourceDir}/install/${presetName}",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_C_COMPILER": "/usr/bin/clang",
+                "CMAKE_CXX_COMPILER": "/usr/bin/clang++",
+                "sip2json_BUILD_TESTS": "ON"
+            },
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Linux"
+            },
+            "vendor": {
+                "microsoft.com/VisualStudioRemoteSettings/CMake/2.0": {
+                    "remoteSourceRootDir": "$env{HOME}/.vs/$ms{projectDirName}"
+                }
+            }
+        },
+        {
+            "name": "Linux-Release",
+            "displayName": "Linux Release",
+            "description": "Target Linux (Release)",
+            "generator": "Unix Makefiles",
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "installDir": "${sourceDir}/install/${presetName}",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_C_COMPILER": "/usr/bin/clang",
+                "CMAKE_CXX_COMPILER": "/usr/bin/clang++"
+            },
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Linux"
+            },
+            "vendor": {
+                "microsoft.com/VisualStudioRemoteSettings/CMake/2.0": {
+                    "remoteSourceRootDir": "$env{HOME}/.vs/$ms{projectDirName}"
+                }
+            }
+        },
+        {
+            "name": "Windows-base",
+            "description": "Target Windows with the Visual Studio development environment.",
+            "hidden": true,
+            "generator": "Visual Studio 17 2022",
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "installDir": "${sourceDir}/install/${presetName}",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "cl.exe",
+                "CMAKE_CXX_COMPILER": "cl.exe"
+            },
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Windows"
+            }
+        },
+        {
+            "name": "Windows-Debug",
+            "displayName": "Windows x64 Debug",
+            "description": "Target Windows (64-bit) with the Visual Studio development environment. (Debug)",
+            "inherits": "Windows-base",
+            "architecture": {
+                "value": "x64",
+                "strategy": "external"
+            },
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "sip2json_BUILD_TESTS": "ON"
+            }
+        },
+        {
+            "name": "Windows-Release",
+            "displayName": "Windows x64 Release",
+            "description": "Target Windows (64-bit) with the Visual Studio development environment. (RelWithDebInfo)",
+            "inherits": "Windows-Debug",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "Apple-Debug",
+            "configurePreset": "Apple-Debug"
+        },
+        {
+            "name": "Apple-Release",
+            "configurePreset": "Apple-Release"
+        },
+        {
+            "name": "Linux-Debug",
+            "configurePreset": "Linux-Debug"
+        },
+        {
+            "name": "Linux-Release",
+            "configurePreset": "Linux-Release"
+        },
+        {
+            "name": "Windows-Debug",
+            "configurePreset": "Windows-Debug"
+        },
+        {
+            "name": "Windows-Release",
+            "configurePreset": "Apple-Release"
+        }
+    ],
+    "testPresets": [
+        {
+            "name": "Apple-Debug",
+            "configurePreset": "Apple-Debug",
+            "output": {
+                "outputOnFailure": true
+            },
+            "execution": {
+                "noTestsAction": "error",
+                "stopOnFailure": true
+            }
+        },
+        {
+            "name": "Apple-Release",
+            "configurePreset": "Apple-Release",
+            "output": {
+                "outputOnFailure": true
+            },
+            "execution": {
+                "noTestsAction": "error",
+                "stopOnFailure": true
+            }
+        },
+        {
+            "name": "Linux-Debug",
+            "configurePreset": "Linux-Debug",
+            "output": {
+                "outputOnFailure": true
+            },
+            "execution": {
+                "noTestsAction": "error",
+                "stopOnFailure": true
+            }
+        },
+        {
+            "name": "Linux-Release",
+            "configurePreset": "Linux-Release",
+            "output": {
+                "outputOnFailure": true
+            },
+            "execution": {
+                "noTestsAction": "error",
+                "stopOnFailure": true
+            }
+        }
+    ],
+    "packagePresets": [
+        {
+            "name": "Apple-Debug",
+            "description": "",
+            "displayName": "",
+            "configurePreset": "Apple-Debug",
+            "generators": [
+                "ZIP"
+            ],
+            "configurations": [
+                "Apple-Debug"
+            ]
+        },
+        {
+            "name": "Apple-Release",
+            "description": "",
+            "displayName": "",
+            "configurePreset": "Apple-Release",
+            "generators": [
+                "ZIP"
+            ],
+            "configurations": [
+                "Apple-Release"
+            ]
+        },
+        {
+            "name": "Linux-Release",
+            "description": "Package for Linux",
+            "displayName": "Linux-Package (Release)",
+            "configurePreset": "Linux-Release",
+            "generators": [
+                "ZIP"
+            ],
+            "configurations": [
+                "Linux-Release"
+            ]
+        },
+        {
+            "name": "Linux-Debug",
+            "description": "Package for Linux",
+            "displayName": "Linux-Package (Debug)",
+            "configurePreset": "Linux-Debug",
+            "generators": [
+                "ZIP"
+            ],
+            "configurations": [
+                "Linux-Debug"
+            ]
+        },
+        {
+            "name": "Windows-Debug",
+            "description": "",
+            "displayName": "",
+            "configurePreset": "Windows-Debug",
+            "generators": [
+                "NuGet"
+            ],
+            "configurations": [
+                "Windows-Debug"
+            ]
+        },
+        {
+            "name": "Windows-Release",
+            "description": "",
+            "displayName": "",
+            "configurePreset": "Windows-Release",
+            "generators": [
+                "NuGet"
+            ],
+            "configurations": [
+                "Windows-Release"
+            ]
+        }
+    ]
+}

@@ -94,7 +94,7 @@ namespace siddiqsoft
         sipmessage(const sipmessage& src) { this->update(nlohmann::json(src)); }
 
         sipmessage& operator=(sipmessage&& src) = default;
-        sipmessage& operator=(nlohmann::json&& src) { nlohmann::json((*this)).operator=(std::move(src)); }
+        sipmessage& operator=(nlohmann::json&& src) { nlohmann::json((*this)).operator=(std::move(src)); return *this; }
 
 
         explicit operator nlohmann::json&() { return static_cast<nlohmann::json&>(*this); }
