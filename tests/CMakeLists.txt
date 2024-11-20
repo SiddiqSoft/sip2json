@@ -23,7 +23,8 @@ if(${${PROJECT_NAME}_BUILD_TESTS})
                             $<$<CXX_COMPILER_ID:MSVC>:/std:c++20> )
     target_link_libraries(${TESTPROJ} PRIVATE GTest::gtest_main)
     target_link_libraries(${TESTPROJ} PRIVATE nlohmann_json::nlohmann_json)
-    gtest_discover_tests(${TESTPROJ} XML_OUTPUT_DIR "${PROJECT_SOURCE_DIR}/tests/results")
+    gtest_discover_tests(${TESTPROJ} XML_OUTPUT_DIR "${PROJECT_SOURCE_DIR}/tests/results"
+                        PROPERTIES ENVIRONMENT "SAMPLES_DIR=${PROJECT_SOURCE_DIR}/tests/samples")
 
     # For GCC/Clang
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -fprofile-arcs -ftest-coverage -fprofile-instr-generate -fcoverage-mapping")
