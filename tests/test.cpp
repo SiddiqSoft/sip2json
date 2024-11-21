@@ -22,6 +22,7 @@
 #include "../include/siddiqsoft/sip2json_exception.hpp"
 
 #include "gtest/gtest.h"
+#include <thread>
 
 #if defined(_WIN32)
 #include <Windows.h>
@@ -501,14 +502,10 @@ TEST(siphelpers, Test_unsupported_contenttype)
 // NOLINTNEXTLINE
 TEST(siphelpers, Test_invalid_document)
 {
-    EXPECT_THROW(
-            []()
-            {
-                siddiqsoft::sipmessage sipm;
-                sipm["dummy"] = "world";
-                siddiqsoft::sip2json::serialize(sipm);
-            }(),
-            siddiqsoft::invalid_document_error);
+    siddiqsoft::sipmessage sipm;
+    sipm["dummy"] = "world";
+    // We should expect the invalid_document_error trying to serialize this invalid message.
+    EXPECT_THROW([&]() { siddiqsoft::sip2json::serialize(sipm); }(), siddiqsoft::invalid_document_error);
 }
 
 
@@ -1054,6 +1051,7 @@ TEST(validation, Test_extension_aras)
             buffer,
             [&](auto&& sipm)
             {
+                std::clog << "We're inside the callback.." << std::endl;
                 switch (parseCount++)
                 {
                 case 0:
@@ -1100,7 +1098,8 @@ TEST(validation, Test_extension_aras)
             { EXPECT_FALSE(true) << e.what(); }
 
     );
-
+    // Sleep for a bit.. just for testing..
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
     // There must be atleast 3 NOTIFY from the buffer
     EXPECT_EQ(3, parseCount) << "Should get 3 items instead of " << parseCount << std::endl;
 }
@@ -1161,8 +1160,9 @@ TEST(validation, Test_extension_nelson)
 // NOLINTNEXTLINE
 TEST(validation, Test_parse_invalid_string_position)
 {
-    auto buffer      = loadSampleFile("Test_parse_invalid_string_position"); // NOLINT
-    auto bs          = buffer.begin();
+    auto                   buffer = loadSampleFile("Test_parse_invalid_string_position"); // NOLINT
+    auto                   bs     = buffer.begin();
+
     auto parseResult = siddiqsoft::sip2json::parse(bs, buffer.end());
 
     // There must be atleast 3 NOTIFY from the buffer
@@ -1219,11 +1219,12 @@ TEST(ImplementationChecks, Test_formatters_1)
 // NOLINTNEXTLINE
 TEST(siphelpers, Test_check_Via)
 {
-    auto buffer     = loadSampleFile("Test_extension_nelson"); // NOLINT
-    auto bs         = buffer.begin();
-    auto parseCount = 0;
+    auto                   buffer     = loadSampleFile("Test_extension_nelson"); // NOLINT
+    auto                   bs         = buffer.begin();
+    auto                   parseCount = 0;
+    siddiqsoft::sipmessage sipm;
 
-    auto sipm = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end());
+    EXPECT_NO_THROW(sipm = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end()));
     if (sipm.contains("/h/Via"_json_pointer))
     {
         auto via = sipm["h"]["Via"];

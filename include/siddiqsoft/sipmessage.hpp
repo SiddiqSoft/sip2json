@@ -71,6 +71,7 @@ namespace siddiqsoft
                                   {SIPMessageType::response, "response"},
                                   {SIPMessageType::notspecified, "notspecified"}});
 
+    
     class sipmessage : public nlohmann::json
     {
         static constexpr std::string_view MetaLibName {"sip2json"};
@@ -105,7 +106,6 @@ namespace siddiqsoft
         /// @param uri Request URI
         /// @param callId Optional CallId
         /// @param cseq Optional Cseq; the string value is build using this parameter and the method
-        /// @return
         sipmessage(const std::string& method, const std::string& uri, const std::string& callId = {}, uint32_t cseq = 0)
         {
             using namespace std;
@@ -129,7 +129,6 @@ namespace siddiqsoft
         /// @brief Instantiates a response message from scratch or optionally from existing sipmessage request
         /// @param statusCode Status Code for this message, the reason is built using map
         /// @param src Optional sipmessage object of type request
-        /// @return
         sipmessage(uint32_t statusCode, const sipmessage& src)
         {
             using namespace std;
@@ -155,7 +154,6 @@ namespace siddiqsoft
         /// @brief Instantiates a response message from scratch or optionally from existing sipmessage request
         /// @param statusCode Status Code for this message, the reason is built using map
         /// @param src Optional sipmessage object of type request
-        /// @return
         sipmessage(uint32_t statusCode)
         {
             using namespace std;
