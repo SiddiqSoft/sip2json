@@ -918,7 +918,7 @@ TEST(siphelpers, Test_async_invalid_startline)
     auto bs       = buffer.begin();
 
     std::clog << buffer << "\n";
-    siddiqsoft::sip2json::parseAsync(
+    auto remainingBuffer= siddiqsoft::sip2json::parseAsync(
             buffer,
             {},
             [&](const siddiqsoft::sip2json_exception& e, std::string::iterator&, const std::string::iterator&)
@@ -936,7 +936,7 @@ TEST(siphelpers, Test_async_incomplete_buffer_for_parse)
     bool passTest = false;
     auto bs       = buffer.begin();
 
-    siddiqsoft::sip2json::parseAsync(
+    auto remainingBuffer= siddiqsoft::sip2json::parseAsync(
             buffer,
             {},
             [&](const siddiqsoft::sip2json_exception& e, std::string::iterator&, const std::string::iterator&)
@@ -957,7 +957,7 @@ TEST(siphelpers, Test_async_incomplete_buffer_for_content)
 
     ASSERT_TRUE(buffer.size() > 0) << "Buffer contents: [[ " << buffer << " ]]";
 
-    siddiqsoft::sip2json::parseAsync(
+    auto remainingBuffer= siddiqsoft::sip2json::parseAsync(
             buffer,
             {},
             [&](const siddiqsoft::sip2json_exception& e, std::string::iterator&, const std::string::iterator&)
@@ -977,7 +977,7 @@ TEST(siphelpers, Test_async_incomplete_buffer_for_header)
     auto buffer   = loadSampleFile("Test_incomplete_buffer_for_header"); // NOLINT
     auto bs       = buffer.begin();
 
-    siddiqsoft::sip2json::parseAsync(
+    auto remainingBuffer= siddiqsoft::sip2json::parseAsync(
             buffer,
             {},
             [&](const siddiqsoft::sip2json_exception& e, std::string::iterator&, const std::string::iterator&)
@@ -999,7 +999,7 @@ TEST(siphelpers, Test_async_unsupported_contenttype)
     std::cerr << __func__ << " - File `Test_unsupported_contenttype` contents...\n" << buffer << std::endl;
     EXPECT_FALSE(buffer.empty()) << "File `Test_unsupported_contenttype` contents...should be non-empty!\n";
 
-    siddiqsoft::sip2json::parseAsync(
+    auto remainingBuffer= siddiqsoft::sip2json::parseAsync(
             buffer,
             {},
             [&](const siddiqsoft::sip2json_exception& e, std::string::iterator&, const std::string::iterator&)
@@ -1020,7 +1020,7 @@ TEST(siphelpers, Test_unknown_exception)
     auto bs        = buffer.begin();
 
     // Deliberately throw an exception in the parse-callback so we can ensure that the error-callback is invoked.
-    siddiqsoft::sip2json::parseAsync(
+    auto remainingBuffer= siddiqsoft::sip2json::parseAsync(
             buffer,
             [&](siddiqsoft::sipmessage&& sipm)
             {
@@ -1113,7 +1113,7 @@ TEST(validation, Test_extension_nelson)
     auto parseCount = 0;
 
 
-    siddiqsoft::sip2json::parseAsync(
+    auto remainingBuffer= siddiqsoft::sip2json::parseAsync(
             buffer,
             [&](siddiqsoft::sipmessage&& sipm)
             {

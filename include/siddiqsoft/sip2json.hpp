@@ -83,6 +83,16 @@ namespace siddiqsoft
             match_results<string::iterator> matchStartLine;
 
             auto found = regex_search(bufferStart, bufferEnd, matchStartLine, SIP_PATTERN_STARTLINE);
+            if (!found && ((bufferEnd - bufferStart) > SIP_SAMPLE_MINIMAL_MESSAGE.length()))
+            {
+                // If we did not find the SIP message at the start of the buffer,
+                // AND
+                // we have some message content that is more than the nominal SIP message,
+                // Try looking for the message by skipping to the next available message.
+                found = regex_search(bufferStart, bufferEnd, matchStartLine, SIP_PATTERN_STARTLINE_ANYWHERE);
+            }
+
+            // Did we find a message..?
             if (found && (matchStartLine.size() >= 3))
             {
                 // The regex is very precise and there is no chance we will end up here
