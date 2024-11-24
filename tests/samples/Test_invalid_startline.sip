@@ -1,4 +1,4 @@
-FAILNOTIFY sip:subscribe_to_call_events@loopup.com;machine SIP/2.1
+NOTiFY sip:subscribe_to_call_events@loopup.com;machine SIP/2.1
 Via: SIP/2.0/tcp localhost:8443
 Via: SIP/2.0/UDP localhost:780;branch=akirmayer@sidley.com__eDial_sep__subscribe_to_call_events@loopup.com;received=localhost
 Via: SIP/2.0/TCP localhost:780;branch=conference.wizard@local.host__eDial_sep__akirmayer@sidley.com;received=127.0.0.1:57400:1752919488
