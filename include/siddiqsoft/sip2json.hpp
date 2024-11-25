@@ -79,6 +79,8 @@ namespace siddiqsoft
         parseStartLine(sipmessage& sipm, std::string::iterator& bufferStart, const std::string::iterator& bufferEnd) noexcept(false)
         {
             using namespace std;
+            auto useCRLF             = true;
+            auto lineEndDelimiterSize = ELEM_NEWLINE.size();
 
             match_results<string::iterator> matchStartLine;
 
@@ -90,6 +92,11 @@ namespace siddiqsoft
                 // we have some message content that is more than the nominal SIP message,
                 // Try looking for the message by skipping to the next available message.
                 found = regex_search(bufferStart, bufferEnd, matchStartLine, SIP_PATTERN_STARTLINE_ANYWHERE);
+                if (found)
+                {
+                    useCRLF = false;
+                    lineEndDelimiterSize= ELEM_NEWLINE_LF.size();
+                }
             }
 
             // Did we find a message..?
@@ -114,7 +121,7 @@ namespace siddiqsoft
 
                 // Offset the start to the point after the start-line. Make sure to skip over any prefix!
                 // We may have junk or left-over crud at the start (especially if we're using text files)
-                bufferStart += (matchStartLine.length() + matchStartLine.prefix().length() + ELEM_NEWLINE.size());
+                bufferStart += (matchStartLine.length() + matchStartLine.prefix().length() + lineEndDelimiterSize);
             }
             else { throw invalid_startline_error {std::format("{} - SIP Startline not found.", __func__)}; }
 

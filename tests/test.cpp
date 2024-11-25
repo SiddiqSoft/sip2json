@@ -760,6 +760,8 @@ TEST(siphelpers, Test_invalid_startline)
 {
     auto buffer = loadSampleFile("Test_invalid_startline"); // NOLINT
 
+    std::cerr << "Loaded the test buffer: " << buffer << std::endl;
+    
     EXPECT_FALSE(buffer.empty()) << "File `Test_invalid_startline.sip` contents...should be non-empty!\n";
 
     try
@@ -1231,7 +1233,8 @@ TEST(siphelpers, Test_check_Via)
     {
         auto via = sipm["h"]["Via"];
 
-        EXPECT_TRUE(via.is_array()) << via.dump();
+        std::cerr << "Log the parseFromBuffer output: " << sipm.dump(1) << std::endl;
+        EXPECT_TRUE(via.is_array()) << via.dump(1);
 
         if (via.is_string())
         {
