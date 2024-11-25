@@ -766,6 +766,7 @@ TEST(siphelpers, Test_invalid_startline)
     {
         auto bs    = buffer.begin();
         auto dummy = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end());
+        // The following should not execute.. we should catch the exception!
         EXPECT_FALSE(false) << L"Expect exception: invalid_startline\n";
     }
     catch (siddiqsoft::invalid_startline_error& e)
@@ -918,11 +919,12 @@ TEST(siphelpers, Test_async_invalid_startline)
     auto bs       = buffer.begin();
 
     std::clog << buffer << "\n";
-    auto remainingBuffer= siddiqsoft::sip2json::parseAsync(
+    auto remainingBuffer = siddiqsoft::sip2json::parseAsync(
             buffer,
             {},
             [&](const siddiqsoft::sip2json_exception& e, std::string::iterator&, const std::string::iterator&)
             {
+                std::cerr << "errCode: " << e.errCode << " what: " << e.what() << std::endl;
                 EXPECT_TRUE(e.errCode == siddiqsoft::sip2jsonErrors::invalid_startline);
                 passTest = true;
             });
