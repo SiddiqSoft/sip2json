@@ -920,7 +920,8 @@ TEST(siphelpers, Test_async_invalid_startline)
     auto buffer   = loadSampleFile("Test_invalid_startline"); // NOLINT
     auto bs       = buffer.begin();
 
-    std::clog << buffer << "\n";
+    std::cerr << "Loaded the buffer: " << buffer << std::endl;
+
     auto remainingBuffer = siddiqsoft::sip2json::parseAsync(
             buffer,
             {},
