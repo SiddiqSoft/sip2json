@@ -11,17 +11,5 @@
             "type": "ssh",
             "remoteUri": "ssh://maas@siddiq.org@pi400.local:22"
         }
-        // See https://aka.ms/remotetesting for more details
-        // about how to configure remote environments.
-        //{
-        //  "name": "WSL Ubuntu",
-        //  "type": "wsl",
-        //  "wslDistribution": "Ubuntu"
-        //},
-        //{
-        //  "name": "Docker dotnet/sdk",
-        //  "type": "docker",
-        //  "dockerImage": "mcr.microsoft.com/dotnet/sdk"
-        //}
     ]
 }
