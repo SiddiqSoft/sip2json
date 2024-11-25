@@ -761,7 +761,7 @@ TEST(siphelpers, Test_invalid_startline)
     auto buffer = loadSampleFile("Test_invalid_startline"); // NOLINT
 
     std::cerr << "Loaded the test buffer: " << buffer << std::endl;
-    
+
     EXPECT_FALSE(buffer.empty()) << "File `Test_invalid_startline.sip` contents...should be non-empty!\n";
 
     try
@@ -920,7 +920,9 @@ TEST(siphelpers, Test_async_invalid_startline)
     auto buffer   = loadSampleFile("Test_invalid_startline"); // NOLINT
     auto bs       = buffer.begin();
 
-    std::cerr << "Loaded the buffer: " << buffer << std::endl;
+    std::cerr << __func__ << " - Loaded the buffer ----------------------------" << std::endl
+              << buffer << std::endl
+              << "-------------------------------------------------------------" << std::endl;
 
     auto remainingBuffer = siddiqsoft::sip2json::parseAsync(
             buffer,
@@ -941,7 +943,7 @@ TEST(siphelpers, Test_async_incomplete_buffer_for_parse)
     bool passTest = false;
     auto bs       = buffer.begin();
 
-    auto remainingBuffer= siddiqsoft::sip2json::parseAsync(
+    auto remainingBuffer = siddiqsoft::sip2json::parseAsync(
             buffer,
             {},
             [&](const siddiqsoft::sip2json_exception& e, std::string::iterator&, const std::string::iterator&)
@@ -962,7 +964,7 @@ TEST(siphelpers, Test_async_incomplete_buffer_for_content)
 
     ASSERT_TRUE(buffer.size() > 0) << "Buffer contents: [[ " << buffer << " ]]";
 
-    auto remainingBuffer= siddiqsoft::sip2json::parseAsync(
+    auto remainingBuffer = siddiqsoft::sip2json::parseAsync(
             buffer,
             {},
             [&](const siddiqsoft::sip2json_exception& e, std::string::iterator&, const std::string::iterator&)
@@ -982,7 +984,7 @@ TEST(siphelpers, Test_async_incomplete_buffer_for_header)
     auto buffer   = loadSampleFile("Test_incomplete_buffer_for_header"); // NOLINT
     auto bs       = buffer.begin();
 
-    auto remainingBuffer= siddiqsoft::sip2json::parseAsync(
+    auto remainingBuffer = siddiqsoft::sip2json::parseAsync(
             buffer,
             {},
             [&](const siddiqsoft::sip2json_exception& e, std::string::iterator&, const std::string::iterator&)
@@ -1004,7 +1006,7 @@ TEST(siphelpers, Test_async_unsupported_contenttype)
     std::cerr << __func__ << " - File `Test_unsupported_contenttype` contents...\n" << buffer << std::endl;
     EXPECT_FALSE(buffer.empty()) << "File `Test_unsupported_contenttype` contents...should be non-empty!\n";
 
-    auto remainingBuffer= siddiqsoft::sip2json::parseAsync(
+    auto remainingBuffer = siddiqsoft::sip2json::parseAsync(
             buffer,
             {},
             [&](const siddiqsoft::sip2json_exception& e, std::string::iterator&, const std::string::iterator&)
@@ -1025,7 +1027,7 @@ TEST(siphelpers, Test_unknown_exception)
     auto bs        = buffer.begin();
 
     // Deliberately throw an exception in the parse-callback so we can ensure that the error-callback is invoked.
-    auto remainingBuffer= siddiqsoft::sip2json::parseAsync(
+    auto remainingBuffer = siddiqsoft::sip2json::parseAsync(
             buffer,
             [&](siddiqsoft::sipmessage&& sipm)
             {
@@ -1118,7 +1120,7 @@ TEST(validation, Test_extension_nelson)
     auto parseCount = 0;
 
 
-    auto remainingBuffer= siddiqsoft::sip2json::parseAsync(
+    auto remainingBuffer = siddiqsoft::sip2json::parseAsync(
             buffer,
             [&](siddiqsoft::sipmessage&& sipm)
             {
@@ -1165,8 +1167,8 @@ TEST(validation, Test_extension_nelson)
 // NOLINTNEXTLINE
 TEST(validation, Test_parse_invalid_string_position)
 {
-    auto                   buffer = loadSampleFile("Test_parse_invalid_string_position"); // NOLINT
-    auto                   bs     = buffer.begin();
+    auto buffer = loadSampleFile("Test_parse_invalid_string_position"); // NOLINT
+    auto bs     = buffer.begin();
 
     auto parseResult = siddiqsoft::sip2json::parse(bs, buffer.end());
 
@@ -1224,7 +1226,7 @@ TEST(ImplementationChecks, Test_formatters_1)
 // NOLINTNEXTLINE
 TEST(siphelpers, Test_check_Via)
 {
-    auto                   buffer     = loadSampleFile("Test_extension_nelson"); // NOLINT
+    auto                   buffer     = loadSampleFile("Test_check_Via"); // NOLINT
     auto                   bs         = buffer.begin();
     auto                   parseCount = 0;
     siddiqsoft::sipmessage sipm;
@@ -1244,7 +1246,7 @@ TEST(siphelpers, Test_check_Via)
             sipm["h"].erase("Via");
             sipm["h"]["Via"].push_back(previous);
             sipm["h"]["Via"].push_back(std::format("SIP/2.0/TCP {}", "x@y.z"));
-            EXPECT_EQ(sipm["h"]["Via"].get<std::vector<std::string>>().size(), 2) << sipm["h"]["Via"].dump();
+            EXPECT_EQ(sipm["h"]["Via"].get<std::vector<std::string>>().size(), 3) << sipm["h"]["Via"].dump();
             auto elemJustAdded = sipm["h"]["Via"].get<std::vector<std::string>>()[1];
             EXPECT_TRUE(elemJustAdded.find("x@y.z") != std::string::npos) << sipm["h"]["Via"].dump();
         }
@@ -1252,7 +1254,7 @@ TEST(siphelpers, Test_check_Via)
         {
             // Add another element..
             sipm["h"]["Via"].push_back(std::format("SIP/2.0/TCP {}", "a@b.c"));
-            EXPECT_EQ(sipm["h"]["Via"].get<std::vector<std::string>>().size(), 3) << sipm["h"]["Via"].dump();
+            EXPECT_EQ(sipm["h"]["Via"].get<std::vector<std::string>>().size(), 4) << sipm["h"]["Via"].dump();
         }
     }
     else { sipm["h"]["Via"] = std::format("SIP/2.0/TCP {}", "10.10.30.40"); }

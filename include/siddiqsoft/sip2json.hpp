@@ -79,29 +79,38 @@ namespace siddiqsoft
         parseStartLine(sipmessage& sipm, std::string::iterator& bufferStart, const std::string::iterator& bufferEnd) noexcept(false)
         {
             using namespace std;
-            auto useCRLF             = true;
+            auto useCRLF              = true;
             auto lineEndDelimiterSize = ELEM_NEWLINE.size();
 
             match_results<string::iterator> matchStartLine;
 
             auto found = regex_search(bufferStart, bufferEnd, matchStartLine, SIP_PATTERN_STARTLINE);
-            if (!found && ((bufferEnd - bufferStart) > SIP_SAMPLE_MINIMAL_MESSAGE.length()))
-            {
-                // If we did not find the SIP message at the start of the buffer,
-                // AND
-                // we have some message content that is more than the nominal SIP message,
-                // Try looking for the message by skipping to the next available message.
-                found = regex_search(bufferStart, bufferEnd, matchStartLine, SIP_PATTERN_STARTLINE_ANYWHERE);
-                if (found)
-                {
-                    useCRLF = false;
-                    lineEndDelimiterSize= ELEM_NEWLINE_LF.size();
-                }
-            }
+            //if (!found && ((bufferEnd - bufferStart) > SIP_SAMPLE_MINIMAL_MESSAGE.length()))
+            //{
+            //    // If we did not find the SIP message at the start of the buffer,
+            //    // AND
+            //    // we have some message content that is more than the nominal SIP message,
+            //    // Try looking for the message by skipping to the next available message.
+            //    found = regex_search(bufferStart, bufferEnd, matchStartLine, SIP_PATTERN_STARTLINE_ANYWHERE);
+            //    if (found)
+            //    {
+            //        useCRLF = false;
+            //        lineEndDelimiterSize= ELEM_NEWLINE_LF.size();
+            //    }
+            //}
 
             // Did we find a message..?
             if (found && (matchStartLine.size() >= 3))
             {
+                std::cerr << std::format("{} - matchStartLine.size: {}\n  matchStartLine.length(): {}\n  "
+                                         "matchStartLine.prefix().length(): {}\n  str: {}\n  str.len: {}",
+                                         __func__,
+                                         matchStartLine.size(),
+                                         matchStartLine.length(),
+                                         matchStartLine.prefix().length(),
+                                         matchStartLine.str(),
+                                         matchStartLine.str().length())
+                          << std::endl;
                 // The regex is very precise and there is no chance we will end up here
                 // with an ill-formed (or unsupported) start-line.
                 if (SIPVER_20.compare(matchStartLine[3]) == 0)
@@ -121,7 +130,7 @@ namespace siddiqsoft
 
                 // Offset the start to the point after the start-line. Make sure to skip over any prefix!
                 // We may have junk or left-over crud at the start (especially if we're using text files)
-                bufferStart += (matchStartLine.length() + matchStartLine.prefix().length() + lineEndDelimiterSize);
+                bufferStart += (matchStartLine.length() + matchStartLine.prefix().length());
             }
             else { throw invalid_startline_error {std::format("{} - SIP Startline not found.", __func__)}; }
 
