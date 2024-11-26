@@ -79,19 +79,19 @@ stages:
     # sip2json_BUILD_TESTS=ON
     # sip2json_BUILD_PACKAGE=OFF
     - task: CMake@1
-      displayName: 'CMake Configure --preset $(cmake.preset) -Dsip2json_BUILD_TESTS=ON -Dsip2json_BUILD_PACKAGE=OFF -DCI_BUILDID=$(GitVersion.MajorMinorPatch).$(GitVersion.CommitsSinceVersionSource)'
+      displayName: 'CMake Configure $(cmake.preset)'
       inputs:
         cmakeArgs: '--preset $(cmake.preset) -Dsip2json_BUILD_TESTS=ON -Dsip2json_BUILD_PACKAGE=OFF -DCI_BUILDID=$(GitVersion.MajorMinorPatch).$(GitVersion.CommitsSinceVersionSource)'
         workingDirectory: '$(System.DefaultWorkingDirectory)'
 
     - task: CMake@1
-      displayName: 'CMake --build . --config $(buildConfiguration)'
+      displayName: 'CMake Build $(cmake.preset)'
       inputs:
-        cmakeArgs: '--build $(System.DefaultWorkingDirectory)/build/$(cmake.preset)'
+        cmakeArgs: '--build --preset $(cmake.preset) -Dsip2json_BUILD_TESTS=ON -Dsip2json_BUILD_PACKAGE=OFF -DCI_BUILDID=$(GitVersion.MajorMinorPatch).$(GitVersion.CommitsSinceVersionSource)'
       condition: succeeded()
 
     - task: CMake@1
-      displayName: 'CMake -E chdir $(System.DefaultWorkingDirectory)/build/$(cmake.preset)/tests ctest'
+      displayName: 'CMake Tests $(cmake.preset)'
       inputs:
         cmakeArgs: '-E chdir $(System.DefaultWorkingDirectory)/build/$(cmake.preset)/tests ctest $(System.DefaultWorkingDirectory)/build/$(cmake.preset) --output-junit $(System.DefaultWorkingDirectory)/build/$(cmake.preset)/tests/results/test_detail.xml --output-on-failure'
       condition: succeeded()
@@ -99,7 +99,7 @@ stages:
 
     # Try for coverage (but only on Linux build machines)
     - task: CMake@1
-      displayName: 'CTest Coverage (Linux build only)'
+      displayName: 'CTest Coverage $(cmake.preset) (Linux only)'
       inputs:
         cmakeArgs: '-E chdir $(System.DefaultWorkingDirectory)/build/$(cmake.preset) ctest $(System.DefaultWorkingDirectory)/build/$(cmake.preset) --output-junit $(System.DefaultWorkingDirectory)/build/$(cmake.preset)/tests/results/test_detail.xml --output-on-failure  -T Test -T Coverage'
       condition: and(succeeded(), startsWith(variables['Agent.OS'], 'Linux'))
@@ -173,7 +173,7 @@ stages:
     # sip2json_BUILD_TESTS=OFF
     # sip2json_BUILD_PACKAGE=ON
     - task: CMake@1
-      displayName: 'CMake Configure --preset $(cmake.preset) -Dsip2json_BUILD_TESTS=OFF -Dsip2json_BUILD_PACKAGE=ON -DCI_BUILDID=$(build.buildNumber)'
+      displayName: 'CMake Configure $(cmake.preset)'
       inputs:
         cmakeArgs: '--preset $(cmake.preset) -Dsip2json_BUILD_TESTS=OFF -Dsip2json_BUILD_PACKAGE=ON -DCI_BUILDID=$(build.buildNumber)'
         workingDirectory: '$(System.DefaultWorkingDirectory)'
@@ -192,14 +192,14 @@ stages:
       condition: and(succeeded(), or(startsWith(variables['Agent.OS'], 'Darwin'), startsWith(variables['Agent.OS'], 'Linux')) )
 
     - task: CMake@1
-      displayName: 'CPack -E chdir $(System.DefaultWorkingDirectory)/build/$(cmake.preset) cpack -C $(buildConfiguration) -G ZIP'
+      displayName: 'CPack $(cmake.preset)'
       inputs:
         cmakeArgs: '-E chdir $(System.DefaultWorkingDirectory)/build/$(cmake.preset) cpack -C $(buildConfiguration) -G ZIP'
       continueOnError: false
       condition: and(succeeded(), or(startsWith(variables['Agent.OS'], 'Darwin'), startsWith(variables['Agent.OS'], 'Linux')) )
 
     - task: CopyFiles@2
-      displayName: 'Copy ZIP CPack Files to: $(Build.ArtifactStagingDirectory)'
+      displayName: 'Copy CPack Files to: $(Build.ArtifactStagingDirectory)'
       inputs:
         SourceFolder: $(System.DefaultWorkingDirectory)/build/$(cmake.preset)
         Contents: '*.zip'
