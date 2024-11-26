@@ -156,7 +156,7 @@
         },
         {
             "name": "Windows-Release",
-            "configurePreset": "Apple-Release"
+            "configurePreset": "Windows-Release"
         }
     ],
     "testPresets": [
