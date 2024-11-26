@@ -302,7 +302,7 @@ namespace siddiqsoft
     static const std::string SIP_ADDR_PREFIX {"sip:\\s"};
 
     // Helpers to parse the SIP buffer
-    static const std::regex SIP_PATTERN_STARTLINE {"^(MESSAGE|INFO|INVITE|ACK|OPTIONS|BYE|CANCEL|REGISTER|SUBSCRIBE|NOTIFY|SIP/"
+    static const std::regex SIP_PATTERN_STARTLINE {"(MESSAGE|INFO|INVITE|ACK|OPTIONS|BYE|CANCEL|REGISTER|SUBSCRIBE|NOTIFY|SIP/"
                                                    "2.0)\\s{1,1}([^\\s]+)\\s{1,1}([^\\n\\f\\r]*)[\\r\\n|\\n]*"};
     static const std::regex SIP_PATTERN_CONTENT_LENGTH {"^Content-Length:\\s{1,1}(\\d+)\\s*(\\r\\n|\\n)"};
     static const std::regex SIP_PATTERN_CONTENT_TYPE {"^Content-type:\\s{1,1}([a-z|A-Z|\\-|/]+)\\s*(\\r\\n|\\n)"};

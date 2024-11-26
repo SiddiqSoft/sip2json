@@ -36,6 +36,7 @@
 
 #pragma once
 
+#include <exception>
 #ifndef SIP2JSON_HPP
 #define SIP2JSON_HPP
 
@@ -85,31 +86,17 @@ namespace siddiqsoft
             match_results<string::iterator> matchStartLine;
 
             auto found = regex_search(bufferStart, bufferEnd, matchStartLine, SIP_PATTERN_STARTLINE);
-            //if (!found && ((bufferEnd - bufferStart) > SIP_SAMPLE_MINIMAL_MESSAGE.length()))
-            //{
-            //    // If we did not find the SIP message at the start of the buffer,
-            //    // AND
-            //    // we have some message content that is more than the nominal SIP message,
-            //    // Try looking for the message by skipping to the next available message.
-            //    found = regex_search(bufferStart, bufferEnd, matchStartLine, SIP_PATTERN_STARTLINE_ANYWHERE);
-            //    if (found)
-            //    {
-            //        useCRLF = false;
-            //        lineEndDelimiterSize= ELEM_NEWLINE_LF.size();
-            //    }
-            //}
-
             // Did we find a message..?
             if (found && (matchStartLine.size() >= 3))
             {
-                std::cerr << std::format("{} - matchStartLine.size: {}\n  matchStartLine.length(): {}\n  "
-                                         "matchStartLine.prefix().length(): {}\n  str: {}\n  str.len: {}",
+                std::cerr << std::format("{} - matchStartLine.size: {}  matchStartLine.length(): {}  "
+                                         "matchStartLine.prefix().length(): {}  str({}): `{}`",
                                          __func__,
                                          matchStartLine.size(),
                                          matchStartLine.length(),
                                          matchStartLine.prefix().length(),
-                                         matchStartLine.str(),
-                                         matchStartLine.str().length())
+                                         matchStartLine.str().length(),
+                                         matchStartLine.str())
                           << std::endl;
                 // The regex is very precise and there is no chance we will end up here
                 // with an ill-formed (or unsupported) start-line.
@@ -560,8 +547,10 @@ namespace siddiqsoft
                         msgs.emplace_back(std::move(sipm));
                     }
                 }
-                catch (...)
+                catch (std::exception& ex)
                 {
+                    std::cerr << __func__ << " - decodedMessageCount: " << decodedMessageCount << " Got exception: " << ex.what()
+                              << std::endl;
                     if (msgs.size() == 0) throw std::invalid_argument("Nothing was parsed.");
                     break;
                 }
