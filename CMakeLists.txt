@@ -138,12 +138,6 @@ endif()
 if(${PROJECT_NAME}_BUILD_PACKAGE)
     message(STATUS "Asked to build package: ${PROJECT_NAME}_BUILD_PACKAGE = ${${PROJECT_NAME}_BUILD_PACKAGE}")
 
-    install(TARGETS nlohmann_json
-            EXPORT nlohmann_json-config
-            DESTINATION include)
-
-    install(EXPORT nlohmann_json DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}")
-
     install(TARGETS ${PROJECT_NAME}
             EXPORT ${PROJECT_NAME}-targets)
     install(TARGETS ${PROJECT_NAME}
