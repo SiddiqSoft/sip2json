@@ -59,7 +59,7 @@ stages:
     - task: NuGetToolInstaller@1
       displayName: 'Install Nuget'
       inputs:
-        versionSpec: '>=5.0.0-0'
+        versionSpec: '>=6.0.0-0'
         checkLatest: true
 
     - task: gitversion/setup@3.0.0
