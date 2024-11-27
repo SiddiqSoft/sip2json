@@ -3,9 +3,15 @@ cmake_minimum_required(VERSION 3.25)
 if(${${PROJECT_NAME}_BUILD_TESTS})
     set(TESTPROJ ${PROJECT_NAME}_tests)
 
+    message(STATUS "Importing (via URL) googletest..")
     FetchContent_Declare(googletest URL https://github.com/google/googletest/releases/download/v1.15.2/googletest-1.15.2.tar.gz
                                     FIND_PACKAGE_ARGS NAMES GTest)
+    FetchContent_MakeAvailable(googletest)
 
+    message(STATUS "Importing (via URL) nlohmann_json..")
+    FetchContent_Declare(nlohmann_json URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz)
+    FetchContent_MakeAvailable(nlohmann_json)
+    
     add_executable(${TESTPROJ})
 
     # For GCC/Clang coverage data to be included ONLY for our test
@@ -19,7 +25,6 @@ if(${${PROJECT_NAME}_BUILD_TESTS})
                     PRIVATE
                     ${PROJECT_SOURCE_DIR}/tests/test.cpp)
 
-    FetchContent_MakeAvailable(googletest)
 
     include(GoogleTest)
     enable_testing()
