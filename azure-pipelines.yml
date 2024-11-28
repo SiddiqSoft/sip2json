@@ -115,7 +115,8 @@ stages:
           echo "Profile data merge............"
           llvm-profdata merge -output=tests/merge.out -instr tests/default.profraw
           echo "Profile data show..html......."
-          llvm-cov show -format=html --ignore-filename-regex=_deps/ tests/sip2json_tests --instr-profile=tests/merge.out -o tests/results/coverage.info
+          echo "llvm-cov show -format=html --ignore-filename-regex=_deps/ tests/sip2json_tests --instr-profile=tests/merge.out -o tests/results/coverage.info"
+          llvm-cov show -format=html  tests/sip2json_tests --instr-profile=tests/merge.out -o tests/results/coverage.info
         workingDirectory: "$(System.DefaultWorkingDirectory)/build/$(cmake.preset)"
       condition: and(succeeded(), startsWith(variables['Agent.OS'], 'Linux'))
  
