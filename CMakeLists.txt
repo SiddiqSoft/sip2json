@@ -38,11 +38,12 @@ include(pack/DependenciesList.cmake)
 # ____________________________________
 #  Library Definition
 add_library(${PROJECT_NAME} INTERFACE)
+target_include_directories(${PROJECT_NAME}
+                            INTERFACE   $<BUILD_INTERFACE:${${PROJECT_NAME}_SOURCE_DIR}>
+                                        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
+
 target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_20)
-target_sources(${PROJECT_NAME} INTERFACE 
-               FILE_SET HEADERS
-               BASE_DIRS include
-               FILES include/*)
+
 configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/pack/${PROJECT_NAME}.pc.in
                 ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc
                 @ONLY)
