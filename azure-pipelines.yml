@@ -168,8 +168,14 @@ stages:
         - Agent.OS -equals $(osName)
 
     steps:
-    - checkout: self
-      fetchDepth: 1
+    #- checkout: self
+    #  fetchDepth: 1
+
+    - task: NuGetToolInstaller@1
+      displayName: 'Install Nuget'
+      inputs:
+        versionSpec: '>=6.0.0-0'
+        checkLatest: true
 
     # Set the flags for testing, build here.
     # sip2json_BUILD_TESTS=OFF
