@@ -23,7 +23,7 @@
         <copyright>Copyright (c) 2003-2024 Abdulkareem Siddiq</copyright>
         <!-- Dependencies -->
         <dependencies>
-            <dependency id="nlohmann.json" version="3.11.2"/>
+            <dependency id="nlohmann.json" version="3.11.3"/>
         </dependencies>
     </metadata>
 
@@ -35,7 +35,7 @@
     -->
     <files>
         <!-- includes -->
-        <file src="..\src\*.hpp" target="build\native\include\siddiqsoft\" />
+        <file src="..\include\siddiqsoft\*.hpp" target="build\native\include\siddiqsoft\" />
         <file src="Siddiq-Software-Avatar.png" target="docs\" />
         <file src="..\README.md" target="docs\" />
 
