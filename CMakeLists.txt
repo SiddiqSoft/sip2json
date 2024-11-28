@@ -37,37 +37,24 @@ include(pack/DependenciesList.cmake)
 # ____________________________________
 #  Library Definition
 add_library(${PROJECT_NAME} INTERFACE)
+add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
+
 target_include_directories(${PROJECT_NAME}
-                            INTERFACE   $<BUILD_INTERFACE:${${PROJECT_NAME}_SOURCE_DIR}>
-                                        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
+                            INTERFACE
+                            $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>)
 
 target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_20)
-
-configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/pack/${PROJECT_NAME}.pc.in
-                ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc
-                @ONLY)
-
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc
-        DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
-
-write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake
-                                COMPATIBILITY AnyNewerVersion)
-
-install(FILES   ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake
-                ${CMAKE_CURRENT_SOURCE_DIR}/pack/${PROJECT_NAME}-config.cmake
-        DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME})
-
-install(TARGETS ${PROJECT_NAME}
-        EXPORT ${PROJECT_NAME}-targets
-        FILE_SET HEADERS)
-
-install(EXPORT ${PROJECT_NAME}-targets
-        NAMESPACE ${PROJECT_NAME}::
-        DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME})
 
 # ____________________________________
 # Testing; controlled by the switch: ${PROJECT_NAME}_BUILD_TESTS = ON
 include(pack/TestingSupport.cmake)
+
+#
+# Pack the source as zip support.
+# Use build target `${PROJECT_NAME}_package` or `sip2json_package` to build
+# the zip sip2json-version-src.zip to be downloadable from the github release
+include(pack/PackAsZip.cmake)
 
 # ____________________________________
 # Packing; controlled by the switch: ${PROJECT_NAME}_BUILD_PACKAGE=ON

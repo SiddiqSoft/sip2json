@@ -1,4 +1,27 @@
 if(${PROJECT_NAME}_BUILD_PACKAGE)
+    message(STATUS "-- Building the package `${PROJECT_NAME}_BUILD_PACKAGE`")
+    configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/pack/${PROJECT_NAME}.pc.in
+                    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc
+                    @ONLY)
+
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc
+            DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
+
+    write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake
+                                    COMPATIBILITY AnyNewerVersion)
+
+    install(FILES   ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake
+                    ${CMAKE_CURRENT_SOURCE_DIR}/pack/${PROJECT_NAME}-config.cmake
+            DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME})
+
+    install(TARGETS ${PROJECT_NAME}
+            EXPORT ${PROJECT_NAME}-targets
+            FILE_SET HEADERS)
+
+    install(EXPORT ${PROJECT_NAME}-targets
+            NAMESPACE ${PROJECT_NAME}::
+            DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME})
+
     # Continue on to the install/package stage..
     set(CPACK_SOURCE_GENERATOR TBZ2 TGZ TXZ ZIP)
     set(CPACK_SOURCE_PACKAGE_FILE_NAME ${CPACK_PACKAGE_FILE_NAME})

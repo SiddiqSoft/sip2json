@@ -184,23 +184,30 @@ stages:
         workingDirectory: '$(System.DefaultWorkingDirectory)'
 
     # Powershell is not supported on Pi aarch64 yet so we have to use this method for Linux
-    - task: CmdLine@2
-      displayName: 'Clean up folders on Linux machines'
-      inputs:
-        script: |
-          echo "Removing the folders before we pack stuff.."
-          rm -rdf $(System.DefaultWorkingDirectory)/build/$(cmake.preset)/tests
-          rm -rdf $(System.DefaultWorkingDirectory)/build/$(cmake.preset)/_deps
-          rm -rdf $(System.DefaultWorkingDirectory)/build/$(cmake.preset)/Testing
-          rm -rdf $(System.DefaultWorkingDirectory)/build/$(cmake.preset)/lib
-          rm -rdf $(System.DefaultWorkingDirectory)/build/$(cmake.preset)/bin
-      condition: and(succeeded(), or(startsWith(variables['Agent.OS'], 'Darwin'), startsWith(variables['Agent.OS'], 'Linux')) )
+    #- task: CmdLine@2
+    #  displayName: 'Clean up folders on Linux machines'
+    #  inputs:
+    #    script: |
+    #      echo "Removing the folders before we pack stuff.."
+    #      rm -rdf $(System.DefaultWorkingDirectory)/build/$(cmake.preset)/tests
+    #      rm -rdf $(System.DefaultWorkingDirectory)/build/$(cmake.preset)/_deps
+    #      rm -rdf $(System.DefaultWorkingDirectory)/build/$(cmake.preset)/Testing
+    #      rm -rdf $(System.DefaultWorkingDirectory)/build/$(cmake.preset)/lib
+    #      rm -rdf $(System.DefaultWorkingDirectory)/build/$(cmake.preset)/bin
+    #  condition: and(succeeded(), or(startsWith(variables['Agent.OS'], 'Darwin'), startsWith(variables['Agent.OS'], 'Linux')) )
 
     - task: CMake@1
       displayName: 'CPack $(cmake.preset)'
       inputs:
         cmakeArgs: '-E chdir $(System.DefaultWorkingDirectory)/build/$(cmake.preset) cpack -C $(buildConfiguration) -G ZIP'
       continueOnError: false
+      condition: and(succeeded(), or(startsWith(variables['Agent.OS'], 'Darwin'), startsWith(variables['Agent.OS'], 'Linux')) )
+
+    - task: CMake@1
+      displayName: 'Package into custom zip'
+      inputs:
+        cmakeArgs: '--build . --target sip2json_package'
+        workingDirectory: '$(System.DefaultWorkingDirectory)'
       condition: and(succeeded(), or(startsWith(variables['Agent.OS'], 'Darwin'), startsWith(variables['Agent.OS'], 'Linux')) )
 
     - task: CopyFiles@2
