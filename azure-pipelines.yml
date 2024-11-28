@@ -203,11 +203,24 @@ stages:
       continueOnError: false
       condition: and(succeeded(), or(startsWith(variables['Agent.OS'], 'Darwin'), startsWith(variables['Agent.OS'], 'Linux')) )
 
-    - task: CMake@1
-      displayName: 'Package into custom zip'
+    - task: ArchiveFiles@2
+      displayName: 'Adding include/ to sip2json-src-$(build.buildNumber).zip'
       inputs:
-        cmakeArgs: '--build . --target sip2json_package'
-        workingDirectory: '$(System.DefaultWorkingDirectory)'
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/sip2json-src-$(build.buildNumber).zip'
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/include/'
+        replaceExistingArchive: false
+        verbose: true
+      condition: and(succeeded(), or(startsWith(variables['Agent.OS'], 'Darwin'), startsWith(variables['Agent.OS'], 'Linux')) )
+
+    - task: ArchiveFiles@2
+      displayName: 'Adding CMakeLists.txt to sip2json-src-$(build.buildNumber).zip'
+      inputs:
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/sip2json-src-$(build.buildNumber).zip'
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/CMakeLists.txt'
+        replaceExistingArchive: false
+        verbose: true
       condition: and(succeeded(), or(startsWith(variables['Agent.OS'], 'Darwin'), startsWith(variables['Agent.OS'], 'Linux')) )
 
     - task: CopyFiles@2
