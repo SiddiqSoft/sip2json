@@ -2,6 +2,8 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
 
     <!--
+        NOTE: It is imperative that nuget v5.x or better is present to process the packaging request.
+
         First meta data information about the package itself.
         Documentation can be found at: (or via nuget.org)
         https://docs.microsoft.com/en-us/nuget/reference/nuspec#optional-metadata-elements
