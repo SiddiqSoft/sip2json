@@ -8,10 +8,6 @@ if(${${PROJECT_NAME}_BUILD_TESTS})
                                     FIND_PACKAGE_ARGS NAMES GTest)
     FetchContent_MakeAvailable(googletest)
 
-    message(STATUS "Importing (via URL) nlohmann_json..")
-    FetchContent_Declare(nlohmann_json URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz)
-    FetchContent_MakeAvailable(nlohmann_json)
-    
     add_executable(${TESTPROJ})
 
     # For GCC/Clang coverage data to be included ONLY for our test
@@ -33,8 +29,9 @@ if(${${PROJECT_NAME}_BUILD_TESTS})
     target_compile_options( ${TESTPROJ}
                             PRIVATE
                             $<$<CXX_COMPILER_ID:MSVC>:/std:c++20> )
-    target_link_libraries(${TESTPROJ} PRIVATE GTest::gtest_main)
-    target_link_libraries(${TESTPROJ} PRIVATE nlohmann_json::nlohmann_json)
+    
+    target_link_libraries(${TESTPROJ} PRIVATE GTest::gtest_main nlohmann_json::nlohmann_json)
+
     gtest_discover_tests(${TESTPROJ} XML_OUTPUT_DIR "${PROJECT_SOURCE_DIR}/tests/results"
                         PROPERTIES ENVIRONMENT "SAMPLES_DIR=${PROJECT_SOURCE_DIR}/tests/samples")
 

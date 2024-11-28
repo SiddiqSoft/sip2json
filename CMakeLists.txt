@@ -9,10 +9,6 @@
 # 
 cmake_minimum_required(VERSION 3.25)
 
-# Adds the various CMake helper functions
-# FetchContent, GNUInstallDirs..
-include(pack/IncludeCMakeHelpers.cmake)
-
 # _________________
 # Version detection; must preceed the declaration of the actual project()
 # Figures out the value ${CURRENT_PROJECT_VERSION} and therefore the ${PROJECT_VERSION}
@@ -49,12 +45,6 @@ target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_20)
 # ____________________________________
 # Testing; controlled by the switch: ${PROJECT_NAME}_BUILD_TESTS = ON
 include(pack/TestingSupport.cmake)
-
-#
-# Pack the source as zip support.
-# Use build target `${PROJECT_NAME}_package` or `sip2json_package` to build
-# the zip sip2json-version-src.zip to be downloadable from the github release
-include(pack/PackAsZip.cmake)
 
 # ____________________________________
 # Packing; controlled by the switch: ${PROJECT_NAME}_BUILD_PACKAGE=ON

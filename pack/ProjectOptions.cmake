@@ -1,3 +1,12 @@
+# Include helpers from CMake
+include(CMakePackageConfigHelpers)
+include(CMakeDependentOption)
+include(GNUInstallDirs)
+include(FetchContent)
+
+# _____________________
+# Project-Level Options
+
 option(${PROJECT_NAME}_DEVMODE "Flag set when we're in the project's home directory" OFF)
 # We run the tests by default when we're in development mode for this library
 option(${PROJECT_NAME}_BUILD_TESTS "Build tests. Uncheck for install only runs" OFF)
