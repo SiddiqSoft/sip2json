@@ -45,7 +45,3 @@ target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_20)
 # ____________________________________
 # Testing; controlled by the switch: ${PROJECT_NAME}_BUILD_TESTS = ON
 include(pack/TestingSupport.cmake)
-
-# ____________________________________
-# Packing; controlled by the switch: ${PROJECT_NAME}_BUILD_PACKAGE=ON
-include(pack/PackItSupport.cmake)
