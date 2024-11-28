@@ -110,8 +110,8 @@ stages:
       inputs:
         script: |
           echo "gcovr --delete --root ../../ --print-summary --xml-pretty --xml coverage.xml .  --filter='$(System.DefaultWorkingDirectory)/include/siddiqsoft/*' --filter='$(System.DefaultWorkingDirectory)/tests/*' --gcov-executable 'llvm-cov gcov'"
-          gcovr --delete --root ../../ --print-summary --xml-pretty --xml coverage.xml .  --filter='$(System.DefaultWorkingDirectory)/include/siddiqsoft/*' --filter='$(System.DefaultWorkingDirectory)/tests/*' --gcov-executable 'llvm-cov gcov'
-          echo "Profile data show..functions.."
+          #gcovr --delete --root ../../ --print-summary --xml-pretty --xml coverage.xml .  --filter='$(System.DefaultWorkingDirectory)/include/siddiqsoft/*' --filter='$(System.DefaultWorkingDirectory)/tests/*' --gcov-executable 'llvm-cov gcov'
+          gcovr --delete --root ../../ --print-summary --jacoco-pretty --jacoco coverage.xml .  --filter='$(System.DefaultWorkingDirectory)/include/siddiqsoft/*' --filter='$(System.DefaultWorkingDirectory)/tests/*' --gcov-executable 'llvm-cov gcov'          echo "Profile data show..functions.."
           llvm-profdata show -all-functions --detailed-summary -counts -ic-targets -output=tests/llvm_prof.log tests/default.profraw
           echo "Profile data merge............"
           llvm-profdata merge -output=tests/merge.out -instr tests/default.profraw
