@@ -8,6 +8,9 @@ file(DOWNLOAD https://github.com/cpm-cmake/CPM.cmake/releases/download/v0.40.2/C
 # import the helper into our process..
 include(pack/CPM.cmake)
 
-# ________________________
-# our project dependencies
-CPMAddPackage("gh:nlohmann/json@3.11.3")
+# Wrap the depdendency list in a function to prevent options from leaking to the parent
+function(DependenciesList)
+    # ________________________
+    # our project dependencies
+    CPMAddPackage("gh:nlohmann/json@3.11.3")
+endfunction()

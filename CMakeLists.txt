@@ -19,7 +19,7 @@ include(pack/DetectAndFixupProjectVersion.cmake)
 project(sip2json
         VERSION         "${CURRENT_PROJECT_VERSION}"
         LANGUAGES       CXX
-        HOMEPAGE_URL    "https://github.com/siddiqsoftware/sip2json"
+        HOMEPAGE_URL    "%%myurl%%"
         DESCRIPTION     "SIP Parser for Modern C++")
 
 # ____________________________________
@@ -29,6 +29,7 @@ include(pack/ProjectOptions.cmake)
 # ____________________________________
 # Dependencies
 include(pack/DependenciesList.cmake)
+DependenciesList()
 
 # ____________________________________
 #  Library Definition
