@@ -77,17 +77,16 @@ stages:
 
     # Set the flags for testing, build here.
     # sip2json_BUILD_TESTS=ON
-    # sip2json_BUILD_PACKAGE=OFF
     - task: CMake@1
       displayName: 'CMake Configure $(cmake.preset)'
       inputs:
-        cmakeArgs: '--preset $(cmake.preset) -Dsip2json_BUILD_TESTS=ON -Dsip2json_BUILD_PACKAGE=OFF -DCI_BUILDID=$(GitVersion.MajorMinorPatch).$(GitVersion.CommitsSinceVersionSource)'
+        cmakeArgs: '--preset $(cmake.preset) -Dsip2json_BUILD_TESTS=ON -DCI_BUILDID=$(GitVersion.MajorMinorPatch).$(GitVersion.CommitsSinceVersionSource)'
         workingDirectory: '$(System.DefaultWorkingDirectory)'
 
     - task: CMake@1
       displayName: 'CMake Build $(cmake.preset)'
       inputs:
-        cmakeArgs: '--build --preset $(cmake.preset) -Dsip2json_BUILD_TESTS=ON -Dsip2json_BUILD_PACKAGE=OFF -DCI_BUILDID=$(GitVersion.MajorMinorPatch).$(GitVersion.CommitsSinceVersionSource)'
+        cmakeArgs: '--build --preset $(cmake.preset) -Dsip2json_BUILD_TESTS=ON -DCI_BUILDID=$(GitVersion.MajorMinorPatch).$(GitVersion.CommitsSinceVersionSource)'
         workingDirectory: '$(System.DefaultWorkingDirectory)'
       condition: succeeded()
 
@@ -174,61 +173,24 @@ stages:
         versionSpec: '>=6.0.0-0'
         checkLatest: true
 
-    # Set the flags for testing, build here.
-    # sip2json_BUILD_TESTS=ON
-    # sip2json_BUILD_PACKAGE=ON
-    - task: CMake@1
-      displayName: 'CMake Configure $(cmake.preset)'
-      inputs:
-        cmakeArgs: '--preset $(cmake.preset) -Dsip2json_BUILD_TESTS=ON -Dsip2json_BUILD_PACKAGE=ON -DCI_BUILDID=$(build.buildNumber)'
-        workingDirectory: '$(System.DefaultWorkingDirectory)'
-
-    # Powershell is not supported on Pi aarch64 yet so we have to use this method for Linux
-    #- task: CmdLine@2
-    #  displayName: 'Clean up folders on Linux machines'
-    #  inputs:
-    #    script: |
-    #      echo "Removing the folders before we pack stuff.."
-    #      rm -rdf $(System.DefaultWorkingDirectory)/build/$(cmake.preset)/tests
-    #      rm -rdf $(System.DefaultWorkingDirectory)/build/$(cmake.preset)/_deps
-    #      rm -rdf $(System.DefaultWorkingDirectory)/build/$(cmake.preset)/Testing
-    #      rm -rdf $(System.DefaultWorkingDirectory)/build/$(cmake.preset)/lib
-    #      rm -rdf $(System.DefaultWorkingDirectory)/build/$(cmake.preset)/bin
-    #  condition: and(succeeded(), or(startsWith(variables['Agent.OS'], 'Darwin'), startsWith(variables['Agent.OS'], 'Linux')) )
-
-    - task: CMake@1
-      displayName: 'CPack $(cmake.preset)'
-      inputs:
-        cmakeArgs: '-E chdir $(System.DefaultWorkingDirectory)/build/$(cmake.preset) cpack -C $(buildConfiguration) -G ZIP'
-      continueOnError: false
-      condition: and(succeeded(), or(startsWith(variables['Agent.OS'], 'Darwin'), startsWith(variables['Agent.OS'], 'Linux')) )
-
     - task: ArchiveFiles@2
-      displayName: 'Adding include/ to sip2json-src-$(build.buildNumber).zip'
+      displayName: 'Adding include/ to sip2json-src-$(GitVersion.MajorMinorPatch).$(GitVersion.CommitsSinceVersionSource).zip'
       inputs:
         archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/sip2json-src-$(build.buildNumber).zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/sip2json-src-$(GitVersion.MajorMinorPatch).$(GitVersion.CommitsSinceVersionSource).zip'
         rootFolderOrFile: '$(System.DefaultWorkingDirectory)/include/'
         replaceExistingArchive: false
         verbose: true
       condition: and(succeeded(), or(startsWith(variables['Agent.OS'], 'Darwin'), startsWith(variables['Agent.OS'], 'Linux')) )
 
     - task: ArchiveFiles@2
-      displayName: 'Adding CMakeLists.txt to sip2json-src-$(build.buildNumber).zip'
+      displayName: 'Adding CMakeLists.txt to sip2json-src-$(GitVersion.MajorMinorPatch).$(GitVersion.CommitsSinceVersionSource).zip'
       inputs:
         archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/sip2json-src-$(build.buildNumber).zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/sip2json-src-$(GitVersion.MajorMinorPatch).$(GitVersion.CommitsSinceVersionSource).zip'
         rootFolderOrFile: '$(System.DefaultWorkingDirectory)/CMakeLists.txt'
         replaceExistingArchive: false
         verbose: true
-      condition: and(succeeded(), or(startsWith(variables['Agent.OS'], 'Darwin'), startsWith(variables['Agent.OS'], 'Linux')) )
-
-    - task: CopyFiles@2
-      displayName: 'Copy CPack Files to: $(Build.ArtifactStagingDirectory)'
-      inputs:
-        SourceFolder: $(System.DefaultWorkingDirectory)/build/$(cmake.preset)
-        Contents: '*.zip'
-        TargetFolder: '$(Build.ArtifactStagingDirectory)'
       condition: and(succeeded(), or(startsWith(variables['Agent.OS'], 'Darwin'), startsWith(variables['Agent.OS'], 'Linux')) )
 
     - task: PublishBuildArtifacts@1
