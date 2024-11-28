@@ -1,3 +1,7 @@
+# ____________________________
+# Detect Build Id and Versions
+
+# Detect and normalize the version
 if(DEFINED CI_BUILDID)
     message(STATUS "Using the CI supplied buildid: CURRENT_PROJECT_VERSION --> ${CI_BUILDID}")
 

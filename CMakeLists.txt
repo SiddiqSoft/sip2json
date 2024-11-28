@@ -9,6 +9,10 @@
 # 
 cmake_minimum_required(VERSION 3.25)
 
+# Adds the various CMake helper functions
+# FetchContent, GNUInstallDirs..
+include(pack/IncludeCMakeHelpers.cmake)
+
 # _________________
 # Version detection; must preceed the declaration of the actual project()
 # Figures out the value ${CURRENT_PROJECT_VERSION} and therefore the ${PROJECT_VERSION}
@@ -25,11 +29,6 @@ project(sip2json
 # ____________________________________
 # Options; define and declare defaults
 include(pack/ProjectOptions.cmake)
-
-include(CMakePackageConfigHelpers)
-include(CMakeDependentOption)
-include(GNUInstallDirs)
-include(FetchContent)
 
 # ____________________________________
 # Dependencies
