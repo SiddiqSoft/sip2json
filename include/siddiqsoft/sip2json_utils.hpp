@@ -70,7 +70,7 @@ namespace siddiqsoft
         /// @param callback Callback must accept long long indicating the delta
         /// @return Creates the object
         InvokeOnDestruct(Fn&& callback) noexcept
-            : callbackOnEnd {callback} {};
+            : callbackOnEnd {callback} { };
 
         ~InvokeOnDestruct() noexcept
         {
@@ -285,25 +285,30 @@ namespace siddiqsoft
     static const std::string ELEM_SEPERATOR {":"};
     static const std::string ELEM_PADDEDSEPERATOR {": "};
     static const std::string ELEM_TAGSEPERATOR {"{"};
+    // Common elements over the wire..(and WIN32)
     static const std::string ELEM_NEWLINE {"\r\n"};
     static const std::string ELEM_HEADERSECTIONDELIMITER {"\r\n\r\n"};
     static const std::string ELEM_LWSP {"\r\n "};
     static const std::string ELEM_LWSP1 {"\r\n\t"};
     static const std::string ELEM_SDPBlockStart = "v=0\r\n";
-
+    // For UNIX systems..
+    static const std::string ELEM_NEWLINE_LF {"\n"};
+    static const std::string ELEM_HEADERSECTIONDELIMITER_LF {"\n\n"};
+    static const std::string ELEM_LWSP_LF {"\n "};
+    static const std::string ELEM_LWSP1_LF {"\n\t"};
+    static const std::string ELEM_SDPBlockStart_LF = "v=0\n";
 
     //	Some common elements for builing the SIP message
-    static const std::string SIP_ADDR_PREFIX {"sip:"};
+    static const std::string SIP_ADDR_PREFIX {"sip:\\s"};
 
     // Helpers to parse the SIP buffer
-    static const std::regex SIP_PATTERN_STARTLINE {"^(MESSAGE|INFO|INVITE|ACK|OPTIONS|BYE|CANCEL|REGISTER|SUBSCRIBE|NOTIFY|SIP/"
-                                                   "2.0)\\s{1,1}([^\\s]+)\\s{1,1}([^\\r\\n]*)"};
+    static const std::regex SIP_PATTERN_STARTLINE {"(MESSAGE|INFO|INVITE|ACK|OPTIONS|BYE|CANCEL|REGISTER|SUBSCRIBE|NOTIFY|SIP/"
+                                                   "2.0)\\s{1,1}([^\\s]+)\\s{1,1}([^\\n\\f\\r]*)[\\r\\n|\\n]*"};
     static const std::regex SIP_PATTERN_CONTENT_LENGTH {"^Content-Length:\\s{1,1}(\\d+)\\s*(\\r\\n|\\n)"};
     static const std::regex SIP_PATTERN_CONTENT_TYPE {"^Content-type:\\s{1,1}([a-z|A-Z|\\-|/]+)\\s*(\\r\\n|\\n)"};
-    static const std::regex SIP_PATTERN_HEADER {"([^:\\s]*)\\s*:\\s*([^\\r\\n]*)[\\x0A\\x0D]*"};
-
-    static const std::regex SIP_PATTERN_BODY {"([vosiuepcbtzkma]{1})=([^\\r\\n]*)"};
-    static const std::regex SIP_PATTERN_BODY_ALINE {"^([^:|\\r\\n]*)[:]{1}(.*$)[\\r\\n]?|(.*)[\\r\\n]"};
+    static const std::regex SIP_PATTERN_HEADER {"([^\\r\\n\\f\\x0A\\x0B]*)\\s*:\\s*([^\\r\\n\\v]*)[\\r\\n|\\n]*"};
+    static const std::regex SIP_PATTERN_BODY {"([vosiuepcbtzkma]{1})=([^\\r\\n|^\\n]*)"};
+    static const std::regex SIP_PATTERN_BODY_ALINE {"^([^:|\\r\\n]*)[:]{1}(.*$)[\\r\\n]?|(.*)[\\r\\n|\\n]"};
     static const std::regex SIP_PATTERN_BODY_ILINE {"^(.*) \\(([^\\)]*)\\) ([^\\s|\\r\\n]*)"};
     static const std::regex SIP_PATTERN_BODY_CLINE {"^(.*) (.*) ([^\\s|\\r\\n]*)"};
     static const std::regex SIP_PATTERN_BODY_OLINE {"([^\\s]*) (\\d*) (\\d*) (\\w*) (\\w*) ([^\\s]*)"};

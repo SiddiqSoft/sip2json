@@ -36,6 +36,7 @@
 
 #pragma once
 
+#include <exception>
 #ifndef SIP2JSON_HPP
 #define SIP2JSON_HPP
 
@@ -79,12 +80,24 @@ namespace siddiqsoft
         parseStartLine(sipmessage& sipm, std::string::iterator& bufferStart, const std::string::iterator& bufferEnd) noexcept(false)
         {
             using namespace std;
+            auto useCRLF              = true;
+            auto lineEndDelimiterSize = ELEM_NEWLINE.size();
 
             match_results<string::iterator> matchStartLine;
 
             auto found = regex_search(bufferStart, bufferEnd, matchStartLine, SIP_PATTERN_STARTLINE);
+            // Did we find a message..?
             if (found && (matchStartLine.size() >= 3))
             {
+                std::cerr << std::format("{} - matchStartLine.size: {}  matchStartLine.length(): {}  "
+                                         "matchStartLine.prefix().length(): {}  str({}): `{}`",
+                                         __func__,
+                                         matchStartLine.size(),
+                                         matchStartLine.length(),
+                                         matchStartLine.prefix().length(),
+                                         matchStartLine.str().length(),
+                                         matchStartLine.str())
+                          << std::endl;
                 // The regex is very precise and there is no chance we will end up here
                 // with an ill-formed (or unsupported) start-line.
                 if (SIPVER_20.compare(matchStartLine[3]) == 0)
@@ -104,7 +117,7 @@ namespace siddiqsoft
 
                 // Offset the start to the point after the start-line. Make sure to skip over any prefix!
                 // We may have junk or left-over crud at the start (especially if we're using text files)
-                bufferStart += (matchStartLine.length() + matchStartLine.prefix().length() + ELEM_NEWLINE.size());
+                bufferStart += (matchStartLine.length() + matchStartLine.prefix().length());
             }
             else { throw invalid_startline_error {std::format("{} - SIP Startline not found.", __func__)}; }
 
@@ -171,11 +184,23 @@ namespace siddiqsoft
             // Scan for the location of the header section end within the frame.
             // If we don't have one, then we should bail out.
             // Note that for response messages, it is likely that the bufferEnd will also be the headerEnd (no content).
+            auto useCRLF             = true;
+            auto headerDelimiterSize = ELEM_HEADERSECTIONDELIMITER.size();
+            auto lineEndSize         = ELEM_NEWLINE.size();
             auto headerEnd =
                     std::search(bufferStart, bufferEnd, ELEM_HEADERSECTIONDELIMITER.begin(), ELEM_HEADERSECTIONDELIMITER.end());
-
+            if (headerEnd == bufferEnd)
+            {
+                useCRLF             = false;
+                lineEndSize         = ELEM_NEWLINE_LF.size();
+                headerDelimiterSize = ELEM_HEADERSECTIONDELIMITER_LF.size();
+                // If not found, then search for the header without the CRLF and just the LF pair.
+                headerEnd = std::search(
+                        bufferStart, bufferEnd, ELEM_HEADERSECTIONDELIMITER_LF.begin(), ELEM_HEADERSECTIONDELIMITER_LF.end());
+            }
             // Assert header end delimiter must exist!
-            if (size_t(bufferEnd - headerEnd) < ELEM_HEADERSECTIONDELIMITER.size())
+            auto headerSectionSize = size_t(bufferEnd - headerEnd);
+            if (headerSectionSize < headerDelimiterSize)
                 throw incomplete_buffer_for_header_error {
                         std::format("{}:Cannot find header section delimiter.", __func__).c_str()};
 
@@ -199,20 +224,21 @@ namespace siddiqsoft
                         if (*bufferStart == ' ') bufferStart = ++hsep;
 
                     label_recummulate_to_unfold_buffer:
-                        auto hend = search(hsep, headerEnd, ELEM_NEWLINE.begin(), ELEM_NEWLINE.end());
+                        auto hend = useCRLF ? search(hsep, headerEnd, ELEM_NEWLINE.begin(), ELEM_NEWLINE.end())
+                                            : search(hsep, headerEnd, ELEM_NEWLINE_LF.begin(), ELEM_NEWLINE_LF.end());
                         if (hend != headerEnd)
                         {
                             // We found the `\r\n`;
                             // Next, check if this is a folded element
-                            if ((headerEnd != (hend + ELEM_NEWLINE.size() + 1)) &&
-                                ((*(hend + ELEM_NEWLINE.size() + 1) == ' ') ||
-                                 ((*hend + ELEM_NEWLINE.size() + 1) == '\t'))) // peek ahead to see if we have.. folded indicator
+                            if ((headerEnd != (hend + lineEndSize + 1)) &&
+                                ((*(hend + lineEndSize + 1) == ' ') ||
+                                 ((*hend + lineEndSize + 1) == '\t'))) // peek ahead to see if we have.. folded indicator
                             {
                                 // Yes, we have a folded item.
                                 // build up the value..
                                 value.append(hsep, hend);
                                 // Advance to past the fold portion
-                                hsep = hend + ELEM_NEWLINE.size() + 1;
+                                hsep = hend + lineEndSize + 1;
                                 // Go back to find the next section..
                                 goto label_recummulate_to_unfold_buffer;
                             }
@@ -220,7 +246,7 @@ namespace siddiqsoft
                             {
                                 value.append(hsep, hend);
                                 found       = storeHeaderValue(sipm, key, value);
-                                bufferStart = hend += ELEM_NEWLINE.size();
+                                bufferStart = hend += lineEndSize;
                             }
                         }
                         else
@@ -228,7 +254,7 @@ namespace siddiqsoft
                             // reached the end; We're done
                             value.append(hsep, hend);
                             found       = storeHeaderValue(sipm, key, value);
-                            bufferStart = headerEnd + ELEM_HEADERSECTIONDELIMITER.size();
+                            bufferStart = headerEnd + headerDelimiterSize;
                             done        = true;
                         }
                     }
@@ -407,7 +433,8 @@ namespace siddiqsoft
         /// @param bufferEnd End of the buffer
         /// @param parseCallback Callback which takes a reference to the sipmessage just decoded. If present, the return is empty vector.
         /// @param errorCallback Optional callback to handle the error on the parse.
-        static std::string& parseAsync(
+        /// @return Returns the remaininng contents of the buffer.
+        [[nodiscard("Remaining contents of the buffer")]] static std::string& parseAsync(
                 std::string&                      frameBuffer,
                 std::function<void(sipmessage&&)> parseCallback,
                 std::optional<std::function<void(const sip2json_exception&, std::string::iterator&, const std::string::iterator&)>>
@@ -520,8 +547,10 @@ namespace siddiqsoft
                         msgs.emplace_back(std::move(sipm));
                     }
                 }
-                catch (...)
+                catch (std::exception& ex)
                 {
+                    std::cerr << __func__ << " - decodedMessageCount: " << decodedMessageCount << " Got exception: " << ex.what()
+                              << std::endl;
                     if (msgs.size() == 0) throw std::invalid_argument("Nothing was parsed.");
                     break;
                 }
@@ -735,8 +764,8 @@ namespace siddiqsoft
             // If content-type is not set, then just return regardless of the body element contents.
             if (contentType.empty()) return buffer;
 
-            if ((contentType.compare(CONTENT_TYPE_APP_SDP) == std::string::npos) &&
-                (contentType.compare(CONTENT_TYPE_TEXT_PLAIN) == std::string::npos))
+            // Check for a valid/supported contenttype
+            if (!(contentType == CONTENT_TYPE_APP_SDP || contentType == CONTENT_TYPE_TEXT_PLAIN))
                 throw invalid_document_error {std::format("{}:Unsupported content-type:{}", __func__, contentType)};
 
             // Body

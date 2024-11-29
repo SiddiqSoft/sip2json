@@ -418,6 +418,9 @@ We've tested on Windows terminal using the `cmake .` and `cmake --build .` follo
 >
 > In order to clean a git repository of files and folders not part of the tracked stuff (to essentially clean the cmake stuff) use the following command: `git clean -d -x -f` and it will clean up the cmake files and cached files.
 
+### File termination CRLF
+
+The samples are `CRLF` terminated and the repository has a `.gitattributes` file specifying the handling of the `*.sip` files in this project. If there is an issue with the tests you should check the EOL marker for these files.
 
 ## External resources
 - [JSON for Modern C++](https://nlohmann.github.io/json/)

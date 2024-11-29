@@ -1,44 +1,40 @@
 cmake_minimum_required(VERSION 3.25)
 
-# Require C++20
-message(STATUS "Require C++20..for tests..")
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
+if(${${PROJECT_NAME}_BUILD_TESTS})
+    set(TESTPROJ ${PROJECT_NAME}_tests)
 
-find_package(Git REQUIRED)
-include(FetchContent)
+    message(STATUS "Importing (via URL) googletest..")
+    FetchContent_Declare(googletest URL https://github.com/google/googletest/releases/download/v1.15.2/googletest-1.15.2.tar.gz
+                                    FIND_PACKAGE_ARGS NAMES GTest)
+    FetchContent_MakeAvailable(googletest)
 
-# Get the googletest
-FetchContent_Declare(googletest
-					GIT_REPOSITORY https://github.com/google/googletest.git
-					GIT_TAG	v1.15.2
-				    GIT_SHALLOW TRUE
-					GIT_NO_TAGS TRUE
-)
-FetchContent_MakeAvailable(googletest)
+    add_executable(${TESTPROJ})
 
-file(GLOB testSRC "./test.cpp")
+    # For GCC/Clang coverage data to be included ONLY for our test
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -fprofile-arcs -ftest-coverage -fprofile-instr-generate -fcoverage-mapping")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0 -fprofile-arcs -ftest-coverage -fprofile-instr-generate -fcoverage-mapping")
+    set(CMAKE_LINKER_FLAGS "${CMAKE_LINKER_FLAGS} -fprofile-instr-generate")
+    message(STATUS "Setting compiler flags for coverage: ${CMAKE_CXX_FLAGS}")
+    message(STATUS "Setting linker flags for coverage  : ${CMAKE_LINKER_FLAGS}")
 
-add_executable(sip2json_test ${testSRC})
+    target_sources( ${TESTPROJ}
+                    PRIVATE
+                    ${PROJECT_SOURCE_DIR}/tests/test.cpp)
 
-if(WIN32)
-	message(STATUS "  Windows not adding coverage options..")
-elseif(UNIX)
-	message(STATUS "  UNIX adding coverage options..")
-	target_compile_options(sip2json_test PUBLIC "-O0" "-fprofile-arcs" "-ftest-coverage")
-	target_link_libraries(sip2json_test PRIVATE gcov)
-	target_link_libraries(sip2json_test PRIVATE -coverage)
+
+    include(GoogleTest)
+    enable_testing()
+
+    target_compile_features(${TESTPROJ} PRIVATE cxx_std_20)
+    target_compile_options( ${TESTPROJ}
+                            PRIVATE
+                            $<$<CXX_COMPILER_ID:MSVC>:/std:c++20> )
+    
+    target_link_libraries(${TESTPROJ} PRIVATE GTest::gtest_main nlohmann_json::nlohmann_json)
+
+    gtest_discover_tests(${TESTPROJ} XML_OUTPUT_DIR "${PROJECT_SOURCE_DIR}/tests/results"
+                        PROPERTIES ENVIRONMENT "SAMPLES_DIR=${PROJECT_SOURCE_DIR}/tests/samples")
+
+    include(CTest)
+    message(STATUS "  Finished configuring for ${PROJECT_NAME}_BUILD_TESTS = ${${PROJECT_NAME}_BUILD_TESTS}")
 endif()
-
-# Common stuff..
-target_link_libraries(sip2json_test PRIVATE GTest::gtest_main)
-target_link_libraries(sip2json_test PRIVATE nlohmann_json::nlohmann_json)
-
-include(GoogleTest)
-
-# In order to properly locate the tests folder, we must provide the environment variable
-# SAMPLES_DIR. This should
-gtest_discover_tests(sip2json_test
-                     XML_OUTPUT_DIR "${PROJECT_SOURCE_DIR}/tests"
-					 PROPERTIES ENVIRONMENT "SAMPLES_DIR=${PROJECT_SOURCE_DIR}/tests/samples"
-)

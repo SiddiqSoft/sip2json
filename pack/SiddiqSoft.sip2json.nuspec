@@ -2,6 +2,8 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
 
     <!--
+        NOTE: It is imperative that nuget v5.x or better is present to process the packaging request.
+
         First meta data information about the package itself.
         Documentation can be found at: (or via nuget.org)
         https://docs.microsoft.com/en-us/nuget/reference/nuspec#optional-metadata-elements
@@ -23,7 +25,7 @@
         <copyright>Copyright (c) 2003-2024 Abdulkareem Siddiq</copyright>
         <!-- Dependencies -->
         <dependencies>
-            <dependency id="nlohmann.json" version="3.11.2"/>
+            <dependency id="nlohmann.json" version="3.11.3"/>
         </dependencies>
     </metadata>
 
@@ -35,7 +37,7 @@
     -->
     <files>
         <!-- includes -->
-        <file src="..\src\*.hpp" target="build\native\include\siddiqsoft\" />
+        <file src="..\include\siddiqsoft\*.hpp" target="build\native\include\siddiqsoft\" />
         <file src="Siddiq-Software-Avatar.png" target="docs\" />
         <file src="..\README.md" target="docs\" />
 

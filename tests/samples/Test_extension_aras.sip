@@ -1,4 +1,3 @@
-2021-01-17 00:23:51,158634
 NOTIFY sip:denver.peterson.lab@loopup.co;pool=il-ed-aras;box=il-ed-aras-05.ring2-corp.com SIP/2.0
 Via: SIP/2.0/TCP localhost:780;branch=conference.wizard@local.host__eDial_sep__denver.peterson.lab@loopup.co;received=127.0.0.1:48944:1152121280
 Via: SIP/2.0/TCP 127.0.0.1:49270;received=127.0.0.1:49270:12683536
