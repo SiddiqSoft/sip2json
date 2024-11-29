@@ -13,10 +13,7 @@ function(DependenciesList)
     # ________________________
     # our project dependencies
     cpmaddpackage("gh:nlohmann/json#9cca280a4d0ccf0c08f47a99aa71d1b0e52f8d03")# v3.11.3
-    #CPMAddPackage(  NAME nlohmann_json
-    #                VERSION 3.11.3
-    #               GITHUB_REPOSITORY nlohmann/json
-    #                OPTIONS "JSON_BuildTests OFF")
+
     # This is the fastest download; avoid using the shortcut since this repo is huge and we'd end up
     # downloading a ton of history for this project just to link to it.
     #CPMAddPackage(  NAME nlohmann_json
