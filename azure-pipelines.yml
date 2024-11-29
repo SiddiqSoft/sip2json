@@ -110,9 +110,7 @@ stages:
       inputs:
         script: |
           echo "gcovr --delete --root ../../ --print-summary --xml-pretty --xml coverage.xml .  --filter='$(System.DefaultWorkingDirectory)/include/siddiqsoft/*' --filter='$(System.DefaultWorkingDirectory)/tests/*' --gcov-executable 'llvm-cov gcov'"
-          #gcovr --delete --root ../../ --print-summary --xml-pretty --xml coverage.xml $(System.DefaultWorkingDirectory)/build/$(cmake.preset)  --filter='$(System.DefaultWorkingDirectory)/include/siddiqsoft/*' --filter='$(System.DefaultWorkingDirectory)/tests/*' --gcov-executable 'llvm-cov gcov'
-          gcovr --delete --root $(System.DefaultWorkingDirectory)/ --print-summary --jacoco-pretty --jacoco coverage.xml $(System.DefaultWorkingDirectory)/build/$(cmake.preset)  --filter='$(System.DefaultWorkingDirectory)/include/siddiqsoft/*' --filter='$(System.DefaultWorkingDirectory)/tests/*'
-          gcovr --delete --root $(System.DefaultWorkingDirectory)/ --print-summary --jacoco-pretty --jacoco coverage.xml $(System.DefaultWorkingDirectory)/build/$(cmake.preset)  --filter='$(System.DefaultWorkingDirectory)/include/siddiqsoft/*' --filter='$(System.DefaultWorkingDirectory)/tests/*' --gcov-executable 'llvm-cov gcov'
+          gcovr --delete --root $(System.DefaultWorkingDirectory)/ --print-summary --jacoco-pretty --jacoco $(System.DefaultWorkingDirectory)/build/$(cmake.preset)/tests/results/coverage.xml $(System.DefaultWorkingDirectory)/build/$(cmake.preset)  --filter='$(System.DefaultWorkingDirectory)/include/siddiqsoft/*' --filter='$(System.DefaultWorkingDirectory)/tests/*' --gcov-executable 'llvm-cov gcov'
           echo "Profile data show..functions.."
           llvm-profdata show -all-functions --detailed-summary -counts -ic-targets -output=tests/llvm_prof.log tests/default.profraw
           echo "Profile data merge............"
