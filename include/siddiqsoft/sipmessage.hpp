@@ -71,6 +71,7 @@ namespace siddiqsoft
                                   {SIPMessageType::response, "response"},
                                   {SIPMessageType::notspecified, "notspecified"}});
 
+
     class sipmessage : public nlohmann::json
     {
         static constexpr std::string_view MetaLibName {"sip2json"};
@@ -94,7 +95,11 @@ namespace siddiqsoft
         sipmessage(const sipmessage& src) { this->update(nlohmann::json(src)); }
 
         sipmessage& operator=(sipmessage&& src) = default;
-        sipmessage& operator=(nlohmann::json&& src) { nlohmann::json((*this)).operator=(std::move(src)); }
+        sipmessage& operator=(nlohmann::json&& src)
+        {
+            nlohmann::json((*this)).operator=(std::move(src));
+            return *this;
+        }
 
 
         explicit operator nlohmann::json&() { return static_cast<nlohmann::json&>(*this); }
@@ -105,7 +110,6 @@ namespace siddiqsoft
         /// @param uri Request URI
         /// @param callId Optional CallId
         /// @param cseq Optional Cseq; the string value is build using this parameter and the method
-        /// @return
         sipmessage(const std::string& method, const std::string& uri, const std::string& callId = {}, uint32_t cseq = 0)
         {
             using namespace std;
@@ -129,7 +133,6 @@ namespace siddiqsoft
         /// @brief Instantiates a response message from scratch or optionally from existing sipmessage request
         /// @param statusCode Status Code for this message, the reason is built using map
         /// @param src Optional sipmessage object of type request
-        /// @return
         sipmessage(uint32_t statusCode, const sipmessage& src)
         {
             using namespace std;
@@ -155,7 +158,6 @@ namespace siddiqsoft
         /// @brief Instantiates a response message from scratch or optionally from existing sipmessage request
         /// @param statusCode Status Code for this message, the reason is built using map
         /// @param src Optional sipmessage object of type request
-        /// @return
         sipmessage(uint32_t statusCode)
         {
             using namespace std;
@@ -314,6 +316,27 @@ static std::ostream& operator<<(std::ostream& os, const siddiqsoft::SIPMessageTy
     {
     case siddiqsoft::SIPMessageType::request: os << "request"; break;
     case siddiqsoft::SIPMessageType::response: os << "response"; break;
+    default: os << "unknown";
+    }
+
+    return os;
+}
+
+static std::ostream& operator<<(std::ostream& os, const siddiqsoft::sip2jsonErrors& errs)
+{
+    switch (errs)
+    {
+    case siddiqsoft::sip2jsonErrors::ok: os << "ok";
+    case siddiqsoft::sip2jsonErrors::incomplete_buffer_for_parse: os << "incomplete_buffer_for_parse";
+    case siddiqsoft::sip2jsonErrors::incomplete_buffer_for_content: os << "incomplete_buffer_for_content";
+    case siddiqsoft::sip2jsonErrors::incomplete_buffer_for_header: os << "incomplete_buffer_for_header";
+    case siddiqsoft::sip2jsonErrors::invalid_startline: os << "invalid_startline";
+    case siddiqsoft::sip2jsonErrors::unsupported_contenttype: os << "unsupported_contenttype";
+    case siddiqsoft::sip2jsonErrors::missing_required_element: os << "missing_required_element";
+    case siddiqsoft::sip2jsonErrors::invalid_document: os << "invalid_document";
+    case siddiqsoft::sip2jsonErrors::invalid_document_unsupported_method: os << "invalid_document_unsupported_method";
+    case siddiqsoft::sip2jsonErrors::invalid_document_unsupported_content: os << "invalid_document_unsupported_content";
+    case siddiqsoft::sip2jsonErrors::empty_message: os << "empty_message";
     default: os << "unknown";
     }
 

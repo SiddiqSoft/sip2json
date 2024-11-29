@@ -42,8 +42,7 @@ We skewed towards the following tradeoffs:
 - Deserialize from SIP message stream buffer to json document(s).
 - Dependencies
   - The primary datastore is the [json](https://github.com/nlohmann/json) data structure
-  - The fmtlib (for `C++17` this is a nuget package whereas with `C++20` this would be native)
-  - C++17
+  - C++20
 
 ### Out of scope
 This library is intendended to be used as a basis for you application and does not provide:
@@ -56,8 +55,23 @@ This library is intendended to be used as a basis for you application and does n
 
 ## Usage
 
-The library is provided as a nuget package but can also be used as a header-only dependency.
+### Nuget
+Use [`siddiqsoft.sip2json`](https://www.nuget.org/packages/SiddiqSoft.sip2json) nuget package.
 
+### CMakeList
+
+```cmake
+    CPMAddPackage(NAME sip2json   GIT_REPOSITORY https://github.com/siddiqsoftware/sip2json.git
+                                  GIT_TAG "v1.17.0" )
+    ..
+    ..
+    target_link_libraries(your-project PRIVATE sip2json::sip2json)
+```
+
+Using the CPM will automatically pull in the latest nlohmann_json package and any other dependencies.
+As user you'll be linking only with this package!
+
+### Code
 ```cpp
 #include "siddiqsoftware/sip2json.hpp"
 
@@ -418,6 +432,9 @@ We've tested on Windows terminal using the `cmake .` and `cmake --build .` follo
 >
 > In order to clean a git repository of files and folders not part of the tracked stuff (to essentially clean the cmake stuff) use the following command: `git clean -d -x -f` and it will clean up the cmake files and cached files.
 
+### File termination CRLF
+
+The samples are `CRLF` terminated and the repository has a `.gitattributes` file specifying the handling of the `*.sip` files in this project. If there is an issue with the tests you should check the EOL marker for these files.
 
 ## External resources
 - [JSON for Modern C++](https://nlohmann.github.io/json/)

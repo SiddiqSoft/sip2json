@@ -1,4 +1,3 @@
-2021-01-16 19:19:35,807356
 NOTIFY sip:lab.edial.rc.116.voip@loopup.co;pool=uk-ed-nelson;box=uk-ed-nelson-04.ring2-corp.com SIP/2.0
 Via: SIP/2.0/TCP localhost:780;branch=conference.wizard@local.host__eDial_sep__lab.edial.rc.116.voip@loopup.co;received=127.0.0.1:48114:442357920
 Via: SIP/2.0/TCP 127.0.0.1:32900;received=127.0.0.1:32900:21527168
