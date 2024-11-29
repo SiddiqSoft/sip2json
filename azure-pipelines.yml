@@ -1,7 +1,10 @@
-name: 'sip2json build'
-
+###############################################
+# SiddiqSoft Azure DevOps Pipelines Template  #
+# For C++ Projects                            #
+# Version 2.0                                 #
+###############################################
 trigger:
-  batch: true
+  batch: 'true'
   branches:
     include:
     - master
@@ -14,113 +17,190 @@ trigger:
     exclude:
     - README.md
 
-strategy:
-  matrix:
-    Windows:
-      osName: Windows_NT
-      poolName: Default
-      poolImageName:
-#    Linux:
-#      osName: Linux
-#      poolName: Default
-#      poolImageName:
-
 variables:
   buildConfiguration: 'Release'
-  buildLatestTag: '0.0.0'
 
-pool:
-  name: $(poolName)
-  vmImage: $(poolImageName)
-  demands:
-    - Agent.OS -equals $(osName)
+stages:
+################################## STAGE ####################################
+# STAGE: BuildTest                                                          #
+#############################################################################
+- stage: BuildTest
+  displayName: 'Building Multiple OS, Testing and Package for Windows'
+  jobs:
+  - job: build
+    displayName: 'Build and Test'
+    workspace:
+      clean: all
 
-steps:
-- checkout: self
-  fetchDepth: 0
+    strategy:
+      matrix:
+        Windows:
+          osName: Windows_NT
+          poolName: Default
+          poolImageName:
+          cmake.preset: Windows-Release
+        Linux:
+          osName: Linux
+          poolName: Default
+          poolImageName:
+          cmake.preset: Linux-Release
 
-- task: NuGetToolInstaller@1
-  displayName: 'Install Nuget'
-  inputs:
-    versionSpec: '>=5.0.0-0'
-    checkLatest: true
+    pool:
+      name: $(poolName)
+      vmImage: $(poolImageName)
+      demands:
+        - Agent.OS -equals $(osName)
 
-- task: gitversion/setup@3
-  displayName: 'Install GitVersion..'
-  inputs:
-    versionSpec: '6.x'
-    preferLatestVersion: true
+    steps:
+    - checkout: self
+      fetchDepth: 0
+      name: step1
 
-- task: gitversion/execute@3
-  displayName: 'Determine Version..'
-  inputs:
-    useConfigFile: true
-    configFilePath: 'GitVersion.yml'
+    - task: NuGetToolInstaller@1
+      displayName: 'Install Nuget'
+      inputs:
+        versionSpec: '>=6.0.0-0'
+        checkLatest: true
 
-- script: echo %Action%%BuildVersion%
-  displayName: 'Set build version to $(GitVersion.FullSemVer)'
-  env:
-    Action: '##vso[build.updatebuildnumber]'
-    BuildVersion: $(GitVersion.FullSemVer)
+    - task: gitversion/setup@3.0.0
+      displayName: 'Install GitVersion..'
+      inputs:
+        versionSpec: '6.x'
+        preferLatestVersion: true
 
-- task: CMake@1
-  displayName: 'CMake ..'
-  inputs:
-    cmakeArgs: '..'
+    - task: gitversion/execute@3.0.0
+      displayName: 'Determine Version..'
+      name: version_step
+      inputs:
+        useConfigFile: true
+        configFilePath: 'GitVersion.yml'
 
-- task: CMake@1
-  displayName: 'CMake --build . --config $(buildConfiguration)'
-  inputs:
-    cmakeArgs: '--build . --config $(buildConfiguration)'
-  condition: succeeded()
+    # Set the flags for testing, build here.
+    # sip2json_BUILD_TESTS=ON
+    - task: CMake@1
+      displayName: 'CMake Configure $(cmake.preset)'
+      inputs:
+        cmakeArgs: '--preset $(cmake.preset) -Dsip2json_BUILD_TESTS=ON -DCI_BUILDID=$(GitVersion.MajorMinorPatch).$(GitVersion.CommitsSinceVersionSource)'
+        workingDirectory: '$(System.DefaultWorkingDirectory)'
 
-- task: CMake@1
-  displayName: 'CMake -E chdir $(System.DefaultWorkingDirectory)/build/tests ctest'
-  inputs:
-    cmakeArgs: '-E chdir $(System.DefaultWorkingDirectory)/build/tests ctest . --output-junit $(System.DefaultWorkingDirectory)/build/tests/test_detail.xml --output-on-failure'
-  condition: succeeded()
-  continueOnError: true
+    - task: CMake@1
+      displayName: 'CMake Build $(cmake.preset)'
+      inputs:
+        cmakeArgs: '--build --preset $(cmake.preset) -Dsip2json_BUILD_TESTS=ON -DCI_BUILDID=$(GitVersion.MajorMinorPatch).$(GitVersion.CommitsSinceVersionSource)'
+        workingDirectory: '$(System.DefaultWorkingDirectory)'
+      condition: succeeded()
 
-- task: PublishTestResults@2
-  displayName: 'Publish $(buildConfiguration) Test Results test_detail.xml'
-  inputs:
-    testResultsFormat: 'JUnit'
-    testResultsFiles: '$(System.DefaultWorkingDirectory)/build/tests/test_detail.xml'
-    mergeTestResults: true
-    buildConfiguration: '$(buildConfiguration)'
-  continueOnError: false
-  condition: succeeded()
+    - task: CMake@1
+      displayName: 'CMake Tests $(cmake.preset)'
+      inputs:
+        cmakeArgs: '-E chdir $(System.DefaultWorkingDirectory)/build/$(cmake.preset)/tests ctest $(System.DefaultWorkingDirectory)/build/$(cmake.preset) --output-junit $(System.DefaultWorkingDirectory)/build/$(cmake.preset)/tests/results/test_detail.xml --output-on-failure'
+      condition: succeeded()
+      continueOnError: false
 
-- task: NuGetCommand@2
-  displayName: 'NuGet pack'
-  inputs:
-    command: 'pack'
-    packagesToPack: 'nuget/*.nuspec'
-    versioningScheme: 'off'
-    buildProperties: 'VERSION=$(GitVersion.MajorMinorPatch)'
-  condition: and(succeeded(), startsWith(variables['Agent.OS'], 'Windows'))
+    # Try for coverage (but only on Linux build machines)
+    - task: CMake@1
+      displayName: 'CTest Coverage $(cmake.preset) (Linux only)'
+      inputs:
+        cmakeArgs: '-E chdir $(System.DefaultWorkingDirectory)/build/$(cmake.preset) ctest $(System.DefaultWorkingDirectory)/build/$(cmake.preset) --output-junit $(System.DefaultWorkingDirectory)/build/$(cmake.preset)/tests/results/test_detail.xml --output-on-failure  -T Test -T Coverage'
+      condition: and(succeeded(), startsWith(variables['Agent.OS'], 'Linux'))
+      continueOnError: false
 
-- task: NuGetCommand@2
-  displayName: 'NuGet push'
-  inputs:
-    command: 'push'
-    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;build/*.nupkg'
-    nuGetFeedType: 'external'
-    publishFeedCredentials: 'sqs-nuget'
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Agent.OS'], 'Windows'))
+    - task: CmdLine@2
+      displayName: 'Coverage collection (Linux builds Only)'
+      inputs:
+        script: |
+          echo "gcovr --delete --root ../../ --print-summary --xml-pretty --xml coverage.xml .  --filter='$(System.DefaultWorkingDirectory)/include/siddiqsoft/*' --filter='$(System.DefaultWorkingDirectory)/tests/*' --gcov-executable 'llvm-cov gcov'"
+          gcovr --delete --root $(System.DefaultWorkingDirectory)/ --print-summary --xml-pretty --xml $(System.DefaultWorkingDirectory)/build/$(cmake.preset)/tests/results/coverage.xml $(System.DefaultWorkingDirectory)/build/$(cmake.preset)  --filter='$(System.DefaultWorkingDirectory)/include/*' --filter='$(System.DefaultWorkingDirectory)/tests/*' --gcov-executable 'llvm-cov gcov'
+        workingDirectory: "$(System.DefaultWorkingDirectory)/build/$(cmake.preset)"
+      condition: and(succeeded(), startsWith(variables['Agent.OS'], 'Linux'))
+ 
+    - task: PublishTestResults@2
+      displayName: 'Publish $(buildConfiguration) Test Results test_detail.xml'
+      inputs:
+          testResultsFormat: 'JUnit'
+          testResultsFiles: '$(System.DefaultWorkingDirectory)/build/$(cmake.preset)/tests/results/test_detail.xml'
+          mergeTestResults: true
+          buildConfiguration: '$(buildConfiguration)'
+      continueOnError: false
+      condition: succeeded()
 
-- task: GitHubRelease@1
-  inputs:
-    gitHubConnection: 'github-packages-sqs'
-    repositoryName: 'siddiqsoftware/sip2json'
-    action: 'create'
-    target: '$(Build.SourceVersion)'
-    tagSource: 'userSpecifiedTag'
-    tag: '$(build.buildNumber)'
-    title: 'v$(build.buildNumber)'
-    releaseNotesSource: 'inline'
-    releaseNotesInline: 'Documentation https://siddiqsoftware.github.io/sip2json'
-    isPreRelease: true
-    changeLogCompareToRelease: 'lastFullRelease'
-    changeLogType: 'commitBased'
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Agent.OS'], 'Windows'))
+    - task: PublishCodeCoverageResults@2
+      displayName: 'Publish Coverage Results (Linux builds)'
+      inputs:
+        summaryFileLocation: '$(System.DefaultWorkingDirectory)/build/$(cmake.preset)/tests/results/coverage.*'
+      condition: and(succeeded(), startsWith(variables['Agent.OS'], 'Linux'))
+
+################################## STAGE ####################################
+# STAGE: Pack_n_Publish                                                     #
+#############################################################################
+- stage: Pack_n_Publish
+  displayName: 'Package for GitHub (cmake) and Nuget'
+  dependsOn: BuildTest
+  jobs:
+  - job: packit
+    displayName: PackageIt
+    workspace:
+      clean: all
+
+    strategy:
+      matrix:
+        Windows:
+          osName: Windows_NT
+          poolName: Default
+          poolImageName:
+          cmake.preset: Windows-Release
+        Linux:
+          osName: Linux
+          poolName: Default
+          poolImageName:
+          cmake.preset: Linux-Release
+
+    pool:
+      name: $(poolName)
+      vmImage: $(poolImageName)
+      demands:
+        - Agent.OS -equals $(osName)
+
+    steps:
+    - task: NuGetToolInstaller@1
+      displayName: 'Install Nuget'
+      inputs:
+        versionSpec: '>=6.0.0-0'
+        checkLatest: true
+
+    - task: NuGetCommand@2
+      displayName: 'NuGet pack'
+      inputs:
+        command: 'pack'
+        packagesToPack: 'pack/*.nuspec'
+        versioningScheme: 'off'
+        buildProperties: 'VERSION=$(build.buildNumber)'
+      condition: and(succeeded(), startsWith(variables['Agent.OS'], 'Windows'))
+
+    - task: NuGetCommand@2
+      displayName: 'NuGet push'
+      inputs:
+        command: 'push'
+        packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;build/*.nupkg'
+        nuGetFeedType: 'external'
+        publishFeedCredentials: 'sqs-nuget'
+      condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(variables['Build.SourceBranch'], 'refs/heads/master')), startsWith(variables['Agent.OS'], 'Windows'))
+
+    - task: GitHubRelease@1
+      displayName: 'Release to GitHub'
+      inputs:
+        gitHubConnection: 'github-packages-sqs'
+        repositoryName: 'siddiqsoftware/sip2json'
+        action: 'create'
+        target: '$(Build.SourceVersion)'
+        tagSource: 'userSpecifiedTag'
+        tag: '$(build.buildNumber)'
+        title: 'v$(build.buildNumber)'
+        releaseNotesSource: 'inline'
+        releaseNotesInline: 'Documentation https://siddiqsoftware.github.io/sip2json'
+        isPreRelease: true
+        changeLogCompareToRelease: 'lastFullRelease'
+        changeLogType: 'commitBased'
+        addChangeLog: false
+        assetUploadMode: 'replace'
+      condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(variables['Build.SourceBranch'], 'refs/heads/master')), startsWith(variables['Agent.OS'], 'Linux'))
