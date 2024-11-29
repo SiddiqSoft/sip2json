@@ -3,8 +3,10 @@ cmake_minimum_required(VERSION 3.25)
 if(${${PROJECT_NAME}_BUILD_TESTS})
     set(TESTPROJ ${PROJECT_NAME}_tests)
 
+    message(STATUS "Importing (via URL) googletest..")
     FetchContent_Declare(googletest URL https://github.com/google/googletest/releases/download/v1.15.2/googletest-1.15.2.tar.gz
                                     FIND_PACKAGE_ARGS NAMES GTest)
+    FetchContent_MakeAvailable(googletest)
 
     add_executable(${TESTPROJ})
 
@@ -19,7 +21,6 @@ if(${${PROJECT_NAME}_BUILD_TESTS})
                     PRIVATE
                     ${PROJECT_SOURCE_DIR}/tests/test.cpp)
 
-    FetchContent_MakeAvailable(googletest)
 
     include(GoogleTest)
     enable_testing()
@@ -28,8 +29,9 @@ if(${${PROJECT_NAME}_BUILD_TESTS})
     target_compile_options( ${TESTPROJ}
                             PRIVATE
                             $<$<CXX_COMPILER_ID:MSVC>:/std:c++20> )
-    target_link_libraries(${TESTPROJ} PRIVATE GTest::gtest_main)
-    target_link_libraries(${TESTPROJ} PRIVATE nlohmann_json::nlohmann_json)
+    
+    target_link_libraries(${TESTPROJ} PRIVATE GTest::gtest_main nlohmann_json::nlohmann_json)
+
     gtest_discover_tests(${TESTPROJ} XML_OUTPUT_DIR "${PROJECT_SOURCE_DIR}/tests/results"
                         PROPERTIES ENVIRONMENT "SAMPLES_DIR=${PROJECT_SOURCE_DIR}/tests/samples")
 

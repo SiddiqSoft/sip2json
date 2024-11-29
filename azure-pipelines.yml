@@ -59,7 +59,7 @@ stages:
     - task: NuGetToolInstaller@1
       displayName: 'Install Nuget'
       inputs:
-        versionSpec: '>=5.0.0-0'
+        versionSpec: '>=6.0.0-0'
         checkLatest: true
 
     - task: gitversion/setup@3.0.0
@@ -77,17 +77,16 @@ stages:
 
     # Set the flags for testing, build here.
     # sip2json_BUILD_TESTS=ON
-    # sip2json_BUILD_PACKAGE=OFF
     - task: CMake@1
       displayName: 'CMake Configure $(cmake.preset)'
       inputs:
-        cmakeArgs: '--preset $(cmake.preset) -Dsip2json_BUILD_TESTS=ON -Dsip2json_BUILD_PACKAGE=OFF -DCI_BUILDID=$(GitVersion.MajorMinorPatch).$(GitVersion.CommitsSinceVersionSource)'
+        cmakeArgs: '--preset $(cmake.preset) -Dsip2json_BUILD_TESTS=ON -DCI_BUILDID=$(GitVersion.MajorMinorPatch).$(GitVersion.CommitsSinceVersionSource)'
         workingDirectory: '$(System.DefaultWorkingDirectory)'
 
     - task: CMake@1
       displayName: 'CMake Build $(cmake.preset)'
       inputs:
-        cmakeArgs: '--build --preset $(cmake.preset) -Dsip2json_BUILD_TESTS=ON -Dsip2json_BUILD_PACKAGE=OFF -DCI_BUILDID=$(GitVersion.MajorMinorPatch).$(GitVersion.CommitsSinceVersionSource)'
+        cmakeArgs: '--build --preset $(cmake.preset) -Dsip2json_BUILD_TESTS=ON -DCI_BUILDID=$(GitVersion.MajorMinorPatch).$(GitVersion.CommitsSinceVersionSource)'
         workingDirectory: '$(System.DefaultWorkingDirectory)'
       condition: succeeded()
 
@@ -110,12 +109,8 @@ stages:
       displayName: 'Coverage collection (Linux builds Only)'
       inputs:
         script: |
-          echo "Profile data show..functions.."
-          llvm-profdata show -all-functions --detailed-summary -counts -ic-targets -output=tests/llvm_prof.log tests/default.profraw
-          echo "Profile data merge............"
-          llvm-profdata merge -output=tests/merge.out -instr tests/default.profraw
-          echo "Profile data show..html......."
-          llvm-cov show -format=html --ignore-filename-regex=tests/ tests/sip2json_tests --instr-profile=tests/merge.out -o tests/results/coverage.info
+          echo "gcovr --delete --root ../../ --print-summary --xml-pretty --xml coverage.xml .  --filter='$(System.DefaultWorkingDirectory)/include/siddiqsoft/*' --filter='$(System.DefaultWorkingDirectory)/tests/*' --gcov-executable 'llvm-cov gcov'"
+          gcovr --delete --root $(System.DefaultWorkingDirectory)/ --print-summary --xml-pretty --xml $(System.DefaultWorkingDirectory)/build/$(cmake.preset)/tests/results/coverage.xml $(System.DefaultWorkingDirectory)/build/$(cmake.preset)  --filter='$(System.DefaultWorkingDirectory)/include/*' --filter='$(System.DefaultWorkingDirectory)/tests/*' --gcov-executable 'llvm-cov gcov'
         workingDirectory: "$(System.DefaultWorkingDirectory)/build/$(cmake.preset)"
       condition: and(succeeded(), startsWith(variables['Agent.OS'], 'Linux'))
  
@@ -167,44 +162,30 @@ stages:
         - Agent.OS -equals $(osName)
 
     steps:
-    - checkout: self
-      fetchDepth: 1
-
-    # Set the flags for testing, build here.
-    # sip2json_BUILD_TESTS=OFF
-    # sip2json_BUILD_PACKAGE=ON
-    - task: CMake@1
-      displayName: 'CMake Configure $(cmake.preset)'
+    - task: NuGetToolInstaller@1
+      displayName: 'Install Nuget'
       inputs:
-        cmakeArgs: '--preset $(cmake.preset) -Dsip2json_BUILD_TESTS=OFF -Dsip2json_BUILD_PACKAGE=ON -DCI_BUILDID=$(build.buildNumber)'
-        workingDirectory: '$(System.DefaultWorkingDirectory)'
+        versionSpec: '>=6.0.0-0'
+        checkLatest: true
 
-    # Powershell is not supported on Pi aarch64 yet so we have to use this method for Linux
-    - task: CmdLine@2
-      displayName: 'Clean up folders on Linux machines'
+    - task: ArchiveFiles@2
+      displayName: 'Adding include/ to sip2json-src-$(GitVersion.MajorMinorPatch).$(GitVersion.CommitsSinceVersionSource).zip'
       inputs:
-        script: |
-          echo "Removing the folders before we pack stuff.."
-          rm -rdf $(System.DefaultWorkingDirectory)/build/$(cmake.preset)/tests
-          rm -rdf $(System.DefaultWorkingDirectory)/build/$(cmake.preset)/_deps
-          rm -rdf $(System.DefaultWorkingDirectory)/build/$(cmake.preset)/Testing
-          rm -rdf $(System.DefaultWorkingDirectory)/build/$(cmake.preset)/lib
-          rm -rdf $(System.DefaultWorkingDirectory)/build/$(cmake.preset)/bin
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/sip2json-src-$(GitVersion.MajorMinorPatch).$(GitVersion.CommitsSinceVersionSource).zip'
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/include/'
+        replaceExistingArchive: false
+        verbose: true
       condition: and(succeeded(), or(startsWith(variables['Agent.OS'], 'Darwin'), startsWith(variables['Agent.OS'], 'Linux')) )
 
-    - task: CMake@1
-      displayName: 'CPack $(cmake.preset)'
+    - task: ArchiveFiles@2
+      displayName: 'Adding CMakeLists.txt to sip2json-src-$(GitVersion.MajorMinorPatch).$(GitVersion.CommitsSinceVersionSource).zip'
       inputs:
-        cmakeArgs: '-E chdir $(System.DefaultWorkingDirectory)/build/$(cmake.preset) cpack -C $(buildConfiguration) -G ZIP'
-      continueOnError: false
-      condition: and(succeeded(), or(startsWith(variables['Agent.OS'], 'Darwin'), startsWith(variables['Agent.OS'], 'Linux')) )
-
-    - task: CopyFiles@2
-      displayName: 'Copy CPack Files to: $(Build.ArtifactStagingDirectory)'
-      inputs:
-        SourceFolder: $(System.DefaultWorkingDirectory)/build/$(cmake.preset)
-        Contents: '*.zip'
-        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/sip2json-src-$(GitVersion.MajorMinorPatch).$(GitVersion.CommitsSinceVersionSource).zip'
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/CMakeLists.txt'
+        replaceExistingArchive: false
+        verbose: true
       condition: and(succeeded(), or(startsWith(variables['Agent.OS'], 'Darwin'), startsWith(variables['Agent.OS'], 'Linux')) )
 
     - task: PublishBuildArtifacts@1

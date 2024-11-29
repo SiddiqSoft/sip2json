@@ -54,7 +54,8 @@
                 "CMAKE_BUILD_TYPE": "Debug",
                 "CMAKE_C_COMPILER": "/usr/bin/clang",
                 "CMAKE_CXX_COMPILER": "/usr/bin/clang++",
-                "sip2json_BUILD_TESTS": "ON"
+                "sip2json_BUILD_TESTS": "ON",
+                "sip2json_BUILD_PACKAGE": "ON"
             },
             "condition": {
                 "type": "equals",
@@ -78,7 +79,9 @@
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Release",
                 "CMAKE_C_COMPILER": "/usr/bin/clang",
-                "CMAKE_CXX_COMPILER": "/usr/bin/clang++"
+                "CMAKE_CXX_COMPILER": "/usr/bin/clang++",
+                "sip2json_BUILD_TESTS": "ON",
+                "sip2json_BUILD_PACKAGE": "ON"
             },
             "condition": {
                 "type": "equals",
@@ -101,7 +104,9 @@
             "environment": {"SAMPLES_DIR": "${sourceDir}/tests/samples"},
             "cacheVariables": {
                 "CMAKE_C_COMPILER": "cl.exe",
-                "CMAKE_CXX_COMPILER": "cl.exe"
+                "CMAKE_CXX_COMPILER": "cl.exe",
+                "sip2json_BUILD_TESTS": "ON",
+                "sip2json_BUILD_PACKAGE": "ON"
             },
             "condition": {
                 "type": "equals",
