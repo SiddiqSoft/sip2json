@@ -168,33 +168,6 @@ stages:
         versionSpec: '>=6.0.0-0'
         checkLatest: true
 
-    - task: ArchiveFiles@2
-      displayName: 'Adding include/ to sip2json-src-$(GitVersion.MajorMinorPatch).$(GitVersion.CommitsSinceVersionSource).zip'
-      inputs:
-        archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/sip2json-src-$(GitVersion.MajorMinorPatch).$(GitVersion.CommitsSinceVersionSource).zip'
-        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/include/'
-        replaceExistingArchive: false
-        verbose: true
-      condition: and(succeeded(), or(startsWith(variables['Agent.OS'], 'Darwin'), startsWith(variables['Agent.OS'], 'Linux')) )
-
-    - task: ArchiveFiles@2
-      displayName: 'Adding CMakeLists.txt to sip2json-src-$(GitVersion.MajorMinorPatch).$(GitVersion.CommitsSinceVersionSource).zip'
-      inputs:
-        archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/sip2json-src-$(GitVersion.MajorMinorPatch).$(GitVersion.CommitsSinceVersionSource).zip'
-        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/CMakeLists.txt'
-        replaceExistingArchive: false
-        verbose: true
-      condition: and(succeeded(), or(startsWith(variables['Agent.OS'], 'Darwin'), startsWith(variables['Agent.OS'], 'Linux')) )
-
-    - task: PublishBuildArtifacts@1
-      displayName: 'Publish Artifact: drop'
-      inputs:
-        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-        publishLocation: 'Container'
-      condition: and(succeeded(), or(startsWith(variables['Agent.OS'], 'Darwin'), startsWith(variables['Agent.OS'], 'Linux')) )
-
     - task: NuGetCommand@2
       displayName: 'NuGet pack'
       inputs:
