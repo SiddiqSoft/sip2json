@@ -3,10 +3,7 @@ cmake_minimum_required(VERSION 3.25)
 if(${${PROJECT_NAME}_BUILD_TESTS})
     set(TESTPROJ ${PROJECT_NAME}_tests)
 
-    message(STATUS "Importing (via URL) googletest..")
-    FetchContent_Declare(googletest URL https://github.com/google/googletest/releases/download/v1.15.2/googletest-1.15.2.tar.gz
-                                    FIND_PACKAGE_ARGS NAMES GTest)
-    FetchContent_MakeAvailable(googletest)
+    cpmaddpackage("gh:google/googletest#v1.15.2")
 
     add_executable(${TESTPROJ})
 
@@ -20,7 +17,6 @@ if(${${PROJECT_NAME}_BUILD_TESTS})
     target_sources( ${TESTPROJ}
                     PRIVATE
                     ${PROJECT_SOURCE_DIR}/tests/test.cpp)
-
 
     include(GoogleTest)
     enable_testing()
