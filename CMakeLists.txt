@@ -40,7 +40,10 @@ target_include_directories(${PROJECT_NAME}
                             INTERFACE
                             $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>)
-
+# Here we explicitly declare that we depend on the nlohmann_json package and that
+# the client will only need to depend on our file where the nlohmann_json will
+# automatically included.
+target_link_libraries(${PROJECT_NAME} INTERFACE nlohmann_json::nlohmann_json)
 target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_20)
 
 # ____________________________________
