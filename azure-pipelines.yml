@@ -162,6 +162,29 @@ stages:
         - Agent.OS -equals $(osName)
 
     steps:
+    - checkout: self
+      fetchDepth: 0
+      name: step1
+
+    - task: NuGetToolInstaller@1
+      displayName: 'Install Nuget'
+      inputs:
+        versionSpec: '>=6.0.0-0'
+        checkLatest: true
+
+    - task: gitversion/setup@3.0.0
+      displayName: 'Install GitVersion..'
+      inputs:
+        versionSpec: '6.x'
+        preferLatestVersion: true
+
+    - task: gitversion/execute@3.0.0
+      displayName: 'Determine Version..'
+      name: version_step
+      inputs:
+        useConfigFile: true
+        configFilePath: 'GitVersion.yml'
+        
     - task: NuGetToolInstaller@1
       displayName: 'Install Nuget'
       inputs:
