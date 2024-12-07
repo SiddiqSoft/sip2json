@@ -80,13 +80,13 @@ stages:
     - task: CMake@1
       displayName: 'CMake Configure $(cmake.preset)'
       inputs:
-        cmakeArgs: '--preset $(cmake.preset) -Dsip2json_BUILD_TESTS=ON -DCI_BUILDID=$(GitVersion.MajorMinorPatch).$(GitVersion.CommitsSinceVersionSource)'
+        cmakeArgs: '--preset $(cmake.preset) -Dsip2json_BUILD_TESTS=ON -DCI_BUILDID=$(GitVersion.MajorMinorPatch)  -DCPM_SOURCE_CACHE=$(Agent.HomeDirectory)/.cpmcache'
         workingDirectory: '$(System.DefaultWorkingDirectory)'
 
     - task: CMake@1
       displayName: 'CMake Build $(cmake.preset)'
       inputs:
-        cmakeArgs: '--build --preset $(cmake.preset) -Dsip2json_BUILD_TESTS=ON -DCI_BUILDID=$(GitVersion.MajorMinorPatch).$(GitVersion.CommitsSinceVersionSource)'
+        cmakeArgs: '--build --preset $(cmake.preset) -Dsip2json_BUILD_TESTS=ON -DCI_BUILDID=$(GitVersion.MajorMinorPatch)  -DCPM_SOURCE_CACHE=$(Agent.HomeDirectory)/.cpmcache'
         workingDirectory: '$(System.DefaultWorkingDirectory)'
       condition: succeeded()
 
@@ -174,7 +174,7 @@ stages:
         command: 'pack'
         packagesToPack: 'pack/*.nuspec'
         versioningScheme: 'off'
-        buildProperties: 'VERSION=$(build.buildNumber)'
+        buildProperties: 'VERSION=$(GitVersion.MajorMinorPatch)'
       condition: and(succeeded(), startsWith(variables['Agent.OS'], 'Windows'))
 
     - task: NuGetCommand@2
@@ -194,8 +194,8 @@ stages:
         action: 'create'
         target: '$(Build.SourceVersion)'
         tagSource: 'userSpecifiedTag'
-        tag: '$(build.buildNumber)'
-        title: 'v$(build.buildNumber)'
+        tag: '$(GitVersion.MajorMinorPatch)'
+        title: 'v$(GitVersion.MajorMinorPatch)'
         releaseNotesSource: 'inline'
         releaseNotesInline: 'Documentation https://siddiqsoftware.github.io/sip2json'
         isPreRelease: true
