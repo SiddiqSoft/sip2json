@@ -89,15 +89,6 @@ namespace siddiqsoft
             // Did we find a message..?
             if (found && (matchStartLine.size() >= 3))
             {
-                std::cerr << std::format("{} - matchStartLine.size: {}  matchStartLine.length(): {}  "
-                                         "matchStartLine.prefix().length(): {}  str({}): `{}`",
-                                         __func__,
-                                         matchStartLine.size(),
-                                         matchStartLine.length(),
-                                         matchStartLine.prefix().length(),
-                                         matchStartLine.str().length(),
-                                         matchStartLine.str())
-                          << std::endl;
                 // The regex is very precise and there is no chance we will end up here
                 // with an ill-formed (or unsupported) start-line.
                 if (SIPVER_20.compare(matchStartLine[3]) == 0)
@@ -549,8 +540,6 @@ namespace siddiqsoft
                 }
                 catch (std::exception& ex)
                 {
-                    std::cerr << __func__ << " - decodedMessageCount: " << decodedMessageCount << " Got exception: " << ex.what()
-                              << std::endl;
                     if (msgs.size() == 0) throw std::invalid_argument("Nothing was parsed.");
                     break;
                 }
