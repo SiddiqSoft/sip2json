@@ -48,7 +48,7 @@ target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_20)
 # Here we explicitly declare that we depend on the nlohmann_json package and that
 # the client will only need to depend on our file where the nlohmann_json will
 # automatically included.
-cpmaddpackage("gh:nlohmann/json#9cca280a4d0ccf0c08f47a99aa71d1b0e52f8d03")# v3.11.3
+cpmaddpackage("gh:nlohmann/json#v3.11.3")# v3.11.3
 target_link_libraries(${PROJECT_NAME} INTERFACE nlohmann_json::nlohmann_json)
 
 
