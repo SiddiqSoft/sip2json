@@ -7,12 +7,21 @@ if(${${PROJECT_NAME}_BUILD_TESTS})
 
     add_executable(${TESTPROJ})
 
-    # For GCC/Clang coverage data to be included ONLY for our test
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -fprofile-arcs -ftest-coverage -fprofile-instr-generate -fcoverage-mapping")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0 -fprofile-arcs -ftest-coverage -fprofile-instr-generate -fcoverage-mapping")
-    set(CMAKE_LINKER_FLAGS "${CMAKE_LINKER_FLAGS} -fprofile-instr-generate")
-    message(STATUS "Setting compiler flags for coverage: ${CMAKE_CXX_FLAGS}")
-    message(STATUS "Setting linker flags for coverage  : ${CMAKE_LINKER_FLAGS}")
+    # ASAN and Coverage only for Debug builds on Linux
+    if(((CMAKE_CXX_COMPILER_ID MATCHES [Cc][Ll][Aa][Nn][Gg]) 
+        OR (CMAKE_CXX_COMPILER_ID MATCHES [Gg][Nn][Uu]))
+       AND (CMAKE_BUILD_TYPE MATCHES [Dd][Ee][Bb][Uu][Gg]))
+        message(STATUS "Using sanitizers for leak and address on ${CMAKE_CXX_COMPILER_ID}")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address,leak")
+        target_link_libraries(${TESTPROJ} PRIVATE -fsanitize=address,leak)
+        message(STATUS "Enable instrumentation for code coverage")
+        target_compile_options(${TESTPROJ} PRIVATE -coverage -O0 -g)
+        target_link_options(${TESTPROJ} PRIVATE -coverage)
+    endif()
+
+    if( CMAKE_BUILD_TYPE MATCHES [Dd][Ee][Bb][Uu][Gg])
+        add_compile_definitions(${TESTPROJ} PRIVATE DEBUG=1 _DEBUG=1)
+    endif()
 
     target_sources( ${TESTPROJ}
                     PRIVATE
@@ -32,5 +41,7 @@ if(${${PROJECT_NAME}_BUILD_TESTS})
                         PROPERTIES ENVIRONMENT "SAMPLES_DIR=${PROJECT_SOURCE_DIR}/tests/samples")
 
     include(CTest)
+    set(CTEST_MEMORYCHECK_TYPE "AddressSanitizer")
+    set(CTEST_MEMORYCHECK_SANITIZER_OPTIONS "verbosity=1:symbolize=1:abort_on_error=1:detect_leaks=1")
     message(STATUS "  Finished configuring for ${PROJECT_NAME}_BUILD_TESTS = ${${PROJECT_NAME}_BUILD_TESTS}")
 endif()
