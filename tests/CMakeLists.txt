@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.25)
+cmake_minimum_required(VERSION 3.30)
 
 if(${${PROJECT_NAME}_BUILD_TESTS})
     set(TESTPROJ ${PROJECT_NAME}_tests)

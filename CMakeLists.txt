@@ -16,7 +16,7 @@ include(pack/CMakeCommonHelpers.cmake)
 
 # ______________________
 # Project Metadata block
-project(AzureCppUtils
+project(sip2json
         VERSION         "${CURRENT_PROJECT_VERSION}"
         LANGUAGES       CXX
         HOMEPAGE_URL    "%%myurl%%"
@@ -44,6 +44,8 @@ target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_20)
 
 # ____________________________________
 # Dependencies
+cpmaddpackage("gh:nlohmann/json#v3.11.3")
+target_link_libraries(${PROJECT_NAME} INTERFACE nlohmann_json::nlohmann_json)
 
 # ____________________________________
 # Testing
