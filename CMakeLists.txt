@@ -3,10 +3,10 @@
 #   See LICENSE file
 #
 #   When building from our CI server, the following options must be set
-#   ${PROJECT_NAME}_BUILD_TESTS ON
+#   BUILD_TESTS ON
 #   CI_BUILDID must be set to the gitversion
 # 
-cmake_minimum_required(VERSION 3.25)
+cmake_minimum_required(VERSION 3.29)
 
 # _________________
 # Version detection; must preceed the declaration of the actual project()
@@ -16,20 +16,19 @@ include(pack/CMakeCommonHelpers.cmake)
 
 # ______________________
 # Project Metadata block
-project(sip2json
+project(AzureCppUtils
         VERSION         "${CURRENT_PROJECT_VERSION}"
         LANGUAGES       CXX
         HOMEPAGE_URL    "%%myurl%%"
-        DESCRIPTION     "SIP Parser for Modern C++")
+        DESCRIPTION     "Azure REST API Helpers for Modern C++. Featuring helper functions for date-time, encryption tokens for Azure REST API as a single header-only package. Using OpenSSL on UNIX and native Win32 on Windows.")
 
-
+set( CMAKE_CXX_STANDARD 20)
+set( CMAKE_CXX_STANDARD_REQUIRED On)
+set( CMAKE_CXX_EXTENSIONS Off)
+    
 # ____________________________________
 # Options; define and declare defaults
-if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
-    # We run the tests by default when we're in development mode for this library
-    option(${PROJECT_NAME}_BUILD_TESTS "Build tests. Uncheck for install only runs" OFF)
-endif()
-
+option(${PROJECT_NAME}_BUILD_TESTS "${PROJECT_NAME} - Build tests. Uncheck for install only runs" OFF)
 
 # ____________________________________
 #  Library Definition
@@ -45,20 +44,12 @@ target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_20)
 
 # ____________________________________
 # Dependencies
-# Here we explicitly declare that we depend on the nlohmann_json package and that
-# the client will only need to depend on our file where the nlohmann_json will
-# automatically included.
-cpmaddpackage("gh:nlohmann/json#v3.11.3")# v3.11.3
-target_link_libraries(${PROJECT_NAME} INTERFACE nlohmann_json::nlohmann_json)
-
 
 # ____________________________________
 # Testing
 # Available only when building in our repo; controlled by the switch: ${PROJECT_NAME}_BUILD_TESTS = ON
-if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
-    if(${PROJECT_NAME}_BUILD_TESTS AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/tests" AND IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/tests" )
-        message(STATUS "Asked to build tests.. ${PROJECT_NAME}_BUILD_TESTS = ${${PROJECT_NAME}_BUILD_TESTS}")
-        add_subdirectory(tests)
-        include(CTest)
-    endif()
+if(${${PROJECT_NAME}_BUILD_TESTS} AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/tests" AND IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/tests" )
+    message(STATUS "${PROJECT_NAME} - Asked to build tests.. ${PROJECT_NAME}_BUILD_TESTS = ${${PROJECT_NAME}_BUILD_TESTS}")
+    enable_testing()
+    add_subdirectory(tests)
 endif()

@@ -38,6 +38,7 @@
     <files>
         <!-- includes -->
         <file src="..\include\siddiqsoft\*.hpp" target="build\native\include\siddiqsoft\" />
+        <file src="..\include\siddiqsoft\private\*.hpp" target="build\native\include\siddiqsoft\private\" />
         <file src="Siddiq-Software-Avatar.png" target="docs\" />
         <file src="..\README.md" target="docs\" />
 

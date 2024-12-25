@@ -54,9 +54,11 @@
 
 #include "nlohmann/json.hpp"
 
-#include "sip2json_exception.hpp"
-#include "sip2json_response_codes.hpp"
-#include "sip2json_utils.hpp"
+#include "private/sip2json_exception.hpp"
+#include "private/sip2json_response_codes.hpp"
+#include "private/sip2json_utils.hpp"
+#include "private/sip2json_exception.hpp"
+
 #include "sipmessage.hpp"
 
 

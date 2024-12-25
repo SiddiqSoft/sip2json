@@ -2,21 +2,28 @@
     "version": 8,
     "cmakeMinimumRequired": {
         "major": 3,
-        "minor": 25
+        "minor": 29
     },
     "configurePresets": [
+        {
+            "name": "Project-Base",
+            "hidden": true,
+            "cacheVariables": {
+                "CPM_SOURCE_CACHE": "${sourceParentDir}/.cpmcache",
+                "sip2json_BUILD_TESTS": "ON"
+            }
+        },
         {
             "name": "Apple-Debug",
             "displayName": "Apple-Debug (Clang19)",
             "description": "Using compilers: C = /opt/homebrew/opt/llvm/bin/clang, CXX = /opt/homebrew/opt/llvm/bin/clang++",
             "binaryDir": "${sourceDir}/build/${presetName}",
-            "environment": {"SAMPLES_DIR": "${sourceDir}/tests/samples"},
+            "inherits": "Project-Base",
             "cacheVariables": {
                 "CMAKE_INSTALL_PREFIX": "${sourceDir}/install/${presetName}",
                 "CMAKE_C_COMPILER": "/opt/homebrew/opt/llvm/bin/clang",
                 "CMAKE_CXX_COMPILER": "/opt/homebrew/opt/llvm/bin/clang++",
-                "CMAKE_BUILD_TYPE": "Debug",
-                "sip2json_BUILD_TESTS": "ON"
+                "CMAKE_BUILD_TYPE": "Debug"
             },
             "condition": {
                 "type": "equals",
@@ -29,7 +36,7 @@
             "displayName": "Apple-Release (Clang19)",
             "description": "Using compilers: C = /opt/homebrew/opt/llvm/bin/clang, CXX = /opt/homebrew/opt/llvm/bin/clang++",
             "binaryDir": "${sourceDir}/build/${presetName}",
-            "environment": {"SAMPLES_DIR": "${sourceDir}/tests/samples"},
+            "inherits": "Project-Base",
             "cacheVariables": {
                 "CMAKE_INSTALL_PREFIX": "${sourceDir}/install/${presetName}",
                 "CMAKE_C_COMPILER": "/opt/homebrew/opt/llvm/bin/clang",
@@ -43,19 +50,17 @@
             }
         },
         {
-            "name": "Linux-Debug",
-            "displayName": "Linux Debug",
-            "description": "Target Linux (Debug)",
+            "name": "Linux-Clang-Debug",
+            "displayName": "Linux Clang Debug",
+            "description": "Target Linux Clang(Debug)",
             "generator": "Unix Makefiles",
             "binaryDir": "${sourceDir}/build/${presetName}",
             "installDir": "${sourceDir}/install/${presetName}",
-            "environment": {"SAMPLES_DIR": "${sourceDir}/tests/samples"},
+            "inherits": "Project-Base",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug",
                 "CMAKE_C_COMPILER": "/usr/bin/clang",
-                "CMAKE_CXX_COMPILER": "/usr/bin/clang++",
-                "sip2json_BUILD_TESTS": "ON",
-                "sip2json_BUILD_PACKAGE": "ON"
+                "CMAKE_CXX_COMPILER": "/usr/bin/clang++"
             },
             "condition": {
                 "type": "equals",
@@ -69,19 +74,65 @@
             }
         },
         {
-            "name": "Linux-Release",
-            "displayName": "Linux Release",
-            "description": "Target Linux (Release)",
+            "name": "Linux-Clang-Release",
+            "displayName": "Linux Clang Release",
+            "description": "Target Linux Clang(Release)",
             "generator": "Unix Makefiles",
             "binaryDir": "${sourceDir}/build/${presetName}",
             "installDir": "${sourceDir}/install/${presetName}",
-            "environment": {"SAMPLES_DIR": "${sourceDir}/tests/samples"},
+            "inherits": "Project-Base",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Release",
                 "CMAKE_C_COMPILER": "/usr/bin/clang",
-                "CMAKE_CXX_COMPILER": "/usr/bin/clang++",
-                "sip2json_BUILD_TESTS": "ON",
-                "sip2json_BUILD_PACKAGE": "ON"
+                "CMAKE_CXX_COMPILER": "/usr/bin/clang++"
+            },
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Linux"
+            },
+            "vendor": {
+                "microsoft.com/VisualStudioRemoteSettings/CMake/2.0": {
+                    "remoteSourceRootDir": "$env{HOME}/.vs/$ms{projectDirName}"
+                }
+            }
+        },
+        {
+            "name": "Linux-GCC-Debug",
+            "displayName": "Linux GCC Debug",
+            "description": "Target Linux GCC(Debug)",
+            "generator": "Unix Makefiles",
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "installDir": "${sourceDir}/install/${presetName}",
+            "inherits": "Project-Base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_C_COMPILER": "/usr/bin/gcc",
+                "CMAKE_CXX_COMPILER": "/usr/bin/g++"
+            },
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Linux"
+            },
+            "vendor": {
+                "microsoft.com/VisualStudioRemoteSettings/CMake/2.0": {
+                    "remoteSourceRootDir": "$env{HOME}/.vs/$ms{projectDirName}"
+                }
+            }
+        },
+        {
+            "name": "Linux-GCC-Release",
+            "displayName": "Linux GCC Release",
+            "description": "Target Linux GCC (Release)",
+            "generator": "Unix Makefiles",
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "installDir": "${sourceDir}/install/${presetName}",
+            "inherits": "Project-Base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_C_COMPILER": "/usr/bin/gcc",
+                "CMAKE_CXX_COMPILER": "/usr/bin/g++"
             },
             "condition": {
                 "type": "equals",
@@ -101,12 +152,10 @@
             "generator": "Visual Studio 17 2022",
             "binaryDir": "${sourceDir}/build/${presetName}",
             "installDir": "${sourceDir}/install/${presetName}",
-            "environment": {"SAMPLES_DIR": "${sourceDir}/tests/samples"},
+            "inherits": "Project-Base",
             "cacheVariables": {
                 "CMAKE_C_COMPILER": "cl.exe",
-                "CMAKE_CXX_COMPILER": "cl.exe",
-                "sip2json_BUILD_TESTS": "ON",
-                "sip2json_BUILD_PACKAGE": "ON"
+                "CMAKE_CXX_COMPILER": "cl.exe"
             },
             "condition": {
                 "type": "equals",
@@ -124,8 +173,7 @@
                 "strategy": "external"
             },
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Debug",
-                "sip2json_BUILD_TESTS": "ON"
+                "CMAKE_BUILD_TYPE": "Debug"
             }
         },
         {
@@ -148,12 +196,20 @@
             "configurePreset": "Apple-Release"
         },
         {
-            "name": "Linux-Debug",
-            "configurePreset": "Linux-Debug"
+            "name": "Linux-GCC-Debug",
+            "configurePreset": "Linux-GCC-Debug"
         },
         {
-            "name": "Linux-Release",
-            "configurePreset": "Linux-Release"
+            "name": "Linux-GCC-Release",
+            "configurePreset": "Linux-GCC-Release"
+        },
+        {
+            "name": "Linux-Clang-Debug",
+            "configurePreset": "Linux-Clang-Debug"
+        },
+        {
+            "name": "Linux-Clang-Release",
+            "configurePreset": "Linux-Clang-Release"
         },
         {
             "name": "Windows-Debug",
@@ -168,7 +224,6 @@
         {
             "name": "Apple-Debug",
             "configurePreset": "Apple-Debug",
-            "environment": {"SAMPLES_DIR": "${sourceDir}/tests/samples"},
             "output": {
                 "outputOnFailure": true
             },
@@ -180,7 +235,6 @@
         {
             "name": "Apple-Release",
             "configurePreset": "Apple-Release",
-            "environment": {"SAMPLES_DIR": "${sourceDir}/tests/samples"},
             "output": {
                 "outputOnFailure": true
             },
@@ -190,9 +244,8 @@
             }
         },
         {
-            "name": "Linux-Debug",
-            "configurePreset": "Linux-Debug",
-            "environment": {"SAMPLES_DIR": "${sourceDir}/tests/samples"},
+            "name": "Linux-GCC-Debug",
+            "configurePreset": "Linux-GCC-Debug",
             "output": {
                 "outputOnFailure": true
             },
@@ -202,9 +255,52 @@
             }
         },
         {
-            "name": "Linux-Release",
-            "configurePreset": "Linux-Release",
-            "environment": {"SAMPLES_DIR": "${sourceDir}/tests/samples"},
+            "name": "Linux-GCC-Release",
+            "configurePreset": "Linux-GCC-Release",
+            "output": {
+                "outputOnFailure": true
+            },
+            "execution": {
+                "noTestsAction": "error",
+                "stopOnFailure": true
+            }
+        },
+        {
+            "name": "Linux-Clang-Debug",
+            "configurePreset": "Linux-Clang-Debug",
+            "output": {
+                "outputOnFailure": true
+            },
+            "execution": {
+                "noTestsAction": "error",
+                "stopOnFailure": true
+            }
+        },
+        {
+            "name": "Linux-Clang-Release",
+            "configurePreset": "Linux-Clang-Release",
+            "output": {
+                "outputOnFailure": true
+            },
+            "execution": {
+                "noTestsAction": "error",
+                "stopOnFailure": true
+            }
+        },
+        {
+            "name": "Windows-Debug",
+            "configurePreset": "Windows-Debug",
+            "output": {
+                "outputOnFailure": true
+            },
+            "execution": {
+                "noTestsAction": "error",
+                "stopOnFailure": true
+            }
+        },
+        {
+            "name": "Windows-Release",
+            "configurePreset": "Windows-Release",
             "output": {
                 "outputOnFailure": true
             },
@@ -214,78 +310,5 @@
             }
         }
     ],
-    "packagePresets": [
-        {
-            "name": "Apple-Debug",
-            "description": "",
-            "displayName": "",
-            "configurePreset": "Apple-Debug",
-            "generators": [
-                "ZIP"
-            ],
-            "configurations": [
-                "Apple-Debug"
-            ]
-        },
-        {
-            "name": "Apple-Release",
-            "description": "",
-            "displayName": "",
-            "configurePreset": "Apple-Release",
-            "generators": [
-                "ZIP"
-            ],
-            "configurations": [
-                "Apple-Release"
-            ]
-        },
-        {
-            "name": "Linux-Release",
-            "description": "Package for Linux",
-            "displayName": "Linux-Package (Release)",
-            "configurePreset": "Linux-Release",
-            "generators": [
-                "ZIP"
-            ],
-            "configurations": [
-                "Linux-Release"
-            ]
-        },
-        {
-            "name": "Linux-Debug",
-            "description": "Package for Linux",
-            "displayName": "Linux-Package (Debug)",
-            "configurePreset": "Linux-Debug",
-            "generators": [
-                "ZIP"
-            ],
-            "configurations": [
-                "Linux-Debug"
-            ]
-        },
-        {
-            "name": "Windows-Debug",
-            "description": "",
-            "displayName": "",
-            "configurePreset": "Windows-Debug",
-            "generators": [
-                "NuGet"
-            ],
-            "configurations": [
-                "Windows-Debug"
-            ]
-        },
-        {
-            "name": "Windows-Release",
-            "description": "",
-            "displayName": "",
-            "configurePreset": "Windows-Release",
-            "generators": [
-                "NuGet"
-            ],
-            "configurations": [
-                "Windows-Release"
-            ]
-        }
-    ]
+    "packagePresets": []
 }
