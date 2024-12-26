@@ -82,6 +82,7 @@ namespace siddiqsoft
         parseStartLine(sipmessage& sipm, std::string::iterator& bufferStart, const std::string::iterator& bufferEnd) noexcept(false)
         {
             using namespace std;
+
             auto useCRLF              = true;
             auto lineEndDelimiterSize = ELEM_NEWLINE.size();
 
@@ -398,7 +399,7 @@ namespace siddiqsoft
                         {
                             // timing
                             uint32_t ts = 0, te = 0;
-#if defined(_WIN32) || defined(_WIN64) || defined(WINDOWS)
+#if defined(_WIN32) || defined(_WIN64) || defined(WINDOWS) || defined(WIN32)
                             if (::sscanf_s(value.c_str(), "%d %d", &ts, &te) > 0)
 #else
                             if (std::sscanf(value.c_str(), "%d %d", &ts, &te) > 0)
@@ -433,25 +434,19 @@ namespace siddiqsoft
                 std::optional<std::function<void(const sip2json_exception&, std::string::iterator&, const std::string::iterator&)>>
                         errorCallback = {}) noexcept
         {
-            auto                        ll          = __LINE__;
             std::string::iterator       bufferStart = frameBuffer.begin();
             const std::string::iterator bufferEnd   = frameBuffer.end();
             size_t                      decodedMessageCount {0};
 
-            ll = __LINE__;
             while (bufferStart != bufferEnd)
             {
                 try
                 {
-                    ll = __LINE__;
                     // If the callback is provided, then we invoke the callback. Nothing is returned to caller.
                     if (auto&& sipm {parseFromBuffer(bufferStart, bufferEnd)}; !sipm.empty())
                     {
-                        ll = __LINE__;
                         decodedMessageCount++;
-                        ll                                   = __LINE__;
                         sipm["meta"]["parseCountThisBuffer"] = decodedMessageCount;
-                        ll                                   = __LINE__;
                         parseCallback(std::move(sipm));
                     }
                 }
@@ -519,23 +514,16 @@ namespace siddiqsoft
         {
             std::vector<sipmessage> msgs;
             size_t                  decodedMessageCount {0};
-            auto                    ll = __LINE__;
 
             while (bufferStart != bufferEnd)
             {
                 try
                 {
-                    ll = __LINE__;
                     // If the callback is provided, then we invoke the callback. Nothing is returned to caller.
                     if (auto&& sipm {parseFromBuffer(bufferStart, bufferEnd)}; !sipm.empty())
                     {
-                        ll = __LINE__;
                         decodedMessageCount++;
-
-                        ll                                   = __LINE__;
                         sipm["meta"]["parseCountThisBuffer"] = decodedMessageCount;
-
-                        ll = __LINE__;
                         // otherwise we push to the vector to return to caller
                         msgs.emplace_back(std::move(sipm));
                     }
@@ -558,14 +546,16 @@ namespace siddiqsoft
         [[nodiscard]] static sipmessage parseFromBuffer(std::string::iterator&       bufferStart,
                                                         const std::string::iterator& bufferEnd) noexcept(false)
         {
-            auto             previousBufferStart = bufferStart; // save the value so we can reset if we end up with exception.
-            sipmessage       sipm;
+            auto       previousBufferStart = bufferStart; // save the value so we can reset if we end up with exception.
+            sipmessage sipm;
+#if defined(DEBUG) || defined(_DEBUG)
             InvokeOnDestruct timeTaken {[&](long long delta)
                                         {
                                             sipm["meta"]["ttx"]  = delta;
                                             sipm["meta"]["pre"]  = bufferStart - previousBufferStart;
                                             sipm["meta"]["post"] = bufferEnd - bufferStart;
                                         }}; // upon destruction, sets the ttx to account for parse time
+#endif
 
             if (bufferStart != bufferEnd)
             {
