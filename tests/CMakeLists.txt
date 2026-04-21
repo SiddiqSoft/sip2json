@@ -25,6 +25,7 @@ if(${${PROJECT_NAME}_BUILD_TESTS})
 
     target_sources( ${TESTPROJ}
                     PRIVATE
+                    ${PROJECT_SOURCE_DIR}/tests/siphelpers.cpp
                     ${PROJECT_SOURCE_DIR}/tests/synthetics.cpp
                     ${PROJECT_SOURCE_DIR}/tests/test.cpp)
 

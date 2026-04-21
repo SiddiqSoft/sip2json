@@ -200,4 +200,3 @@ TEST(synthetics, Check_startline_precedingjunk_CRLF)
         }
     }
 }
-
