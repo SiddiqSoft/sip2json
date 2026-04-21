@@ -128,7 +128,7 @@ namespace siddiqsoft
         /// @return Returns true if the store was successful.
         static bool storeHeaderValue(sipmessage& sipm, const std::string& key, const std::string& value)
         {
-            if (key.find(HF_VIA) == 0)
+            if (key.compare(HF_VIA) == 0)
             {
                 // Via is an array
                 sipm["h"][HF_VIA].push_back(value);
@@ -138,13 +138,13 @@ namespace siddiqsoft
                 // Some encoders send "uthorization" instead of "Authorization"
                 sipm["h"][HF_AUTHORIZATION] = value;
             }
-            else if (key.compare(HF_CONTENT_TYPE) == 0)
+            else if (key.compare(HF_CONTENT_TYPE) == 0 || key.compare(HF_CONTENT_TYPE2) == 0)
             {
-                // Some encoders send Content-type instead of the standard Content-Type; here we need to normalize it.
+                // Some encoders send Content-type instead of the standard Content-Type; here we normalize it.
                 sipm["h"][HF_CONTENT_TYPE] = value;
             }
-            else if (key.find(HF_CONTENT_LENGTH) == 0) { sipm["h"][key] = std::stoi(value); }
-            else if (key.find(HF_EXPIRES) == 0) { sipm["h"][key] = std::stoi(value); }
+            else if (key.compare(HF_CONTENT_LENGTH) == 0) { sipm["h"][key] = std::stoi(value); }
+            else if (key.compare(HF_EXPIRES) == 0) { sipm["h"][key] = std::stoi(value); }
             // This helper causes issues when the payload may contain "true" or "false" as a string value not intended as boolean
             // This approach allows the client the ultimate authority for decoding the data.
             //else if (value.find("true") == 0)
@@ -226,14 +226,14 @@ namespace siddiqsoft
                         {
                             // We found the `\r\n`;
                             // Next, check if this is a folded element
-                            if ((headerEnd != (hend + lineEndSize + 1)) &&
-                                ((*(hend + lineEndSize + 1) == ' ') ||
-                                 (*(hend + lineEndSize + 1) == '\t'))) // peek ahead to see if we have.. folded indicator
+                            if ((headerEnd != (hend + lineEndSize)) &&
+                                ((*(hend + lineEndSize) == ' ') ||
+                                 (*(hend + lineEndSize) == '\t'))) // peek ahead to see if we have.. folded indicator
                             {
                                 // Yes, we have a folded item.
                                 // build up the value..
                                 value.append(hsep, hend);
-                                // Advance to past the fold portion
+                                // Advance to past the fold indicator
                                 hsep = hend + lineEndSize + 1;
                                 // Go back to find the next section..
                                 goto label_recummulate_to_unfold_buffer;
@@ -390,9 +390,9 @@ namespace siddiqsoft
                         // timing
                         uint32_t ts = 0, te = 0;
 #if defined(_WIN32) || defined(_WIN64) || defined(WINDOWS) || defined(WIN32)
-                        if (::sscanf_s(value.c_str(), "%d %d", &ts, &te) > 0)
+                        if (::sscanf_s(value.c_str(), "%u %u", &ts, &te) > 0)
 #else
-                        if (std::sscanf(value.c_str(), "%d %d", &ts, &te) > 0)
+                        if (std::sscanf(value.c_str(), "%u %u", &ts, &te) > 0)
 #endif
                         {
                             sipm[pkey].push_back(ts);
