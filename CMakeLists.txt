@@ -29,6 +29,7 @@ set( CMAKE_CXX_EXTENSIONS Off)
 # ____________________________________
 # Options; define and declare defaults
 option(${PROJECT_NAME}_BUILD_TESTS "${PROJECT_NAME} - Build tests. Uncheck for install only runs" OFF)
+option(${PROJECT_NAME}_BUILD_BENCHMARKS "${PROJECT_NAME} - Build benchmarks" OFF)
 
 # ____________________________________
 #  Library Definition
@@ -54,4 +55,11 @@ if(${${PROJECT_NAME}_BUILD_TESTS} AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/tests"
     message(STATUS "${PROJECT_NAME} - Asked to build tests.. ${PROJECT_NAME}_BUILD_TESTS = ${${PROJECT_NAME}_BUILD_TESTS}")
     enable_testing()
     add_subdirectory(tests)
+endif()
+
+# ____________________________________
+# Benchmarks
+if(${${PROJECT_NAME}_BUILD_BENCHMARKS} AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/benchmarks" AND IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/benchmarks" )
+    message(STATUS "${PROJECT_NAME} - Asked to build benchmarks.. ${PROJECT_NAME}_BUILD_BENCHMARKS = ${${PROJECT_NAME}_BUILD_BENCHMARKS}")
+    add_subdirectory(benchmarks)
 endif()
