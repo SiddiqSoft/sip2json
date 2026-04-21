@@ -46,7 +46,8 @@ target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_20)
 # ____________________________________
 # Dependencies
 cpmaddpackage("gh:nlohmann/json#v3.12.0")
-target_link_libraries(${PROJECT_NAME} INTERFACE nlohmann_json::nlohmann_json)
+cpmaddpackage("gh:hanickadot/compile-time-regular-expressions#v3.9.0")
+target_link_libraries(${PROJECT_NAME} INTERFACE nlohmann_json::nlohmann_json ctre::ctre)
 
 # ____________________________________
 # Testing

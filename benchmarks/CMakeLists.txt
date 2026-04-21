@@ -29,7 +29,8 @@ if(${${PROJECT_NAME}_BUILD_BENCHMARKS})
                           PRIVATE
                           benchmark::benchmark
                           benchmark::benchmark_main
-                          nlohmann_json::nlohmann_json)
+                          nlohmann_json::nlohmann_json
+                          ctre::ctre)
 
     target_include_directories(${BENCHPROJ}
                                PRIVATE

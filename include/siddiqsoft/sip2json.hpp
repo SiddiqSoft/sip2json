@@ -42,7 +42,6 @@
 
 #include <algorithm>
 #include <string>
-#include <regex>
 #include <memory>
 #include <iterator>
 #include <chrono>
@@ -82,35 +81,39 @@ namespace siddiqsoft
         {
             using namespace std;
 
-            auto useCRLF              = true;
-            auto lineEndDelimiterSize = ELEM_NEWLINE.size();
+            auto matchStartLine = ctre::search<SIP_PATTERN_STARTLINE>(bufferStart, bufferEnd);
+            bool found          = static_cast<bool>(matchStartLine);
 
-            match_results<string::iterator> matchStartLine;
-
-            auto found = regex_search(bufferStart, bufferEnd, matchStartLine, SIP_PATTERN_STARTLINE);
             // Did we find a message..?
-            if (found && (matchStartLine.size() >= 3))
+            if (found)
             {
+                auto g1 = matchStartLine.get<1>().to_view();
+                auto g2 = matchStartLine.get<2>().to_view();
+                auto g3 = matchStartLine.get<3>().to_view();
+
                 // The regex is very precise and there is no chance we will end up here
                 // with an ill-formed (or unsupported) start-line.
-                if (SIPVER_20.compare(matchStartLine[3]) == 0)
+                if (SIPVER_20 == g3)
                 {
                     sipm["s"s] = {{"type"s, SIPMessageType::request},
-                                  {"method"s, matchStartLine[1]},
-                                  {"uri"s, matchStartLine[2]},
-                                  {"version"s, matchStartLine[3]}};
+                                  {"method"s, string(g1)},
+                                  {"uri"s, string(g2)},
+                                  {"version"s, string(g3)}};
                 }
-                else if (SIPVER_20.compare(matchStartLine[1]) == 0)
+                else if (SIPVER_20 == g1)
                 {
                     sipm["s"s] = {{"type"s, SIPMessageType::response},
-                                  {"reason"s, matchStartLine[3]},
-                                  {"status"s, stoi(matchStartLine[2].str())},
-                                  {"version"s, matchStartLine[1]}};
+                                  {"reason"s, string(g3)},
+                                  {"status"s, stoi(string(g2))},
+                                  {"version"s, string(g1)}};
                 }
 
-                // Offset the start to the point after the start-line. Make sure to skip over any prefix!
-                // We may have junk or left-over crud at the start (especially if we're using text files)
-                bufferStart += (matchStartLine.length() + matchStartLine.prefix().length());
+                // Offset the start to the point after the match (full match end).
+                // This accounts for any prefix junk before the start-line.
+                bufferStart = matchStartLine.get<0>().end();
+                // Skip over any trailing \r\n after the match
+                while (bufferStart != bufferEnd && (*bufferStart == '\r' || *bufferStart == '\n'))
+                    ++bufferStart;
             }
             else { throw invalid_startline_error {std::format("{} - SIP Startline not found.", __func__)}; }
 
@@ -278,142 +281,133 @@ namespace siddiqsoft
         {
             using namespace std;
 
-            match_results<string::iterator> matcher;
-            bool                            found = false;
+            bool found = false;
 
             // NOTE: bufferStart points to the location past the very first v=0 as this is the signal of the start
             // of the body. Therefore, we start with blockIndex = 0 and then increment everytime we encounter next v=0
             int32_t blockIndex = -1;
 
-            while ((bufferStart < bufferEnd) && regex_search(bufferStart, bufferEnd, matcher, SIP_PATTERN_BODY))
+            while (bufferStart < bufferEnd)
             {
-                if (matcher.size() == 3)
+                auto matcher = ctre::search<SIP_PATTERN_BODY_RE>(bufferStart, bufferEnd);
+                if (!matcher) break;
+
+                auto key   = string(matcher.get<1>().to_view());
+                auto value = string(matcher.get<2>().to_view());
+
+                found = true;
+                if (key == "v"s)
                 {
-                    auto key   = matcher[1].str();
-                    auto value = matcher[2].str();
+                    // First element; increment blockIndex.
+                    // Add the next element to a new SDP object.
+                    blockIndex++; // the first match will increment this to "0"
+                    sipm["b"s]["sdp"s][blockIndex][key] = 0;
+                }
+                else if (key == "a"s)
+                {
+                    // attribute lines: https://en.wikipedia.org/wiki/Session_Description_Protocol#Attributes
+                    auto alineMatcher = ctre::search<SIP_PATTERN_BODY_ALINE_RE>(value);
 
-                    found = true;
-                    if (key == "v"s)
+                    if (alineMatcher)
                     {
-                        // First element; increment blockIndex.
-                        // Add the next element to a new SDP object.
-                        blockIndex++; // the first match will increment this to "0"
-                        sipm["b"s]["sdp"s][blockIndex][key] = 0;
+                        auto akey = string(alineMatcher.get<1>().to_view());
+                        auto aval = string(alineMatcher.get<2>().to_view());
+
+                        // This is the form where a=attribute:value
+                        nlohmann::json::json_pointer pkey(
+                                std::format("/b/sdp/{}/{}/{}", blockIndex, key, akey));
+
+                        // We may get multiple items for the same "key" such as `a=rtpmap:x` and `a=rtpmap:y`
+                        // In this case we should start an array
+                        if (sipm.contains(pkey) && !sipm[pkey].is_array())
+                        {
+                            auto previousValue = sipm[pkey]; // make a copy!
+                            sipm[pkey]         = {previousValue, aval};
+                        }
+                        else if (sipm[pkey].is_array())
+                            sipm[pkey].push_back(aval);
+                        else if (!aval.empty())
+                            sipm[pkey] = aval;
+                        else
+                            sipm[pkey] = nullptr;
                     }
-                    else if (key == "a"s)
+                    else if (!value.empty())
                     {
-                        // attribute lines: https://en.wikipedia.org/wiki/Session_Description_Protocol#Attributes
-                        match_results<string::iterator> alineMatcher;
-
-                        if (regex_search(value.begin(), value.end(), alineMatcher, SIP_PATTERN_BODY_ALINE) &&
-                            alineMatcher.size() >= 3)
-                        {
-                            // This is the form where a=attribute:value
-                            nlohmann::json::json_pointer pkey(
-                                    std::format("/b/sdp/{}/{}/{}", blockIndex, key, alineMatcher[1].str()));
-
-                            // We may get multiple items for the same "key" such as `a=rtpmap:x` and `a=rtpmap:y`
-                            // In this case we should start an array
-                            if (sipm.contains(pkey) && !sipm[pkey].is_array())
-                            {
-                                auto previousValue = sipm[pkey]; // make a copy!
-                                sipm[pkey]         = {previousValue, alineMatcher[2].str()};
-                                //nlohmann::json::json_pointer pkeyUpOneLevel(std::format("/b/sdp/{}/{}", blockIndex, key));
-                                //if (sipm[pkeyUpOneLevel].erase(alineMatcher[1].str()) == 1)
-                                //{
-                                //	// Push the first item
-                                //	sipm[pkey].push_back(previousValue);
-                                //	// Push the current item
-                                //	sipm[pkey].push_back(alineMatcher[2].str());
-                                //}
-                                //else
-                                //{
-                                //	sip2json_throw<unsupported_contenttype_error>(
-                                //			"{}:Failed removing {} from sipmessage.", __func__, string(pkey));
-                                //}
-                            }
-                            else if (sipm[pkey].is_array())
-                                sipm[pkey].push_back(alineMatcher[2].str());
-                            else if (alineMatcher.length() > 0)
-                                sipm[pkey] = alineMatcher[2].str();
-                            else
-                                sipm[pkey] = nullptr;
-                        }
-                        else if (!value.empty())
-                        {
-                            // This is the form where a=flag
-                            // We matched a=key without the `:` or the "value" so we should store the value with nullptr
-                            nlohmann::json::json_pointer pkey(std::format("/b/sdp/{}/{}/{}", blockIndex, key, value));
-                            sipm[pkey] = true;
-                        }
-                    }
-                    else
-                    {
-                        nlohmann::json::json_pointer pkey(std::format("/b/sdp/{}/{}", blockIndex, key));
-
-                        if (key == "c"s)
-                        {
-                            match_results<string::iterator> clineMatcher;
-                            if (regex_search(value.begin(), value.end(), clineMatcher, SIP_PATTERN_BODY_CLINE) &&
-                                clineMatcher.size() >= 3)
-                            {
-                                sipm[pkey] = nlohmann::json {
-                                        {"type"s, clineMatcher[1]}, {"subtype"s, clineMatcher[2]}, {"dn"s, clineMatcher[3]}};
-                            }
-                            else if (!value.empty()) { sipm[pkey] = value; }
-                        }
-                        else if (key == "o"s)
-                        {
-                            match_results<string::iterator> olineMatcher;
-                            if (regex_search(value.begin(), value.end(), olineMatcher, SIP_PATTERN_BODY_OLINE) &&
-                                olineMatcher.size() >= 6)
-                            {
-                                sipm[pkey] = nlohmann::json {{"user"s, olineMatcher[1]},
-                                                             {"t1"s, olineMatcher[2]},
-                                                             {"t2"s, olineMatcher[3]},
-                                                             {"type"s, olineMatcher[4]},
-                                                             {"subtype"s, olineMatcher[5]},
-                                                             {"host"s, olineMatcher[6]}};
-                            }
-                            else if (!value.empty()) { sipm[pkey] = value; }
-                        }
-                        else if (key.compare("i") == 0)
-                        {
-                            // Identity and number and type of call.
-                            match_results<string::iterator> ilineMatcher;
-                            if (regex_search(value.begin(), value.end(), ilineMatcher, SIP_PATTERN_BODY_ILINE) &&
-                                ilineMatcher.size() >= 3)
-                            {
-                                auto iName = ilineMatcher[1].str();
-                                // Set the name but check to ensure that if we have a " in the name that we strip it..
-                                sipm[pkey] = nlohmann::json {
-                                        {"name"s, iName.starts_with("\""s) ? iName.substr(1, iName.length() - 2) : iName},
-                                        {"dn"s, ilineMatcher[2]},
-                                        {"type"s, ilineMatcher[3]}};
-                            }
-                            else if (!value.empty()) { sipm[pkey] = value; }
-                            else { sipm[pkey] = ""; }
-                        }
-                        else if (key.compare("t"s) == 0)
-                        {
-                            // timing
-                            uint32_t ts = 0, te = 0;
-#if defined(_WIN32) || defined(_WIN64) || defined(WINDOWS) || defined(WIN32)
-                            if (::sscanf_s(value.c_str(), "%d %d", &ts, &te) > 0)
-#else
-                            if (std::sscanf(value.c_str(), "%d %d", &ts, &te) > 0)
-#endif
-                            {
-                                sipm[pkey].push_back(ts);
-                                sipm[pkey].push_back(te);
-                            }
-                        }
-                        else if (!key.empty() && value.empty()) { sipm[pkey] = ""; }
-                        else if (!key.empty()) { sipm[pkey] = value; }
+                        // This is the form where a=flag
+                        // We matched a=key without the `:` or the "value" so we should store the value with nullptr
+                        nlohmann::json::json_pointer pkey(std::format("/b/sdp/{}/{}/{}", blockIndex, key, value));
+                        sipm[pkey] = true;
                     }
                 }
-                // Offset the start to the point after the start-line.
-                bufferStart += matcher.length() + ELEM_NEWLINE.size();
+                else
+                {
+                    nlohmann::json::json_pointer pkey(std::format("/b/sdp/{}/{}", blockIndex, key));
+
+                    if (key == "c"s)
+                    {
+                        auto clineMatcher = ctre::search<SIP_PATTERN_BODY_CLINE_RE>(value);
+                        if (clineMatcher)
+                        {
+                            sipm[pkey] = nlohmann::json {
+                                    {"type"s, string(clineMatcher.get<1>().to_view())},
+                                    {"subtype"s, string(clineMatcher.get<2>().to_view())},
+                                    {"dn"s, string(clineMatcher.get<3>().to_view())}};
+                        }
+                        else if (!value.empty()) { sipm[pkey] = value; }
+                    }
+                    else if (key == "o"s)
+                    {
+                        auto olineMatcher = ctre::search<SIP_PATTERN_BODY_OLINE_RE>(value);
+                        if (olineMatcher)
+                        {
+                            sipm[pkey] = nlohmann::json {{"user"s, string(olineMatcher.get<1>().to_view())},
+                                                         {"t1"s, string(olineMatcher.get<2>().to_view())},
+                                                         {"t2"s, string(olineMatcher.get<3>().to_view())},
+                                                         {"type"s, string(olineMatcher.get<4>().to_view())},
+                                                         {"subtype"s, string(olineMatcher.get<5>().to_view())},
+                                                         {"host"s, string(olineMatcher.get<6>().to_view())}};
+                        }
+                        else if (!value.empty()) { sipm[pkey] = value; }
+                    }
+                    else if (key.compare("i") == 0)
+                    {
+                        // Identity and number and type of call.
+                        auto ilineMatcher = ctre::search<SIP_PATTERN_BODY_ILINE_RE>(value);
+                        if (ilineMatcher)
+                        {
+                            auto iName = string(ilineMatcher.get<1>().to_view());
+                            // Set the name but check to ensure that if we have a " in the name that we strip it..
+                            sipm[pkey] = nlohmann::json {
+                                    {"name"s, iName.starts_with("\""s) ? iName.substr(1, iName.length() - 2) : iName},
+                                    {"dn"s, string(ilineMatcher.get<2>().to_view())},
+                                    {"type"s, string(ilineMatcher.get<3>().to_view())}};
+                        }
+                        else if (!value.empty()) { sipm[pkey] = value; }
+                        else { sipm[pkey] = ""; }
+                    }
+                    else if (key.compare("t"s) == 0)
+                    {
+                        // timing
+                        uint32_t ts = 0, te = 0;
+#if defined(_WIN32) || defined(_WIN64) || defined(WINDOWS) || defined(WIN32)
+                        if (::sscanf_s(value.c_str(), "%d %d", &ts, &te) > 0)
+#else
+                        if (std::sscanf(value.c_str(), "%d %d", &ts, &te) > 0)
+#endif
+                        {
+                            sipm[pkey].push_back(ts);
+                            sipm[pkey].push_back(te);
+                        }
+                    }
+                    else if (!key.empty() && value.empty()) { sipm[pkey] = ""; }
+                    else if (!key.empty()) { sipm[pkey] = value; }
+                }
+
+                // Offset the start to the point after the match.
+                bufferStart = matcher.get<0>().end();
+                // Skip over trailing line endings
+                while (bufferStart < bufferEnd && (*bufferStart == '\r' || *bufferStart == '\n'))
+                    ++bufferStart;
             }
 
             return found;

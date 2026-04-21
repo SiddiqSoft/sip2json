@@ -38,7 +38,6 @@
 
 #include <algorithm>
 #include <string>
-#include <regex>
 #include <memory>
 #include <iterator>
 #include <chrono>
@@ -53,24 +52,24 @@ namespace siddiqsoft
 #pragma region SIP Response Codes
     // Source: https://en.wikipedia.org/wiki/List_of_SIP_response_codes
     static const inline std::map<uint32_t, std::string> SIPResponseCodes {{0, "NotSet"},
-                                                                          // 1xx—Provisional Responses
+                                                                          // 1xxï¿½Provisional Responses
                                                                           {100, "Trying"},
                                                                           {180, "Ringing"},
                                                                           {181, "Call is Being Forwarded"},
                                                                           {182, "Queued"},
                                                                           {183, "Session Progress"},
                                                                           {199, "Early Dialog Terminated"},
-                                                                          // 2xx—Successful Responses
+                                                                          // 2xxï¿½Successful Responses
                                                                           {200, "OK"},
                                                                           {202, "Accepted"},
                                                                           {204, "No Notification"},
-                                                                          // 3xx—Redirection Responses
+                                                                          // 3xxï¿½Redirection Responses
                                                                           {300, "Multiple Choices"},
                                                                           {301, "Moved Permanently"},
                                                                           {302, "Moved Temporarily"},
                                                                           {305, "Use Proxy"},
                                                                           {380, "Alternative Service"},
-                                                                          // 4xx—Client Failure Responses
+                                                                          // 4xxï¿½Client Failure Responses
                                                                           {400, "Bad Request"},
                                                                           {401, "Unauthorized"},
                                                                           {402, "Payment Required"},
@@ -118,7 +117,7 @@ namespace siddiqsoft
                                                                           {491, "Request Pending"},
                                                                           {493, "Undecipherable"},
                                                                           {494, "Security Agreement Required"},
-                                                                          // 5xx—Server Failure Responses
+                                                                          // 5xxï¿½Server Failure Responses
                                                                           {500, "Internal Server Error"},
                                                                           {501, "Not Implemented"},
                                                                           {502, "Bad Gateway"},
@@ -128,7 +127,7 @@ namespace siddiqsoft
                                                                           {513, "Message Too Large"},
                                                                           {555, "Push Notification Service Not Supported"},
                                                                           {580, "Precondition Failure"},
-                                                                          // 6xx—Global Failure Responses
+                                                                          // 6xxï¿½Global Failure Responses
                                                                           {603, "Decline"},
                                                                           {604, "Does Not Exist Anywhere"},
                                                                           {606, "Not Acceptable"},

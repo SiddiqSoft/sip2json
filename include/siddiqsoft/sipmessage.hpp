@@ -41,7 +41,6 @@
 #include <algorithm>
 #include <string>
 #include <variant>
-#include <regex>
 #include <memory>
 #include <iterator>
 #include <chrono>

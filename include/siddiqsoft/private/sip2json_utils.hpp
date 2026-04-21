@@ -36,7 +36,6 @@
 
 #pragma once
 
-#include <regex>
 #include <string>
 #include <chrono>
 #include <random>
@@ -44,6 +43,7 @@
 #include <optional>
 #include <format>
 
+#include "ctre.hpp"
 #include "nlohmann/json.hpp"
 
 namespace siddiqsoft
@@ -301,15 +301,17 @@ namespace siddiqsoft
     //	Some common elements for builing the SIP message
     static const std::string SIP_ADDR_PREFIX {"sip:\\s"};
 
-    // Helpers to parse the SIP buffer
-    static const std::regex SIP_PATTERN_STARTLINE {"(MESSAGE|INFO|INVITE|ACK|OPTIONS|BYE|CANCEL|REGISTER|SUBSCRIBE|NOTIFY|SIP/"
-                                                   "2.0)\\s{1,1}([^\\s]+)\\s{1,1}([^\\n\\f\\r]*)[\\r\\n|\\n]*"};
-    static const std::regex SIP_PATTERN_CONTENT_LENGTH {"^Content-Length:\\s{1,1}(\\d+)\\s*(\\r\\n|\\n)"};
-    static const std::regex SIP_PATTERN_CONTENT_TYPE {"^Content-type:\\s{1,1}([a-z|A-Z|\\-|/]+)\\s*(\\r\\n|\\n)"};
-    static const std::regex SIP_PATTERN_HEADER {"([^\\r\\n\\f\\x0A\\x0B]*)\\s*:\\s*([^\\r\\n\\v]*)[\\r\\n|\\n]*"};
-    static const std::regex SIP_PATTERN_BODY {"([vosiuepcbtzkma]{1})=([^\\r\\n|^\\n]*)"};
-    static const std::regex SIP_PATTERN_BODY_ALINE {"^([^:|\\r\\n]*)[:]{1}(.*$)[\\r\\n]?|(.*)[\\r\\n|\\n]"};
-    static const std::regex SIP_PATTERN_BODY_ILINE {"^(.*) \\(([^\\)]*)\\) ([^\\s|\\r\\n]*)"};
-    static const std::regex SIP_PATTERN_BODY_CLINE {"^(.*) (.*) ([^\\s|\\r\\n]*)"};
-    static const std::regex SIP_PATTERN_BODY_OLINE {"([^\\s]*) (\\d*) (\\d*) (\\w*) (\\w*) ([^\\s]*)"};
+    // Helpers to parse the SIP buffer (CTRE compile-time regular expressions)
+    static constexpr auto SIP_PATTERN_STARTLINE =
+            ctll::fixed_string {"(MESSAGE|INFO|INVITE|ACK|OPTIONS|BYE|CANCEL|REGISTER|SUBSCRIBE|NOTIFY|SIP/2\\.0)\\s([^\\s]+)\\s([^\\n\\f\\r]*)[\r\n]*"};
+    static constexpr auto SIP_PATTERN_BODY_RE =
+            ctll::fixed_string {"([vosiuepcbtzkma])=([^\r\n]*)"};
+    static constexpr auto SIP_PATTERN_BODY_ALINE_RE =
+            ctll::fixed_string {"^([^:\r\n]*):(.*)$"};
+    static constexpr auto SIP_PATTERN_BODY_ILINE_RE =
+            ctll::fixed_string {"^(.+) \\(([^\\)]*)\\) ([^\\s\r\n]*)"};
+    static constexpr auto SIP_PATTERN_BODY_CLINE_RE =
+            ctll::fixed_string {"^(.+) (.+) ([^\\s\r\n]*)"};
+    static constexpr auto SIP_PATTERN_BODY_OLINE_RE =
+            ctll::fixed_string {"([^\\s]+) (\\d+) (\\d+) (\\w+) (\\w+) ([^\\s]+)"};
 } // namespace siddiqsoft
