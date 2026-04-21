@@ -114,10 +114,10 @@ namespace siddiqsoft
 
         if constexpr (std::is_same_v<T, std::string>)
             return std::format("{0:%Y-%m-%dT%H:%M:%S}Z", rawtp);
-        else
+        else if constexpr (std::is_same_v<T, std::wstring>)
             return std::format(L"{0:%Y-%m-%dT%H:%M:%S}Z", rawtp);
-
-        return T {};
+        else
+            return T {};
     }
 
     /// @brief Creates a string representaiton of the date time in ISO8601 format with millisecond precision. Alias for TimeAsRFC3339 method.

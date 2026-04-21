@@ -89,7 +89,7 @@ namespace siddiqsoft
         }
 
         sipmessage(const nlohmann::json& src) { this->update(src); }
-        sipmessage(nlohmann::json&& src) { nlohmann::json((*this)).operator=(std::move(src)); }
+        sipmessage(nlohmann::json&& src) { nlohmann::json::operator=(std::move(src)); }
 
         sipmessage(sipmessage&&) = default;
         sipmessage(const sipmessage& src) { this->update(nlohmann::json(src)); }
@@ -97,7 +97,7 @@ namespace siddiqsoft
         sipmessage& operator=(sipmessage&& src) = default;
         sipmessage& operator=(nlohmann::json&& src)
         {
-            nlohmann::json((*this)).operator=(std::move(src));
+            nlohmann::json::operator=(std::move(src));
             return *this;
         }
 
@@ -326,18 +326,18 @@ static std::ostream& operator<<(std::ostream& os, const siddiqsoft::sip2jsonErro
 {
     switch (errs)
     {
-    case siddiqsoft::sip2jsonErrors::ok: os << "ok";
-    case siddiqsoft::sip2jsonErrors::incomplete_buffer_for_parse: os << "incomplete_buffer_for_parse";
-    case siddiqsoft::sip2jsonErrors::incomplete_buffer_for_content: os << "incomplete_buffer_for_content";
-    case siddiqsoft::sip2jsonErrors::incomplete_buffer_for_header: os << "incomplete_buffer_for_header";
-    case siddiqsoft::sip2jsonErrors::invalid_startline: os << "invalid_startline";
-    case siddiqsoft::sip2jsonErrors::unsupported_contenttype: os << "unsupported_contenttype";
-    case siddiqsoft::sip2jsonErrors::missing_required_element: os << "missing_required_element";
-    case siddiqsoft::sip2jsonErrors::invalid_document: os << "invalid_document";
-    case siddiqsoft::sip2jsonErrors::invalid_document_unsupported_method: os << "invalid_document_unsupported_method";
-    case siddiqsoft::sip2jsonErrors::invalid_document_unsupported_content: os << "invalid_document_unsupported_content";
-    case siddiqsoft::sip2jsonErrors::empty_message: os << "empty_message";
-    default: os << "unknown";
+    case siddiqsoft::sip2jsonErrors::ok: os << "ok"; break;
+    case siddiqsoft::sip2jsonErrors::incomplete_buffer_for_parse: os << "incomplete_buffer_for_parse"; break;
+    case siddiqsoft::sip2jsonErrors::incomplete_buffer_for_content: os << "incomplete_buffer_for_content"; break;
+    case siddiqsoft::sip2jsonErrors::incomplete_buffer_for_header: os << "incomplete_buffer_for_header"; break;
+    case siddiqsoft::sip2jsonErrors::invalid_startline: os << "invalid_startline"; break;
+    case siddiqsoft::sip2jsonErrors::unsupported_contenttype: os << "unsupported_contenttype"; break;
+    case siddiqsoft::sip2jsonErrors::missing_required_element: os << "missing_required_element"; break;
+    case siddiqsoft::sip2jsonErrors::invalid_document: os << "invalid_document"; break;
+    case siddiqsoft::sip2jsonErrors::invalid_document_unsupported_method: os << "invalid_document_unsupported_method"; break;
+    case siddiqsoft::sip2jsonErrors::invalid_document_unsupported_content: os << "invalid_document_unsupported_content"; break;
+    case siddiqsoft::sip2jsonErrors::empty_message: os << "empty_message"; break;
+    default: os << "unknown"; break;
     }
 
     return os;
