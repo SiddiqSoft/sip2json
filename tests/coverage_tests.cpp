@@ -977,3 +977,6 @@ TEST(coverage_json, Test_sip2jsonErrors_json_serialization)
     j["err"] = siddiqsoft::sip2jsonErrors::invalid_document;
     EXPECT_EQ("invalid_document", j["err"].get<std::string>());
 }
+
+
+//
