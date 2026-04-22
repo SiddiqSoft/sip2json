@@ -8,16 +8,16 @@ if(${${PROJECT_NAME}_BUILD_TESTS})
     add_executable(${TESTPROJ})
 
     # ASAN and Coverage only for Debug builds on Linux
-    if(((CMAKE_CXX_COMPILER_ID MATCHES [Cc][Ll][Aa][Nn][Gg]) 
-        OR (CMAKE_CXX_COMPILER_ID MATCHES [Gg][Nn][Uu]))
-       AND (CMAKE_BUILD_TYPE MATCHES [Dd][Ee][Bb][Uu][Gg]))
-        message(STATUS "Using sanitizers for leak and address on ${CMAKE_CXX_COMPILER_ID}")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address,leak")
-        target_link_libraries(${TESTPROJ} PRIVATE -fsanitize=address,leak)
-        message(STATUS "Enable instrumentation for code coverage")
-        target_compile_options(${TESTPROJ} PRIVATE -coverage -O0 -g)
-        target_link_options(${TESTPROJ} PRIVATE -coverage)
-    endif()
+    #if(((CMAKE_CXX_COMPILER_ID MATCHES [Cc][Ll][Aa][Nn][Gg]) 
+    #    OR (CMAKE_CXX_COMPILER_ID MATCHES [Gg][Nn][Uu]))
+    #   AND (CMAKE_BUILD_TYPE MATCHES [Dd][Ee][Bb][Uu][Gg]))
+    #    message(STATUS "Using sanitizers for leak and address on ${CMAKE_CXX_COMPILER_ID}")
+    #    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address,leak")
+    #    target_link_libraries(${TESTPROJ} PRIVATE -fsanitize=address,leak)
+    #    message(STATUS "Enable instrumentation for code coverage")
+    #    target_compile_options(${TESTPROJ} PRIVATE -coverage -O0 -g)
+    #    target_link_options(${TESTPROJ} PRIVATE -coverage)
+    #endif()
 
     if( CMAKE_BUILD_TYPE MATCHES [Dd][Ee][Bb][Uu][Gg])
         add_compile_definitions(${TESTPROJ} PRIVATE DEBUG=1 _DEBUG=1)
@@ -27,6 +27,7 @@ if(${${PROJECT_NAME}_BUILD_TESTS})
                     PRIVATE
                     ${PROJECT_SOURCE_DIR}/tests/siphelpers.cpp
                     ${PROJECT_SOURCE_DIR}/tests/synthetics.cpp
+                    ${PROJECT_SOURCE_DIR}/tests/coverage_tests.cpp
                     ${PROJECT_SOURCE_DIR}/tests/test.cpp)
 
     include(GoogleTest)
