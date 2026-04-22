@@ -447,9 +447,12 @@ TEST(stress, Test_parseFromBuffer_empty_string)
     auto        bs = buffer.begin();
 
     siddiqsoft::sipmessage sipm;
-    // Empty buffer: bufferStart == bufferEnd, should return empty sipmessage (no throw)
+    // Empty buffer: bufferStart == bufferEnd, skips parsing entirely, returns default sipmessage.
+    // Default sipmessage constructor sets "meta" key, so it won't be json-empty,
+    // but it should not be a request or response.
     EXPECT_NO_THROW(sipm = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end()));
-    EXPECT_TRUE(sipm.empty());
+    EXPECT_FALSE(sipm.isMessageRequest());
+    EXPECT_FALSE(sipm.isMessageResponse());
 }
 
 TEST(stress, Test_parseFromBuffer_exactly_minimal_length)
