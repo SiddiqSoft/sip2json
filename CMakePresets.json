@@ -50,6 +50,25 @@
             }
         },
         {
+            "name": "Apple-Benchmark",
+            "displayName": "Apple-Benchmark (Clang19 Release)",
+            "description": "Release build with benchmarks enabled",
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "inherits": "Project-Base",
+            "cacheVariables": {
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/install/${presetName}",
+                "CMAKE_C_COMPILER": "/opt/homebrew/opt/llvm/bin/clang",
+                "CMAKE_CXX_COMPILER": "/opt/homebrew/opt/llvm/bin/clang++",
+                "CMAKE_BUILD_TYPE": "Release",
+                "sip2json_BUILD_BENCHMARKS": "ON"
+            },
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Darwin"
+            }
+        },
+        {
             "name": "Linux-Clang-Debug",
             "displayName": "Linux Clang Debug",
             "description": "Target Linux Clang(Debug)",
@@ -194,6 +213,10 @@
         {
             "name": "Apple-Release",
             "configurePreset": "Apple-Release"
+        },
+        {
+            "name": "Apple-Benchmark",
+            "configurePreset": "Apple-Benchmark"
         },
         {
             "name": "Linux-GCC-Debug",
