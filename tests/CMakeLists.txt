@@ -29,6 +29,7 @@ if(${${PROJECT_NAME}_BUILD_TESTS})
                     ${PROJECT_SOURCE_DIR}/tests/synthetics.cpp
                     ${PROJECT_SOURCE_DIR}/tests/coverage_tests.cpp
                     ${PROJECT_SOURCE_DIR}/tests/edge_tests.cpp
+                    ${PROJECT_SOURCE_DIR}/tests/stress_tests.cpp
                     ${PROJECT_SOURCE_DIR}/tests/test.cpp)
 
     include(GoogleTest)
