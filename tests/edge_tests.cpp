@@ -398,6 +398,13 @@ TEST(edge_mutators, Test_setBody_json_merge)
 {
     siddiqsoft::sipmessage sipm("INVITE", "sip:bob@biloxi.com", siddiqsoft::createCallId(), 1);
 
+    // The request constructor sets "b" to nullptr.
+    // setBody(json) checks if "b" exists: if so, it calls at("b").update(arg).
+    // Since "b" is null (not an object), update() would throw.
+    // setBody only works correctly when "b" doesn't exist yet, or is already an object.
+    // First, remove the null body so setBody creates it fresh.
+    sipm.erase("b");
+
     nlohmann::json bodyData = {{"key1", "val1"}, {"key2", 42}};
     sipm.setBody(bodyData);
 
