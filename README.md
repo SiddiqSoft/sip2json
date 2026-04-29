@@ -4,17 +4,19 @@
 
 <!-- badges -->
 [![Build Status](https://dev.azure.com/siddiqsoft/siddiqsoft/_apis/build/status/siddiqsoftware.sip2json?branchName=master)](https://dev.azure.com/siddiqsoft/siddiqsoft/_build/latest?definitionId=21&branchName=master)
-![](https://img.shields.io/nuget/v/siddiqsoft.sip2json
-)
+![](https://img.shields.io/nuget/v/siddiqsoft.sip2json)
 ![](https://img.shields.io/nuget/dt/siddiqsoft.sip2json)
 ![](https://img.shields.io/azure-devops/tests/siddiqsoft/siddiqsoft/21/master.svg)
 <!-- end badges -->
 
-## Design goals
+## Design Goals
 
 A SIP parser for Modern C++ (C++20).
 
-Requires a C++20 compliant compiler. This means you must have clang-17 or higher gcc-14 or higher and visualstudio-2022 or higher.
+**Compiler Requirements:** C++20 compliant compiler
+- Clang 17 or higher
+- GCC 14 or higher  
+- Visual Studio 2022 or higher
 
 A lot of parsers exist but they tend to be written (a long time ago) and are primarily in C or wrap around the C library.
 
@@ -33,16 +35,17 @@ We skewed towards the following tradeoffs:
 - Transforms must be easy
 
 ### Features
-- Header only!
-- Everything is stored in as json document in a simple [json container](#container)
-  - [Start Line](#sip-start-line)
-  - [Headers](#sip-headers)
-  - [Content](#sip-body)
-- Serialize to SIP message
-- Deserialize from SIP message stream buffer to json document(s).
-- Dependencies
-  - The primary datastore is the [json](https://github.com/nlohmann/json) data structure
-  - C++20
+- **Header-only library** - Easy integration, no compilation required
+- **Efficient JSON representation** - Compact storage with minimal intermediate processing
+- **Bidirectional conversion** - Serialize to/from SIP messages
+- **Streaming support** - Parse multiple messages from a buffer asynchronously
+- **SDP support** - Full encoding/decoding of Session Description Protocol bodies
+- **Modern C++20** - Leverages latest language features for type safety and performance
+
+### Dependencies
+- [nlohmann/json](https://github.com/nlohmann/json) v3.12.0+ - JSON library
+- [compile-time-regular-expressions](https://github.com/hanickadot/compile-time-regular-expressions) v3.9.0+ - CTRE for compile-time regex patterns
+- C++20 standard library
 
 ### Out of scope
 This library is intendended to be used as a basis for you application and does not provide:
@@ -426,15 +429,59 @@ The source for the following is this [sample SIP](test/samples/NOTIFY_generic_1.
 ## Build and Testing
 
 ### Build
-We've tested on Windows terminal using the `cmake .` and `cmake --build .` followed by `ctest .` with success.
 
-> TIP
->
-> In order to clean a git repository of files and folders not part of the tracked stuff (to essentially clean the cmake stuff) use the following command: `git clean -d -x -f` and it will clean up the cmake files and cached files.
+The project uses CMake with presets for easy configuration across multiple platforms and compilers.
 
-### File termination CRLF
+#### Using CMake Presets (Recommended)
 
-The samples are `CRLF` terminated and the repository has a `.gitattributes` file specifying the handling of the `*.sip` files in this project. If there is an issue with the tests you should check the EOL marker for these files.
+```bash
+# Configure with a preset
+cmake --preset <preset-name>
+
+# Build
+cmake --build --preset <preset-name>
+
+# Run tests
+ctest --preset <preset-name>
+```
+
+**Available Presets:**
+- **macOS:** `Apple-Debug`, `Apple-Release`, `Apple-Benchmark`
+- **Linux (GCC):** `Linux-GCC-Debug`, `Linux-GCC-Release`
+- **Linux (Clang):** `Linux-Clang-Debug`, `Linux-Clang-Release`
+- **Windows:** `Windows-Debug`, `Windows-Release`
+
+#### Manual Build
+
+```bash
+# Configure
+cmake . -DCMAKE_BUILD_TYPE=Release -Dsip2json_BUILD_TESTS=ON
+
+# Build
+cmake --build .
+
+# Run tests
+ctest .
+```
+
+#### Cleaning Build Artifacts
+
+To clean the repository of CMake-generated files and cached data:
+
+```bash
+git clean -d -x -f
+```
+
+### File Termination (CRLF)
+
+The SIP message samples are `CRLF` terminated. The repository includes a `.gitattributes` file that specifies proper handling of `*.sip` files. If tests fail, verify the EOL markers in sample files are correct.
+
+### Code Quality
+
+- **Linting:** [Clang-Tidy](.clang-tidy) enforces best practices and static code analysis
+- **Formatting:** [Clang Format](.clang-format) ensures consistent code style
+- **Testing:** 64+ tests covering parsing and serialization
+- **Coverage:** Code coverage reports available in CI (Visual Studio Enterprise)
 
 ## External resources
 - [JSON for Modern C++](https://nlohmann.github.io/json/)
