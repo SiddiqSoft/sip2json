@@ -57,11 +57,13 @@
 
 namespace siddiqsoft
 {
+    /// @brief Enumeration representing the type of SIP message.
+    /// @details Distinguishes between SIP request messages and SIP response messages.
     enum class SIPMessageType
     {
-        notspecified,
-        request  = 1,
-        response = 2
+        notspecified, ///< Message type not specified or unknown
+        request  = 1, ///< SIP request message (e.g., INVITE, REGISTER, BYE)
+        response = 2  ///< SIP response message (e.g., 200 OK, 404 Not Found)
     };
 
 
@@ -71,13 +73,21 @@ namespace siddiqsoft
                                   {SIPMessageType::notspecified, "notspecified"}});
 
 
+    /// @brief Represents a SIP message with JSON serialization support.
+    /// @details The sipmessage class extends nlohmann::json to provide a structured representation
+    /// of SIP (Session Initiation Protocol) messages. It supports both request and response messages,
+    /// with automatic metadata tracking, header management, and body content handling.
+    /// The internal structure uses abbreviated keys: "s" for status/start line, "h" for headers,
+    /// "b" for body, and "meta" for metadata.
     class sipmessage : public nlohmann::json
     {
-        static constexpr std::string_view MetaLibName {"sip2json"};
-        static constexpr std::string_view MetaSchemaVersion {"1.0.2"};
-        static constexpr std::string_view MetaParserVersion {"1.15"};
+        static constexpr std::string_view MetaLibName {"sip2json"};      ///< Library name for metadata
+        static constexpr std::string_view MetaSchemaVersion {"1.0.2"};   ///< Schema version for metadata
+        static constexpr std::string_view MetaParserVersion {"2.2"};    ///< Parser version for metadata
 
     public:
+        /// @brief Default constructor initializing an empty SIP message with metadata.
+        /// @details Creates a new sipmessage with default metadata including version, timestamp, and TTX counter.
         sipmessage()
         {
             using namespace std;
@@ -87,20 +97,35 @@ namespace siddiqsoft
                                 {"ttx"s, 0}};
         }
 
+        /// @brief Copy constructor from nlohmann::json object.
+        /// @param src The source JSON object to copy from.
         sipmessage(const nlohmann::json& src) { this->update(src); }
+
+        /// @brief Move constructor from nlohmann::json object.
+        /// @param src The source JSON object to move from.
         sipmessage(nlohmann::json&& src) { nlohmann::json::operator=(std::move(src)); }
 
+        /// @brief Move constructor.
         sipmessage(sipmessage&&) = default;
+
+        /// @brief Copy constructor from another sipmessage.
+        /// @param src The source sipmessage to copy from.
         sipmessage(const sipmessage& src) { this->update(nlohmann::json(src)); }
 
+        /// @brief Move assignment operator.
         sipmessage& operator=(sipmessage&& src) = default;
+
+        /// @brief Move assignment operator from nlohmann::json.
+        /// @param src The source JSON object to move from.
+        /// @return Reference to this sipmessage.
         sipmessage& operator=(nlohmann::json&& src)
         {
             nlohmann::json::operator=(std::move(src));
             return *this;
         }
 
-
+        /// @brief Explicit conversion operator to nlohmann::json reference.
+        /// @return Reference to the underlying JSON object.
         explicit operator nlohmann::json&() { return static_cast<nlohmann::json&>(*this); }
 
 
@@ -179,14 +204,26 @@ namespace siddiqsoft
 
 
     public:
-        /// @brief Returns the header object reference
-        /// @return Return the header object reference
+        /// @brief Returns the header object reference.
+        /// @details Provides direct access to the headers section ("h") of the SIP message.
+        /// @return Reference to the header object.
         inline auto&            headers() { return this->at("h"); };
+
+        /// @brief Retrieves a header value by key with optional default value.
+        /// @tparam T The type of the header value to retrieve.
+        /// @param key The header name to look up.
+        /// @param defaultValue Optional default value if the header is not found.
+        /// @return The header value or the default value if not found.
         template <class T> auto getHeader(const std::string& key, std::optional<T> defaultValue = {})
         {
             // Return the value or the default for the object.
             return (*this)["h"].value(key, defaultValue.value_or(T {}));
         };
+
+        /// @brief Sets or updates the User-Agent header.
+        /// @details Automatically formats the User-Agent header with library name, version, and schema information.
+        /// @param ua Optional additional user agent string to append.
+        /// @return Reference to this sipmessage for method chaining.
         inline auto& setUserAgent(const std::string& ua)
         {
             if (!ua.empty())
@@ -195,9 +232,23 @@ namespace siddiqsoft
                 setHeader("User-Agent", std::format("{}/{} (schema:{})", MetaLibName, MetaParserVersion, MetaSchemaVersion));
             return *this;
         };
+
+        /// @brief Retrieves the User-Agent header value.
+        /// @return The User-Agent header string.
         inline auto     getUserAgent() { return getHeader<std::string>("User-Agent"); };
+
+        /// @brief Retrieves the Content-Length header value.
+        /// @return The Content-Length as a 32-bit unsigned integer.
         inline uint32_t getContentLength() { return getHeader<uint32_t>("Content-Length"); };
+
+        /// @brief Retrieves the Expires header value.
+        /// @return The Expires value as a 32-bit unsigned integer.
         inline uint32_t getExpires() { return getHeader<uint32_t>("Expires"); };
+
+        /// @brief Retrieves the Content-Type header value.
+        /// @details Handles case-insensitive lookup for Content-Type and Content-type headers
+        /// to accommodate non-compliant SIP servers.
+        /// @return The Content-Type header string, or empty string if not found.
         inline auto     getContentType()
         {
             // Special concession for some SIP servers which incorrectly encode this field.
@@ -216,38 +267,66 @@ namespace siddiqsoft
             return std::string {};
         };
 
+        /// @brief Retrieves the Call-ID header value.
+        /// @return The Call-ID header string.
         inline auto getCallID() { return getHeader<std::string>("Call-ID"); };
+
+        /// @brief Retrieves the SIP method from a request message.
+        /// @details Only applicable to request messages (e.g., INVITE, REGISTER, BYE).
+        /// @return The SIP method string, or empty string if not a request.
         inline auto getMethod() { return this->value("/s/method"_json_pointer, ""); };
+
+        /// @brief Retrieves the Request-URI from a request message.
+        /// @details Only applicable to request messages.
+        /// @return The Request-URI string, or empty string if not a request.
         inline auto getUri() { return this->value("/s/uri"_json_pointer, ""); };
+
+        /// @brief Retrieves the status code from a response message.
+        /// @details Only applicable to response messages (e.g., 200, 404, 500).
+        /// @return The status code as a 32-bit unsigned integer, or 0 if not a response.
         inline auto getStatusCode() { return this->value("/s/status"_json_pointer, 0); };
+
+        /// @brief Retrieves the reason phrase from a response message.
+        /// @details Only applicable to response messages (e.g., "OK", "Not Found").
+        /// @return The reason phrase string, or empty string if not a response.
         inline auto getReason() { return this->value("/s/reason"_json_pointer, ""); };
 
 
-        /// @brief Returns a reference to the body object. This method should be used to change the body contents to text/plain or non-SDP content-type.
-        /// @return Returns reference to the body element b
+        /// @brief Returns a reference to the body object.
+        /// @details Provides direct access to the body section ("b") of the SIP message.
+        /// This method should be used to change the body contents to text/plain or non-SDP content-type.
+        /// @return Reference to the body element.
+        /// @throws std::out_of_range if the body element does not exist.
         inline auto& body() noexcept(false) { return this->at("b"); };
 
-
-        /// @brief Checks if we have the "b" body element
-        /// @return True if the sipmessage contains the body element
+        /// @brief Checks if the message contains a body element.
+        /// @details Verifies the presence of the "b" (body) element in the SIP message.
+        /// @return True if the sipmessage contains the body element, false otherwise.
         inline bool hasBody() { return this->contains("b"); }
 
-
-        /// @brief Get body element (relative to /b). Throws if body does not exist.
-        /// @tparam T Type
-        /// @param jp The key as json_pointer
-        /// @param defaultValue The default value
-        /// @return The item found or the default value.
+        /// @brief Retrieves a body element using a JSON pointer with a default value.
+        /// @details Accesses nested elements within the body section using JSON pointer notation.
+        /// @tparam T The type of the body element to retrieve.
+        /// @param jp The JSON pointer path relative to the body (/b).
+        /// @param defaultValue The default value to return if the element is not found.
+        /// @return The body element value or the default value if not found.
+        /// @throws std::out_of_range if the body element does not exist.
         template <typename T> T getBodyElement(const nlohmann::json::json_pointer& jp, const T& defaultValue)
         {
             return this->at("b").value<T>(jp, defaultValue);
         };
 
+        /// @brief Checks if this message is a SIP request.
+        /// @details Examines the message type field to determine if this is a request message.
+        /// @return True if the message type is request, false otherwise.
         inline auto isMessageRequest()
         {
             return (this->value("/s/type"_json_pointer, SIPMessageType::notspecified) == SIPMessageType::request);
         };
 
+        /// @brief Checks if this message is a SIP response.
+        /// @details Examines the message type field to determine if this is a response message.
+        /// @return True if the message type is response, false otherwise.
         inline auto isMessageResponse()
         {
             return (this->value("/s/type"_json_pointer, SIPMessageType::notspecified) == SIPMessageType::response);

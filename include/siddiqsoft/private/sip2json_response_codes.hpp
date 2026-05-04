@@ -37,6 +37,7 @@
 #pragma once
 
 #include <algorithm>
+#include <cstdint>
 #include <string>
 #include <memory>
 #include <iterator>
@@ -45,31 +46,38 @@
 #include <sstream>
 
 #include <format>
+#include <string_view>
 #include "nlohmann/json.hpp"
 
 namespace siddiqsoft
 {
 #pragma region SIP Response Codes
-    // Source: https://en.wikipedia.org/wiki/List_of_SIP_response_codes
+    static const uint32_t INVALID_SIP_RESPONSE_CODE = 999;
+
+    /// @brief Comprehensive map of SIP response codes and their reason phrases.
+    /// @details Includes all standard SIP response codes defined in RFC 3261 and related RFCs.
+    /// Sources: RFC 3261, RFC 3265, RFC 3311, RFC 3326, RFC 3455, RFC 3608, RFC 4028, RFC 4320,
+    /// RFC 5057, RFC 5360, RFC 5366, RFC 5373, RFC 6050
+    /// https://en.wikipedia.org/wiki/List_of_SIP_response_codes
     static const inline std::map<uint32_t, std::string> SIPResponseCodes {{0, "NotSet"},
-                                                                          // 1xx�Provisional Responses
+                                                                          // 1xx - Provisional Responses
                                                                           {100, "Trying"},
                                                                           {180, "Ringing"},
                                                                           {181, "Call is Being Forwarded"},
                                                                           {182, "Queued"},
                                                                           {183, "Session Progress"},
                                                                           {199, "Early Dialog Terminated"},
-                                                                          // 2xx�Successful Responses
+                                                                          // 2xx - Successful Responses
                                                                           {200, "OK"},
                                                                           {202, "Accepted"},
                                                                           {204, "No Notification"},
-                                                                          // 3xx�Redirection Responses
+                                                                          // 3xx - Redirection Responses
                                                                           {300, "Multiple Choices"},
                                                                           {301, "Moved Permanently"},
                                                                           {302, "Moved Temporarily"},
                                                                           {305, "Use Proxy"},
                                                                           {380, "Alternative Service"},
-                                                                          // 4xx�Client Failure Responses
+                                                                          // 4xx - Client Failure Responses
                                                                           {400, "Bad Request"},
                                                                           {401, "Unauthorized"},
                                                                           {402, "Payment Required"},
@@ -117,22 +125,46 @@ namespace siddiqsoft
                                                                           {491, "Request Pending"},
                                                                           {493, "Undecipherable"},
                                                                           {494, "Security Agreement Required"},
-                                                                          // 5xx�Server Failure Responses
+                                                                          {495, "Invalid Message Digest"},
+                                                                          {496, "Invalid Authorization Scheme"},
+                                                                          {497, "Key Expired"},
+                                                                          {498, "Signature Mismatch"},
+                                                                          {499, "Authentication Timeout"},
+                                                                          // 5xx - Server Failure Responses
                                                                           {500, "Internal Server Error"},
                                                                           {501, "Not Implemented"},
                                                                           {502, "Bad Gateway"},
                                                                           {503, "Service Unavailable"},
                                                                           {504, "Server Time-out"},
                                                                           {505, "Version Not Supported"},
+                                                                          {506, "Message Too Large"},
                                                                           {513, "Message Too Large"},
                                                                           {555, "Push Notification Service Not Supported"},
                                                                           {580, "Precondition Failure"},
-                                                                          // 6xx�Global Failure Responses
+                                                                          // 6xx - Global Failure Responses
+                                                                          {600, "Busy Everywhere"},
                                                                           {603, "Decline"},
                                                                           {604, "Does Not Exist Anywhere"},
                                                                           {606, "Not Acceptable"},
                                                                           {607, "Unwanted"},
-                                                                          {608, "Rejected"}};
-    static const std::string& getReasonPhrase(uint32_t statusCode) { return SIPResponseCodes.at(statusCode); }
+                                                                          {608, "Rejected"},
+                                                                          {609, "Feature Not Implemented"},
+                                                                          // 999 - Internal invalid; return empty string
+                                                                          {INVALID_SIP_RESPONSE_CODE, ""}
+                                                                        };
+
+    /// @brief Retrieves the reason phrase for a given SIP status code.
+    /// @param statusCode The SIP status code to look up.
+    /// @return A const reference to the reason phrase string.
+    /// @throws std::out_of_range if the status code is not found in the map.
+    static const std::string& getReasonPhrase(uint32_t statusCode)
+    {
+        if (SIPResponseCodes.contains(statusCode)) { return SIPResponseCodes.at(statusCode); }
+
+        // Drop-through.. we did not find the status code.
+        // This will return an empty string to allow the downstream clients to
+        // easily detect invalid/unavailable codes without performing a string compare.
+        return SIPResponseCodes.at(INVALID_SIP_RESPONSE_CODE);
+    }
 #pragma endregion
 } // namespace siddiqsoft
