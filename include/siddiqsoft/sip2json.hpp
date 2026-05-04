@@ -68,6 +68,11 @@ namespace siddiqsoft
     /// @brief SIP message encoder and decoder utility class
     class sip2json
     {
+    private:
+        // Named constants for magic numbers
+        static constexpr size_t TYPICAL_SIP_MESSAGE_SIZE = 3 * 1024;  ///< Typical SIP message buffer size
+        static constexpr size_t METADATA_ONLY_SIZE = 1;               ///< Size when only metadata is present
+
     public:
 #pragma region Parsing helpers
     private:
@@ -219,7 +224,10 @@ namespace siddiqsoft
                         // Skip over the leading "space" if found.
                         if (*bufferStart == ' ') bufferStart = ++hsep;
 
-                    label_recummulate_to_unfold_buffer:
+                    // Process header value, handling folded headers (RFC 2822 header folding)
+                    bool headerProcessed = false;
+                    while (!headerProcessed)
+                    {
                         auto hend = useCRLF ? search(hsep, headerEnd, ELEM_NEWLINE.begin(), ELEM_NEWLINE.end())
                                             : search(hsep, headerEnd, ELEM_NEWLINE_LF.begin(), ELEM_NEWLINE_LF.end());
                         if (hend != headerEnd)
@@ -235,14 +243,14 @@ namespace siddiqsoft
                                 value.append(hsep, hend);
                                 // Advance to past the fold indicator
                                 hsep = hend + lineEndSize + 1;
-                                // Go back to find the next section..
-                                goto label_recummulate_to_unfold_buffer;
+                                // Continue loop to process next folded line
                             }
                             else
                             {
                                 value.append(hsep, hend);
                                 found       = storeHeaderValue(sipm, key, value);
                                 bufferStart = hend += lineEndSize;
+                                headerProcessed = true;
                             }
                         }
                         else
@@ -252,7 +260,9 @@ namespace siddiqsoft
                             found       = storeHeaderValue(sipm, key, value);
                             bufferStart = headerEnd + headerDelimiterSize;
                             done        = true;
+                            headerProcessed = true;
                         }
+                    }
                     }
                     else
                     {
@@ -443,47 +453,23 @@ namespace siddiqsoft
                         parseCallback(std::move(sipm));
                     }
                 }
-                catch (const invalid_startline_error& e)
+                catch (const sip2json_exception& e)
                 {
-                    // If the very first one has issues then we should quit.
-                    if (errorCallback.has_value()) errorCallback.value()(e, bufferStart, bufferEnd);
-                    break;
-                }
-                catch (const unsupported_contenttype_error& e)
-                {
-                    // If the very first one has issues then we should quit.
-                    if (errorCallback.has_value()) errorCallback.value()(e, bufferStart, bufferEnd);
-                    break;
-                }
-                catch (const incomplete_buffer_for_parse_error& e)
-                {
-                    // If the very first one has issues then we should quit.
-                    if (errorCallback.has_value()) errorCallback.value()(e, bufferStart, bufferEnd);
-                    break;
-                }
-                catch (const incomplete_buffer_for_header_error& e)
-                {
-                    if (errorCallback.has_value()) errorCallback.value()(e, bufferStart, bufferEnd);
-                    break;
-                }
-                catch (const incomplete_buffer_for_content_error& e)
-                {
+                    // Consolidated error handling for all sip2json exceptions
                     if (errorCallback.has_value()) errorCallback.value()(e, bufferStart, bufferEnd);
                     break;
                 }
                 catch (const std::exception& e)
                 {
-                    // Just in case catch-all
+                    // Catch-all for standard exceptions
                     sip2json_exception ex(e);
-
                     if (errorCallback.has_value()) errorCallback.value()(ex, bufferStart, bufferEnd);
                     break;
                 }
                 catch (...)
                 {
-                    // Just in case catch-all
+                    // Catch-all for unknown exceptions
                     sip2json_exception ex("Unknown generic error");
-
                     if (errorCallback.has_value()) errorCallback.value()(ex, bufferStart, bufferEnd);
                     break;
                 }
