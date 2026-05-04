@@ -131,7 +131,7 @@ namespace siddiqsoft
         /// @param key The key
         /// @param value The value
         /// @return Returns true if the store was successful.
-        static bool storeHeaderValue(sipmessage& sipm, const std::string& key, const std::string& value)
+        static bool storeHeaderValue(sipmessage& sipm, const std::string& key, const std::string& value) noexcept(false)
         {
             if (key.compare(HF_VIA) == 0)
             {
@@ -670,7 +670,9 @@ namespace siddiqsoft
             // Headers
             if (auto mh = sipm.headers(); mh.size() > 0)
             {
-                //TODO: This will not care about the order of the serialized headers. The json library does not care about order.
+                // NOTE: Header order is not preserved during serialization.
+                // The nlohmann::json library does not maintain insertion order.
+                // This is acceptable for SIP as header order is not significant per RFC 3261.
                 for (auto& [key, val] : sipm.headers().items())
                 {
                     if (contentType.empty() && (key.compare(HF_CONTENT_TYPE) == 0) && val.is_string()) contentType = val;
