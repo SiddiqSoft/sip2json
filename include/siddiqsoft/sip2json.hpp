@@ -281,11 +281,28 @@ namespace siddiqsoft
         }
 
 
-        /// @brief Decode a SDP message blocks
-        /// @param sipm Destination sipmessage
-        /// @param bufferStart Start of the buffer. Just past the end of the header section (tip of the content section).
+        /// @brief Decode SDP (Session Description Protocol) message blocks
+        /// @details This method parses SDP blocks from the buffer according to RFC 4566.
+        /// It handles multiple SDP blocks (separated by v=0 lines) and supports:
+        /// - Session-level attributes: v (version), o (origin), s (session name), i (session info), 
+        ///   u (URI), e (email), p (phone), c (connection), t (timing)
+        /// - Media-level attributes: m (media), a (attributes)
+        /// - Special parsing for connection lines (c=), origin lines (o=), session info (i=)
+        /// - Attribute lines with both key:value and flag formats
+        /// - Multiple attributes with the same key (stored as arrays)
+        /// 
+        /// The method increments blockIndex for each new SDP session (v=0 line encountered).
+        /// Attributes are stored in the JSON structure at /b/sdp/{blockIndex}/{key}/{subkey}
+        /// 
+        /// @param sipm Destination sipmessage object to store parsed SDP data
+        /// @param bufferStart Start of the buffer (modified to point past parsed content)
         /// @param bufferEnd End of the content area (not the end of the stream)
-        /// @return true/false depending on the state of the decode of SDP blocks.
+        /// @return true if at least one SDP element was parsed, false if no elements found
+        /// @throws std::exception if parsing fails
+        /// 
+        /// @note bufferStart must point to the location past the very first v=0 as this signals
+        ///       the start of the body. The method starts with blockIndex = -1 and increments
+        ///       it to 0 on the first v=0 match.
         static bool
         parseBodySDP(sipmessage& sipm, std::string::iterator& bufferStart, const std::string::iterator& bufferEnd) noexcept(false)
         {
@@ -528,7 +545,7 @@ namespace siddiqsoft
             auto       previousBufferStart = bufferStart; // save the value so we can reset if we end up with exception.
             sipmessage sipm;
 #if defined(DEBUG) || defined(_DEBUG)
-            InvokeOnDestruct timeTaken {[&](long long delta)
+            [[maybe_unused]] InvokeOnDestruct timeTaken {[&](long long delta)
                                         {
                                             sipm["meta"]["ttx"]  = delta;
                                             sipm["meta"]["pre"]  = bufferStart - previousBufferStart;
