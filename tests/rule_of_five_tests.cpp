@@ -308,23 +308,20 @@ namespace
     }
 
     // NOLINTNEXTLINE
-    TEST(RuleOfFive, MoveThenAccess)
+    TEST(RuleOfFive, MovePreservesContent)
     {
-        // Test that moved-from object is in valid state
+        // Test that move operation preserves content in moved-to object
         auto callId = siddiqsoft::createCallId();
         siddiqsoft::sipmessage original("INVITE", "sip:test@example.com", callId, 1);
+        original.setHeader("X-Custom", "test-value");
         
         siddiqsoft::sipmessage moved = std::move(original);
         
-        // Moved object should have the content
+        // Verify moved object has all the content
         EXPECT_EQ(callId, moved.getCallID());
         EXPECT_EQ("INVITE", moved.getMethod());
         EXPECT_TRUE(moved.isMessageRequest());
-        
-        // Original is in a valid but unspecified state after move
-        // We just verify it doesn't crash when accessed
-        EXPECT_NO_THROW(original.getMethod());
-        EXPECT_NO_THROW(original.getCallID());
+        EXPECT_EQ("test-value", moved.getHeader<std::string>("X-Custom"));
     }
 
     // NOLINTNEXTLINE
