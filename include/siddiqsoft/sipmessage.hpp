@@ -110,7 +110,7 @@ namespace siddiqsoft
 
         /// @brief Copy constructor from another sipmessage.
         /// @param src The source sipmessage to copy from.
-        sipmessage(const sipmessage& src) { this->update(nlohmann::json(src)); }
+        sipmessage(const sipmessage& src) : nlohmann::json(static_cast<const nlohmann::json&>(src)) {}
 
         /// @brief Move assignment operator.
         sipmessage& operator=(sipmessage&& src) = default;
