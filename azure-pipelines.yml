@@ -57,7 +57,6 @@ stages:
       displayName: 'Determine Version..'
       name: version_step
       inputs:
-        useConfigFile: true
         configFilePath: 'GitVersion.yml'
 
     - task: CMake@1
@@ -147,10 +146,10 @@ stages:
         - Agent.OS -equals Linux
     strategy:
       matrix:
-         GCC-Debug:
+        GCC-Debug:
            BuildType: Debug
            cmake.preset: 'Linux-GCC-$(BuildType)'
-          MSBuildConfiguration: $(BuildType)
+           MSBuildConfiguration: $(BuildType)
            cmakeExtraArgs: 
         GCC-Release:
            BuildType: Release
