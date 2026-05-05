@@ -267,13 +267,13 @@ stages:
       condition: and(succeeded(), eq(variables['BuildType'], 'Release'), or(eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(variables['Build.SourceBranch'], 'refs/heads/master')))
 
     - task: CMake@1
-      displayName: 'CMake Configure $(cmake.preset)'
+      displayName: 'CMake Configure $(PROJECT_NAME) $(cmake.preset)'
       inputs:
         cmakeArgs: '--preset $(cmake.preset) -D$(PROJECT_NAME)_BUILD_TESTS=ON -D$(PROJECT_NAME)_BUILD_BENCHMARKS=ON -DCI_BUILDID=$(GITVERSION_MAJORMINORPATCH) -DCPM_SOURCE_CACHE=$(Agent.HomeDirectory)/.cpmcache'
         workingDirectory: '$(System.DefaultWorkingDirectory)'
 
     - task: CMake@1
-      displayName: 'CMake Build $(cmake.preset)'
+      displayName: 'CMake Build $(PROJECT_NAME) $(cmake.preset)'
       inputs:
         cmakeArgs: '--build --preset $(cmake.preset) -DCI_BUILDID=$(GITVERSION_MAJORMINORPATCH) -DCPM_SOURCE_CACHE=$(Agent.HomeDirectory)/.cpmcache'
         workingDirectory: '$(System.DefaultWorkingDirectory)'
