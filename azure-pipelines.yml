@@ -147,26 +147,26 @@ stages:
         - Agent.OS -equals Linux
     strategy:
       matrix:
-#        GCC-Debug:
-#          BuildType: Debug
-#          cmake.preset: 'Linux-GCC-$(BuildType)'
-#         MSBuildConfiguration: Debug
-#          cmakeExtraArgs: 
-#        GCC-Release:
-#          BuildType: Release
-#          cmake.preset: 'Linux-GCC-$(BuildType)'
-#          cmakeExtraArgs: 
-#          MSBuildConfiguration: Release
-#        Clang-Debug:
-#          BuildType: Debug
-#          cmake.preset: 'Linux-Clang-$(BuildType)'
-#          MSBuildConfiguration: Debug
-#         cmakeExtraArgs: 
+         GCC-Debug:
+           BuildType: Debug
+           cmake.preset: 'Linux-GCC-$(BuildType)'
+          MSBuildConfiguration: $(BuildType)
+           cmakeExtraArgs: 
+        GCC-Release:
+           BuildType: Release
+           cmake.preset: 'Linux-GCC-$(BuildType)'
+           cmakeExtraArgs: 
+           MSBuildConfiguration: $(BuildType)
+        Clang-Debug:
+          BuildType: Debug
+          cmake.preset: 'Linux-Clang-$(BuildType)'
+          MSBuildConfiguration: $(BuildType)
+          cmakeExtraArgs: 
         Clang-Release:
           BuildType: Release
           cmake.preset: 'Linux-Clang-$(BuildType)'
           cmakeExtraArgs: 
-          MSBuildConfiguration: Release
+          MSBuildConfiguration: $(BuildType)
     steps:
     - checkout: self
       fetchDepth: 0
@@ -238,7 +238,7 @@ stages:
           mergeTestResults: false
           buildConfiguration: '$(BuildType)'
       continueOnError: false
-      condition: succeeded()
+      condition: and(succeeded(), eq(variables['BuildType'], 'Release'))
 
     - task: PublishCodeCoverageResults@2
       displayName: 'Publish Coverage Results (Linux builds)'
@@ -270,6 +270,7 @@ stages:
     - task: PublishHtmlReport@1
       inputs:
         reportDir: '$(System.DefaultWorkingDirectory)/build/$(cmake.preset)/benchmarks/benchmark_report.html'
+      condition: and(succeeded(), eq(variables['BuildType'], 'Release'))
 
     - task: PublishTestResults@2
       displayName: 'Publish Benchmark Results as Tests'
