@@ -269,7 +269,7 @@ stages:
 
     - task: PublishHtmlReport@1
       inputs:
-        reportDir: '$(System.DefaultWorkingDirectory)/build/$(cmake.preset)/benchmarks/'
+        reportDir: '$(System.DefaultWorkingDirectory)/build/$(cmake.preset)/benchmarks/benchmark_report.html'
 
     - task: PublishTestResults@2
       displayName: 'Publish Benchmark Results as Tests'
