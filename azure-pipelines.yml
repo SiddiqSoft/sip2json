@@ -92,7 +92,7 @@ stages:
       displayName: 'Run Benchmarks $(cmake.preset)'
       inputs:
         script: 'sip2json_benchmarks --benchmark_out=benchmark_results.json --benchmark_out_format=json'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/build/$(cmake.preset)'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/build/$(cmake.preset)/benchmarks/'
       condition: and(succeeded(), eq(variables['BuildType'], 'Release'))
       continueOnError: true
 
@@ -130,7 +130,7 @@ stages:
           with open('benchmark_results.xml', 'w') as f:
               f.write(junit_xml)
           "
-        workingDirectory: '$(System.DefaultWorkingDirectory)/build/$(cmake.preset)'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/build/$(cmake.preset)/benchmarks/'
       condition: and(succeeded(), eq(variables['BuildType'], 'Release'))
       continueOnError: true
 
