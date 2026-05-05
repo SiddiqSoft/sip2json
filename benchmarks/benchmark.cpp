@@ -121,6 +121,55 @@ static std::string createMultiMessageBuffer(int count)
     return buffer;
 }
 
+// Helper function to create large SIP message with extended SDP
+static std::string createLargeSIPMessageWithExtendedSDP()
+{
+    std::string msg = "INVITE sip:conference@server.example.com SIP/2.0\r\n"
+                      "Via: SIP/2.0/TCP client.example.com:5060;branch=z9hG4bK74bf9\r\n"
+                      "Via: SIP/2.0/TCP proxy1.example.com:5060;branch=z9hG4bK2d4790.1\r\n"
+                      "Via: SIP/2.0/TCP proxy2.example.com:5060;branch=z9hG4bK3f5e12.2\r\n"
+                      "Via: SIP/2.0/TCP proxy3.example.com:5060;branch=z9hG4bK4g6f23.3\r\n"
+                      "Max-Forwards: 68\r\n"
+                      "To: Conference <sip:conference@server.example.com>\r\n"
+                      "From: User <sip:user@client.example.com>;tag=9fxced76sl\r\n"
+                      "Call-ID: 3848276298220188511@client.example.com\r\n"
+                      "CSeq: 1 INVITE\r\n"
+                      "Contact: sip:user@client.example.com\r\n"
+                      "User-Agent: TestClient/1.0\r\n"
+                      "Accept: application/sdp\r\n"
+                      "Content-Type: application/sdp\r\n";
+
+    // Build extended SDP with multiple media streams
+    std::string sdp = "v=0\r\n"
+                      "o=user 53655765 2353687637 IN IP4 client.example.com\r\n"
+                      "s=Conference Call with Multiple Streams\r\n"
+                      "i=\"John Doe\" (5551234567) CallByPhone-URL\r\n"
+                      "c=IN IP4 client.example.com\r\n"
+                      "t=0 0\r\n";
+
+    // Add multiple audio streams
+    for (int i = 0; i < 5; ++i)
+    {
+        sdp += std::format("m=audio {} RTP/AVP 0 8 97\r\n", 49170 + i * 2);
+        sdp += "a=rtpmap:0 PCMU/8000\r\n";
+        sdp += "a=rtpmap:8 PCMA/8000\r\n";
+        sdp += "a=rtpmap:97 iLBC/8000\r\n";
+        sdp += "a=sendrecv\r\n";
+        sdp += "a=ptime:20\r\n";
+    }
+
+    // Add video stream
+    sdp += "m=video 49180 RTP/AVP 96\r\n"
+           "a=rtpmap:96 H264/90000\r\n"
+           "a=fmtp:96 profile-level-id=42e01e\r\n"
+           "a=sendrecv\r\n";
+
+    msg += std::format("Content-Length: {}\r\n\r\n", sdp.size());
+    msg += sdp;
+
+    return msg;
+}
+
 
 // ============================================================================
 // PARSING BENCHMARKS
@@ -251,7 +300,7 @@ BENCHMARK(BM_ParseAsyncMultipleMessages)->Arg(1)->Arg(5)->Arg(10)->Arg(50);
 // Serialize a simple REGISTER request
 static void BM_SerializeRegister(benchmark::State& state)
 {
-    siddiqsoft::sipmessage sipm("REGISTER", "sip:hello@world.com", siddiqsoft::createCallId(), 1);
+    siddiqsoft::sipmessage sipm(siddiqsoft::METHOD_REGISTER, "sip:hello@world.com", siddiqsoft::createCallId(), 1);
     sipm.setHeader("To", "sip:hello@world.com")
             .setHeader("Contact", "sip:hello@world.com")
             .setHeader("Content-Length", 0);
@@ -268,7 +317,7 @@ BENCHMARK(BM_SerializeRegister);
 // Serialize an INVITE with SDP body
 static void BM_SerializeInviteWithSDP(benchmark::State& state)
 {
-    siddiqsoft::sipmessage sipm("INVITE", "sip:bob@biloxi.com", siddiqsoft::createCallId(), 1);
+    siddiqsoft::sipmessage sipm(siddiqsoft::METHOD_INVITE, "sip:bob@biloxi.com", siddiqsoft::createCallId(), 1);
     sipm.setHeader("To", "Bob <sip:bob@biloxi.com>")
             .setHeader("Contact", "sip:alice@pc33.atlanta.com")
             .setHeader("Content-Type", siddiqsoft::CONTENT_TYPE_APP_SDP);
@@ -359,7 +408,7 @@ static void BM_ConstructRequestSipmessage(benchmark::State& state)
     auto callId = siddiqsoft::createCallId();
     for (auto _ : state)
     {
-        siddiqsoft::sipmessage sipm("REGISTER", "sip:hello@world.com", callId, 1);
+        siddiqsoft::sipmessage sipm(siddiqsoft::METHOD_REGISTER, "sip:hello@world.com", callId, 1);
         benchmark::DoNotOptimize(sipm);
     }
     state.SetItemsProcessed(state.iterations());
@@ -512,3 +561,168 @@ static void BM_SetHeader(benchmark::State& state)
     state.SetItemsProcessed(state.iterations());
 }
 BENCHMARK(BM_SetHeader);
+
+
+// ============================================================================
+// STRESS/HIGH-FREQUENCY DECODE BENCHMARKS FOR LARGE PACKETS
+// ============================================================================
+
+// High-frequency decode: parse large SIP message with extended SDP repeatedly
+static void BM_HighFrequencyDecodeLargePacket(benchmark::State& state)
+{
+    const std::string largeMsg = createLargeSIPMessageWithExtendedSDP();
+
+    for (auto _ : state)
+    {
+        std::string buffer = largeMsg;
+        auto        bs     = buffer.begin();
+        auto        sipm   = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end());
+        benchmark::DoNotOptimize(sipm);
+    }
+    state.SetItemsProcessed(state.iterations());
+    state.SetBytesProcessed(state.iterations() * largeMsg.size());
+}
+BENCHMARK(BM_HighFrequencyDecodeLargePacket);
+
+// Stress test: parse 100 large packets in sequence
+static void BM_StressTest100LargePackets(benchmark::State& state)
+{
+    const std::string largeMsg = createLargeSIPMessageWithExtendedSDP();
+    std::string       buffer;
+    buffer.reserve(100 * largeMsg.size());
+    for (int i = 0; i < 100; ++i)
+    {
+        buffer += largeMsg;
+    }
+
+    for (auto _ : state)
+    {
+        std::string copy = buffer;
+        auto        bs   = copy.begin();
+        auto        msgs = siddiqsoft::sip2json::parse(bs, copy.end());
+        benchmark::DoNotOptimize(msgs);
+    }
+    state.SetItemsProcessed(state.iterations() * 100);
+    state.SetBytesProcessed(state.iterations() * buffer.size());
+}
+BENCHMARK(BM_StressTest100LargePackets);
+
+// Stress test: async parse 100 large packets
+static void BM_StressTestAsyncParse100LargePackets(benchmark::State& state)
+{
+    const std::string largeMsg = createLargeSIPMessageWithExtendedSDP();
+    std::string       buffer;
+    buffer.reserve(100 * largeMsg.size());
+    for (int i = 0; i < 100; ++i)
+    {
+        buffer += largeMsg;
+    }
+
+    for (auto _ : state)
+    {
+        std::string copy  = buffer;
+        int         count = 0;
+        auto remaining = siddiqsoft::sip2json::parseAsync(copy, [&](auto&& sipm) { count++; });
+        benchmark::DoNotOptimize(remaining);
+        benchmark::DoNotOptimize(count);
+    }
+    state.SetItemsProcessed(state.iterations() * 100);
+    state.SetBytesProcessed(state.iterations() * buffer.size());
+}
+BENCHMARK(BM_StressTestAsyncParse100LargePackets);
+
+// Stress test: parse 1000 large packets (extreme stress)
+static void BM_StressTest1000LargePackets(benchmark::State& state)
+{
+    const std::string largeMsg = createLargeSIPMessageWithExtendedSDP();
+    std::string       buffer;
+    buffer.reserve(1000 * largeMsg.size());
+    for (int i = 0; i < 1000; ++i)
+    {
+        buffer += largeMsg;
+    }
+
+    for (auto _ : state)
+    {
+        std::string copy = buffer;
+        auto        bs   = copy.begin();
+        auto        msgs = siddiqsoft::sip2json::parse(bs, copy.end());
+        benchmark::DoNotOptimize(msgs);
+    }
+    state.SetItemsProcessed(state.iterations() * 1000);
+    state.SetBytesProcessed(state.iterations() * buffer.size());
+}
+BENCHMARK(BM_StressTest1000LargePackets);
+
+// Stress test: async parse 1000 large packets (extreme stress)
+static void BM_StressTestAsyncParse1000LargePackets(benchmark::State& state)
+{
+    const std::string largeMsg = createLargeSIPMessageWithExtendedSDP();
+    std::string       buffer;
+    buffer.reserve(1000 * largeMsg.size());
+    for (int i = 0; i < 1000; ++i)
+    {
+        buffer += largeMsg;
+    }
+
+    for (auto _ : state)
+    {
+        std::string copy  = buffer;
+        int         count = 0;
+        auto remaining = siddiqsoft::sip2json::parseAsync(copy, [&](auto&& sipm) { count++; });
+        benchmark::DoNotOptimize(remaining);
+        benchmark::DoNotOptimize(count);
+    }
+    state.SetItemsProcessed(state.iterations() * 1000);
+    state.SetBytesProcessed(state.iterations() * buffer.size());
+}
+BENCHMARK(BM_StressTestAsyncParse1000LargePackets);
+
+// Variable-size stress test: parse N large packets (parameterized)
+static void BM_VariableSizeStressTest(benchmark::State& state)
+{
+    const int         packetCount = static_cast<int>(state.range(0));
+    const std::string largeMsg    = createLargeSIPMessageWithExtendedSDP();
+    std::string       buffer;
+    buffer.reserve(packetCount * largeMsg.size());
+    for (int i = 0; i < packetCount; ++i)
+    {
+        buffer += largeMsg;
+    }
+
+    for (auto _ : state)
+    {
+        std::string copy = buffer;
+        auto        bs   = copy.begin();
+        auto        msgs = siddiqsoft::sip2json::parse(bs, copy.end());
+        benchmark::DoNotOptimize(msgs);
+    }
+    state.SetItemsProcessed(state.iterations() * packetCount);
+    state.SetBytesProcessed(state.iterations() * buffer.size());
+}
+BENCHMARK(BM_VariableSizeStressTest)->Arg(10)->Arg(50)->Arg(100)->Arg(500);
+
+// High-frequency async decode with variable packet counts
+static void BM_VariableSizeAsyncStressTest(benchmark::State& state)
+{
+    const int         packetCount = static_cast<int>(state.range(0));
+    const std::string largeMsg    = createLargeSIPMessageWithExtendedSDP();
+    std::string       buffer;
+    buffer.reserve(packetCount * largeMsg.size());
+    for (int i = 0; i < packetCount; ++i)
+    {
+        buffer += largeMsg;
+    }
+
+    for (auto _ : state)
+    {
+        std::string copy  = buffer;
+        int         count = 0;
+        auto remaining = siddiqsoft::sip2json::parseAsync(copy, [&](auto&& sipm) { count++; });
+        benchmark::DoNotOptimize(remaining);
+        benchmark::DoNotOptimize(count);
+    }
+    state.SetItemsProcessed(state.iterations() * packetCount);
+    state.SetBytesProcessed(state.iterations() * buffer.size());
+}
+BENCHMARK(BM_VariableSizeAsyncStressTest)->Arg(10)->Arg(50)->Arg(100)->Arg(500);

@@ -184,30 +184,9 @@ int main()
 
 For more examples, see [docs/API.md - Examples](docs/API.md#examples).
 
-## Roadmap
-
- Release | Notes
----------|---------
-v1.0.0   | Basic decoder and decoder with support for CloudEvent envelope.
-v2.0.0   | Improve performance and refactor interface. Avoid use of std::regex due to its reported highcost.
-
 ## Code Quality & Best Practices
 
 The codebase has been thoroughly reviewed and improved to follow modern C++ best practices:
-
-### Improvements Applied
-- ✅ **Rule of Five Compliance** - All special member functions properly implemented
-- ✅ **Const-Correctness** - All getter methods are const-qualified
-- ✅ **Move Semantics** - All move operations have `noexcept` guarantee
-- ✅ **Exception Safety** - Consistent `noexcept(false)` specifications
-- ✅ **Code Quality** - Eliminated goto statements, magic numbers, and code duplication
-- ✅ **Documentation** - Comprehensive method documentation with RFC references
-- ✅ **Comprehensive Test Suite** - 142+ tests including Rule of Five compliance tests
-
-### Quality Metrics
-- **Const-Correct Methods**: 100%
-- **Test Coverage**: 142+ tests across 19 test suites
-- **Backward Compatibility**: 100%
 
 For detailed information on design patterns and architecture, see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
@@ -405,12 +384,12 @@ The source for the following is this [sample SIP](test/samples/NOTIFY_generic_1.
                         "0 pcmu/8000/1",
                         "101 telephone-event/8000"
                     ],
-                    "server": "ukdc1-edm18.ring2.com",
+                    "server": "ukdc1-edm18.mediaco.com",
                     "sipphone": "usecallid_80000000000000aa-aa-aaaaaa-00@10.254.254.33;port=5060",
                     "status": "(205) answered hold ",
                     "trunk": "8:chan:0",
                     "useforfrom": "hello@world.com",
-                    "user-agent": "LoopUp eDial ACS 9.1.0b8050"
+                    "user-agent": "mediaco mediaserver ACS 9.1.0b8050"
                 },
                 "c": {
                     "dn": "10.254.254.33",
@@ -446,11 +425,11 @@ The source for the following is this [sample SIP](test/samples/NOTIFY_generic_1.
         "Contact": "<sip:localhost:8443;transport=ssl>",
         "Content-Length": 880,
         "Content-Type": "application/sdp",
-        "From": "sip:hello@world.com;pool=uk-ed-thames;box=ukdc1-edm18.ring2.com;tag=12345678",
+        "From": "sip:hello@world.com;pool=uk-ed-mediaserver2;box=s1.example.com;tag=12345678",
         "To": "\"mmyers\" <sip:hello@world.com>",
         "Via": [
             "SIP/2.0/tcp localhost:8443",
-            "SIP/2.0/tcp localhost:8443;branch=hello@world.com__eDial_sep__hello@world.com"
+            "SIP/2.0/tcp localhost:8443;branch=hello@world.com__mediaserver_sep__hello@world.com"
         ],
         "X-Billing-code-required": false,
         "X-Call-Instance-ID": "ODQ0NDMaNaU5MaaaOTa1aa1lZC10aGFtZXMtMDE6MTU5NDA0MDI3Naa2NjQ5Nja=",
@@ -480,7 +459,7 @@ The source for the following is this [sample SIP](test/samples/NOTIFY_generic_1.
         "X-rss-id": "",
         "X-slave-site": "localhost",
         "X-start-muted": false,
-        "X-subject": "Robin Myers' Meeting Room",
+        "X-subject": "Robert Bonds' Meeting Room",
         "X-suppress-system-im": false
     },
     "meta": {

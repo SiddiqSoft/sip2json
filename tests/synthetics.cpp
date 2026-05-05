@@ -37,9 +37,9 @@ TEST(synthetics, Check_async_invalid_startline_CRLF)
 {
     std::string buffer {
             "\r\npreceeding junk\r\nNOTiFY "
-            "sip:lab.edial.rc.116.voip@loopup.co;pool=uk-ed-nelson;box=uk-ed-nelson-04.ring2-corp.com SIP/2.0\r\n"
+            "sip:lab.mediaserver.rc.116.voip@mediaco.co;pool=uk-ed-nelson;box=uk-ed-nelson-04.mediaco-corp.com SIP/2.0\r\n"
             "Via: SIP/2.0/TCP "
-            "localhost:780;branch=conference.wizard@local.host__eDial_sep__lab.edial.rc.116.voip@loopup.co;received=127.0.0.1:"
+            "localhost:780;branch=conference.wizard@local.host__mediaserver_sep__lab.mediaserver.rc.116.voip@mediaco.co;received=127.0.0.1:"
             "48114:442357920\r\n"
             "Via: SIP/2.0/TCP 127.0.0.1:32900;branch=something@somewhere.host;received=127.0.0.1:32900:215271\r\n"
             "Via: SIP/2.0/TCP 127.0.0.1:32900;received=127.0.0.1:32900:21527168\r\n"
@@ -66,9 +66,9 @@ TEST(synthetics, Check_async_invalid_startline_CRLF)
 TEST(synthetics, Check_header_array_CRLF)
 {
     std::string buffer {
-            "NOTIFY sip:lab.edial.rc.116.voip@loopup.co;pool=uk-ed-nelson;box=uk-ed-nelson-04.ring2-corp.com SIP/2.0\r\n"
+            "NOTIFY sip:lab.mediaserver.rc.116.voip@mediaco.co;pool=uk-ed-nelson;box=uk-ed-nelson-04.mediaco-corp.com SIP/2.0\r\n"
             "Via: SIP/2.0/TCP "
-            "localhost:780;branch=conference.wizard@local.host__eDial_sep__lab.edial.rc.116.voip@loopup.co;received=127.0.0.1:"
+            "localhost:780;branch=conference.wizard@local.host__mediaserver_sep__lab.mediaserver.rc.116.voip@mediaco.co;received=127.0.0.1:"
             "48114:442357920\r\n"
             "Via: SIP/2.0/TCP 127.0.0.1:32900;branch=something@somewhere.host;received=127.0.0.1:32900:215271\r\n"
             "Via: SIP/2.0/TCP 127.0.0.1:32900;received=127.0.0.1:32900:21527168\r\n"
@@ -112,9 +112,9 @@ TEST(synthetics, Check_header_array_CRLF)
 TEST(synthetics, Check_header_array_LF)
 {
     std::string buffer {
-            "NOTIFY sip:lab.edial.rc.116.voip@loopup.co;pool=uk-ed-nelson;box=uk-ed-nelson-04.ring2-corp.com SIP/2.0\n"
+            "NOTIFY sip:lab.mediaserver.rc.116.voip@mediaco.co;pool=uk-ed-nelson;box=uk-ed-nelson-04.mediaco-corp.com SIP/2.0\n"
             "Via: SIP/2.0/TCP "
-            "localhost:780;branch=conference.wizard@local.host__eDial_sep__lab.edial.rc.116.voip@loopup.co;received=127.0.0.1:"
+            "localhost:780;branch=conference.wizard@local.host__mediaserver_sep__lab.mediaserver.rc.116.voip@mediaco.co;received=127.0.0.1:"
             "48114:442357920\n"
             "Via: SIP/2.0/TCP 127.0.0.1:32900;branch=something@somewhere.host;received=127.0.0.1:32900:215271\n"
             "Via: SIP/2.0/TCP 127.0.0.1:32900;received=127.0.0.1:32900:21527168\n"
@@ -158,9 +158,9 @@ TEST(synthetics, Check_startline_precedingjunk_CRLF)
 {
     std::string buffer {
             "2024-11-25T11:11:00.000Z Message\r\nNOTIFY "
-            "sip:lab.edial.rc.116.voip@loopup.co;pool=uk-ed-nelson;box=uk-ed-nelson-04.ring2-corp.com SIP/2.0\r\n"
+            "sip:lab.mediaserver.rc.116.voip@mediaco.co;pool=uk-ed-nelson;box=uk-ed-nelson-04.mediaco-corp.com SIP/2.0\r\n"
             "Via: SIP/2.0/TCP "
-            "localhost:780;branch=conference.wizard@local.host__eDial_sep__lab.edial.rc.116.voip@loopup.co;received=127.0.0.1:"
+            "localhost:780;branch=conference.wizard@local.host__mediaserver_sep__lab.mediaserver.rc.116.voip@mediaco.co;received=127.0.0.1:"
             "48114:442357920\r\n"
             "Via: SIP/2.0/TCP 127.0.0.1:32900;branch=something@somewhere.host;received=127.0.0.1:32900:215271\r\n"
             "Via: SIP/2.0/TCP 127.0.0.1:32900;received=127.0.0.1:32900:21527168\r\n"
