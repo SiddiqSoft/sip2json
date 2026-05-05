@@ -182,7 +182,6 @@ stages:
       displayName: 'Determine Version..'
       name: version_step
       inputs:
-        useConfigFile: true
         configFilePath: 'GitVersion.yml'
 
     - task: Bash@3
@@ -267,6 +266,10 @@ stages:
         workingDirectory: '$(System.DefaultWorkingDirectory)/build/$(cmake.preset)/benchmarks/'
       condition: and(succeeded(), eq(variables['BuildType'], 'Release'))
       continueOnError: true
+
+    - task: PublishHtmlReport@1
+      inputs:
+        reportDir: '$(System.DefaultWorkingDirectory)/build/$(cmake.preset)/benchmarks/'
 
     - task: PublishTestResults@2
       displayName: 'Publish Benchmark Results as Tests'
