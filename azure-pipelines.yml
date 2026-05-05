@@ -247,13 +247,23 @@ stages:
         summaryFileLocation: '$(System.DefaultWorkingDirectory)/build/$(cmake.preset)/tests/results/*'
       condition: and(succeeded(), startsWith(variables['Agent.OS'], 'Linux'), startsWith(variables['Agent.OSArchitecture'], 'X64'), eq(variables['BuildType'], 'Debug'))
 
-      # run benchmarks (generates benchmark_results.json, benchmark_report.json, and benchmark_report.html)
+      # run benchmarks (generates benchmark_results.json)
     - task: CmdLine@2
       displayName: 'Run Benchmarks $(cmake.preset)'
       inputs:
         script: |
           pwd
           ./sip2json_benchmarks --benchmark_out=benchmark_results.json --benchmark_out_format=json
+        workingDirectory: '$(System.DefaultWorkingDirectory)/build/$(cmake.preset)/benchmarks/'
+      condition: and(succeeded(), eq(variables['BuildType'], 'Release'))
+      continueOnError: true
+
+      # convert benchmark_results.json to HTML and JUnit XML using helper script
+    - task: CmdLine@2
+      displayName: 'Convert Benchmark Results to HTML and JUnit Format'
+      inputs:
+        script: |
+          python3 $(System.DefaultWorkingDirectory)/benchmarks/benchmark_report_generator.py benchmark_results.json .
         workingDirectory: '$(System.DefaultWorkingDirectory)/build/$(cmake.preset)/benchmarks/'
       condition: and(succeeded(), eq(variables['BuildType'], 'Release'))
       continueOnError: true
@@ -274,15 +284,6 @@ stages:
       inputs:
         pathToPublish: '$(System.DefaultWorkingDirectory)/build/$(cmake.preset)/benchmarks/benchmark_results.json'
         artifactName: 'benchmark-results-$(cmake.preset)'
-        publishLocation: 'Container'
-      condition: and(succeeded(), eq(variables['BuildType'], 'Release'))
-      continueOnError: true
-
-    - task: PublishBuildArtifacts@1
-      displayName: 'Publish Benchmark Results (JUnit XML)'
-      inputs:
-        pathToPublish: '$(System.DefaultWorkingDirectory)/build/$(cmake.preset)/benchmarks/benchmark_results.xml'
-        artifactName: 'benchmark-results-junit-$(cmake.preset)'
         publishLocation: 'Container'
       condition: and(succeeded(), eq(variables['BuildType'], 'Release'))
       continueOnError: true
