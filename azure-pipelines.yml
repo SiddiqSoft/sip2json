@@ -61,13 +61,13 @@ stages:
     - task: CMake@1
       displayName: 'CMake Configure $(cmake.preset)'
       inputs:
-        cmakeArgs: '--preset $(cmake.preset) -DCI_BUILDID=$(GITVERSION_MAJORMINORPATCH)  -DCPM_SOURCE_CACHE=$(Agent.HomeDirectory)/.cpmcache'
+        cmakeArgs: '--preset $(cmake.preset) -D$(PROJECT_NAME)_BUILD_TESTS=ON -D$(PROJECT_NAME)_BUILD_BENCHMARKS=ON -DCI_BUILDID=$(GITVERSION_MAJORMINORPATCH) -DCPM_SOURCE_CACHE=$(Agent.HomeDirectory)/.cpmcache'
         workingDirectory: '$(System.DefaultWorkingDirectory)'
 
     - task: CMake@1
       displayName: 'CMake Build $(cmake.preset)'
       inputs:
-        cmakeArgs: '--build --preset $(cmake.preset) -DCI_BUILDID=$(GITVERSION_MAJORMINORPATCH)  -DCPM_SOURCE_CACHE=$(Agent.HomeDirectory)/.cpmcache'
+        cmakeArgs: '--build --preset $(cmake.preset) -DCI_BUILDID=$(GITVERSION_MAJORMINORPATCH) -DCPM_SOURCE_CACHE=$(Agent.HomeDirectory)/.cpmcache'
         workingDirectory: '$(System.DefaultWorkingDirectory)'
       condition: succeeded()
 
@@ -88,25 +88,11 @@ stages:
       continueOnError: false
       condition: succeeded()
 
-    - task: CMake@1
-      displayName: 'CMake Configure Benchmarks $(cmake.preset)'
-      inputs:
-        cmakeArgs: '--preset $(cmake.preset) -D$(PROJECT_NAME)_BUILD_BENCHMARKS=ON -DCI_BUILDID=$(GITVERSION_MAJORMINORPATCH) -DCPM_SOURCE_CACHE=$(Agent.HomeDirectory)/.cpmcache'
-        workingDirectory: '$(System.DefaultWorkingDirectory)'
-      condition: and(succeeded(), eq(variables['BuildType'], 'Release'))
-
-    - task: CMake@1
-      displayName: 'CMake Build Benchmarks $(cmake.preset)'
-      inputs:
-        cmakeArgs: '--build --preset $(cmake.preset) --target sip2json_benchmarks'
-        workingDirectory: '$(System.DefaultWorkingDirectory)'
-      condition: and(succeeded(), eq(variables['BuildType'], 'Release'))
-
     - task: CmdLine@2
       displayName: 'Run Benchmarks $(cmake.preset)'
       inputs:
-        script: '$(System.DefaultWorkingDirectory)/build/$(cmake.preset)/sip2json_benchmarks --benchmark_out=$(System.DefaultWorkingDirectory)/build/$(cmake.preset)/benchmark_results.json --benchmark_out_format=json'
-        workingDirectory: '$(System.DefaultWorkingDirectory)'
+        script: 'sip2json_benchmarks --benchmark_out=benchmark_results.json --benchmark_out_format=json'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/build/$(cmake.preset)'
       condition: and(succeeded(), eq(variables['BuildType'], 'Release'))
       continueOnError: true
 
@@ -118,7 +104,7 @@ stages:
           import json
           import sys
           
-          with open('$(System.DefaultWorkingDirectory)/build/$(cmake.preset)/benchmark_results.json', 'r') as f:
+          with open('benchmark_results.json', 'r') as f:
               data = json.load(f)
           
           junit_xml = '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n'
@@ -141,10 +127,10 @@ stages:
           junit_xml += '  </testsuite>\n'
           junit_xml += '</testsuites>\n'
           
-          with open('$(System.DefaultWorkingDirectory)/build/$(cmake.preset)/benchmark_results.xml', 'w') as f:
+          with open('benchmark_results.xml', 'w') as f:
               f.write(junit_xml)
           "
-        workingDirectory: '$(System.DefaultWorkingDirectory)'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/build/$(cmake.preset)'
       condition: and(succeeded(), eq(variables['BuildType'], 'Release'))
       continueOnError: true
 
@@ -159,11 +145,23 @@ stages:
       condition: and(succeeded(), eq(variables['BuildType'], 'Release'))
       continueOnError: true
 
-    - task: PublishTestResults@2
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Benchmark Results (JSON)'
       inputs:
-        testResultsFormat: 'JUnit' # or NUnit/VSTest
-        testResultsFiles: '$(System.DefaultWorkingDirectory)/build/$(cmake.preset)/benchmark_results.xml'
-        testRunTitle: 'Performance Benchmarks'
+        pathToPublish: '$(System.DefaultWorkingDirectory)/build/$(cmake.preset)/benchmark_results.json'
+        artifactName: 'benchmark-results-$(cmake.preset)'
+        publishLocation: 'Container'
+      condition: and(succeeded(), eq(variables['BuildType'], 'Release'))
+      continueOnError: true
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Benchmark Results (JUnit XML)'
+      inputs:
+        pathToPublish: '$(System.DefaultWorkingDirectory)/build/$(cmake.preset)/benchmark_results.xml'
+        artifactName: 'benchmark-results-junit-$(cmake.preset)'
+        publishLocation: 'Container'
+      condition: and(succeeded(), eq(variables['BuildType'], 'Release'))
+      continueOnError: true
 
     - task: NuGetToolInstaller@1
       displayName: 'Install Nuget on Windows'
@@ -271,13 +269,13 @@ stages:
     - task: CMake@1
       displayName: 'CMake Configure $(cmake.preset)'
       inputs:
-        cmakeArgs: '--preset $(cmake.preset) -DCI_BUILDID=$(GITVERSION_MAJORMINORPATCH)  -DCPM_SOURCE_CACHE=$(Agent.HomeDirectory)/.cpmcache'
+        cmakeArgs: '--preset $(cmake.preset) -D$(PROJECT_NAME)_BUILD_TESTS=ON -D$(PROJECT_NAME)_BUILD_BENCHMARKS=ON -DCI_BUILDID=$(GITVERSION_MAJORMINORPATCH) -DCPM_SOURCE_CACHE=$(Agent.HomeDirectory)/.cpmcache'
         workingDirectory: '$(System.DefaultWorkingDirectory)'
 
     - task: CMake@1
       displayName: 'CMake Build $(cmake.preset)'
       inputs:
-        cmakeArgs: '--build --preset $(cmake.preset) -DCI_BUILDID=$(GITVERSION_MAJORMINORPATCH)  -DCPM_SOURCE_CACHE=$(Agent.HomeDirectory)/.cpmcache'
+        cmakeArgs: '--build --preset $(cmake.preset) -DCI_BUILDID=$(GITVERSION_MAJORMINORPATCH) -DCPM_SOURCE_CACHE=$(Agent.HomeDirectory)/.cpmcache'
         workingDirectory: '$(System.DefaultWorkingDirectory)'
       condition: succeeded()
 
@@ -322,25 +320,11 @@ stages:
         summaryFileLocation: '$(System.DefaultWorkingDirectory)/build/$(cmake.preset)/tests/results/*'
       condition: and(succeeded(), startsWith(variables['Agent.OS'], 'Linux'), startsWith(variables['Agent.OSArchitecture'], 'X64'), eq(variables['BuildType'], 'Debug'))
 
-    - task: CMake@1
-      displayName: 'CMake Configure Benchmarks $(cmake.preset)'
-      inputs:
-        cmakeArgs: '--preset $(cmake.preset) -D$(PROJECT_NAME)_BUILD_BENCHMARKS=ON -DCI_BUILDID=$(GITVERSION_MAJORMINORPATCH) -DCPM_SOURCE_CACHE=$(Agent.HomeDirectory)/.cpmcache'
-        workingDirectory: '$(System.DefaultWorkingDirectory)'
-      condition: and(succeeded(), eq(variables['BuildType'], 'Release'))
-
-    - task: CMake@1
-      displayName: 'CMake Build Benchmarks $(cmake.preset)'
-      inputs:
-        cmakeArgs: '--build --preset $(cmake.preset) --target sip2json_benchmarks'
-        workingDirectory: '$(System.DefaultWorkingDirectory)'
-      condition: and(succeeded(), eq(variables['BuildType'], 'Release'))
-
     - task: CmdLine@2
       displayName: 'Run Benchmarks $(cmake.preset)'
       inputs:
-        script: '$(System.DefaultWorkingDirectory)/build/$(cmake.preset)/sip2json_benchmarks --benchmark_out=$(System.DefaultWorkingDirectory)/build/$(cmake.preset)/benchmark_results.json --benchmark_out_format=json'
-        workingDirectory: '$(System.DefaultWorkingDirectory)'
+        script: './sip2json_benchmarks --benchmark_out=benchmark_results.json --benchmark_out_format=json'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/build/$(cmake.preset)'
       condition: and(succeeded(), eq(variables['BuildType'], 'Release'))
       continueOnError: true
 
@@ -352,7 +336,7 @@ stages:
           import json
           import sys
           
-          with open('$(System.DefaultWorkingDirectory)/build/$(cmake.preset)/benchmark_results.json', 'r') as f:
+          with open('benchmark_results.json', 'r') as f:
               data = json.load(f)
           
           junit_xml = '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n'
@@ -375,10 +359,10 @@ stages:
           junit_xml += '  </testsuite>\n'
           junit_xml += '</testsuites>\n'
           
-          with open('$(System.DefaultWorkingDirectory)/build/$(cmake.preset)/benchmark_results.xml', 'w') as f:
+          with open('benchmark_results.xml', 'w') as f:
               f.write(junit_xml)
           "
-        workingDirectory: '$(System.DefaultWorkingDirectory)'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/build/$(cmake.preset)'
       condition: and(succeeded(), eq(variables['BuildType'], 'Release'))
       continueOnError: true
 
