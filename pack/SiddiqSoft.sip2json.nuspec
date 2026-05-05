@@ -13,19 +13,42 @@
         <id>SiddiqSoft.sip2json</id>
         <version>$VERSION$</version>
         <authors>Abdulkareem Siddiq</authors>
-        <description>SIP Parser for Modern C++</description>
-        <tags>sip json sdp pint native nativepackage cpp</tags>
+        <description>Modern C++20 SIP parser with bidirectional JSON conversion for distributed systems and NoSQL databases</description>
+        <summary>Header-only C++20 SIP to JSON parser with full SDP support</summary>
+        <tags>sip json sdp protocol parser c++20 header-only native nativepackage</tags>
         <projectUrl>https://github.com/siddiqsoftware/sip2json</projectUrl>
         <repository type="git" url="https://github.com/siddiqsoftware/sip2json" />
         <requireLicenseAcceptance>true</requireLicenseAcceptance>
         <license type="expression">BSD-3-Clause</license>
         <icon>docs\Siddiq-Software-Avatar.png</icon>
         <readme>docs\README.md</readme>
-        <releaseNotes></releaseNotes>
-        <copyright>Copyright (c) 2003-2024 Abdulkareem Siddiq</copyright>
+        <releaseNotes>
+## v2.4 Release - Performance and Documentation Enhancements
+
+### New Features
+- **Constexpr Optimization**: Compile-time string constants for improved performance
+- **Comprehensive Benchmarks**: 30+ benchmark tests including stress tests for large packets
+- **HTML Benchmark Reports**: Professional performance analysis reports
+- **Enhanced Documentation**: Complete API reference, architecture guide, and migration guide
+
+### Improvements
+- Optimized parsing with constexpr patterns
+- High-frequency decode benchmarks for large packets
+- Stress tests (100, 1000+ packet scenarios)
+- Professional HTML and JSON benchmark reporting
+- Streamlined documentation for better navigation
+
+### Documentation
+- **API Reference**: docs/API.md - Complete method documentation with examples
+- **Architecture Guide**: docs/ARCHITECTURE.md - Design patterns and optimization
+- **Documentation Index**: docs/INDEX.md - Quick navigation hub
+
+For detailed release notes, visit: https://github.com/siddiqsoftware/sip2json/releases
+        </releaseNotes>
+        <copyright>Copyright (c) 2003-2026 Abdulkareem Siddiq</copyright>
         <!-- Dependencies -->
         <dependencies>
-            <dependency id="nlohmann.json" version="3.11"/>
+            <dependency id="nlohmann.json" version="3.12"/>
         </dependencies>
     </metadata>
 
@@ -41,6 +64,7 @@
         <file src="..\include\siddiqsoft\private\*.hpp" target="build\native\include\siddiqsoft\private\" />
         <file src="Siddiq-Software-Avatar.png" target="docs\" />
         <file src="..\README.md" target="docs\" />
+        <file src="..\docs\*.md" target="docs\" />
 
         <!-- MSBuild .targets files -->
         <file src="SiddiqSoft.sip2json.targets" target="build\native" />
