@@ -63,7 +63,7 @@ stages:
     - task: CMake@1
       displayName: 'CMake Configure $(cmake.preset)'
       inputs:
-        cmakeArgs: '--preset $(cmake.preset) -Dsip2json_BUILD_TESTS=ON -Dsip2json_BUILD_BENCHMARKS=ON -DCI_BUILDID=$(GITVERSION_MAJORMINORPATCH) -DCPM_SOURCE_CACHE=$(Agent.HomeDirectory)/.cpmcache'
+        cmakeArgs: '--preset $(cmake.preset) -Dsip2json_BUILD_TESTS=ON -Dsip2json_BUILD_BENCHMARKS=OFF -DCI_BUILDID=$(GITVERSION_MAJORMINORPATCH) -DCPM_SOURCE_CACHE=$(Agent.HomeDirectory)/.cpmcache'
         workingDirectory: '$(System.DefaultWorkingDirectory)'
 
     - task: CMake@1
