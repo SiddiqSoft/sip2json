@@ -11,28 +11,18 @@
 
 ## Design Goals
 
-A SIP parser for Modern C++ (C++20).
+A modern C++20 SIP parser that converts between SIP protocol messages and JSON for seamless integration with distributed systems and NoSQL databases.
 
 **Compiler Requirements:** C++20 compliant compiler
-- Clang 17 or higher
-- GCC 14 or higher  
-- Visual Studio 2022 or higher
+- Clang 17+
+- GCC 14+
+- Visual Studio 2022+
 
-A lot of parsers exist but they tend to be written (a long time ago) and are primarily in C or wrap around the C library.
-
-JSON is one of the most widely used document storage formats and is the lingua-franca of the web and the various client applications written in JavaScript/TypeScript, C# as well as the myriad of No-SQL data stores.
-
-Modern software architecture relies on many distributed systems and favors horizontal scaling rather than a very efficient, fast single node. 
-
-When solving for resilience and high-availability, using systems such as No-SQL stores from Microsoft, Google or Amazon tends to lean towards JSON as the document store.
-
-JSON libraries feature patching, merging and diff'ing of JSON documents therefore we can offload the transforms to templates which can accomplish this task instead of manipulating bespoke C++ classes.
-
-We skewed towards the following tradeoffs:
-- API must be native C++17 without any wrappers or compromises.
-- Simple, small code
-- Dependencies should be widely-used and respected
-- Transforms must be easy
+**Design Tradeoffs:**
+- Native C++20 API without wrappers
+- Minimal, focused codebase
+- Widely-used, respected dependencies
+- Easy JSON transformations for NoSQL integration
 
 ### Features
 - **Header-only library** - Easy integration, no compilation required

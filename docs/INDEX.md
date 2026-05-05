@@ -22,6 +22,7 @@ Welcome to the sip2json library documentation. This comprehensive guide covers a
 2. **Learn API**: Review [API.md](API.md) - Quick Start section
 3. **Try Examples**: Check examples in [API.md](API.md) - Examples section
 4. **Build & Test**: Follow build instructions in [README](../README.md)
+5. **Run Benchmarks**: Execute `cmake --preset <preset-name> && cmake --build --preset <preset-name> && ctest --preset <preset-name>`
 
 ### For Experienced Users
 
