@@ -110,14 +110,60 @@ stages:
       condition: and(succeeded(), eq(variables['BuildType'], 'Release'))
       continueOnError: true
 
-    - task: PublishBuildArtifacts@1
-      displayName: 'Publish Benchmark Results'
+    - task: CmdLine@2
+      displayName: 'Convert Benchmark Results to JUnit Format'
       inputs:
-        pathToPublish: '$(System.DefaultWorkingDirectory)/build/$(cmake.preset)/benchmark_results.json'
-        artifactName: 'benchmark-results-$(cmake.preset)'
-        publishLocation: 'Container'
+        script: |
+          python3 -c "
+          import json
+          import sys
+          
+          with open('$(System.DefaultWorkingDirectory)/build/$(cmake.preset)/benchmark_results.json', 'r') as f:
+              data = json.load(f)
+          
+          junit_xml = '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n'
+          junit_xml += '<testsuites>\n'
+          junit_xml += '  <testsuite name=\"sip2json_benchmarks\" tests=\"' + str(len(data['benchmarks'])) + '\">\n'
+          
+          for benchmark in data['benchmarks']:
+              name = benchmark['name']
+              time_ms = benchmark['real_time']
+              time_unit = benchmark['time_unit']
+              
+              junit_xml += '    <testcase classname=\"sip2json_benchmarks\" name=\"' + name + '\" time=\"' + str(time_ms / 1000.0) + '\">\n'
+              junit_xml += '      <properties>\n'
+              junit_xml += '        <property name=\"time_unit\" value=\"' + time_unit + '\"/>\n'
+              junit_xml += '        <property name=\"cpu_time\" value=\"' + str(benchmark.get('cpu_time', 0)) + '\"/>\n'
+              junit_xml += '        <property name=\"iterations\" value=\"' + str(benchmark.get('iterations', 0)) + '\"/>\n'
+              junit_xml += '      </properties>\n'
+              junit_xml += '    </testcase>\n'
+          
+          junit_xml += '  </testsuite>\n'
+          junit_xml += '</testsuites>\n'
+          
+          with open('$(System.DefaultWorkingDirectory)/build/$(cmake.preset)/benchmark_results.xml', 'w') as f:
+              f.write(junit_xml)
+          "
+        workingDirectory: '$(System.DefaultWorkingDirectory)'
       condition: and(succeeded(), eq(variables['BuildType'], 'Release'))
       continueOnError: true
+
+    - task: PublishTestResults@2
+      displayName: 'Publish Benchmark Results as Tests'
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: '$(System.DefaultWorkingDirectory)/build/$(cmake.preset)/benchmark_results.xml'
+        mergeTestResults: false
+        buildConfiguration: '$(BuildType)'
+        testRunTitle: 'Benchmarks $(cmake.preset)'
+      condition: and(succeeded(), eq(variables['BuildType'], 'Release'))
+      continueOnError: true
+
+    - task: PublishTestResults@2
+      inputs:
+        testResultsFormat: 'JUnit' # or NUnit/VSTest
+        testResultsFiles: '$(System.DefaultWorkingDirectory)/build/$(cmake.preset)/benchmark_results.xml'
+        testRunTitle: 'Performance Benchmarks'
 
     - task: NuGetToolInstaller@1
       displayName: 'Install Nuget on Windows'
@@ -298,11 +344,69 @@ stages:
       condition: and(succeeded(), eq(variables['BuildType'], 'Release'))
       continueOnError: true
 
+    - task: CmdLine@2
+      displayName: 'Convert Benchmark Results to JUnit Format'
+      inputs:
+        script: |
+          python3 -c "
+          import json
+          import sys
+          
+          with open('$(System.DefaultWorkingDirectory)/build/$(cmake.preset)/benchmark_results.json', 'r') as f:
+              data = json.load(f)
+          
+          junit_xml = '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n'
+          junit_xml += '<testsuites>\n'
+          junit_xml += '  <testsuite name=\"sip2json_benchmarks\" tests=\"' + str(len(data['benchmarks'])) + '\">\n'
+          
+          for benchmark in data['benchmarks']:
+              name = benchmark['name']
+              time_ms = benchmark['real_time']
+              time_unit = benchmark['time_unit']
+              
+              junit_xml += '    <testcase classname=\"sip2json_benchmarks\" name=\"' + name + '\" time=\"' + str(time_ms / 1000.0) + '\">\n'
+              junit_xml += '      <properties>\n'
+              junit_xml += '        <property name=\"time_unit\" value=\"' + time_unit + '\"/>\n'
+              junit_xml += '        <property name=\"cpu_time\" value=\"' + str(benchmark.get('cpu_time', 0)) + '\"/>\n'
+              junit_xml += '        <property name=\"iterations\" value=\"' + str(benchmark.get('iterations', 0)) + '\"/>\n'
+              junit_xml += '      </properties>\n'
+              junit_xml += '    </testcase>\n'
+          
+          junit_xml += '  </testsuite>\n'
+          junit_xml += '</testsuites>\n'
+          
+          with open('$(System.DefaultWorkingDirectory)/build/$(cmake.preset)/benchmark_results.xml', 'w') as f:
+              f.write(junit_xml)
+          "
+        workingDirectory: '$(System.DefaultWorkingDirectory)'
+      condition: and(succeeded(), eq(variables['BuildType'], 'Release'))
+      continueOnError: true
+
+    - task: PublishTestResults@2
+      displayName: 'Publish Benchmark Results as Tests'
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: '$(System.DefaultWorkingDirectory)/build/$(cmake.preset)/benchmark_results.xml'
+        mergeTestResults: false
+        buildConfiguration: '$(BuildType)'
+        testRunTitle: 'Benchmarks $(cmake.preset)'
+      condition: and(succeeded(), eq(variables['BuildType'], 'Release'))
+      continueOnError: true
+
     - task: PublishBuildArtifacts@1
-      displayName: 'Publish Benchmark Results'
+      displayName: 'Publish Benchmark Results (JSON)'
       inputs:
         pathToPublish: '$(System.DefaultWorkingDirectory)/build/$(cmake.preset)/benchmark_results.json'
         artifactName: 'benchmark-results-$(cmake.preset)'
+        publishLocation: 'Container'
+      condition: and(succeeded(), eq(variables['BuildType'], 'Release'))
+      continueOnError: true
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Benchmark Results (JUnit XML)'
+      inputs:
+        pathToPublish: '$(System.DefaultWorkingDirectory)/build/$(cmake.preset)/benchmark_results.xml'
+        artifactName: 'benchmark-results-junit-$(cmake.preset)'
         publishLocation: 'Container'
       condition: and(succeeded(), eq(variables['BuildType'], 'Release'))
       continueOnError: true
