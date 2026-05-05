@@ -6,6 +6,10 @@
 #include <string>
 #include <vector>
 #include <format>
+#include <fstream>
+#include <chrono>
+#include <ctime>
+#include <limits>
 
 #include "nlohmann/json.hpp"
 #include "siddiqsoft/sip2json.hpp"
@@ -726,3 +730,214 @@ static void BM_VariableSizeAsyncStressTest(benchmark::State& state)
     state.SetBytesProcessed(state.iterations() * buffer.size());
 }
 BENCHMARK(BM_VariableSizeAsyncStressTest)->Arg(10)->Arg(50)->Arg(100)->Arg(500);
+
+
+// ============================================================================
+// CUSTOM BENCHMARK REPORTER FOR HTML AND JSON OUTPUT
+// ============================================================================
+
+/// Custom reporter that generates HTML and JSON reports from benchmark results
+class BenchmarkReporter : public benchmark::BenchmarkReporter
+{
+public:
+    BenchmarkReporter() = default;
+
+    bool ReportContext(const Context& context) override
+    {
+        return true;
+    }
+
+    void ReportRuns(const std::vector<Run>& reports) override
+    {
+        if (reports.empty()) return;
+
+        // Collect all benchmark data
+        nlohmann::json benchmarks = nlohmann::json::array();
+        
+        for (const auto& run : reports)
+        {
+            if (!run.report_label.empty()) continue; // Skip aggregate runs
+            
+            nlohmann::json benchmark_data;
+            benchmark_data["name"] = run.benchmark_name;
+            benchmark_data["iterations"] = run.iterations;
+            benchmark_data["real_time"] = run.real_accumulated_time;
+            benchmark_data["cpu_time"] = run.cpu_accumulated_time;
+            benchmark_data["time_unit"] = "ns";
+            benchmark_data["items_per_second"] = run.items_per_second;
+            benchmark_data["bytes_per_second"] = run.bytes_per_second;
+            
+            benchmarks.push_back(benchmark_data);
+        }
+
+        // Generate JSON report
+        generateJsonReport(benchmarks);
+        
+        // Generate HTML report
+        generateHtmlReport(benchmarks);
+    }
+
+    void Finalize() override {}
+
+private:
+    void generateJsonReport(const nlohmann::json& benchmarks)
+    {
+        nlohmann::json report;
+        report["benchmarks"] = benchmarks;
+        report["context"]["date"] = std::chrono::system_clock::now().time_since_epoch().count();
+        
+        std::ofstream json_file("benchmark_report.json");
+        json_file << report.dump(2);
+        json_file.close();
+        
+        std::cout << "✓ JSON report generated: benchmark_report.json\n";
+    }
+
+    void generateHtmlReport(const nlohmann::json& benchmarks)
+    {
+        auto now = std::chrono::system_clock::now();
+        auto time = std::chrono::system_clock::to_time_t(now);
+        
+        std::string timestamp;
+        char buffer[100];
+        std::strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", std::localtime(&time));
+        timestamp = buffer;
+
+        double total_iterations = 0;
+        double fastest_time = std::numeric_limits<double>::max();
+        double slowest_time = 0;
+
+        for (const auto& b : benchmarks)
+        {
+            total_iterations += b["iterations"].get<double>();
+            double real_time = b["real_time"].get<double>();
+            fastest_time = std::min(fastest_time, real_time);
+            slowest_time = std::max(slowest_time, real_time);
+        }
+
+        std::string html = R"(<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sip2json Benchmark Report</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: #f5f5f5; color: #333; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 8px; margin-bottom: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        header h1 { font-size: 2.5em; margin-bottom: 10px; }
+        header p { font-size: 1.1em; opacity: 0.9; }
+        .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .summary-card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-left: 4px solid #667eea; }
+        .summary-card h3 { color: #667eea; margin-bottom: 10px; font-size: 0.9em; text-transform: uppercase; }
+        .summary-card .value { font-size: 2em; font-weight: bold; color: #333; }
+        .summary-card .unit { font-size: 0.9em; color: #999; margin-left: 5px; }
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 30px; }
+        thead { background: #f8f9fa; border-bottom: 2px solid #dee2e6; }
+        th { padding: 15px; text-align: left; font-weight: 600; color: #495057; }
+        td { padding: 12px 15px; border-bottom: 1px solid #dee2e6; }
+        tbody tr:hover { background: #f8f9fa; }
+        .benchmark-name { font-family: "Courier New", monospace; font-size: 0.9em; color: #667eea; font-weight: 500; }
+        .time-value { font-family: "Courier New", monospace; text-align: right; }
+        .iterations { text-align: center; color: #666; }
+        footer { text-align: center; color: #999; margin-top: 40px; padding-top: 20px; border-top: 1px solid #dee2e6; }
+        .section-title { font-size: 1.5em; font-weight: 600; color: #333; margin: 30px 0 20px 0; }
+        .stress-tests { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; border-radius: 4px; margin-bottom: 20px; }
+        .stress-tests strong { color: #856404; }
+        .stress-tests ul { margin-left: 20px; margin-top: 10px; }
+        a { color: #667eea; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>sip2json Benchmark Report</h1>
+            <p>Performance Analysis - Generated on )";
+        
+        html += timestamp;
+        html += R"(</p>
+        </header>
+        
+        <div class="summary">
+            <div class="summary-card">
+                <h3>Total Benchmarks</h3>
+                <div class="value">)";
+        html += std::to_string(benchmarks.size());
+        html += R"(</div>
+            </div>
+            <div class="summary-card">
+                <h3>Total Iterations</h3>
+                <div class="value">)";
+        html += std::to_string(static_cast<long long>(total_iterations));
+        html += R"(</div>
+            </div>
+            <div class="summary-card">
+                <h3>Fastest Benchmark</h3>
+                <div class="value">)";
+        html += std::format("{:.2f}", fastest_time);
+        html += R"( <span class="unit">ns</span></div>
+            </div>
+            <div class="summary-card">
+                <h3>Slowest Benchmark</h3>
+                <div class="value">)";
+        html += std::format("{:.2f}", slowest_time);
+        html += R"( <span class="unit">ns</span></div>
+            </div>
+        </div>
+        
+        <h2 class="section-title">Benchmark Results</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Benchmark Name</th>
+                    <th>Real Time (ns)</th>
+                    <th>CPU Time (ns)</th>
+                    <th>Iterations</th>
+                    <th>Items/Sec</th>
+                </tr>
+            </thead>
+            <tbody>
+)";
+
+        for (const auto& b : benchmarks)
+        {
+            html += "                <tr>\n";
+            html += "                    <td><span class=\"benchmark-name\">" + b["name"].get<std::string>() + "</span></td>\n";
+            html += std::format("                    <td class=\"time-value\">{:.2f}</td>\n", b["real_time"].get<double>());
+            html += std::format("                    <td class=\"time-value\">{:.2f}</td>\n", b["cpu_time"].get<double>());
+            html += "                    <td class=\"iterations\">" + std::to_string(b["iterations"].get<long long>()) + "</td>\n";
+            html += std::format("                    <td class=\"time-value\">{:.0f}</td>\n", b["items_per_second"].get<double>());
+            html += "                </tr>\n";
+        }
+
+        html += R"(            </tbody>
+        </table>
+        
+        <h2 class="section-title">Stress Test Benchmarks</h2>
+        <div class="stress-tests">
+            <strong>Note:</strong> The following benchmarks test high-frequency decoding with large packets:
+            <ul>
+                <li>High-Frequency Decode: Single large packet parsing</li>
+                <li>Stress Tests (100/1000): Multiple large packets in sequence</li>
+                <li>Variable-Size Tests: Parameterized stress testing (10, 50, 100, 500 packets)</li>
+            </ul>
+        </div>
+        
+        <footer>
+            <p>sip2json Benchmark Suite | C++20 Header-Only SIP Parser</p>
+            <p>For more information, visit: <a href="https://github.com/siddiqsoftware/sip2json">github.com/siddiqsoftware/sip2json</a></p>
+        </footer>
+    </div>
+</body>
+</html>
+)";
+
+        std::ofstream html_file("benchmark_report.html");
+        html_file << html;
+        html_file.close();
+        
+        std::cout << "✓ HTML report generated: benchmark_report.html\n";
+    }
+};
