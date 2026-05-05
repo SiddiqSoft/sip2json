@@ -220,21 +220,21 @@ stages:
         - Agent.OS -equals Linux
     strategy:
       matrix:
-        GCC-Debug:
-          BuildType: Debug
-          cmake.preset: 'Linux-GCC-$(BuildType)'
-          MSBuildConfiguration: Debug
-          cmakeExtraArgs: 
-        GCC-Release:
-          BuildType: Release
-          cmake.preset: 'Linux-GCC-$(BuildType)'
-          cmakeExtraArgs: 
-          MSBuildConfiguration: Release
-        Clang-Debug:
-          BuildType: Debug
-          cmake.preset: 'Linux-Clang-$(BuildType)'
-          MSBuildConfiguration: Debug
-          cmakeExtraArgs: 
+#        GCC-Debug:
+#          BuildType: Debug
+#          cmake.preset: 'Linux-GCC-$(BuildType)'
+#         MSBuildConfiguration: Debug
+#          cmakeExtraArgs: 
+#        GCC-Release:
+#          BuildType: Release
+#          cmake.preset: 'Linux-GCC-$(BuildType)'
+#          cmakeExtraArgs: 
+#          MSBuildConfiguration: Release
+#        Clang-Debug:
+#          BuildType: Debug
+#          cmake.preset: 'Linux-Clang-$(BuildType)'
+#          MSBuildConfiguration: Debug
+#         cmakeExtraArgs: 
         Clang-Release:
           BuildType: Release
           cmake.preset: 'Linux-Clang-$(BuildType)'
@@ -323,8 +323,10 @@ stages:
     - task: CmdLine@2
       displayName: 'Run Benchmarks $(cmake.preset)'
       inputs:
-        script: './sip2json_benchmarks --benchmark_out=benchmark_results.json --benchmark_out_format=json'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/build/$(cmake.preset)'
+        script: |
+          pwd
+          ./sip2json_benchmarks --benchmark_out=benchmark_results.json --benchmark_out_format=json
+        workingDirectory: '$(System.DefaultWorkingDirectory)/build/$(cmake.preset)/benchmarks/'
       condition: and(succeeded(), eq(variables['BuildType'], 'Release'))
       continueOnError: true
 
@@ -362,7 +364,7 @@ stages:
           with open('benchmark_results.xml', 'w') as f:
               f.write(junit_xml)
           "
-        workingDirectory: '$(System.DefaultWorkingDirectory)/build/$(cmake.preset)'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/build/$(cmake.preset)/benchmarks/'
       condition: and(succeeded(), eq(variables['BuildType'], 'Release'))
       continueOnError: true
 
@@ -370,7 +372,7 @@ stages:
       displayName: 'Publish Benchmark Results as Tests'
       inputs:
         testResultsFormat: 'JUnit'
-        testResultsFiles: '$(System.DefaultWorkingDirectory)/build/$(cmake.preset)/benchmark_results.xml'
+        testResultsFiles: '$(System.DefaultWorkingDirectory)/build/$(cmake.preset)/benchmarks/benchmark_results.xml'
         mergeTestResults: false
         buildConfiguration: '$(BuildType)'
         testRunTitle: 'Benchmarks $(cmake.preset)'
@@ -380,7 +382,7 @@ stages:
     - task: PublishBuildArtifacts@1
       displayName: 'Publish Benchmark Results (JSON)'
       inputs:
-        pathToPublish: '$(System.DefaultWorkingDirectory)/build/$(cmake.preset)/benchmark_results.json'
+        pathToPublish: '$(System.DefaultWorkingDirectory)/build/$(cmake.preset)/benchmarks/benchmark_results.json'
         artifactName: 'benchmark-results-$(cmake.preset)'
         publishLocation: 'Container'
       condition: and(succeeded(), eq(variables['BuildType'], 'Release'))
@@ -389,7 +391,7 @@ stages:
     - task: PublishBuildArtifacts@1
       displayName: 'Publish Benchmark Results (JUnit XML)'
       inputs:
-        pathToPublish: '$(System.DefaultWorkingDirectory)/build/$(cmake.preset)/benchmark_results.xml'
+        pathToPublish: '$(System.DefaultWorkingDirectory)/build/$(cmake.preset)/benchmarks/benchmark_results.xml'
         artifactName: 'benchmark-results-junit-$(cmake.preset)'
         publishLocation: 'Container'
       condition: and(succeeded(), eq(variables['BuildType'], 'Release'))
