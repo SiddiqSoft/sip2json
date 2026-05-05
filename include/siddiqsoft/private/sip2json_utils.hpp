@@ -180,24 +180,24 @@ namespace siddiqsoft
             "sip:A\r\nContact: A\r\nContent-Length: 0\r\n\r\n"};
 
     // Authorization Type
-    static constexpr std::string_view AUTHORIZATION_CLEAR {"Clear"};
-    static constexpr std::string_view AUTHORIZATION_BASIC {"Basic"};
-    static constexpr std::string_view AUTHORIZATION_DIGEST {"Digest"};
+    static const std::string AUTHORIZATION_CLEAR {"Clear"};
+    static const std::string AUTHORIZATION_BASIC {"Basic"};
+    static const std::string AUTHORIZATION_DIGEST {"Digest"};
 
     // Content-Type
-    static constexpr std::string_view CONTENT_TYPE_TEXT_PLAIN {"text/plain"};
-    static constexpr std::string_view CONTENT_TYPE_TEXT_HTML {"text/html"};
-    static constexpr std::string_view CONTENT_TYPE_TEXT_XML {"text/xml"};
-    static constexpr std::string_view CONTENT_TYPE_APP_SDP {"application/sdp"};
-    static constexpr std::string_view CONTENT_TYPE_APP_XML {"application/xml"};
-    static constexpr std::string_view CONTENT_TYPE_APP_PKCS7MIME {"application/pkcs7-mime"};
-    static constexpr std::string_view CONTENT_TYPE_APP_XPRIVATE {"application/x-private"};
-    static constexpr std::string_view CONTENT_TYPE_TEXT_X_METATEL1_PRESENCE {"text/x-metatel1.0-presence"};
+    static const std::string CONTENT_TYPE_TEXT_PLAIN {"text/plain"};
+    static const std::string CONTENT_TYPE_TEXT_HTML {"text/html"};
+    static const std::string CONTENT_TYPE_TEXT_XML {"text/xml"};
+    static const std::string CONTENT_TYPE_APP_SDP {"application/sdp"};
+    static const std::string CONTENT_TYPE_APP_XML {"application/xml"};
+    static const std::string CONTENT_TYPE_APP_PKCS7MIME {"application/pkcs7-mime"};
+    static const std::string CONTENT_TYPE_APP_XPRIVATE {"application/x-private"};
+    static const std::string CONTENT_TYPE_TEXT_X_METATEL1_PRESENCE {"text/x-metatel1.0-presence"};
 
     // Subscription State
-    static constexpr std::string_view SUBSTATE_ACTIVE {"active"};
-    static constexpr std::string_view SUBSTATE_PENDING {"pending"};
-    static constexpr std::string_view SUBSTATE_TERMINATED {"terminated"};
+    static const std::string SUBSTATE_ACTIVE {"active"};
+    static const std::string SUBSTATE_PENDING {"pending"};
+    static const std::string SUBSTATE_TERMINATED {"terminated"};
 
     // TTL constants
     static constexpr int DEFAULT_SERVER_PORT {5060};
@@ -209,111 +209,107 @@ namespace siddiqsoft
     static constexpr int REGISTER_PERIOD_MIN_SEC {30};                                  // 30s
     static constexpr int REGISTER_PERIOD_10MIN_MS {REGISTER_PERIOD_10MIN_SEC * 1000};   // 600s = 10 minutes
 
-    static constexpr std::string_view SIPVER_20 {"SIP/2.0"};
+    static const std::string SIPVER_20 {"SIP/2.0"};
 
-    static constexpr std::string_view METHOD_INVITE {"INVITE"};
-    static constexpr std::string_view METHOD_ACK {"ACK"};
-    static constexpr std::string_view METHOD_OPTIONS {"OPTIONS"};
-    static constexpr std::string_view METHOD_BYE {"BYE"};
-    static constexpr std::string_view METHOD_CANCEL {"CANCEL"};
-    static constexpr std::string_view METHOD_REGISTER {"REGISTER"};
-    static constexpr std::string_view METHOD_SUBSCRIBE {"SUBSCRIBE"};
-    static constexpr std::string_view METHOD_NOTIFY {"NOTIFY"};
-    static constexpr std::string_view METHOD_HEARTBEAT {"HEARTBEAT"};
+    static const std::string METHOD_INVITE {"INVITE"};
+    static const std::string METHOD_ACK {"ACK"};
+    static const std::string METHOD_OPTIONS {"OPTIONS"};
+    static const std::string METHOD_BYE {"BYE"};
+    static const std::string METHOD_CANCEL {"CANCEL"};
+    static const std::string METHOD_REGISTER {"REGISTER"};
+    static const std::string METHOD_SUBSCRIBE {"SUBSCRIBE"};
+    static const std::string METHOD_NOTIFY {"NOTIFY"};
+    static const std::string METHOD_HEARTBEAT {"HEARTBEAT"};
     // Microsoft Extensions
-    static constexpr std::string_view METHOD_MESSAGE {"MESSAGE"};
-    static constexpr std::string_view METHOD_INFO {"INFO"};
+    static const std::string METHOD_MESSAGE {"MESSAGE"};
+    static const std::string METHOD_INFO {"INFO"};
 
-    static constexpr std::string_view VIA_BRANCH_PREFIX {"z9hG4bK"};
+    static const std::string VIA_BRANCH_PREFIX {"z9hG4bK"};
 
-    static constexpr std::string_view EMPTY_STD_STRING_VALUE {""};
+    static const std::string EMPTY_STD_STRING_VALUE {""};
 
-    static constexpr std::string_view HF_FROM {"From"};
-    static constexpr std::string_view HF_FROM_ALT {"f"};
-    static constexpr std::string_view HF_TO {"To"};
-    static constexpr std::string_view HF_TO_ALT {"t"};
-    static constexpr std::string_view HF_PRIORTY {"Priority"};
-    static constexpr std::string_view HF_CONTENT_ENCODING {"Content-Encoding"};
-    static constexpr std::string_view HF_CONTENT_ENCODING_ALT {"e"};
-    static constexpr std::string_view HF_CONTENT_LENGTH {"Content-Length"};
-    static constexpr std::string_view HF_CONTENT_LENGTH_ALT {"L"};
-    static constexpr std::string_view HF_CONTENT_TYPE {"Content-Type"};
-    static constexpr std::string_view HF_CONTENT_TYPE2 {"Content-type"};
-    static constexpr std::string_view HF_CONTENT_TYPE_ALT {"c"};
-    static constexpr std::string_view HF_CALLID {"Call-ID"};
-    static constexpr std::string_view HF_CALLID_ALT {"i"};
-    static constexpr std::string_view HF_CSEQ {"CSeq"};
-    static constexpr std::string_view HF_VIA {"Via"};
-    static constexpr std::string_view HF_VIA_ALT {"v"};
-    static constexpr std::string_view HF_ENCRYPTION {"Encryption"};
-    static constexpr std::string_view HF_SUBJECT {"Subject"};
-    static constexpr std::string_view HF_SUBJECT_ALT {"s"};
-    static constexpr std::string_view HF_LOCATION {"Location"};
-    static constexpr std::string_view HF_LOCATION_ALT {"Location"};
-    static constexpr std::string_view HF_EXPIRES {"Expires"};
-    static constexpr std::string_view HF_CONTACT {"Contact"};
-    static constexpr std::string_view HF_CONTACT_ALT {"m"};
-    static constexpr std::string_view HF_ACCEPT {"Accept"};
-    static constexpr std::string_view HF_ACCEPT_ALT {"Accept"};
-    static constexpr std::string_view HF_ACCEPT_ENCODING {"Accept-Encoding"};
-    static constexpr std::string_view HF_ACCEPT_ENCODING_ALT {"Accept-Encoding"};
-    static constexpr std::string_view HF_ACCEPT_LANGUAGE {"Accept-Language"};
-    static constexpr std::string_view HF_ACCEPT_LANGUAGE_ALT {"Accept-Language"};
-    static constexpr std::string_view HF_DATE {"Date"};
-    static constexpr std::string_view HF_RECORD_ROUTE {"Record-Route"};
-    static constexpr std::string_view HF_TIMESTAMP {"Timestamp"};
-    static constexpr std::string_view HF_HIDE {"Hide"};
-    static constexpr std::string_view HF_MAX_FORWARDS {"Max-Forwards"};
-    static constexpr std::string_view HF_ORGANIZATION {"Organization"};
-    static constexpr std::string_view HF_PROXY_AUTHORIZATION {"Proxy-Authorization"};
-    static constexpr std::string_view HF_PROXY_REQUIRE {"Proxy-Require"};
-    static constexpr std::string_view HF_ROUTE {"Route"};
-    static constexpr std::string_view HF_REQUIRE {"Require"};
-    static constexpr std::string_view HF_RESPONSE_KEY {"Response-Key"};
-    static constexpr std::string_view HF_USER_AGENT {"User-Agent"};
-    static constexpr std::string_view HF_PROXY_AUTHENTICATE {"Proxy-Authenticate"};
-    static constexpr std::string_view HF_RETRY_AFTER {"Retry-After"};
-    static constexpr std::string_view HF_SERVER {"Server"};
-    static constexpr std::string_view HF_UNSUPPORTED {"Unsupported"};
-    static constexpr std::string_view HF_WARNING {"Warning"};
-    static constexpr std::string_view HF_WWW_AUTHENTICATE {"WWW-Authenticate"};
-    static constexpr std::string_view HF_AUTHORIZATION {"Authorization"};
+    static const std::string HF_FROM {"From"};
+    static const std::string HF_FROM_ALT {"f"};
+    static const std::string HF_TO {"To"};
+    static const std::string HF_TO_ALT {"t"};
+    static const std::string HF_PRIORTY {"Priority"};
+    static const std::string HF_CONTENT_ENCODING {"Content-Encoding"};
+    static const std::string HF_CONTENT_ENCODING_ALT {"e"};
+    static const std::string HF_CONTENT_LENGTH {"Content-Length"};
+    static const std::string HF_CONTENT_LENGTH_ALT {"L"};
+    static const std::string HF_CONTENT_TYPE {"Content-Type"};
+    static const std::string HF_CONTENT_TYPE2 {"Content-type"};
+    static const std::string HF_CONTENT_TYPE_ALT {"c"};
+    static const std::string HF_CALLID {"Call-ID"};
+    static const std::string HF_CALLID_ALT {"i"};
+    static const std::string HF_CSEQ {"CSeq"};
+    static const std::string HF_VIA {"Via"};
+    static const std::string HF_VIA_ALT {"v"};
+    static const std::string HF_ENCRYPTION {"Encryption"};
+    static const std::string HF_SUBJECT {"Subject"};
+    static const std::string HF_SUBJECT_ALT {"s"};
+    static const std::string HF_LOCATION {"Location"};
+    static const std::string HF_LOCATION_ALT {"Location"};
+    static const std::string HF_EXPIRES {"Expires"};
+    static const std::string HF_CONTACT {"Contact"};
+    static const std::string HF_CONTACT_ALT {"m"};
+    static const std::string HF_ACCEPT {"Accept"};
+    static const std::string HF_ACCEPT_ALT {"Accept"};
+    static const std::string HF_ACCEPT_ENCODING {"Accept-Encoding"};
+    static const std::string HF_ACCEPT_ENCODING_ALT {"Accept-Encoding"};
+    static const std::string HF_ACCEPT_LANGUAGE {"Accept-Language"};
+    static const std::string HF_ACCEPT_LANGUAGE_ALT {"Accept-Language"};
+    static const std::string HF_DATE {"Date"};
+    static const std::string HF_RECORD_ROUTE {"Record-Route"};
+    static const std::string HF_TIMESTAMP {"Timestamp"};
+    static const std::string HF_HIDE {"Hide"};
+    static const std::string HF_MAX_FORWARDS {"Max-Forwards"};
+    static const std::string HF_ORGANIZATION {"Organization"};
+    static const std::string HF_PROXY_AUTHORIZATION {"Proxy-Authorization"};
+    static const std::string HF_PROXY_REQUIRE {"Proxy-Require"};
+    static const std::string HF_ROUTE {"Route"};
+    static const std::string HF_REQUIRE {"Require"};
+    static const std::string HF_RESPONSE_KEY {"Response-Key"};
+    static const std::string HF_USER_AGENT {"User-Agent"};
+    static const std::string HF_PROXY_AUTHENTICATE {"Proxy-Authenticate"};
+    static const std::string HF_RETRY_AFTER {"Retry-After"};
+    static const std::string HF_SERVER {"Server"};
+    static const std::string HF_UNSUPPORTED {"Unsupported"};
+    static const std::string HF_WARNING {"Warning"};
+    static const std::string HF_WWW_AUTHENTICATE {"WWW-Authenticate"};
+    static const std::string HF_AUTHORIZATION {"Authorization"};
 
     // Subscribe/Notify header fields
-    static constexpr std::string_view HF_SUBSCRIPTION_STATE {"Subscription-State"};
+    static const std::string HF_SUBSCRIPTION_STATE {"Subscription-State"};
 
     // Parsing elements
-    static constexpr std::string_view ELEM_SPACE {" "};
-    static constexpr std::string_view ELEM_SEPERATOR {":"};
-    static constexpr std::string_view ELEM_PADDEDSEPERATOR {": "};
-    static constexpr std::string_view ELEM_TAGSEPERATOR {"{"};
+    static const std::string ELEM_SPACE {" "};
+    static const std::string ELEM_SEPERATOR {":"};
+    static const std::string ELEM_PADDEDSEPERATOR {": "};
+    static const std::string ELEM_TAGSEPERATOR {"{"};
     // Common elements over the wire (and WIN32)
-    static constexpr std::string_view ELEM_NEWLINE {"\r\n"};
-    static constexpr std::string_view ELEM_HEADERSECTIONDELIMITER {"\r\n\r\n"};
-    static constexpr std::string_view ELEM_LWSP {"\r\n "};
-    static constexpr std::string_view ELEM_LWSP1 {"\r\n\t"};
-    static constexpr std::string_view ELEM_SDPBlockStart {" v=0\r\n"};
+    static const std::string ELEM_NEWLINE {"\r\n"};
+    static const std::string ELEM_HEADERSECTIONDELIMITER {"\r\n\r\n"};
+    static const std::string ELEM_LWSP {"\r\n "};
+    static const std::string ELEM_LWSP1 {"\r\n\t"};
+    static const std::string ELEM_SDPBlockStart {" v=0\r\n"};
     // For UNIX systems
-    static constexpr std::string_view ELEM_NEWLINE_LF {"\n"};
-    static constexpr std::string_view ELEM_HEADERSECTIONDELIMITER_LF {"\n\n"};
-    static constexpr std::string_view ELEM_LWSP_LF {"\n "};
-    static constexpr std::string_view ELEM_LWSP1_LF {"\n\t"};
-    static constexpr std::string_view ELEM_SDPBlockStart_LF {"v=0\n"};
+    static const std::string ELEM_NEWLINE_LF {"\n"};
+    static const std::string ELEM_HEADERSECTIONDELIMITER_LF {"\n\n"};
+    static const std::string ELEM_LWSP_LF {"\n "};
+    static const std::string ELEM_LWSP1_LF {"\n\t"};
+    static const std::string ELEM_SDPBlockStart_LF {"v=0\n"};
 
     // Some common elements for building the SIP message
-    static constexpr std::string_view SIP_ADDR_PREFIX {"sip:\\s"};
+    static const std::string SIP_ADDR_PREFIX {"sip:\\s"};
 
     // Helpers to parse the SIP buffer (CTRE compile-time regular expressions)
     static constexpr auto SIP_PATTERN_STARTLINE =
-            ctll::fixed_string {"(MESSAGE|INFO|INVITE|ACK|OPTIONS|BYE|CANCEL|REGISTER|SUBSCRIBE|NOTIFY|SIP/2\\.0)\\s([^\\s]+)\\s([^\\n\\f\\r]*)[\r\n]*"};
-    static constexpr auto SIP_PATTERN_BODY_RE =
-            ctll::fixed_string {"([vosiuepcbtzkma])=([^\r\n]*)"};
-    static constexpr auto SIP_PATTERN_BODY_ALINE_RE =
-            ctll::fixed_string {"^([^:\r\n]*):(.*)$"};
-    static constexpr auto SIP_PATTERN_BODY_ILINE_RE =
-            ctll::fixed_string {"^(.+) \\(([^\\)]*)\\) ([^\\s\r\n]*)"};
-    static constexpr auto SIP_PATTERN_BODY_CLINE_RE =
-            ctll::fixed_string {"^(.+) (.+) ([^\\s\r\n]*)"};
-    static constexpr auto SIP_PATTERN_BODY_OLINE_RE =
-            ctll::fixed_string {"([^\\s]+) (\\d+) (\\d+) (\\w+) (\\w+) ([^\\s]+)"};
+            ctll::fixed_string {"(MESSAGE|INFO|INVITE|ACK|OPTIONS|BYE|CANCEL|REGISTER|SUBSCRIBE|NOTIFY|SIP/"
+                                "2\\.0)\\s([^\\s]+)\\s([^\\n\\f\\r]*)[\r\n]*"};
+    static constexpr auto SIP_PATTERN_BODY_RE       = ctll::fixed_string {"([vosiuepcbtzkma])=([^\r\n]*)"};
+    static constexpr auto SIP_PATTERN_BODY_ALINE_RE = ctll::fixed_string {"^([^:\r\n]*):(.*)$"};
+    static constexpr auto SIP_PATTERN_BODY_ILINE_RE = ctll::fixed_string {"^(.+) \\(([^\\)]*)\\) ([^\\s\r\n]*)"};
+    static constexpr auto SIP_PATTERN_BODY_CLINE_RE = ctll::fixed_string {"^(.+) (.+) ([^\\s\r\n]*)"};
+    static constexpr auto SIP_PATTERN_BODY_OLINE_RE = ctll::fixed_string {"([^\\s]+) (\\d+) (\\d+) (\\w+) (\\w+) ([^\\s]+)"};
 } // namespace siddiqsoft

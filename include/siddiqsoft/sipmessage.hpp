@@ -81,9 +81,9 @@ namespace siddiqsoft
     /// "b" for body, and "meta" for metadata.
     class sipmessage : public nlohmann::json
     {
-        static constexpr std::string_view MetaLibName {"sip2json"};      ///< Library name for metadata
-        static constexpr std::string_view MetaSchemaVersion {"1.0.2"};   ///< Schema version for metadata
-        static constexpr std::string_view MetaParserVersion {"2.2"};    ///< Parser version for metadata
+        static const inline std::string MetaLibName {"sip2json"};      ///< Library name for metadata
+        static const inline std::string MetaSchemaVersion {"1.0.2"};   ///< Schema version for metadata
+        static const inline std::string MetaParserVersion {"2.2"};    ///< Parser version for metadata
 
     public:
         /// @brief Default constructor initializing an empty SIP message with metadata.
@@ -150,7 +150,7 @@ namespace siddiqsoft
         /// @param uri Request URI
         /// @param callId Optional CallId
         /// @param cseq Optional Cseq; the string value is build using this parameter and the method
-        sipmessage(const std::string& method, const std::string& uri, const std::string& callId = {}, uint32_t cseq = 0)
+        sipmessage(std::string method, std::string uri, std::string callId = {}, uint32_t cseq = 0)
         {
             using namespace std;
 

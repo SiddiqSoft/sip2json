@@ -70,8 +70,8 @@ namespace siddiqsoft
     {
     private:
         // Named constants for magic numbers
-        static constexpr size_t TYPICAL_SIP_MESSAGE_SIZE = 3 * 1024;  ///< Typical SIP message buffer size
-        static constexpr size_t METADATA_ONLY_SIZE = 1;               ///< Size when only metadata is present
+        static constexpr size_t TYPICAL_SIP_MESSAGE_SIZE = 3 * 1024; ///< Typical SIP message buffer size
+        static constexpr size_t METADATA_ONLY_SIZE       = 1;        ///< Size when only metadata is present
 
     public:
 #pragma region Parsing helpers
@@ -120,7 +120,10 @@ namespace siddiqsoft
                 while (bufferStart != bufferEnd && (*bufferStart == '\r' || *bufferStart == '\n'))
                     ++bufferStart;
             }
-            else { throw invalid_startline_error {std::format("{} - SIP Startline not found.", __func__)}; }
+            else
+            {
+                throw invalid_startline_error {std::format("{} - SIP Startline not found.", __func__)};
+            }
 
             return found;
         }
@@ -161,7 +164,10 @@ namespace siddiqsoft
             //	sipm["h"][key] = false;
             //}
             else if (value.empty()) { sipm["h"][key] = ""; }
-            else { sipm["h"][key] = value; }
+            else
+            {
+                sipm["h"][key] = value;
+            }
 
             return true;
         }
@@ -224,45 +230,45 @@ namespace siddiqsoft
                         // Skip over the leading "space" if found.
                         if (*bufferStart == ' ') bufferStart = ++hsep;
 
-                    // Process header value, handling folded headers (RFC 2822 header folding)
-                    bool headerProcessed = false;
-                    while (!headerProcessed)
-                    {
-                        auto hend = useCRLF ? search(hsep, headerEnd, ELEM_NEWLINE.begin(), ELEM_NEWLINE.end())
-                                            : search(hsep, headerEnd, ELEM_NEWLINE_LF.begin(), ELEM_NEWLINE_LF.end());
-                        if (hend != headerEnd)
+                        // Process header value, handling folded headers (RFC 2822 header folding)
+                        bool headerProcessed = false;
+                        while (!headerProcessed)
                         {
-                            // We found the `\r\n`;
-                            // Next, check if this is a folded element
-                            if ((headerEnd != (hend + lineEndSize)) &&
-                                ((*(hend + lineEndSize) == ' ') ||
-                                 (*(hend + lineEndSize) == '\t'))) // peek ahead to see if we have.. folded indicator
+                            auto hend = useCRLF ? search(hsep, headerEnd, ELEM_NEWLINE.begin(), ELEM_NEWLINE.end())
+                                                : search(hsep, headerEnd, ELEM_NEWLINE_LF.begin(), ELEM_NEWLINE_LF.end());
+                            if (hend != headerEnd)
                             {
-                                // Yes, we have a folded item.
-                                // build up the value..
-                                value.append(hsep, hend);
-                                // Advance to past the fold indicator
-                                hsep = hend + lineEndSize + 1;
-                                // Continue loop to process next folded line
+                                // We found the `\r\n`;
+                                // Next, check if this is a folded element
+                                if ((headerEnd != (hend + lineEndSize)) &&
+                                    ((*(hend + lineEndSize) == ' ') ||
+                                     (*(hend + lineEndSize) == '\t'))) // peek ahead to see if we have.. folded indicator
+                                {
+                                    // Yes, we have a folded item.
+                                    // build up the value..
+                                    value.append(hsep, hend);
+                                    // Advance to past the fold indicator
+                                    hsep = hend + lineEndSize + 1;
+                                    // Continue loop to process next folded line
+                                }
+                                else
+                                {
+                                    value.append(hsep, hend);
+                                    found           = storeHeaderValue(sipm, key, value);
+                                    bufferStart     = hend += lineEndSize;
+                                    headerProcessed = true;
+                                }
                             }
                             else
                             {
+                                // reached the end; We're done
                                 value.append(hsep, hend);
-                                found       = storeHeaderValue(sipm, key, value);
-                                bufferStart = hend += lineEndSize;
+                                found           = storeHeaderValue(sipm, key, value);
+                                bufferStart     = headerEnd + headerDelimiterSize;
+                                done            = true;
                                 headerProcessed = true;
                             }
                         }
-                        else
-                        {
-                            // reached the end; We're done
-                            value.append(hsep, hend);
-                            found       = storeHeaderValue(sipm, key, value);
-                            bufferStart = headerEnd + headerDelimiterSize;
-                            done        = true;
-                            headerProcessed = true;
-                        }
-                    }
                     }
                     else
                     {
@@ -284,22 +290,22 @@ namespace siddiqsoft
         /// @brief Decode SDP (Session Description Protocol) message blocks
         /// @details This method parses SDP blocks from the buffer according to RFC 4566.
         /// It handles multiple SDP blocks (separated by v=0 lines) and supports:
-        /// - Session-level attributes: v (version), o (origin), s (session name), i (session info), 
+        /// - Session-level attributes: v (version), o (origin), s (session name), i (session info),
         ///   u (URI), e (email), p (phone), c (connection), t (timing)
         /// - Media-level attributes: m (media), a (attributes)
         /// - Special parsing for connection lines (c=), origin lines (o=), session info (i=)
         /// - Attribute lines with both key:value and flag formats
         /// - Multiple attributes with the same key (stored as arrays)
-        /// 
+        ///
         /// The method increments blockIndex for each new SDP session (v=0 line encountered).
         /// Attributes are stored in the JSON structure at /b/sdp/{blockIndex}/{key}/{subkey}
-        /// 
+        ///
         /// @param sipm Destination sipmessage object to store parsed SDP data
         /// @param bufferStart Start of the buffer (modified to point past parsed content)
         /// @param bufferEnd End of the content area (not the end of the stream)
         /// @return true if at least one SDP element was parsed, false if no elements found
         /// @throws std::exception if parsing fails
-        /// 
+        ///
         /// @note bufferStart must point to the location past the very first v=0 as this signals
         ///       the start of the body. The method starts with blockIndex = -1 and increments
         ///       it to 0 on the first v=0 match.
@@ -341,8 +347,7 @@ namespace siddiqsoft
                         auto aval = string(alineMatcher.get<2>().to_view());
 
                         // This is the form where a=attribute:value
-                        nlohmann::json::json_pointer pkey(
-                                std::format("/b/sdp/{}/{}/{}", blockIndex, key, akey));
+                        nlohmann::json::json_pointer pkey(std::format("/b/sdp/{}/{}/{}", blockIndex, key, akey));
 
                         // We may get multiple items for the same "key" such as `a=rtpmap:x` and `a=rtpmap:y`
                         // In this case we should start an array
@@ -375,10 +380,9 @@ namespace siddiqsoft
                         auto clineMatcher = ctre::search<SIP_PATTERN_BODY_CLINE_RE>(value);
                         if (clineMatcher)
                         {
-                            sipm[pkey] = nlohmann::json {
-                                    {"type"s, string(clineMatcher.get<1>().to_view())},
-                                    {"subtype"s, string(clineMatcher.get<2>().to_view())},
-                                    {"dn"s, string(clineMatcher.get<3>().to_view())}};
+                            sipm[pkey] = nlohmann::json {{"type"s, string(clineMatcher.get<1>().to_view())},
+                                                         {"subtype"s, string(clineMatcher.get<2>().to_view())},
+                                                         {"dn"s, string(clineMatcher.get<3>().to_view())}};
                         }
                         else if (!value.empty()) { sipm[pkey] = value; }
                     }
@@ -410,7 +414,10 @@ namespace siddiqsoft
                                     {"type"s, string(ilineMatcher.get<3>().to_view())}};
                         }
                         else if (!value.empty()) { sipm[pkey] = value; }
-                        else { sipm[pkey] = ""; }
+                        else
+                        {
+                            sipm[pkey] = "";
+                        }
                     }
                     else if (key.compare("t"s) == 0)
                     {
@@ -546,11 +553,11 @@ namespace siddiqsoft
             sipmessage sipm;
 #if defined(DEBUG) || defined(_DEBUG)
             [[maybe_unused]] InvokeOnDestruct timeTaken {[&](long long delta)
-                                        {
-                                            sipm["meta"]["ttx"]  = delta;
-                                            sipm["meta"]["pre"]  = bufferStart - previousBufferStart;
-                                            sipm["meta"]["post"] = bufferEnd - bufferStart;
-                                        }}; // upon destruction, sets the ttx to account for parse time
+                                                         {
+                                                             sipm["meta"]["ttx"]  = delta;
+                                                             sipm["meta"]["pre"]  = bufferStart - previousBufferStart;
+                                                             sipm["meta"]["post"] = bufferEnd - bufferStart;
+                                                         }}; // upon destruction, sets the ttx to account for parse time
 #endif
 
             if (bufferStart != bufferEnd)
@@ -629,7 +636,7 @@ namespace siddiqsoft
             using namespace std;
 
             static const std::string supportedMethods {
-                    "MESSAGE|INFO|INVITE|ACK|OPTIONS|BYE|CANCEL|REGISTER|SUBSCRIBE|NOTIFY|SIP/2.0"s};
+                    "MESSAGE|INFO|INVITE|ACK|OPTIONS|BYE|CANCEL|REGISTER|SUBSCRIBE|NOTIFY|SIP/2.0"};
             std::string buffer {};
             std::string contentType {};
 
@@ -784,7 +791,10 @@ namespace siddiqsoft
                             buffer += serializeSDPelement(block, "a"s);
                         }
                     }
-                    else { throw invalid_document_error {std::format("{}:sipm `b`ody does not have sdp element.", __func__)}; }
+                    else
+                    {
+                        throw invalid_document_error {std::format("{}:sipm `b`ody does not have sdp element.", __func__)};
+                    }
                 }
                 else
                 {
