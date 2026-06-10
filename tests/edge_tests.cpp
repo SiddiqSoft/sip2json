@@ -30,33 +30,31 @@
 
 static std::string makeSdpInvite()
 {
-    std::string sdpBody {
-            "v=0\r\n"
-            "o=alice 2890844526 2890844526 IN IP4 pc33.atlanta.com\r\n"
-            "s=Session SDP\r\n"
-            "i=\"Alice\" (1234) voice\r\n"
-            "c=IN IP4 pc33.atlanta.com\r\n"
-            "t=0 0\r\n"
-            "m=audio 49170 RTP/AVP 0\r\n"
-            "a=rtpmap:0 PCMU/8000\r\n"
-            "a=sendrecv\r\n"};
+    std::string sdpBody {"v=0\r\n"
+                         "o=alice 2890844526 2890844526 IN IP4 pc33.atlanta.com\r\n"
+                         "s=Session SDP\r\n"
+                         "i=\"Alice\" (1234) voice\r\n"
+                         "c=IN IP4 pc33.atlanta.com\r\n"
+                         "t=0 0\r\n"
+                         "m=audio 49170 RTP/AVP 0\r\n"
+                         "a=rtpmap:0 PCMU/8000\r\n"
+                         "a=sendrecv\r\n"};
 
     auto cl = sdpBody.size();
 
-    return std::format(
-            "INVITE sip:bob@biloxi.com SIP/2.0\r\n"
-            "Via: SIP/2.0/TCP pc33.atlanta.com;branch=z9hG4bK776asdhds\r\n"
-            "To: sip:bob@biloxi.com\r\n"
-            "From: sip:alice@atlanta.com;tag=1928301774\r\n"
-            "Call-ID: sdptest@pc33.atlanta.com\r\n"
-            "CSeq: 1 INVITE\r\n"
-            "Contact: sip:alice@pc33.atlanta.com\r\n"
-            "Content-Type: application/sdp\r\n"
-            "Content-Length: {}\r\n"
-            "\r\n"
-            "{}",
-            cl,
-            sdpBody);
+    return std::format("INVITE sip:bob@biloxi.com SIP/2.0\r\n"
+                       "Via: SIP/2.0/TCP pc33.atlanta.com;branch=z9hG4bK776asdhds\r\n"
+                       "To: sip:bob@biloxi.com\r\n"
+                       "From: sip:alice@atlanta.com;tag=1928301774\r\n"
+                       "Call-ID: sdptest@pc33.atlanta.com\r\n"
+                       "CSeq: 1 INVITE\r\n"
+                       "Contact: sip:alice@pc33.atlanta.com\r\n"
+                       "Content-Type: application/sdp\r\n"
+                       "Content-Length: {}\r\n"
+                       "\r\n"
+                       "{}",
+                       cl,
+                       sdpBody);
 }
 
 TEST(edge_sdp, Test_parse_sdp_body)
@@ -131,17 +129,16 @@ TEST(edge_sdp, Test_serialize_sdp_roundtrip)
 
 TEST(edge_sdp, Test_sdp_content_type_zero_content_length)
 {
-    std::string buffer {
-            "INVITE sip:bob@biloxi.com SIP/2.0\r\n"
-            "Via: SIP/2.0/TCP pc33.atlanta.com;branch=z9hG4bK776asdhds\r\n"
-            "To: sip:bob@biloxi.com\r\n"
-            "From: sip:alice@atlanta.com;tag=1928301774\r\n"
-            "Call-ID: sdpzero@pc33.atlanta.com\r\n"
-            "CSeq: 1 INVITE\r\n"
-            "Contact: sip:alice@pc33.atlanta.com\r\n"
-            "Content-Type: application/sdp\r\n"
-            "Content-Length: 0\r\n"
-            "\r\n"};
+    std::string buffer {"INVITE sip:bob@biloxi.com SIP/2.0\r\n"
+                        "Via: SIP/2.0/TCP pc33.atlanta.com;branch=z9hG4bK776asdhds\r\n"
+                        "To: sip:bob@biloxi.com\r\n"
+                        "From: sip:alice@atlanta.com;tag=1928301774\r\n"
+                        "Call-ID: sdpzero@pc33.atlanta.com\r\n"
+                        "CSeq: 1 INVITE\r\n"
+                        "Contact: sip:alice@pc33.atlanta.com\r\n"
+                        "Content-Type: application/sdp\r\n"
+                        "Content-Length: 0\r\n"
+                        "\r\n"};
 
     auto                   bs = buffer.begin();
     siddiqsoft::sipmessage sipm;
@@ -152,32 +149,30 @@ TEST(edge_sdp, Test_sdp_content_type_zero_content_length)
 
 TEST(edge_sdp, Test_sdp_multiple_rtpmap_attributes)
 {
-    std::string sdpBody {
-            "v=0\r\n"
-            "o=bob 123 456 IN IP4 192.168.1.1\r\n"
-            "s=-\r\n"
-            "c=IN IP4 192.168.1.1\r\n"
-            "t=0 0\r\n"
-            "m=audio 49170 RTP/AVP 0 8\r\n"
-            "a=rtpmap:0 PCMU/8000\r\n"
-            "a=rtpmap:8 PCMA/8000\r\n"};
+    std::string sdpBody {"v=0\r\n"
+                         "o=bob 123 456 IN IP4 192.168.1.1\r\n"
+                         "s=-\r\n"
+                         "c=IN IP4 192.168.1.1\r\n"
+                         "t=0 0\r\n"
+                         "m=audio 49170 RTP/AVP 0 8\r\n"
+                         "a=rtpmap:0 PCMU/8000\r\n"
+                         "a=rtpmap:8 PCMA/8000\r\n"};
 
     auto cl = sdpBody.size();
 
-    std::string buffer = std::format(
-            "INVITE sip:alice@atlanta.com SIP/2.0\r\n"
-            "Via: SIP/2.0/TCP 192.168.1.1:5060;branch=z9hG4bK776asdhds\r\n"
-            "To: sip:alice@atlanta.com\r\n"
-            "From: sip:bob@biloxi.com;tag=9876\r\n"
-            "Call-ID: multirtpmap@biloxi.com\r\n"
-            "CSeq: 1 INVITE\r\n"
-            "Contact: sip:bob@192.168.1.1\r\n"
-            "Content-Type: application/sdp\r\n"
-            "Content-Length: {}\r\n"
-            "\r\n"
-            "{}",
-            cl,
-            sdpBody);
+    std::string buffer = std::format("INVITE sip:alice@atlanta.com SIP/2.0\r\n"
+                                     "Via: SIP/2.0/TCP 192.168.1.1:5060;branch=z9hG4bK776asdhds\r\n"
+                                     "To: sip:alice@atlanta.com\r\n"
+                                     "From: sip:bob@biloxi.com;tag=9876\r\n"
+                                     "Call-ID: multirtpmap@biloxi.com\r\n"
+                                     "CSeq: 1 INVITE\r\n"
+                                     "Contact: sip:bob@192.168.1.1\r\n"
+                                     "Content-Type: application/sdp\r\n"
+                                     "Content-Length: {}\r\n"
+                                     "\r\n"
+                                     "{}",
+                                     cl,
+                                     sdpBody);
 
     auto                   bs = buffer.begin();
     siddiqsoft::sipmessage sipm;
@@ -238,17 +233,16 @@ TEST(edge_serialize_errors, Test_serialize_invalid_type)
 
 TEST(edge_parsing, Test_multiple_via_headers)
 {
-    std::string buffer {
-            "INVITE sip:bob@biloxi.com SIP/2.0\r\n"
-            "Via: SIP/2.0/TCP proxy1.atlanta.com;branch=z9hG4bK776asdhds\r\n"
-            "Via: SIP/2.0/TCP pc33.atlanta.com;branch=z9hG4bK87asdks7\r\n"
-            "To: sip:bob@biloxi.com\r\n"
-            "From: sip:alice@atlanta.com;tag=1928301774\r\n"
-            "Call-ID: multivia@atlanta.com\r\n"
-            "CSeq: 1 INVITE\r\n"
-            "Contact: sip:alice@pc33.atlanta.com\r\n"
-            "Content-Length: 0\r\n"
-            "\r\n"};
+    std::string buffer {"INVITE sip:bob@biloxi.com SIP/2.0\r\n"
+                        "Via: SIP/2.0/TCP proxy1.atlanta.com;branch=z9hG4bK776asdhds\r\n"
+                        "Via: SIP/2.0/TCP pc33.atlanta.com;branch=z9hG4bK87asdks7\r\n"
+                        "To: sip:bob@biloxi.com\r\n"
+                        "From: sip:alice@atlanta.com;tag=1928301774\r\n"
+                        "Call-ID: multivia@atlanta.com\r\n"
+                        "CSeq: 1 INVITE\r\n"
+                        "Contact: sip:alice@pc33.atlanta.com\r\n"
+                        "Content-Length: 0\r\n"
+                        "\r\n"};
 
     auto                   bs = buffer.begin();
     siddiqsoft::sipmessage sipm;
@@ -265,17 +259,16 @@ TEST(edge_parsing, Test_content_type_normalization)
 {
     // "Content-type" (lowercase t) should be normalized to "Content-Type"
     // Use application/sdp with Content-Length: 0 to avoid unsupported_contenttype_error
-    std::string buffer {
-            "INVITE sip:bob@biloxi.com SIP/2.0\r\n"
-            "Via: SIP/2.0/TCP pc33.atlanta.com;branch=z9hG4bK776asdhds\r\n"
-            "To: sip:bob@biloxi.com\r\n"
-            "From: sip:alice@atlanta.com;tag=1928301774\r\n"
-            "Call-ID: ctnorm@atlanta.com\r\n"
-            "CSeq: 1 INVITE\r\n"
-            "Contact: sip:alice@pc33.atlanta.com\r\n"
-            "Content-type: application/sdp\r\n"
-            "Content-Length: 0\r\n"
-            "\r\n"};
+    std::string buffer {"INVITE sip:bob@biloxi.com SIP/2.0\r\n"
+                        "Via: SIP/2.0/TCP pc33.atlanta.com;branch=z9hG4bK776asdhds\r\n"
+                        "To: sip:bob@biloxi.com\r\n"
+                        "From: sip:alice@atlanta.com;tag=1928301774\r\n"
+                        "Call-ID: ctnorm@atlanta.com\r\n"
+                        "CSeq: 1 INVITE\r\n"
+                        "Contact: sip:alice@pc33.atlanta.com\r\n"
+                        "Content-type: application/sdp\r\n"
+                        "Content-Length: 0\r\n"
+                        "\r\n"};
 
     auto                   bs = buffer.begin();
     siddiqsoft::sipmessage sipm;
@@ -288,16 +281,15 @@ TEST(edge_parsing, Test_content_type_normalization)
 
 TEST(edge_parsing, Test_lf_only_line_endings)
 {
-    std::string buffer {
-            "OPTIONS sip:test@test.com SIP/2.0\n"
-            "Via: SIP/2.0/TCP client.com:5060;branch=z9hG4bK776asdhds\n"
-            "To: sip:test@test.com\n"
-            "From: sip:sender@sender.com;tag=1928301774\n"
-            "Call-ID: lfonly@client.com\n"
-            "CSeq: 1 OPTIONS\n"
-            "Contact: sip:sender@client.com\n"
-            "Content-Length: 0\n"
-            "\n"};
+    std::string buffer {"OPTIONS sip:test@test.com SIP/2.0\n"
+                        "Via: SIP/2.0/TCP client.com:5060;branch=z9hG4bK776asdhds\n"
+                        "To: sip:test@test.com\n"
+                        "From: sip:sender@sender.com;tag=1928301774\n"
+                        "Call-ID: lfonly@client.com\n"
+                        "CSeq: 1 OPTIONS\n"
+                        "Contact: sip:sender@client.com\n"
+                        "Content-Length: 0\n"
+                        "\n"};
 
     auto                   bs = buffer.begin();
     siddiqsoft::sipmessage sipm;
@@ -313,8 +305,7 @@ TEST(edge_parsing, Test_incomplete_buffer_for_parse)
     std::string buffer {"SIP/2.0 200 OK\r\n"};
 
     auto bs = buffer.begin();
-    EXPECT_THROW(siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end()),
-                 siddiqsoft::incomplete_buffer_for_parse_error);
+    EXPECT_THROW(siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end()), siddiqsoft::incomplete_buffer_for_parse_error);
 }
 
 TEST(edge_parsing, Test_parseAsync_no_error_callback)
@@ -322,9 +313,7 @@ TEST(edge_parsing, Test_parseAsync_no_error_callback)
     std::string buffer {"too short"};
 
     int  parseCount = 0;
-    auto remaining  = siddiqsoft::sip2json::parseAsync(
-            buffer,
-            [&](auto&&) { parseCount++; });
+    auto remaining  = siddiqsoft::sip2json::parseAsync(buffer, [&](auto&&) { parseCount++; });
 
     EXPECT_EQ(0, parseCount);
 }
@@ -336,9 +325,9 @@ TEST(edge_parsing, Test_parseAsync_invalid_startline_callback)
     bool                       errorCaught = false;
     siddiqsoft::sip2jsonErrors caughtError = siddiqsoft::sip2jsonErrors::ok;
 
-    siddiqsoft::sip2json::parseAsync(
+    auto _ = siddiqsoft::sip2json::parseAsync(
             buffer,
-            [](auto&&) {},
+            [](auto&&) { },
             [&](const siddiqsoft::sip2json_exception& e, std::string::iterator&, const std::string::iterator&)
             {
                 errorCaught = true;
@@ -360,8 +349,7 @@ TEST(edge_parsing, Test_parse_throws_when_nothing_parsed)
 TEST(edge_parsing, Test_serialize_via_array)
 {
     siddiqsoft::sipmessage sipm("INVITE", "sip:bob@biloxi.com", siddiqsoft::createCallId(), 1);
-    sipm["h"]["Via"] = nlohmann::json::array(
-            {"SIP/2.0/TCP proxy1.com;branch=z9hG4bK1", "SIP/2.0/TCP proxy2.com;branch=z9hG4bK2"});
+    sipm["h"]["Via"] = nlohmann::json::array({"SIP/2.0/TCP proxy1.com;branch=z9hG4bK1", "SIP/2.0/TCP proxy2.com;branch=z9hG4bK2"});
 
     auto serialized = siddiqsoft::sip2json::serialize(sipm);
 

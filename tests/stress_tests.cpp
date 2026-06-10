@@ -32,15 +32,19 @@ static std::string makeRequest(const std::string& method,
                                const std::string& contentType = {},
                                const std::string& body        = {})
 {
-    std::string msg = std::format(
-            "{} sip:user@example.com SIP/2.0\r\n"
-            "Via: SIP/2.0/TCP 10.0.0.1:5060;branch=z9hG4bK{}\r\n"
-            "To: sip:user@example.com\r\n"
-            "From: sip:caller@example.com;tag=tag{}\r\n"
-            "Call-ID: {}\r\n"
-            "CSeq: {} {}\r\n"
-            "Contact: sip:caller@10.0.0.1\r\n",
-            method, callId, callId, callId, cseq, method);
+    std::string msg = std::format("{} sip:user@example.com SIP/2.0\r\n"
+                                  "Via: SIP/2.0/TCP 10.0.0.1:5060;branch=z9hG4bK{}\r\n"
+                                  "To: sip:user@example.com\r\n"
+                                  "From: sip:caller@example.com;tag=tag{}\r\n"
+                                  "Call-ID: {}\r\n"
+                                  "CSeq: {} {}\r\n"
+                                  "Contact: sip:caller@10.0.0.1\r\n",
+                                  method,
+                                  callId,
+                                  callId,
+                                  callId,
+                                  cseq,
+                                  method);
 
     if (!contentType.empty())
     {
@@ -57,23 +61,26 @@ static std::string makeRequest(const std::string& method,
     return msg;
 }
 
-static std::string makeResponse(uint32_t           statusCode,
-                                const std::string& callId,
-                                uint32_t           cseq   = 1,
-                                const std::string& method = "INVITE")
+static std::string
+makeResponse(uint32_t statusCode, const std::string& callId, uint32_t cseq = 1, const std::string& method = "INVITE")
 {
-    return std::format(
-            "SIP/2.0 {} {}\r\n"
-            "Via: SIP/2.0/TCP 10.0.0.1:5060;branch=z9hG4bK{}\r\n"
-            "To: sip:user@example.com;tag=resp{}\r\n"
-            "From: sip:caller@example.com;tag=tag{}\r\n"
-            "Call-ID: {}\r\n"
-            "CSeq: {} {}\r\n"
-            "Contact: sip:user@10.0.0.2\r\n"
-            "Content-Length: 0\r\n"
-            "\r\n",
-            statusCode, siddiqsoft::getReasonPhrase(statusCode),
-            callId, callId, callId, callId, cseq, method);
+    return std::format("SIP/2.0 {} {}\r\n"
+                       "Via: SIP/2.0/TCP 10.0.0.1:5060;branch=z9hG4bK{}\r\n"
+                       "To: sip:user@example.com;tag=resp{}\r\n"
+                       "From: sip:caller@example.com;tag=tag{}\r\n"
+                       "Call-ID: {}\r\n"
+                       "CSeq: {} {}\r\n"
+                       "Contact: sip:user@10.0.0.2\r\n"
+                       "Content-Length: 0\r\n"
+                       "\r\n",
+                       statusCode,
+                       siddiqsoft::getReasonPhrase(statusCode),
+                       callId,
+                       callId,
+                       callId,
+                       callId,
+                       cseq,
+                       method);
 }
 
 
@@ -90,8 +97,7 @@ TEST(stress, Test_parse_1000_requests)
         auto        bs     = buffer.begin();
 
         siddiqsoft::sipmessage sipm;
-        ASSERT_NO_THROW(sipm = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end()))
-                << "Failed at iteration " << i;
+        ASSERT_NO_THROW(sipm = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end())) << "Failed at iteration " << i;
         ASSERT_EQ("INVITE", sipm.getMethod()) << "Method mismatch at iteration " << i;
         ASSERT_EQ(callId, sipm.getCallID()) << "CallID mismatch at iteration " << i;
     }
@@ -111,15 +117,14 @@ TEST(stress, Test_parse_1000_responses)
         siddiqsoft::sipmessage sipm;
         ASSERT_NO_THROW(sipm = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end()))
                 << "Failed at iteration " << i << " code=" << code;
-        ASSERT_EQ(code, static_cast<uint32_t>(sipm.getStatusCode()))
-                << "Status mismatch at iteration " << i;
+        ASSERT_EQ(code, static_cast<uint32_t>(sipm.getStatusCode())) << "Status mismatch at iteration " << i;
     }
 }
 
 TEST(stress, Test_serialize_1000_messages)
 {
-    std::vector<std::string> methods = {"INVITE", "ACK", "OPTIONS", "BYE", "CANCEL",
-                                        "REGISTER", "SUBSCRIBE", "NOTIFY", "MESSAGE", "INFO"};
+    std::vector<std::string> methods = {
+            "INVITE", "ACK", "OPTIONS", "BYE", "CANCEL", "REGISTER", "SUBSCRIBE", "NOTIFY", "MESSAGE", "INFO"};
 
     for (int i = 0; i < 1000; i++)
     {
@@ -133,8 +138,7 @@ TEST(stress, Test_serialize_1000_messages)
         std::string serialized;
         ASSERT_NO_THROW(serialized = siddiqsoft::sip2json::serialize(sipm))
                 << "Serialize failed at iteration " << i << " method=" << method;
-        ASSERT_TRUE(serialized.find(method) != std::string::npos)
-                << "Method not found in serialized output at iteration " << i;
+        ASSERT_TRUE(serialized.find(method) != std::string::npos) << "Method not found in serialized output at iteration " << i;
     }
 }
 
@@ -160,7 +164,7 @@ TEST(stress, Test_roundtrip_100_requests)
         ASSERT_NO_THROW(serialized = siddiqsoft::sip2json::serialize(sipm));
 
         // Re-parse the serialized output
-        auto bs2 = serialized.begin();
+        auto                   bs2 = serialized.begin();
         siddiqsoft::sipmessage sipm2;
         ASSERT_NO_THROW(sipm2 = siddiqsoft::sip2json::parseFromBuffer(bs2, serialized.end()))
                 << "Re-parse failed at iteration " << i;
@@ -173,26 +177,26 @@ TEST(stress, Test_roundtrip_100_requests)
 
 TEST(stress, Test_roundtrip_sdp_50_messages)
 {
-    std::string sdpTemplate {
-            "v=0\r\n"
-            "o=user{0} {0} {0} IN IP4 10.0.0.{1}\r\n"
-            "s=Call {0}\r\n"
-            "c=IN IP4 10.0.0.{1}\r\n"
-            "t=0 0\r\n"
-            "m=audio {2} RTP/AVP 0\r\n"
-            "a=rtpmap:0 PCMU/8000\r\n"};
+    std::string sdpTemplate {"v=0\r\n"
+                             "o=user{0} {0} {0} IN IP4 10.0.0.{1}\r\n"
+                             "s=Call {0}\r\n"
+                             "c=IN IP4 10.0.0.{1}\r\n"
+                             "t=0 0\r\n"
+                             "m=audio {2} RTP/AVP 0\r\n"
+                             "a=rtpmap:0 PCMU/8000\r\n"};
 
     for (int i = 0; i < 50; i++)
     {
-        auto sdpBody = std::format(
-                "v=0\r\n"
-                "o=user{0} {0} {0} IN IP4 10.0.0.{1}\r\n"
-                "s=Call {0}\r\n"
-                "c=IN IP4 10.0.0.{1}\r\n"
-                "t=0 0\r\n"
-                "m=audio {2} RTP/AVP 0\r\n"
-                "a=rtpmap:0 PCMU/8000\r\n",
-                i, (i % 254) + 1, 49170 + i);
+        auto sdpBody = std::format("v=0\r\n"
+                                   "o=user{0} {0} {0} IN IP4 10.0.0.{1}\r\n"
+                                   "s=Call {0}\r\n"
+                                   "c=IN IP4 10.0.0.{1}\r\n"
+                                   "t=0 0\r\n"
+                                   "m=audio {2} RTP/AVP 0\r\n"
+                                   "a=rtpmap:0 PCMU/8000\r\n",
+                                   i,
+                                   (i % 254) + 1,
+                                   49170 + i);
 
         auto callId = std::format("sdp-rt-{}", i);
         auto buffer = makeRequest("INVITE", callId, i + 1, "application/sdp", sdpBody);
@@ -200,15 +204,12 @@ TEST(stress, Test_roundtrip_sdp_50_messages)
 
         // Parse
         siddiqsoft::sipmessage sipm;
-        ASSERT_NO_THROW(sipm = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end()))
-                << "Parse failed at iteration " << i;
-        ASSERT_TRUE(sipm.contains("/b/sdp"_json_pointer))
-                << "SDP not found at iteration " << i;
+        ASSERT_NO_THROW(sipm = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end())) << "Parse failed at iteration " << i;
+        ASSERT_TRUE(sipm.contains("/b/sdp"_json_pointer)) << "SDP not found at iteration " << i;
 
         // Serialize
         std::string serialized;
-        ASSERT_NO_THROW(serialized = siddiqsoft::sip2json::serialize(sipm))
-                << "Serialize failed at iteration " << i;
+        ASSERT_NO_THROW(serialized = siddiqsoft::sip2json::serialize(sipm)) << "Serialize failed at iteration " << i;
         ASSERT_TRUE(serialized.find("v=0") != std::string::npos);
         ASSERT_TRUE(serialized.find("a=rtpmap:0 PCMU/8000") != std::string::npos);
     }
@@ -236,13 +237,12 @@ TEST(stress, Test_parseAsync_20_concatenated_messages)
     int                      parseCount = 0;
     std::vector<std::string> callIds;
 
-    auto remaining = siddiqsoft::sip2json::parseAsync(
-            buffer,
-            [&](auto&& sipm)
-            {
-                parseCount++;
-                callIds.push_back(sipm.getCallID());
-            });
+    auto remaining = siddiqsoft::sip2json::parseAsync(buffer,
+                                                      [&](auto&& sipm)
+                                                      {
+                                                          parseCount++;
+                                                          callIds.push_back(sipm.getCallID());
+                                                      });
 
     EXPECT_EQ(msgCount, parseCount) << "Expected " << msgCount << " messages, got " << parseCount;
     EXPECT_EQ(0u, remaining.length()) << "Expected empty remaining buffer";
@@ -254,9 +254,9 @@ TEST(stress, Test_parseAsync_20_concatenated_messages)
 
 TEST(stress, Test_parseAsync_mixed_methods_10)
 {
-    std::vector<std::string> methods = {"INVITE", "ACK", "BYE", "CANCEL", "OPTIONS",
-                                        "REGISTER", "SUBSCRIBE", "NOTIFY", "MESSAGE", "INFO"};
-    std::string              buffer;
+    std::vector<std::string> methods = {
+            "INVITE", "ACK", "BYE", "CANCEL", "OPTIONS", "REGISTER", "SUBSCRIBE", "NOTIFY", "MESSAGE", "INFO"};
+    std::string buffer;
 
     for (int i = 0; i < 10; i++)
     {
@@ -267,13 +267,12 @@ TEST(stress, Test_parseAsync_mixed_methods_10)
     int                      parseCount = 0;
     std::vector<std::string> parsedMethods;
 
-    siddiqsoft::sip2json::parseAsync(
-            buffer,
-            [&](auto&& sipm)
-            {
-                parseCount++;
-                parsedMethods.push_back(sipm.getMethod());
-            });
+    auto _ = siddiqsoft::sip2json::parseAsync(buffer,
+                                              [&](auto&& sipm)
+                                              {
+                                                  parseCount++;
+                                                  parsedMethods.push_back(sipm.getMethod());
+                                              });
 
     EXPECT_EQ(10, parseCount);
     for (int i = 0; i < 10; i++)
@@ -290,14 +289,13 @@ TEST(stress, Test_parseAsync_mixed_methods_10)
 TEST(stress, Test_parse_many_custom_headers)
 {
     // Build a message with 50 custom headers
-    std::string buffer {
-            "OPTIONS sip:test@test.com SIP/2.0\r\n"
-            "Via: SIP/2.0/TCP client.com:5060;branch=z9hG4bK776asdhds\r\n"
-            "To: sip:test@test.com\r\n"
-            "From: sip:sender@sender.com;tag=1928301774\r\n"
-            "Call-ID: manyheaders@client.com\r\n"
-            "CSeq: 1 OPTIONS\r\n"
-            "Contact: sip:sender@client.com\r\n"};
+    std::string buffer {"OPTIONS sip:test@test.com SIP/2.0\r\n"
+                        "Via: SIP/2.0/TCP client.com:5060;branch=z9hG4bK776asdhds\r\n"
+                        "To: sip:test@test.com\r\n"
+                        "From: sip:sender@sender.com;tag=1928301774\r\n"
+                        "Call-ID: manyheaders@client.com\r\n"
+                        "CSeq: 1 OPTIONS\r\n"
+                        "Contact: sip:sender@client.com\r\n"};
 
     for (int i = 0; i < 50; i++)
     {
@@ -326,18 +324,17 @@ TEST(stress, Test_parse_long_header_value)
     // Header value of 2000 characters
     std::string longValue(2000, 'A');
 
-    std::string buffer = std::format(
-            "OPTIONS sip:test@test.com SIP/2.0\r\n"
-            "Via: SIP/2.0/TCP client.com:5060;branch=z9hG4bK776asdhds\r\n"
-            "To: sip:test@test.com\r\n"
-            "From: sip:sender@sender.com;tag=1928301774\r\n"
-            "Call-ID: longval@client.com\r\n"
-            "CSeq: 1 OPTIONS\r\n"
-            "Contact: sip:sender@client.com\r\n"
-            "X-Long-Header: {}\r\n"
-            "Content-Length: 0\r\n"
-            "\r\n",
-            longValue);
+    std::string buffer = std::format("OPTIONS sip:test@test.com SIP/2.0\r\n"
+                                     "Via: SIP/2.0/TCP client.com:5060;branch=z9hG4bK776asdhds\r\n"
+                                     "To: sip:test@test.com\r\n"
+                                     "From: sip:sender@sender.com;tag=1928301774\r\n"
+                                     "Call-ID: longval@client.com\r\n"
+                                     "CSeq: 1 OPTIONS\r\n"
+                                     "Contact: sip:sender@client.com\r\n"
+                                     "X-Long-Header: {}\r\n"
+                                     "Content-Length: 0\r\n"
+                                     "\r\n",
+                                     longValue);
 
     auto                   bs = buffer.begin();
     siddiqsoft::sipmessage sipm;
@@ -356,40 +353,40 @@ TEST(stress, Test_parse_long_header_value)
 TEST(stress, Test_parse_sdp_with_many_attributes)
 {
     // Build SDP with 30 attribute lines
-    std::string sdpBody {
-            "v=0\r\n"
-            "o=stress 1000 1000 IN IP4 10.0.0.1\r\n"
-            "s=Stress Test\r\n"
-            "c=IN IP4 10.0.0.1\r\n"
-            "t=0 0\r\n"
-            "m=audio 49170 RTP/AVP 0 8 96 97 98\r\n"
-            "a=rtpmap:0 PCMU/8000\r\n"
-            "a=rtpmap:8 PCMA/8000\r\n"
-            "a=rtpmap:96 opus/48000/2\r\n"
-            "a=rtpmap:97 iLBC/8000\r\n"
-            "a=rtpmap:98 telephone-event/8000\r\n"
-            "a=fmtp:96 minptime=10;useinbandfec=1\r\n"
-            "a=fmtp:98 0-16\r\n"
-            "a=ptime:20\r\n"
-            "a=maxptime:150\r\n"
-            "a=sendrecv\r\n"};
+    std::string sdpBody {"v=0\r\n"
+                         "o=stress 1000 1000 IN IP4 10.0.0.1\r\n"
+                         "s=Stress Test\r\n"
+                         "c=IN IP4 10.0.0.1\r\n"
+                         "t=0 0\r\n"
+                         "m=audio 49170 RTP/AVP 0 8 96 97 98\r\n"
+                         "a=rtpmap:0 PCMU/8000\r\n"
+                         "a=rtpmap:8 PCMA/8000\r\n"
+                         "a=rtpmap:96 opus/48000/2\r\n"
+                         "a=rtpmap:97 iLBC/8000\r\n"
+                         "a=rtpmap:98 telephone-event/8000\r\n"
+                         "a=fmtp:96 minptime=10;useinbandfec=1\r\n"
+                         "a=fmtp:98 0-16\r\n"
+                         "a=ptime:20\r\n"
+                         "a=maxptime:150\r\n"
+                         "a=sendrecv\r\n"};
 
     auto cl     = sdpBody.size();
     auto callId = "sdp-stress-attrs";
 
-    std::string buffer = std::format(
-            "INVITE sip:user@example.com SIP/2.0\r\n"
-            "Via: SIP/2.0/TCP 10.0.0.1:5060;branch=z9hG4bK776asdhds\r\n"
-            "To: sip:user@example.com\r\n"
-            "From: sip:caller@example.com;tag=stress1\r\n"
-            "Call-ID: {}\r\n"
-            "CSeq: 1 INVITE\r\n"
-            "Contact: sip:caller@10.0.0.1\r\n"
-            "Content-Type: application/sdp\r\n"
-            "Content-Length: {}\r\n"
-            "\r\n"
-            "{}",
-            callId, cl, sdpBody);
+    std::string buffer = std::format("INVITE sip:user@example.com SIP/2.0\r\n"
+                                     "Via: SIP/2.0/TCP 10.0.0.1:5060;branch=z9hG4bK776asdhds\r\n"
+                                     "To: sip:user@example.com\r\n"
+                                     "From: sip:caller@example.com;tag=stress1\r\n"
+                                     "Call-ID: {}\r\n"
+                                     "CSeq: 1 INVITE\r\n"
+                                     "Contact: sip:caller@10.0.0.1\r\n"
+                                     "Content-Type: application/sdp\r\n"
+                                     "Content-Length: {}\r\n"
+                                     "\r\n"
+                                     "{}",
+                                     callId,
+                                     cl,
+                                     sdpBody);
 
     auto                   bs = buffer.begin();
     siddiqsoft::sipmessage sipm;
@@ -459,12 +456,11 @@ TEST(stress, Test_parseFromBuffer_exactly_minimal_length)
 {
     // Buffer exactly equal to SIP_SAMPLE_MINIMAL_MESSAGE length should throw
     // (the check is strictly greater than)
-    auto minLen = siddiqsoft::SIP_SAMPLE_MINIMAL_MESSAGE.length();
+    auto        minLen = siddiqsoft::SIP_SAMPLE_MINIMAL_MESSAGE.length();
     std::string buffer(minLen, 'A');
 
     auto bs = buffer.begin();
-    EXPECT_THROW(siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end()),
-                 siddiqsoft::incomplete_buffer_for_parse_error);
+    EXPECT_THROW(siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end()), siddiqsoft::incomplete_buffer_for_parse_error);
 }
 
 TEST(stress, Test_parseAsync_empty_buffer)
@@ -472,9 +468,7 @@ TEST(stress, Test_parseAsync_empty_buffer)
     std::string buffer;
     int         parseCount = 0;
 
-    auto remaining = siddiqsoft::sip2json::parseAsync(
-            buffer,
-            [&](auto&&) { parseCount++; });
+    auto remaining = siddiqsoft::sip2json::parseAsync(buffer, [&](auto&&) { parseCount++; });
 
     EXPECT_EQ(0, parseCount);
     EXPECT_EQ(0u, remaining.length());
@@ -491,14 +485,13 @@ TEST(stress, Test_parseAsync_partial_message_preserved)
 
     std::string buffer = msg1 + partial;
 
-    int parseCount = 0;
-    siddiqsoft::sip2json::parseAsync(
-            buffer,
-            [&](auto&& sipm)
-            {
-                parseCount++;
-                EXPECT_EQ(callId1, sipm.getCallID());
-            });
+    int  parseCount = 0;
+    auto _          = siddiqsoft::sip2json::parseAsync(buffer,
+                                                       [&](auto&& sipm)
+                                                       {
+                                                  parseCount++;
+                                                  EXPECT_EQ(callId1, sipm.getCallID());
+                                                       });
 
     // Should have parsed exactly 1 message
     EXPECT_EQ(1, parseCount);
@@ -506,6 +499,8 @@ TEST(stress, Test_parseAsync_partial_message_preserved)
     // (parseAsync erases consumed content)
     // Note: the partial message is shorter than SIP_SAMPLE_MINIMAL_MESSAGE
     // so it will be left in the buffer
+    std::println(std::cerr, "Remaining buffer: {}", buffer);
+    EXPECT_EQ(partial, buffer);
 }
 
 
@@ -528,17 +523,14 @@ TEST(stress, Test_serialize_parse_response_codes)
         sipm.setHeader("Contact", "sip:user@10.0.0.2");
 
         std::string serialized;
-        ASSERT_NO_THROW(serialized = siddiqsoft::sip2json::serialize(sipm))
-                << "Serialize failed for code " << code;
+        ASSERT_NO_THROW(serialized = siddiqsoft::sip2json::serialize(sipm)) << "Serialize failed for code " << code;
 
-        auto bs2 = serialized.begin();
+        auto                   bs2 = serialized.begin();
         siddiqsoft::sipmessage sipm2;
         ASSERT_NO_THROW(sipm2 = siddiqsoft::sip2json::parseFromBuffer(bs2, serialized.end()))
                 << "Re-parse failed for code " << code;
 
-        ASSERT_EQ(code, static_cast<uint32_t>(sipm2.getStatusCode()))
-                << "Status code mismatch for " << code;
-        ASSERT_EQ(siddiqsoft::getReasonPhrase(code), sipm2.getReason())
-                << "Reason mismatch for " << code;
+        ASSERT_EQ(code, static_cast<uint32_t>(sipm2.getStatusCode())) << "Status code mismatch for " << code;
+        ASSERT_EQ(siddiqsoft::getReasonPhrase(code), sipm2.getReason()) << "Reason mismatch for " << code;
     }
 }
