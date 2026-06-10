@@ -6,7 +6,7 @@
 #   BUILD_TESTS ON
 #   CI_BUILDID must be set to the gitversion
 # 
-cmake_minimum_required(VERSION 3.29)
+cmake_minimum_required(VERSION 3.31)
 
 # _________________
 # Version detection; must preceed the declaration of the actual project()
@@ -22,9 +22,11 @@ project(sip2json
         HOMEPAGE_URL    "%%myurl%%"
         DESCRIPTION     "A SIP Parser for Modern C++. Header-only library to parse and serialize SIP messages to/from JSON.")
 
-set( CMAKE_CXX_STANDARD 20)
-set( CMAKE_CXX_STANDARD_REQUIRED On)
-set( CMAKE_CXX_EXTENSIONS Off)
+# Set C++ standard for this library
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
     
 # ____________________________________
 # Options; define and declare defaults
@@ -40,7 +42,7 @@ target_include_directories(${PROJECT_NAME}
                             INTERFACE
                             $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>)
-target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_20)
+target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_23)
 
 
 # ____________________________________
