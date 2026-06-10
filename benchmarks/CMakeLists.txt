@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.29)
+cmake_minimum_required(VERSION 3.31)
 
 if(${${PROJECT_NAME}_BUILD_BENCHMARKS})
     set(BENCHPROJ ${PROJECT_NAME}_benchmarks)
@@ -19,10 +19,10 @@ if(${${PROJECT_NAME}_BUILD_BENCHMARKS})
                    PRIVATE
                    ${PROJECT_SOURCE_DIR}/benchmarks/benchmark.cpp)
 
-    target_compile_features(${BENCHPROJ} PRIVATE cxx_std_20)
+    target_compile_features(${BENCHPROJ} PRIVATE cxx_std_23)
     target_compile_options(${BENCHPROJ}
                            PRIVATE
-                           $<$<CXX_COMPILER_ID:MSVC>:/std:c++20 /O2>
+                           $<$<CXX_COMPILER_ID:MSVC>:/std:c++23 /O2>
                            $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:GNU>>:-O2>)
 
     target_link_libraries(${BENCHPROJ}
