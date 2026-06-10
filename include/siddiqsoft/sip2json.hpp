@@ -122,7 +122,7 @@ namespace siddiqsoft
             }
             else
             {
-                throw invalid_startline_error {std::format("{} - SIP Startline not found.", __func__)};
+                throw invalid_startline_error {std::format("{}:SIP Startline not found.", __func__)};
             }
 
             return found;
@@ -421,16 +421,22 @@ namespace siddiqsoft
                     }
                     else if (key.compare("t"s) == 0)
                     {
-                        // timing
+                        // timing - FIX: Validate exactly 2 values are parsed
                         uint32_t ts = 0, te = 0;
+                        int parsed = 0;
 #if defined(_WIN32) || defined(_WIN64) || defined(WINDOWS) || defined(WIN32)
-                        if (::sscanf_s(value.c_str(), "%u %u", &ts, &te) > 0)
+                        parsed = ::sscanf_s(value.c_str(), "%u %u", &ts, &te);
 #else
-                        if (std::sscanf(value.c_str(), "%u %u", &ts, &te) > 0)
+                        parsed = std::sscanf(value.c_str(), "%u %u", &ts, &te);
 #endif
+                        if (parsed == 2)
                         {
                             sipm[pkey].push_back(ts);
                             sipm[pkey].push_back(te);
+                        }
+                        else if (parsed > 0)
+                        {
+                            throw invalid_document_error {std::format("{}:Timing element must have exactly 2 values, got {}", __func__, parsed)};
                         }
                     }
                     else if (!key.empty() && value.empty()) { sipm[pkey] = ""; }
@@ -894,7 +900,12 @@ namespace siddiqsoft
                 }
                 else if (item.is_array())
                 {
-                    if (element == "t"s) { return std::format("{} {}", item[0].get<uint32_t>(), item[1].get<uint32_t>()); }
+                    if (element == "t"s) { 
+                        // FIX: Add bounds check before accessing array elements
+                        if (item.size() < 2)
+                            throw missing_required_element {std::format("{}:Timing element must have 2 values, got {}", __func__, item.size())};
+                        return std::format("{} {}", item[0].get<uint32_t>(), item[1].get<uint32_t>()); 
+                    }
                 }
                 else if (item.is_string())
                 {
