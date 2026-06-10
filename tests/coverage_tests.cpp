@@ -37,16 +37,15 @@
 
 TEST(coverage_parsing, Test_parseFromBuffer_response)
 {
-    std::string buffer {
-            "SIP/2.0 200 OK\r\n"
-            "Via: SIP/2.0/TCP 127.0.0.1:5060;branch=z9hG4bK776asdhds\r\n"
-            "To: sip:bob@biloxi.com;tag=a6c85cf\r\n"
-            "From: sip:alice@atlanta.com;tag=1928301774\r\n"
-            "Call-ID: a84b4c76e66710@pc33.atlanta.com\r\n"
-            "CSeq: 314159 INVITE\r\n"
-            "Contact: sip:bob@192.0.2.4\r\n"
-            "Content-Length: 0\r\n"
-            "\r\n"};
+    std::string buffer {"SIP/2.0 200 OK\r\n"
+                        "Via: SIP/2.0/TCP 127.0.0.1:5060;branch=z9hG4bK776asdhds\r\n"
+                        "To: sip:bob@biloxi.com;tag=a6c85cf\r\n"
+                        "From: sip:alice@atlanta.com;tag=1928301774\r\n"
+                        "Call-ID: a84b4c76e66710@pc33.atlanta.com\r\n"
+                        "CSeq: 314159 INVITE\r\n"
+                        "Contact: sip:bob@192.0.2.4\r\n"
+                        "Content-Length: 0\r\n"
+                        "\r\n"};
 
     auto                   bs = buffer.begin();
     siddiqsoft::sipmessage sipm;
@@ -63,15 +62,14 @@ TEST(coverage_parsing, Test_parseFromBuffer_response)
 
 TEST(coverage_parsing, Test_parseFromBuffer_response_100)
 {
-    std::string buffer {
-            "SIP/2.0 100 Trying\r\n"
-            "Via: SIP/2.0/TCP 127.0.0.1:5060;branch=z9hG4bK776asdhds\r\n"
-            "To: sip:bob@biloxi.com;tag=a6c85cf\r\n"
-            "From: sip:alice@atlanta.com;tag=1928301774\r\n"
-            "Call-ID: test100@pc33.atlanta.com\r\n"
-            "CSeq: 1 INVITE\r\n"
-            "Content-Length: 0\r\n"
-            "\r\n"};
+    std::string buffer {"SIP/2.0 100 Trying\r\n"
+                        "Via: SIP/2.0/TCP 127.0.0.1:5060;branch=z9hG4bK776asdhds\r\n"
+                        "To: sip:bob@biloxi.com;tag=a6c85cf\r\n"
+                        "From: sip:alice@atlanta.com;tag=1928301774\r\n"
+                        "Call-ID: test100@pc33.atlanta.com\r\n"
+                        "CSeq: 1 INVITE\r\n"
+                        "Content-Length: 0\r\n"
+                        "\r\n"};
 
     auto                   bs = buffer.begin();
     siddiqsoft::sipmessage sipm;
@@ -83,15 +81,14 @@ TEST(coverage_parsing, Test_parseFromBuffer_response_100)
 
 TEST(coverage_parsing, Test_parseFromBuffer_response_180)
 {
-    std::string buffer {
-            "SIP/2.0 180 Ringing\r\n"
-            "Via: SIP/2.0/TCP 127.0.0.1:5060;branch=z9hG4bK776asdhds\r\n"
-            "To: sip:bob@biloxi.com;tag=a6c85cf\r\n"
-            "From: sip:alice@atlanta.com;tag=1928301774\r\n"
-            "Call-ID: test180@pc33.atlanta.com\r\n"
-            "CSeq: 1 INVITE\r\n"
-            "Content-Length: 0\r\n"
-            "\r\n"};
+    std::string buffer {"SIP/2.0 180 Ringing\r\n"
+                        "Via: SIP/2.0/TCP 127.0.0.1:5060;branch=z9hG4bK776asdhds\r\n"
+                        "To: sip:bob@biloxi.com;tag=a6c85cf\r\n"
+                        "From: sip:alice@atlanta.com;tag=1928301774\r\n"
+                        "Call-ID: test180@pc33.atlanta.com\r\n"
+                        "CSeq: 1 INVITE\r\n"
+                        "Content-Length: 0\r\n"
+                        "\r\n"};
 
     auto                   bs = buffer.begin();
     siddiqsoft::sipmessage sipm;
@@ -103,15 +100,14 @@ TEST(coverage_parsing, Test_parseFromBuffer_response_180)
 
 TEST(coverage_parsing, Test_parseFromBuffer_response_302)
 {
-    std::string buffer {
-            "SIP/2.0 302 Moved Temporarily\r\n"
-            "Via: SIP/2.0/TCP 127.0.0.1:5060;branch=z9hG4bK776asdhds\r\n"
-            "To: sip:bob@biloxi.com;tag=a6c85cf\r\n"
-            "From: sip:alice@atlanta.com;tag=1928301774\r\n"
-            "Call-ID: test302@pc33.atlanta.com\r\n"
-            "CSeq: 1 INVITE\r\n"
-            "Content-Length: 0\r\n"
-            "\r\n"};
+    std::string buffer {"SIP/2.0 302 Moved Temporarily\r\n"
+                        "Via: SIP/2.0/TCP 127.0.0.1:5060;branch=z9hG4bK776asdhds\r\n"
+                        "To: sip:bob@biloxi.com;tag=a6c85cf\r\n"
+                        "From: sip:alice@atlanta.com;tag=1928301774\r\n"
+                        "Call-ID: test302@pc33.atlanta.com\r\n"
+                        "CSeq: 1 INVITE\r\n"
+                        "Content-Length: 0\r\n"
+                        "\r\n"};
 
     auto                   bs = buffer.begin();
     siddiqsoft::sipmessage sipm;
@@ -123,15 +119,14 @@ TEST(coverage_parsing, Test_parseFromBuffer_response_302)
 
 TEST(coverage_parsing, Test_parseFromBuffer_response_400)
 {
-    std::string buffer {
-            "SIP/2.0 400 Bad Request\r\n"
-            "Via: SIP/2.0/TCP 127.0.0.1:5060;branch=z9hG4bK776asdhds\r\n"
-            "To: sip:bob@biloxi.com;tag=a6c85cf\r\n"
-            "From: sip:alice@atlanta.com;tag=1928301774\r\n"
-            "Call-ID: test400@pc33.atlanta.com\r\n"
-            "CSeq: 1 INVITE\r\n"
-            "Content-Length: 0\r\n"
-            "\r\n"};
+    std::string buffer {"SIP/2.0 400 Bad Request\r\n"
+                        "Via: SIP/2.0/TCP 127.0.0.1:5060;branch=z9hG4bK776asdhds\r\n"
+                        "To: sip:bob@biloxi.com;tag=a6c85cf\r\n"
+                        "From: sip:alice@atlanta.com;tag=1928301774\r\n"
+                        "Call-ID: test400@pc33.atlanta.com\r\n"
+                        "CSeq: 1 INVITE\r\n"
+                        "Content-Length: 0\r\n"
+                        "\r\n"};
 
     auto                   bs = buffer.begin();
     siddiqsoft::sipmessage sipm;
@@ -143,15 +138,14 @@ TEST(coverage_parsing, Test_parseFromBuffer_response_400)
 
 TEST(coverage_parsing, Test_parseFromBuffer_response_401)
 {
-    std::string buffer {
-            "SIP/2.0 401 Unauthorized\r\n"
-            "Via: SIP/2.0/TCP 127.0.0.1:5060;branch=z9hG4bK776asdhds\r\n"
-            "To: sip:bob@biloxi.com;tag=a6c85cf\r\n"
-            "From: sip:alice@atlanta.com;tag=1928301774\r\n"
-            "Call-ID: test401@pc33.atlanta.com\r\n"
-            "CSeq: 1 INVITE\r\n"
-            "Content-Length: 0\r\n"
-            "\r\n"};
+    std::string buffer {"SIP/2.0 401 Unauthorized\r\n"
+                        "Via: SIP/2.0/TCP 127.0.0.1:5060;branch=z9hG4bK776asdhds\r\n"
+                        "To: sip:bob@biloxi.com;tag=a6c85cf\r\n"
+                        "From: sip:alice@atlanta.com;tag=1928301774\r\n"
+                        "Call-ID: test401@pc33.atlanta.com\r\n"
+                        "CSeq: 1 INVITE\r\n"
+                        "Content-Length: 0\r\n"
+                        "\r\n"};
 
     auto                   bs = buffer.begin();
     siddiqsoft::sipmessage sipm;
@@ -163,15 +157,14 @@ TEST(coverage_parsing, Test_parseFromBuffer_response_401)
 
 TEST(coverage_parsing, Test_parseFromBuffer_response_404)
 {
-    std::string buffer {
-            "SIP/2.0 404 Not Found\r\n"
-            "Via: SIP/2.0/TCP 127.0.0.1:5060;branch=z9hG4bK776asdhds\r\n"
-            "To: sip:bob@biloxi.com;tag=a6c85cf\r\n"
-            "From: sip:alice@atlanta.com;tag=1928301774\r\n"
-            "Call-ID: test404@pc33.atlanta.com\r\n"
-            "CSeq: 1 INVITE\r\n"
-            "Content-Length: 0\r\n"
-            "\r\n"};
+    std::string buffer {"SIP/2.0 404 Not Found\r\n"
+                        "Via: SIP/2.0/TCP 127.0.0.1:5060;branch=z9hG4bK776asdhds\r\n"
+                        "To: sip:bob@biloxi.com;tag=a6c85cf\r\n"
+                        "From: sip:alice@atlanta.com;tag=1928301774\r\n"
+                        "Call-ID: test404@pc33.atlanta.com\r\n"
+                        "CSeq: 1 INVITE\r\n"
+                        "Content-Length: 0\r\n"
+                        "\r\n"};
 
     auto                   bs = buffer.begin();
     siddiqsoft::sipmessage sipm;
@@ -183,15 +176,14 @@ TEST(coverage_parsing, Test_parseFromBuffer_response_404)
 
 TEST(coverage_parsing, Test_parseFromBuffer_response_500)
 {
-    std::string buffer {
-            "SIP/2.0 500 Internal Server Error\r\n"
-            "Via: SIP/2.0/TCP 127.0.0.1:5060;branch=z9hG4bK776asdhds\r\n"
-            "To: sip:bob@biloxi.com;tag=a6c85cf\r\n"
-            "From: sip:alice@atlanta.com;tag=1928301774\r\n"
-            "Call-ID: test500@pc33.atlanta.com\r\n"
-            "CSeq: 1 INVITE\r\n"
-            "Content-Length: 0\r\n"
-            "\r\n"};
+    std::string buffer {"SIP/2.0 500 Internal Server Error\r\n"
+                        "Via: SIP/2.0/TCP 127.0.0.1:5060;branch=z9hG4bK776asdhds\r\n"
+                        "To: sip:bob@biloxi.com;tag=a6c85cf\r\n"
+                        "From: sip:alice@atlanta.com;tag=1928301774\r\n"
+                        "Call-ID: test500@pc33.atlanta.com\r\n"
+                        "CSeq: 1 INVITE\r\n"
+                        "Content-Length: 0\r\n"
+                        "\r\n"};
 
     auto                   bs = buffer.begin();
     siddiqsoft::sipmessage sipm;
@@ -203,15 +195,14 @@ TEST(coverage_parsing, Test_parseFromBuffer_response_500)
 
 TEST(coverage_parsing, Test_parseFromBuffer_response_503)
 {
-    std::string buffer {
-            "SIP/2.0 503 Service Unavailable\r\n"
-            "Via: SIP/2.0/TCP 127.0.0.1:5060;branch=z9hG4bK776asdhds\r\n"
-            "To: sip:bob@biloxi.com;tag=a6c85cf\r\n"
-            "From: sip:alice@atlanta.com;tag=1928301774\r\n"
-            "Call-ID: test503@pc33.atlanta.com\r\n"
-            "CSeq: 1 INVITE\r\n"
-            "Content-Length: 0\r\n"
-            "\r\n"};
+    std::string buffer {"SIP/2.0 503 Service Unavailable\r\n"
+                        "Via: SIP/2.0/TCP 127.0.0.1:5060;branch=z9hG4bK776asdhds\r\n"
+                        "To: sip:bob@biloxi.com;tag=a6c85cf\r\n"
+                        "From: sip:alice@atlanta.com;tag=1928301774\r\n"
+                        "Call-ID: test503@pc33.atlanta.com\r\n"
+                        "CSeq: 1 INVITE\r\n"
+                        "Content-Length: 0\r\n"
+                        "\r\n"};
 
     auto                   bs = buffer.begin();
     siddiqsoft::sipmessage sipm;
@@ -223,17 +214,16 @@ TEST(coverage_parsing, Test_parseFromBuffer_response_503)
 
 TEST(coverage_parsing, Test_parse_vector_single_message)
 {
-    std::string buffer {
-            "REGISTER sip:registrar.biloxi.com SIP/2.0\r\n"
-            "Via: SIP/2.0/TCP bobspc.biloxi.com:5060\r\n"
-            "To: sip:bob@biloxi.com\r\n"
-            "From: sip:bob@biloxi.com;tag=456248\r\n"
-            "Call-ID: 843817637684230@998sdasdh09\r\n"
-            "CSeq: 1826 REGISTER\r\n"
-            "Contact: sip:bob@192.0.2.4\r\n"
-            "Expires: 7200\r\n"
-            "Content-Length: 0\r\n"
-            "\r\n"};
+    std::string buffer {"REGISTER sip:registrar.biloxi.com SIP/2.0\r\n"
+                        "Via: SIP/2.0/TCP bobspc.biloxi.com:5060\r\n"
+                        "To: sip:bob@biloxi.com\r\n"
+                        "From: sip:bob@biloxi.com;tag=456248\r\n"
+                        "Call-ID: 843817637684230@998sdasdh09\r\n"
+                        "CSeq: 1826 REGISTER\r\n"
+                        "Contact: sip:bob@192.0.2.4\r\n"
+                        "Expires: 7200\r\n"
+                        "Content-Length: 0\r\n"
+                        "\r\n"};
 
     auto bs   = buffer.begin();
     auto msgs = siddiqsoft::sip2json::parse(bs, buffer.end());
@@ -247,67 +237,62 @@ TEST(coverage_parsing, Test_parse_vector_single_message)
 
 TEST(coverage_parsing, Test_parse_vector_multiple_messages)
 {
-    std::string buffer {
-            "REGISTER sip:server.com SIP/2.0\r\n"
-            "Via: SIP/2.0/TCP client.com:5060;branch=z9hG4bK776asdhds\r\n"
-            "To: sip:bob@server.com\r\n"
-            "From: sip:bob@server.com;tag=456248\r\n"
-            "Call-ID: msg1@client.com\r\n"
-            "CSeq: 1 REGISTER\r\n"
-            "Content-Length: 0\r\n"
-            "\r\n"
-            "SIP/2.0 200 OK\r\n"
-            "Via: SIP/2.0/TCP client.com:5060;branch=z9hG4bK776asdhds\r\n"
-            "To: sip:bob@server.com;tag=a6c85cf\r\n"
-            "From: sip:bob@server.com;tag=456248\r\n"
-            "Call-ID: msg1@client.com\r\n"
-            "CSeq: 1 REGISTER\r\n"
-            "Content-Length: 0\r\n"
-            "\r\n"};
+    std::string buffer {"REGISTER sip:server.com SIP/2.0\r\n"
+                        "Via: SIP/2.0/TCP client.com:5060;branch=z9hG4bK776asdhds\r\n"
+                        "To: sip:bob@server.com\r\n"
+                        "From: sip:bob@server.com;tag=456248\r\n"
+                        "Call-ID: msg1@client.com\r\n"
+                        "CSeq: 1 REGISTER\r\n"
+                        "Content-Length: 0\r\n"
+                        "\r\n"
+                        "SIP/2.0 200 OK\r\n"
+                        "Via: SIP/2.0/TCP client.com:5060;branch=z9hG4bK776asdhds\r\n"
+                        "To: sip:bob@server.com;tag=a6c85cf\r\n"
+                        "From: sip:bob@server.com;tag=456248\r\n"
+                        "Call-ID: msg1@client.com\r\n"
+                        "CSeq: 1 REGISTER\r\n"
+                        "Content-Length: 0\r\n"
+                        "\r\n"};
 
     auto bs   = buffer.begin();
     auto msgs = siddiqsoft::sip2json::parse(bs, buffer.end());
 
     EXPECT_GE(msgs.size(), 1u);
     EXPECT_TRUE(msgs[0].isMessageRequest());
-    if (msgs.size() > 1) {
-        EXPECT_TRUE(msgs[1].isMessageResponse());
-    }
+    if (msgs.size() > 1) { EXPECT_TRUE(msgs[1].isMessageResponse()); }
 }
 
 
 TEST(coverage_parsing, Test_parseAsync_multiple_messages)
 {
-    std::string buffer {
-            "INVITE sip:bob@biloxi.com SIP/2.0\r\n"
-            "Via: SIP/2.0/TCP pc33.atlanta.com;branch=z9hG4bK776asdhds\r\n"
-            "To: sip:bob@biloxi.com\r\n"
-            "From: sip:alice@atlanta.com;tag=1928301774\r\n"
-            "Call-ID: invite1@atlanta.com\r\n"
-            "CSeq: 1 INVITE\r\n"
-            "Contact: sip:alice@pc33.atlanta.com\r\n"
-            "Content-Length: 0\r\n"
-            "\r\n"
-            "ACK sip:bob@biloxi.com SIP/2.0\r\n"
-            "Via: SIP/2.0/TCP pc33.atlanta.com;branch=z9hG4bK776asdhds\r\n"
-            "To: sip:bob@biloxi.com;tag=a6c85cf\r\n"
-            "From: sip:alice@atlanta.com;tag=1928301774\r\n"
-            "Call-ID: invite1@atlanta.com\r\n"
-            "CSeq: 1 ACK\r\n"
-            "Contact: sip:alice@pc33.atlanta.com\r\n"
-            "Content-Length: 0\r\n"
-            "\r\n"};
+    std::string buffer {"INVITE sip:bob@biloxi.com SIP/2.0\r\n"
+                        "Via: SIP/2.0/TCP pc33.atlanta.com;branch=z9hG4bK776asdhds\r\n"
+                        "To: sip:bob@biloxi.com\r\n"
+                        "From: sip:alice@atlanta.com;tag=1928301774\r\n"
+                        "Call-ID: invite1@atlanta.com\r\n"
+                        "CSeq: 1 INVITE\r\n"
+                        "Contact: sip:alice@pc33.atlanta.com\r\n"
+                        "Content-Length: 0\r\n"
+                        "\r\n"
+                        "ACK sip:bob@biloxi.com SIP/2.0\r\n"
+                        "Via: SIP/2.0/TCP pc33.atlanta.com;branch=z9hG4bK776asdhds\r\n"
+                        "To: sip:bob@biloxi.com;tag=a6c85cf\r\n"
+                        "From: sip:alice@atlanta.com;tag=1928301774\r\n"
+                        "Call-ID: invite1@atlanta.com\r\n"
+                        "CSeq: 1 ACK\r\n"
+                        "Contact: sip:alice@pc33.atlanta.com\r\n"
+                        "Content-Length: 0\r\n"
+                        "\r\n"};
 
-    int parseCount = 0;
+    int                      parseCount = 0;
     std::vector<std::string> methods;
 
-    auto remaining = siddiqsoft::sip2json::parseAsync(
-            buffer,
-            [&](auto&& sipm)
-            {
-                parseCount++;
-                methods.push_back(sipm.getMethod());
-            });
+    auto remaining = siddiqsoft::sip2json::parseAsync(buffer,
+                                                      [&](auto&& sipm)
+                                                      {
+                                                          parseCount++;
+                                                          methods.push_back(sipm.getMethod());
+                                                      });
 
     EXPECT_EQ(2, parseCount);
     EXPECT_EQ(0, remaining.length());
@@ -318,14 +303,13 @@ TEST(coverage_parsing, Test_parseAsync_multiple_messages)
 
 TEST(coverage_parsing, Test_header_normalization_uthorization)
 {
-    std::string buffer {
-            "REGISTER sip:registrar.com SIP/2.0\r\n"
-            "Via: SIP/2.0/TCP client.com:5060\r\n"
-            "Call-ID: auth123\r\n"
-            "CSeq: 1 REGISTER\r\n"
-            "uthorization: Digest username=\"alice\"\r\n"
-            "Content-Length: 0\r\n"
-            "\r\n"};
+    std::string buffer {"REGISTER sip:registrar.com SIP/2.0\r\n"
+                        "Via: SIP/2.0/TCP client.com:5060\r\n"
+                        "Call-ID: auth123\r\n"
+                        "CSeq: 1 REGISTER\r\n"
+                        "uthorization: Digest username=\"alice\"\r\n"
+                        "Content-Length: 0\r\n"
+                        "\r\n"};
 
     auto                   bs = buffer.begin();
     siddiqsoft::sipmessage sipm;
@@ -339,14 +323,13 @@ TEST(coverage_parsing, Test_header_normalization_uthorization)
 
 TEST(coverage_parsing, Test_header_empty_value)
 {
-    std::string buffer {
-            "OPTIONS sip:test@test.com SIP/2.0\r\n"
-            "Via: SIP/2.0/TCP client.com:5060\r\n"
-            "Call-ID: empty123\r\n"
-            "CSeq: 1 OPTIONS\r\n"
-            "X-Empty-Header: \r\n"
-            "Content-Length: 0\r\n"
-            "\r\n"};
+    std::string buffer {"OPTIONS sip:test@test.com SIP/2.0\r\n"
+                        "Via: SIP/2.0/TCP client.com:5060\r\n"
+                        "Call-ID: empty123\r\n"
+                        "CSeq: 1 OPTIONS\r\n"
+                        "X-Empty-Header: \r\n"
+                        "Content-Length: 0\r\n"
+                        "\r\n"};
 
     auto                   bs = buffer.begin();
     siddiqsoft::sipmessage sipm;
@@ -360,16 +343,15 @@ TEST(coverage_parsing, Test_header_empty_value)
 
 TEST(coverage_parsing, Test_folded_headers)
 {
-    std::string buffer {
-            "INVITE sip:bob@biloxi.com SIP/2.0\r\n"
-            "Via: SIP/2.0/TCP pc33.atlanta.com\r\n"
-            "Subject: This is a very long subject line\r\n"
-            " that continues on the next line\r\n"
-            " and even continues further\r\n"
-            "Call-ID: folded123\r\n"
-            "CSeq: 1 INVITE\r\n"
-            "Content-Length: 0\r\n"
-            "\r\n"};
+    std::string buffer {"INVITE sip:bob@biloxi.com SIP/2.0\r\n"
+                        "Via: SIP/2.0/TCP pc33.atlanta.com\r\n"
+                        "Subject: This is a very long subject line\r\n"
+                        " that continues on the next line\r\n"
+                        " and even continues further\r\n"
+                        "Call-ID: folded123\r\n"
+                        "CSeq: 1 INVITE\r\n"
+                        "Content-Length: 0\r\n"
+                        "\r\n"};
 
     auto                   bs = buffer.begin();
     siddiqsoft::sipmessage sipm;
@@ -385,15 +367,14 @@ TEST(coverage_parsing, Test_folded_headers)
 
 TEST(coverage_parsing, Test_folded_headers_tab)
 {
-    std::string buffer {
-            "INVITE sip:bob@biloxi.com SIP/2.0\r\n"
-            "Via: SIP/2.0/TCP pc33.atlanta.com\r\n"
-            "Subject: Line one\r\n"
-            "\tLine two with tab\r\n"
-            "Call-ID: foldedtab123\r\n"
-            "CSeq: 1 INVITE\r\n"
-            "Content-Length: 0\r\n"
-            "\r\n"};
+    std::string buffer {"INVITE sip:bob@biloxi.com SIP/2.0\r\n"
+                        "Via: SIP/2.0/TCP pc33.atlanta.com\r\n"
+                        "Subject: Line one\r\n"
+                        "\tLine two with tab\r\n"
+                        "Call-ID: foldedtab123\r\n"
+                        "CSeq: 1 INVITE\r\n"
+                        "Content-Length: 0\r\n"
+                        "\r\n"};
 
     auto                   bs = buffer.begin();
     siddiqsoft::sipmessage sipm;
@@ -408,23 +389,23 @@ TEST(coverage_parsing, Test_folded_headers_tab)
 
 TEST(coverage_parsing, Test_all_supported_methods)
 {
-    std::vector<std::string> methods = {"INVITE", "ACK", "OPTIONS", "BYE", "CANCEL", "REGISTER", "SUBSCRIBE", "NOTIFY", "MESSAGE", "INFO"};
+    std::vector<std::string> methods = {
+            "INVITE", "ACK", "OPTIONS", "BYE", "CANCEL", "REGISTER", "SUBSCRIBE", "NOTIFY", "MESSAGE", "INFO"};
 
     for (const auto& method : methods)
     {
-        std::string buffer = std::format(
-                "{} sip:test@test.com SIP/2.0\r\n"
-                "Via: SIP/2.0/TCP client.com:5060;branch=z9hG4bK776asdhds\r\n"
-                "To: sip:test@test.com\r\n"
-                "From: sip:sender@sender.com;tag=1928301774\r\n"
-                "Call-ID: method-{}@client.com\r\n"
-                "CSeq: 1 {}\r\n"
-                "Contact: sip:sender@client.com\r\n"
-                "Content-Length: 0\r\n"
-                "\r\n",
-                method,
-                method,
-                method);
+        std::string buffer = std::format("{} sip:test@test.com SIP/2.0\r\n"
+                                         "Via: SIP/2.0/TCP client.com:5060;branch=z9hG4bK776asdhds\r\n"
+                                         "To: sip:test@test.com\r\n"
+                                         "From: sip:sender@sender.com;tag=1928301774\r\n"
+                                         "Call-ID: method-{}@client.com\r\n"
+                                         "CSeq: 1 {}\r\n"
+                                         "Contact: sip:sender@client.com\r\n"
+                                         "Content-Length: 0\r\n"
+                                         "\r\n",
+                                         method,
+                                         method,
+                                         method);
 
         auto                   bs = buffer.begin();
         siddiqsoft::sipmessage sipm;
@@ -441,61 +422,56 @@ TEST(coverage_parsing, Test_all_supported_methods)
 
 TEST(coverage_errors, Test_incomplete_buffer_for_content)
 {
-    std::string buffer {
-            "INVITE sip:bob@biloxi.com SIP/2.0\r\n"
-            "Via: SIP/2.0/TCP pc33.atlanta.com\r\n"
-            "Call-ID: invite1@atlanta.com\r\n"
-            "CSeq: 1 INVITE\r\n"
-            "Content-Type: application/sdp\r\n"
-            "Content-Length: 1000\r\n"
-            "\r\n"
-            "v=0\r\n"
-            "s=short\r\n"};
+    std::string buffer {"INVITE sip:bob@biloxi.com SIP/2.0\r\n"
+                        "Via: SIP/2.0/TCP pc33.atlanta.com\r\n"
+                        "Call-ID: invite1@atlanta.com\r\n"
+                        "CSeq: 1 INVITE\r\n"
+                        "Content-Type: application/sdp\r\n"
+                        "Content-Length: 1000\r\n"
+                        "\r\n"
+                        "v=0\r\n"
+                        "s=short\r\n"};
 
     auto bs = buffer.begin();
 
-    EXPECT_THROW(siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end()),
-                 siddiqsoft::incomplete_buffer_for_content_error);
+    EXPECT_THROW(siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end()), siddiqsoft::incomplete_buffer_for_content_error);
 }
 
 
 TEST(coverage_errors, Test_unsupported_contenttype)
 {
-    std::string buffer {
-            "MESSAGE sip:bob@biloxi.com SIP/2.0\r\n"
-            "Via: SIP/2.0/TCP pc33.atlanta.com\r\n"
-            "Call-ID: msg1@atlanta.com\r\n"
-            "CSeq: 1 MESSAGE\r\n"
-            "Content-Type: application/json\r\n"
-            "Content-Length: 15\r\n"
-            "\r\n"
-            "{\"test\":\"data\"}"};
+    std::string buffer {"MESSAGE sip:bob@biloxi.com SIP/2.0\r\n"
+                        "Via: SIP/2.0/TCP pc33.atlanta.com\r\n"
+                        "Call-ID: msg1@atlanta.com\r\n"
+                        "CSeq: 1 MESSAGE\r\n"
+                        "Content-Type: application/json\r\n"
+                        "Content-Length: 15\r\n"
+                        "\r\n"
+                        "{\"test\":\"data\"}"};
 
     auto bs = buffer.begin();
 
-    EXPECT_THROW(siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end()),
-                 siddiqsoft::unsupported_contenttype_error);
+    EXPECT_THROW(siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end()), siddiqsoft::unsupported_contenttype_error);
 }
 
 
 TEST(coverage_errors, Test_parseAsync_unsupported_contenttype_callback)
 {
-    std::string buffer {
-            "MESSAGE sip:bob@biloxi.com SIP/2.0\r\n"
-            "Via: SIP/2.0/TCP pc33.atlanta.com\r\n"
-            "Call-ID: msg1@atlanta.com\r\n"
-            "CSeq: 1 MESSAGE\r\n"
-            "Content-Type: application/xml\r\n"
-            "Content-Length: 10\r\n"
-            "\r\n"
-            "<root></root>"};
+    std::string buffer {"MESSAGE sip:bob@biloxi.com SIP/2.0\r\n"
+                        "Via: SIP/2.0/TCP pc33.atlanta.com\r\n"
+                        "Call-ID: msg1@atlanta.com\r\n"
+                        "CSeq: 1 MESSAGE\r\n"
+                        "Content-Type: application/xml\r\n"
+                        "Content-Length: 10\r\n"
+                        "\r\n"
+                        "<root></root>"};
 
-    bool errorCaught = false;
+    bool                       errorCaught = false;
     siddiqsoft::sip2jsonErrors caughtError = siddiqsoft::sip2jsonErrors::ok;
 
-    siddiqsoft::sip2json::parseAsync(
+    auto _= siddiqsoft::sip2json::parseAsync(
             buffer,
-            [](auto&&) {},
+            [](auto&&) { },
             [&](const siddiqsoft::sip2json_exception& e, std::string::iterator&, const std::string::iterator&)
             {
                 errorCaught = true;
@@ -509,22 +485,21 @@ TEST(coverage_errors, Test_parseAsync_unsupported_contenttype_callback)
 
 TEST(coverage_errors, Test_parseAsync_incomplete_content_callback)
 {
-    std::string buffer {
-            "INVITE sip:bob@biloxi.com SIP/2.0\r\n"
-            "Via: SIP/2.0/TCP pc33.atlanta.com\r\n"
-            "Call-ID: invite1@atlanta.com\r\n"
-            "CSeq: 1 INVITE\r\n"
-            "Content-Type: application/sdp\r\n"
-            "Content-Length: 5000\r\n"
-            "\r\n"
-            "v=0\r\n"};
+    std::string buffer {"INVITE sip:bob@biloxi.com SIP/2.0\r\n"
+                        "Via: SIP/2.0/TCP pc33.atlanta.com\r\n"
+                        "Call-ID: invite1@atlanta.com\r\n"
+                        "CSeq: 1 INVITE\r\n"
+                        "Content-Type: application/sdp\r\n"
+                        "Content-Length: 5000\r\n"
+                        "\r\n"
+                        "v=0\r\n"};
 
-    bool errorCaught = false;
+    bool                       errorCaught = false;
     siddiqsoft::sip2jsonErrors caughtError = siddiqsoft::sip2jsonErrors::ok;
 
-    siddiqsoft::sip2json::parseAsync(
+    auto _ = siddiqsoft::sip2json::parseAsync(
             buffer,
-            [](auto&&) {},
+            [](auto&&) { },
             [&](const siddiqsoft::sip2json_exception& e, std::string::iterator&, const std::string::iterator&)
             {
                 errorCaught = true;
@@ -549,7 +524,7 @@ TEST(coverage_errors, Test_missing_required_sdp_element)
 
 TEST(coverage_errors, Test_sip2json_exception_from_std_exception)
 {
-    std::runtime_error stdErr("Standard error message");
+    std::runtime_error             stdErr("Standard error message");
     siddiqsoft::sip2json_exception sipErr(stdErr);
 
     EXPECT_EQ(std::string("Standard error message"), std::string(sipErr.what()));
@@ -562,10 +537,9 @@ TEST(coverage_errors, Test_sip2json_exception_from_std_exception)
 // ============================================================================
 
 
-
 TEST(coverage_sipmessage, Test_move_constructor)
 {
-    auto callId = siddiqsoft::createCallId();
+    auto                   callId = siddiqsoft::createCallId();
     siddiqsoft::sipmessage original("INVITE", "sip:bob@biloxi.com", callId, 1);
 
     siddiqsoft::sipmessage moved(std::move(original));
@@ -578,11 +552,10 @@ TEST(coverage_sipmessage, Test_move_constructor)
 
 TEST(coverage_sipmessage, Test_construct_from_json)
 {
-    nlohmann::json j = {
-            {"s", {{"type", "request"}, {"method", "OPTIONS"}, {"uri", "sip:test@test.com"}, {"version", "SIP/2.0"}}},
-            {"h", {{"Call-ID", "test123"}, {"CSeq", "1 OPTIONS"}}},
-            {"b", nullptr},
-            {"meta", {{"version", "test"}}}};
+    nlohmann::json j = {{"s", {{"type", "request"}, {"method", "OPTIONS"}, {"uri", "sip:test@test.com"}, {"version", "SIP/2.0"}}},
+                        {"h", {{"Call-ID", "test123"}, {"CSeq", "1 OPTIONS"}}},
+                        {"b", nullptr},
+                        {"meta", {{"version", "test"}}}};
 
     siddiqsoft::sipmessage sipm(j);
 
@@ -594,10 +567,9 @@ TEST(coverage_sipmessage, Test_construct_from_json)
 
 TEST(coverage_sipmessage, Test_move_assign_from_json)
 {
-    nlohmann::json j = {
-            {"s", {{"type", "response"}, {"status", 404}, {"reason", "Not Found"}, {"version", "SIP/2.0"}}},
-            {"h", {{"Call-ID", "notfound123"}}},
-            {"b", nullptr}};
+    nlohmann::json j = {{"s", {{"type", "response"}, {"status", 404}, {"reason", "Not Found"}, {"version", "SIP/2.0"}}},
+                        {"h", {{"Call-ID", "notfound123"}}},
+                        {"b", nullptr}};
 
     siddiqsoft::sipmessage sipm;
     sipm = std::move(j);
@@ -757,7 +729,8 @@ TEST(coverage_serialize, Test_serialize_response)
 
 TEST(coverage_serialize, Test_serialize_all_methods)
 {
-    std::vector<std::string> methods = {"INVITE", "ACK", "OPTIONS", "BYE", "CANCEL", "REGISTER", "SUBSCRIBE", "NOTIFY", "MESSAGE", "INFO"};
+    std::vector<std::string> methods = {
+            "INVITE", "ACK", "OPTIONS", "BYE", "CANCEL", "REGISTER", "SUBSCRIBE", "NOTIFY", "MESSAGE", "INFO"};
 
     for (const auto& method : methods)
     {
@@ -803,7 +776,7 @@ TEST(coverage_response_codes, Test_getReasonPhrase)
 TEST(coverage_utils, Test_createCallId_uniqueness)
 {
     std::set<std::string> callIds;
-    const int numIds = 100;
+    const int             numIds = 100;
 
     for (int i = 0; i < numIds; i++)
     {
