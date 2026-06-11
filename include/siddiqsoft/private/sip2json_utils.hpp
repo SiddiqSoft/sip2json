@@ -139,7 +139,7 @@ namespace siddiqsoft
 
 #pragma endregion
 
-
+#ifdef TARGET_OS_WIN32
     /// @brief Creates a pseudo random number generated UUID v4. It is best to use platform-specific method to ensure guid
     /// @return string 44 character of the format: 7792eaf4-456f-4d47-d93-863af0e0-a8b99b9b9988
     static std::string createCallId()
@@ -171,6 +171,17 @@ namespace siddiqsoft
             sBuffer << ud2(generator);
         return sBuffer.str();
     }
+#else
+    static std::string createCallId()
+    {
+        // On UNIX, we can use the uuid library to generate a proper UUID v4 for the Call-ID
+        uuid_t uuid;
+        uuid_generate_random(uuid);
+        char uuid_str[37]; // 36 characters + null terminator
+        uuid_unparse(uuid, uuid_str);
+        return std::string(uuid_str);
+    }
+#endif
 
 
     // CAUTION; this is used as a reference to break out of the processing loop if the remaining buffer is less than the
