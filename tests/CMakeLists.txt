@@ -72,6 +72,7 @@ if(${${PROJECT_NAME}_BUILD_TESTS})
                     ${PROJECT_SOURCE_DIR}/tests/edge_tests_2.cpp
                     ${PROJECT_SOURCE_DIR}/tests/rule_of_five_tests.cpp
                     ${PROJECT_SOURCE_DIR}/tests/stress_tests.cpp
+                    ${PROJECT_SOURCE_DIR}/tests/bug_trigger_tests.cpp
                     ${PROJECT_SOURCE_DIR}/tests/test.cpp)
 
     include(GoogleTest)

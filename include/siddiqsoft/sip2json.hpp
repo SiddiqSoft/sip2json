@@ -109,7 +109,7 @@ namespace siddiqsoft
                 {
                     sipm["s"s] = {{"type"s, SIPMessageType::response},
                                   {"reason"s, string(g3)},
-                                  {"status"s, stoi(string(g2))},
+                                  {"status"s, std::stoi(string(g2))},
                                   {"version"s, string(g1)}};
                 }
 
@@ -151,8 +151,28 @@ namespace siddiqsoft
                 // Some encoders send Content-type instead of the standard Content-Type; here we normalize it.
                 sipm["h"][HF_CONTENT_TYPE] = value;
             }
-            else if (key.compare(HF_CONTENT_LENGTH) == 0) { sipm["h"][key] = std::stoi(value); }
-            else if (key.compare(HF_EXPIRES) == 0) { sipm["h"][key] = std::stoi(value); }
+            else if (key.compare(HF_CONTENT_LENGTH) == 0)
+            {
+                try
+                {
+                    sipm["h"][key] = std::stoi(value);
+                }
+                catch (const std::exception&)
+                {
+                    throw invalid_document_error {std::format("{}:Invalid Content-Length value '{}'", __func__, value)};
+                }
+            }
+            else if (key.compare(HF_EXPIRES) == 0)
+            {
+                try
+                {
+                    sipm["h"][key] = std::stoi(value);
+                }
+                catch (const std::exception&)
+                {
+                    throw invalid_document_error {std::format("{}:Invalid Expires value '{}'", __func__, value)};
+                }
+            }
             // This helper causes issues when the payload may contain "true" or "false" as a string value not intended as boolean
             // This approach allows the client the ultimate authority for decoding the data.
             //else if (value.find("true") == 0)
@@ -241,6 +261,7 @@ namespace siddiqsoft
                                 // We found the `\r\n`;
                                 // Next, check if this is a folded element
                                 if ((headerEnd != (hend + lineEndSize)) &&
+                                    (hend + lineEndSize < headerEnd) && // ensure we don't read past the header end
                                     ((*(hend + lineEndSize) == ' ') ||
                                      (*(hend + lineEndSize) == '\t'))) // peek ahead to see if we have.. folded indicator
                                 {
@@ -423,7 +444,7 @@ namespace siddiqsoft
                     {
                         // timing - FIX: Validate exactly 2 values are parsed
                         uint32_t ts = 0, te = 0;
-                        int parsed = 0;
+                        int      parsed = 0;
 #if defined(_WIN32) || defined(_WIN64) || defined(WINDOWS) || defined(WIN32)
                         parsed = ::sscanf_s(value.c_str(), "%u %u", &ts, &te);
 #else
@@ -436,7 +457,8 @@ namespace siddiqsoft
                         }
                         else if (parsed > 0)
                         {
-                            throw invalid_document_error {std::format("{}:Timing element must have exactly 2 values, got {}", __func__, parsed)};
+                            throw invalid_document_error {
+                                    std::format("{}:Timing element must have exactly 2 values, got {}", __func__, parsed)};
                         }
                     }
                     else if (!key.empty() && value.empty()) { sipm[pkey] = ""; }
@@ -510,6 +532,8 @@ namespace siddiqsoft
             // the frame was extracted.
             // We must therefore remove anything prior and upto the bufferStart
             frameBuffer.erase(frameBuffer.begin(), bufferStart);
+            // reset the iterators..
+            bufferStart = frameBuffer.begin();
 
             return frameBuffer;
         }
@@ -900,11 +924,13 @@ namespace siddiqsoft
                 }
                 else if (item.is_array())
                 {
-                    if (element == "t"s) { 
+                    if (element == "t"s)
+                    {
                         // FIX: Add bounds check before accessing array elements
                         if (item.size() < 2)
-                            throw missing_required_element {std::format("{}:Timing element must have 2 values, got {}", __func__, item.size())};
-                        return std::format("{} {}", item[0].get<uint32_t>(), item[1].get<uint32_t>()); 
+                            throw missing_required_element {
+                                    std::format("{}:Timing element must have 2 values, got {}", __func__, item.size())};
+                        return std::format("{} {}", item[0].get<uint32_t>(), item[1].get<uint32_t>());
                     }
                 }
                 else if (item.is_string())

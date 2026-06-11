@@ -144,10 +144,10 @@ namespace siddiqsoft
     /// @return string 44 character of the format: 7792eaf4-456f-4d47-d93-863af0e0-a8b99b9b9988
     static std::string createCallId()
     {
-        static std::random_device            rd;
-        static std::mt19937_64               generator(rd());
-        static std::uniform_int_distribution ud(0, 15);
-        static std::uniform_int_distribution ud2(8, 11);
+        static thread_local std::random_device            rd;
+        static thread_local std::mt19937_64               generator(rd());
+        static thread_local std::uniform_int_distribution ud(0, 15);
+        static thread_local std::uniform_int_distribution ud2(8, 11);
 
         std::stringstream sBuffer;
 
