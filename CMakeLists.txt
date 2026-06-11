@@ -42,6 +42,10 @@ target_include_directories(${PROJECT_NAME}
                             INTERFACE
                             $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>)
+
+# The following is needed to make the .natvis file available to the IDE for debugging
+target_sources(${PROJECT_NAME} PRIVATE siddiqsoft.${PROJECT_NAME}.natvis)
+
 target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_23)
 
 

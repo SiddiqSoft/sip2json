@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+  
+  <!-- Visualization for sipmessage class -->
+  <Type Name="siddiqsoft::sipmessage">
+    <DisplayString Condition="this-&gt;contains(&quot;s&quot;) &amp;&amp; (*this)[&quot;s&quot;].contains(&quot;type&quot;)">
+      {(*this)[&quot;s&quot;][&quot;type&quot;] == 1 ? "SIP Request" : "SIP Response"} - {(*this)[&quot;meta&quot;][&quot;version&quot;]}
+    </DisplayString>
+    <DisplayString>SIP Message</DisplayString>
+    <Expand HideRawView="true">
+      <Item Name="[Type]" Condition="this-&gt;contains(&quot;s&quot;) &amp;&amp; (*this)[&quot;s&quot;].contains(&quot;type&quot;)">
+        (*this)[&quot;s&quot;][&quot;type&quot;] == 1 ? "Request" : "Response"
+      </Item>
+      <Item Name="[Method]" Condition="this-&gt;contains(&quot;s&quot;) &amp;&amp; (*this)[&quot;s&quot;].contains(&quot;method&quot;)">
+        (*this)[&quot;s&quot;][&quot;method&quot;]
+      </Item>
+      <Item Name="[URI]" Condition="this-&gt;contains(&quot;s&quot;) &amp;&amp; (*this)[&quot;s&quot;].contains(&quot;uri&quot;)">
+        (*this)[&quot;s&quot;][&quot;uri&quot;]
+      </Item>
+      <Item Name="[Status Code]" Condition="this-&gt;contains(&quot;s&quot;) &amp;&amp; (*this)[&quot;s&quot;].contains(&quot;status&quot;)">
+        (*this)[&quot;s&quot;][&quot;status&quot;]
+      </Item>
+      <Item Name="[Reason]" Condition="this-&gt;contains(&quot;s&quot;) &amp;&amp; (*this)[&quot;s&quot;].contains(&quot;reason&quot;)">
+        (*this)[&quot;s&quot;][&quot;reason&quot;]
+      </Item>
+      <Item Name="[Version]" Condition="this-&gt;contains(&quot;s&quot;) &amp;&amp; (*this)[&quot;s&quot;].contains(&quot;version&quot;)">
+        (*this)[&quot;s&quot;][&quot;version&quot;]
+      </Item>
+      <Item Name="[Headers]" Condition="this-&gt;contains(&quot;h&quot;)">
+        (*this)[&quot;h&quot;]
+      </Item>
+      <Item Name="[Body]" Condition="this-&gt;contains(&quot;b&quot;)">
+        (*this)[&quot;b&quot;]
+      </Item>
+      <Item Name="[Metadata]" Condition="this-&gt;contains(&quot;meta&quot;)">
+        (*this)[&quot;meta&quot;]
+      </Item>
+      <Item Name="[Raw JSON]">
+        *this
+      </Item>
+    </Expand>
+  </Type>
+
+  <!-- Visualization for sip2json class (static utility class) -->
+  <Type Name="siddiqsoft::sip2json">
+    <DisplayString>SIP Parser Utility</DisplayString>
+    <Expand HideRawView="true">
+      <Item Name="[Description]">
+        "Static utility class for SIP message parsing and serialization"
+      </Item>
+      <Item Name="[Typical Message Size]">
+        3072
+      </Item>
+    </Expand>
+  </Type>
+
+  <!-- Visualization for SIPMessageType enum -->
+  <Type Name="siddiqsoft::SIPMessageType">
+    <DisplayString Condition="*this == 1">request</DisplayString>
+    <DisplayString Condition="*this == 2">response</DisplayString>
+    <DisplayString>notspecified</DisplayString>
+  </Type>
+
+  <!-- Visualization for nlohmann::json (base class of sipmessage) -->
+  <Type Name="nlohmann::basic_json&lt;*&gt;">
+    <DisplayString>{dump()}</DisplayString>
+    <Expand HideRawView="true">
+      <Item Name="[JSON Value]">
+        dump()
+      </Item>
+    </Expand>
+  </Type>
+
+</AutoVisualizer>

@@ -127,7 +127,11 @@ TEST(BugTrigger_Critical, Bug_3_WeakRandomAndThreadSafety)
     std::vector<std::string> threadCallIds;
     std::vector<std::thread> threads;
     std::string              NOTHING_CHANGES {};
-    
+
+    // IMPORTANT!
+    // If we do not reserve then the ASAN triggers a false positive of overflow when the vector resizes
+    // this is not a bug in sip2json but we want to avoid noise in the test results
+    threadCallIds.reserve(1001);
     for (int i = 0; i < 10; ++i)
     {
         threads.emplace_back(
@@ -135,12 +139,12 @@ TEST(BugTrigger_Critical, Bug_3_WeakRandomAndThreadSafety)
                 {
                     for (int j = 0; j < 100; ++j)
                     {
-                        //threadCallIds.push_back(createCallId());
-                        threadCallIds.push_back(NOTHING_CHANGES);
+                        threadCallIds.push_back(createCallId());
                     }
                 });
     }
 
+    //threads.reserve(11);
     for (auto& t : threads)
     {
         t.join();

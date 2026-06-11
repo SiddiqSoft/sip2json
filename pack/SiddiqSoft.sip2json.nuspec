@@ -66,6 +66,9 @@ For detailed release notes, visit: https://github.com/siddiqsoftware/sip2json/re
         <file src="..\README.md" target="docs\" />
         <file src="..\docs\*.md" target="docs\" />
 
+        <!-- The symbol/reference file for IDE support -->
+        <file src="siddisoft.sip2json.natvis" target="build\native" />
+
         <!-- MSBuild .targets files -->
         <file src="SiddiqSoft.sip2json.targets" target="build\native" />
     </files>
