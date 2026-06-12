@@ -45,7 +45,12 @@ target_include_directories(${PROJECT_NAME}
 
 # The following is needed to make the .natvis file available to the IDE for debugging
 target_sources(${PROJECT_NAME} PRIVATE siddiqsoft.${PROJECT_NAME}.natvis)
-
+# Install natvis file for Visual Studio debugger visualization
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/SiddiqSoft.sip2json.natvis
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}
+        COMPONENT natvis
+        OPTIONAL)
+        
 target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_23)
 
 
