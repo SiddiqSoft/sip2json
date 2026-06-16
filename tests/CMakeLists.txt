@@ -30,14 +30,20 @@ if(${${PROJECT_NAME}_BUILD_TESTS})
 
     if(CLANG_TIDY_EXE AND CMAKE_BUILD_TYPE MATCHES [Dd][Ee][Bb][Uu][Gg])
         # This runs the analyzer with all default checks enabled
+        # We skip anything that is not in our project.
         message(STATUS "  >> Using clang-tidy checks=*")
-        set(CMAKE_CXX_CLANG_TIDY ${CLANG_TIDY_EXE} "-checks=*")
+        set(CMAKE_CXX_CLANG_TIDY 
+            ${CLANG_TIDY_EXE} 
+            "-checks=*"
+            "--header-filter=^(${CMAKE_CURRENT_SOURCE_DIR}/|${PROJECT_SOURCE_DIR}/include/)")
     endif()
 
     # UndefinedBehaviorSanitizer is not available on Windows
     if( CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" )
         message(STATUS "  >> UBSAN is not supported on Windows/MSVC, skipping..")
         message(STATUS "  >> Coverage flags is not supported on Windows/MSVC, skipping..")
+        set(DEBUG_COMPILE_FLAGS /Zi /Od)
+        set(DEBUG_LINK_FLAGS /DEBUG:FULL)
     else()
         set(ASAN_FLAGS "-fsanitize=address")
         set(UBSAN_FLAGS "-fsanitize=undefined")
@@ -45,6 +51,7 @@ if(${${PROJECT_NAME}_BUILD_TESTS})
         set(COVERAGE_FLAGS "-coverage")
         set(OPTIMIZE_FLAGS "-O0")
         set(OTHER_FLAGS "-g")
+        set(DEBUG_COMPILE_FLAGS -g3 -O0)
     endif()
 
     # LeakSanitizer is not available on Windows and Darwin/macOS with AppleClang
@@ -55,8 +62,8 @@ if(${${PROJECT_NAME}_BUILD_TESTS})
     endif()
 
     message(STATUS "  >> Enable compile options for ${TESTPROJ} -- ${OPTIMIZE_FLAGS} ${OTHER_FLAGS} ${COVERAGE_FLAGS} ${ASAN_FLAGS} ${LSAN_FLAGS} ${UBSAN_FLAGS}")
-    target_compile_options(${TESTPROJ} PRIVATE ${COVERAGE_FLAGS} ${OPTIMIZE_FLAGS} ${OTHER_FLAGS} ${ASAN_FLAGS} ${LSAN_FLAGS} ${UBSAN_FLAGS})
-    target_link_options(${TESTPROJ} PRIVATE ${COVERAGE_FLAGS} ${OPTIMIZE_FLAGS} ${OTHER_FLAGS} ${ASAN_FLAGS} ${LSAN_FLAGS} ${UBSAN_FLAGS})
+    target_compile_options(${TESTPROJ} PRIVATE  ${DEBUG_COMPILE_FLAGS}  ${COVERAGE_FLAGS} ${OPTIMIZE_FLAGS} ${OTHER_FLAGS} ${ASAN_FLAGS} ${LSAN_FLAGS} ${UBSAN_FLAGS})
+    target_link_options(${TESTPROJ} PRIVATE ${DEBUG_LINK_FLAGS}  ${COVERAGE_FLAGS} ${OPTIMIZE_FLAGS} ${OTHER_FLAGS} ${ASAN_FLAGS} ${LSAN_FLAGS} ${UBSAN_FLAGS})
 
     if( CMAKE_BUILD_TYPE MATCHES [Dd][Ee][Bb][Uu][Gg])
         message(STATUS "  >> Setting DEBUG macro..")
@@ -89,7 +96,5 @@ if(${${PROJECT_NAME}_BUILD_TESTS})
                         PROPERTIES ENVIRONMENT "SAMPLES_DIR=${PROJECT_SOURCE_DIR}/tests/samples")
 
     include(CTest)
-    set(CTEST_MEMORYCHECK_TYPE "AddressSanitizer")
-    set(CTEST_MEMORYCHECK_SANITIZER_OPTIONS "verbosity=1:symbolize=1:abort_on_error=1:detect_leaks=1")
     message(STATUS "  Finished configuring for ${PROJECT_NAME}_BUILD_TESTS = ${${PROJECT_NAME}_BUILD_TESTS}")
 endif()
