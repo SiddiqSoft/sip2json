@@ -109,6 +109,7 @@ TEST(BugTrigger_Critical, Bug_3_WeakRandomAndThreadSafety)
 {
     // Test 1: Check if Call-IDs are predictable (weak entropy)
     std::set<std::string> callIds;
+    
     for (int i = 0; i < 100; ++i)
     {
         callIds.insert(createCallId());
