@@ -304,7 +304,7 @@ namespace siddiqsoft
     // Helpers to parse the SIP buffer (CTRE compile-time regular expressions)
     static constexpr auto SIP_PATTERN_STARTLINE =
             ctll::fixed_string {"(MESSAGE|INFO|INVITE|ACK|OPTIONS|BYE|CANCEL|REGISTER|SUBSCRIBE|NOTIFY|SIP/"
-                                "2\\.0)\\s([^\\s]+)\\s([^\\n\\f\\r]*)[\r\n]*"};
+                                "2\\.0)\\s([^\\s]+)\\s([^\\n\\f\\r]*)\r\n"};
     static constexpr auto SIP_PATTERN_BODY_RE       = ctll::fixed_string {"([vosiuepcbtzkma])=([^\r\n]*)"};
     static constexpr auto SIP_PATTERN_BODY_ALINE_RE = ctll::fixed_string {"^([^:\r\n]*):(.*)$"};
     static constexpr auto SIP_PATTERN_BODY_ILINE_RE = ctll::fixed_string {"^(.+) \\(([^\\)]*)\\) ([^\\s\r\n]*)"};
