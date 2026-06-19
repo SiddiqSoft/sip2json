@@ -109,7 +109,7 @@ TEST(synthetics, Check_header_array_CRLF)
     }
 }
 
-/*
+
 TEST(synthetics, Check_header_array_LF)
 {
     std::string buffer {
@@ -154,7 +154,7 @@ TEST(synthetics, Check_header_array_LF)
         }
     }
 }
-*/
+
 
 TEST(synthetics, Check_startline_precedingjunk_CRLF)
 {
