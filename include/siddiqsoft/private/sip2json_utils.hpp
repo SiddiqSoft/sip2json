@@ -302,6 +302,7 @@ namespace siddiqsoft
     static const std::string SIP_ADDR_PREFIX {"sip:\\s"};
 
     // Helpers to parse the SIP buffer (CTRE compile-time regular expressions)
+    // Disallow any greedy consumption of the ending as it silently causes exceptions and slows down parsing!
     static constexpr auto SIP_PATTERN_STARTLINE =
             ctll::fixed_string {"(MESSAGE|INFO|INVITE|ACK|OPTIONS|BYE|CANCEL|REGISTER|SUBSCRIBE|NOTIFY|SIP/"
                                 "2\\.0)\\s([^\\s]+)\\s([^\\n\\f\\r]*)\r\n"};
