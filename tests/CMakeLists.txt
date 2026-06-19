@@ -44,12 +44,12 @@ if(${${PROJECT_NAME}_BUILD_TESTS})
         message(STATUS "  >> Coverage flags is not supported on Windows/MSVC, skipping..")
         set(DEBUG_COMPILE_FLAGS /Zi /Od)
         set(DEBUG_LINK_FLAGS /DEBUG:FULL)
+        set(OTHER_FLAGS /vmg /limitTemplateNotes:0 /templateDepth:2000)
     else()
         set(ASAN_FLAGS "-fsanitize=address")
         set(UBSAN_FLAGS "-fsanitize=undefined")
         # Coverage Flags is not available on Windows
         set(COVERAGE_FLAGS "-coverage")
-        set(OPTIMIZE_FLAGS "-O0")
         set(OTHER_FLAGS "-g")
         set(DEBUG_COMPILE_FLAGS -g3 -O0)
     endif()
@@ -86,9 +86,6 @@ if(${${PROJECT_NAME}_BUILD_TESTS})
     enable_testing()
 
     target_compile_features(${TESTPROJ} PRIVATE cxx_std_23)
-    target_compile_options( ${TESTPROJ}
-                            PRIVATE
-                            $<$<CXX_COMPILER_ID:MSVC>:/std:c++23> )
     
     target_link_libraries(${TESTPROJ} PRIVATE GTest::gtest_main nlohmann_json::nlohmann_json ctre::ctre)
 
