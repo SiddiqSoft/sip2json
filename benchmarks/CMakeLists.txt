@@ -26,10 +26,16 @@ if(${${PROJECT_NAME}_BUILD_BENCHMARKS})
 
     find_program(CLANG_TIDY_EXE NAMES "clang-tidy")
 
+    find_program(CLANG_TIDY_EXE NAMES "clang-tidy")
+
     if(CLANG_TIDY_EXE AND CMAKE_BUILD_TYPE MATCHES [Dd][Ee][Bb][Uu][Gg])
         # This runs the analyzer with all default checks enabled
+        # We skip anything that is not in our project.
         message(STATUS "  >> Using clang-tidy checks=*")
-        set(CMAKE_CXX_CLANG_TIDY ${CLANG_TIDY_EXE} "-checks=*")
+        set(CMAKE_CXX_CLANG_TIDY 
+            ${CLANG_TIDY_EXE} 
+            "-checks=*"
+            "--header-filter=^(${CMAKE_CURRENT_SOURCE_DIR}/|${PROJECT_SOURCE_DIR}/include/)")
     endif()
 
     # UndefinedBehaviorSanitizer is not available on Windows

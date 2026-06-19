@@ -516,12 +516,11 @@ git clean -d -x -f
 
 The SIP message samples are `CRLF` terminated. The repository includes a `.gitattributes` file that specifies proper handling of `*.sip` files. If tests fail, verify the EOL markers in sample files are correct.
 
-### Code Quality
+### Windows-specific
 
-- **Linting:** [Clang-Tidy](.clang-tidy) enforces best practices and static code analysis
-- **Formatting:** [Clang Format](.clang-format) ensures consistent code style
-- **Testing:** 64+ tests covering parsing and serialization
-- **Coverage:** Code coverage reports available in CI (Visual Studio Enterprise)
+The CTRE has very odd requirements that are not clearly spelled out:
+- Enable long file names setting otherwise you get stange errors.
+  - Regedit `HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem\LongPathsEnabled = DWORD:1`
 
 ## External resources
 - [JSON for Modern C++](https://nlohmann.github.io/json/)

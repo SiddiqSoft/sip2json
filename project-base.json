@@ -7,7 +7,7 @@
             "description": "Base preset for all project configurations.",
             "cacheVariables": {
                 "sip2json_BUILD_TESTS": "ON",
-                "sip2json_BUILD_BENCHMARKS": "ON",
+                "sip2json_BUILD_BENCHMARKS": "OFF",
                 "CI_BUILDID": "0.0.0"
             },
             "hidden": true

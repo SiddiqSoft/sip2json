@@ -5,6 +5,7 @@
   Compile with: g++ -std=c++20 -I../include bug_trigger_tests.cpp -o bug_tests
 */
 
+#include <mutex>
 #include <string>
 #include <chrono>
 #include <iostream>
@@ -109,12 +110,16 @@ TEST(BugTrigger_Critical, Bug_3_WeakRandomAndThreadSafety)
 {
     // Test 1: Check if Call-IDs are predictable (weak entropy)
     std::set<std::string> callIds;
-    for (int i = 0; i < 100; ++i)
+    const auto            TARGET_CALLID_COUNT = 100;
+
+    std::println(std::cerr, "{} - Starting size: {}", __func__, callIds.size());
+
+    for (int i = 0; i < TARGET_CALLID_COUNT; ++i)
     {
         callIds.insert(createCallId());
     }
 
-    if (callIds.size() < 100)
+    if (callIds.size() < TARGET_CALLID_COUNT)
     {
         std::cout << "Bug #3: WEAK ENTROPY - Only " << callIds.size() << " unique Call-IDs out of 100" << std::endl;
     }
@@ -126,7 +131,9 @@ TEST(BugTrigger_Critical, Bug_3_WeakRandomAndThreadSafety)
     // Test 2: Thread safety - race condition
     std::vector<std::string> threadCallIds;
     std::vector<std::thread> threads;
-    std::string              NOTHING_CHANGES {};
+    std::mutex               threadCallIdsMutex {};
+
+    std::println(std::cerr, "{} - Creating {} in threadpool..", __func__, TARGET_CALLID_COUNT * 10);
 
     // IMPORTANT!
     // If we do not reserve then the ASAN triggers a false positive of overflow when the vector resizes
@@ -137,18 +144,23 @@ TEST(BugTrigger_Critical, Bug_3_WeakRandomAndThreadSafety)
         threads.emplace_back(
                 [&]()
                 {
-                    for (int j = 0; j < 100; ++j)
+                    for (int j = 0; j < TARGET_CALLID_COUNT; ++j)
                     {
-                        threadCallIds.push_back(createCallId());
+                        auto                        callId = createCallId();
+                        std::lock_guard<std::mutex> lock(threadCallIdsMutex);
+                        threadCallIds.push_back(callId);
                     }
                 });
     }
 
-    //threads.reserve(11);
+    std::println(std::cerr, "{} - Waiting on {} threads to end.", __func__, threads.size());
+
     for (auto& t : threads)
     {
         t.join();
     }
+
+    std::println(std::cerr, "{} - Checking {} items", __func__, threadCallIds.size());
 
     std::set<std::string> uniqueThreadCallIds(threadCallIds.begin(), threadCallIds.end());
     std::cout << "Bug #3: Thread safety - Generated " << uniqueThreadCallIds.size()

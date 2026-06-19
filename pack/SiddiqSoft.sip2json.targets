@@ -5,4 +5,9 @@
       <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
+
+  <!-- Include natvis file for Visual Studio debugger visualization -->
+  <ItemGroup>
+    <Natvis Include="$(MSBuildThisFileDirectory)SiddiqSoft.sip2json.natvis" />
+  </ItemGroup>
 </Project>
