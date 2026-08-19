@@ -1,0 +1,2006 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="SIP Parser for Modern C++">
+      
+      
+        <meta name="author" content="Siddiq Software LLC">
+      
+      
+        <link rel="canonical" href="https://siddiqsoft.github.io/sip2json/features/benchmarks/">
+      
+      
+        <link rel="prev" href="../async/">
+      
+      
+        <link rel="next" href="../json_schema/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/Siddiq-Software-Avatar.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Performance & Benchmarks - sip2json</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../css/custom.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#performance-architectural-benchmarks" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="sip2json" class="md-header__button md-logo" aria-label="sip2json" data-md-component="logo">
+      
+  <img src="../../assets/Siddiq-Software-Avatar.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            sip2json
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Performance & Benchmarks
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/SiddiqSoft/sip2json" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    SiddiqSoft/sip2json
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  
+  Features
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../integration/" class="md-tabs__link">
+          
+  
+  
+  Integration
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../architecture/" class="md-tabs__link">
+          
+  
+  
+  Architecture & Design
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../api/" class="md-tabs__link">
+          
+  
+  
+  API Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../examples/" class="md-tabs__link">
+          
+  
+  
+  Examples
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../license/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  License
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="sip2json" class="md-nav__button md-logo" aria-label="sip2json" data-md-component="logo">
+      
+  <img src="../../assets/Siddiq-Software-Avatar.png" alt="logo">
+
+    </a>
+    sip2json
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/SiddiqSoft/sip2json" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    SiddiqSoft/sip2json
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Features
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Features
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../async/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Async Stream Parsing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Performance & Benchmarks
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Performance & Benchmarks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-benchmarking-results-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Benchmarking Results Summary
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Benchmarking Results Summary">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#single-threaded-parsing-throughput-parse-rate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Single-Threaded Parsing Throughput (Parse Rate)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-single-stream-architectural-study-parseasync-vs-parse-vs-thread-pool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Single Stream Architectural Study: parseAsync vs. parse vs. Thread Pool
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Single Stream Architectural Study: parseAsync vs. parse vs. Thread Pool">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#architectural-question" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architectural Question
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#empirical-single-stream-comparison-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Empirical Single Stream Comparison Results
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-single-thread-parseasync-wins-for-single-streams" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why Single-Thread parseAsync Wins for Single Streams
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-worst-case-noisy-stream-buffer-resilience" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Worst-Case Noisy Stream Buffer Resilience
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-multi-threaded-scaling-across-independent-streams" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Multi-Threaded Scaling across Independent Streams
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architectural-recommendations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architectural Recommendations
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../json_schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    JSON Metaphor & Schema
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SDP Support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integration
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Integration
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quick Start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integration/cmake/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CMake & Submodules
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integration/dependencies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dependencies Diagram
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integration/nuget/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NuGet Package
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture & Design
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture & Design
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/patterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design Patterns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/dataflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Flow & Memory
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/sipmessage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    sipmessage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/sip2json/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    sip2json Functions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/errors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Exceptions & Errors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Examples
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/async_parsing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stream Parsing Callback
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/serialization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Message Serialization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../license/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    License
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-benchmarking-results-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Benchmarking Results Summary
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Benchmarking Results Summary">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#single-threaded-parsing-throughput-parse-rate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Single-Threaded Parsing Throughput (Parse Rate)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-single-stream-architectural-study-parseasync-vs-parse-vs-thread-pool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Single Stream Architectural Study: parseAsync vs. parse vs. Thread Pool
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Single Stream Architectural Study: parseAsync vs. parse vs. Thread Pool">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#architectural-question" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architectural Question
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#empirical-single-stream-comparison-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Empirical Single Stream Comparison Results
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-single-thread-parseasync-wins-for-single-streams" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why Single-Thread parseAsync Wins for Single Streams
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-worst-case-noisy-stream-buffer-resilience" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Worst-Case Noisy Stream Buffer Resilience
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-multi-threaded-scaling-across-independent-streams" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Multi-Threaded Scaling across Independent Streams
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architectural-recommendations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architectural Recommendations
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation" >
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Features
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="performance-architectural-benchmarks">Performance &amp; Architectural Benchmarks<a class="headerlink" href="#performance-architectural-benchmarks" title="Permanent link">&para;</a></h1>
+<p><code>sip2json</code> is engineered for ultra-high throughput network stream parsing, combining Compile-Time Regular Expressions (<a href="https://github.com/hanickadot/compile-time-regular-expressions">CTRE</a>) and zero-copy C++23 std::string_view iterators.</p>
+<p>This document presents performance benchmarks, worst-case stream resilience results, and an architectural analysis evaluating single-threaded vs. multi-threaded stream parsing models.</p>
+<blockquote>
+<p>[!TIP]
+<strong>Live Interactive Benchmark Dashboard</strong>: View the full interactive HTML performance report at <a href="../../assets/benchmark_report.html">../assets/benchmark_report.html</a>, dynamically re-generated on every documentation site publication.</p>
+</blockquote>
+<hr />
+<h2 id="1-benchmarking-results-summary">1. Benchmarking Results Summary<a class="headerlink" href="#1-benchmarking-results-summary" title="Permanent link">&para;</a></h2>
+<p><em>Test Environment: Apple M-Series (11 cores @ 24 MHz bus clock), AppleClang 21.0, C++23 <code>-O3</code> Release Build.</em></p>
+<h3 id="single-threaded-parsing-throughput-parse-rate">Single-Threaded Parsing Throughput (Parse Rate)<a class="headerlink" href="#single-threaded-parsing-throughput-parse-rate" title="Permanent link">&para;</a></h3>
+<p>Every benchmark iteration validates the output JSON by extracting the <code>Call-ID</code> header and enumerating all SDP payload items:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Benchmark Scenario</th>
+<th style="text-align: left;">Time / Msg</th>
+<th style="text-align: left;">Parse Rate (Messages / Sec)</th>
+<th style="text-align: left;">Bandwidth</th>
+<th style="text-align: left;">JSON Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Minimal SIP Response</strong></td>
+<td style="text-align: left;">3.71 µs</td>
+<td style="text-align: left;"><strong>269,584 msg/sec</strong></td>
+<td style="text-align: left;">67.87 MiB/s</td>
+<td style="text-align: left;">Header extraction (<code>Call-ID</code>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>REGISTER Request</strong></td>
+<td style="text-align: left;">3.99 µs</td>
+<td style="text-align: left;"><strong>250,466 msg/sec</strong></td>
+<td style="text-align: left;">73.57 MiB/s</td>
+<td style="text-align: left;">Header extraction (<code>Call-ID</code>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>NOTIFY Request (LF Endings)</strong></td>
+<td style="text-align: left;">4.36 µs</td>
+<td style="text-align: left;"><strong>229,612 msg/sec</strong></td>
+<td style="text-align: left;">86.06 MiB/s</td>
+<td style="text-align: left;">Header extraction (<code>Call-ID</code>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>INVITE with SDP Body</strong></td>
+<td style="text-align: left;">9.13 µs</td>
+<td style="text-align: left;"><strong>109,545 msg/sec</strong></td>
+<td style="text-align: left;">59.34 MiB/s</td>
+<td style="text-align: left;"><code>Call-ID</code> + SDP payload item count</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>INVITE with Complex SDP</strong></td>
+<td style="text-align: left;">13.28 µs</td>
+<td style="text-align: left;"><strong>75,305 msg/sec</strong></td>
+<td style="text-align: left;">61.33 MiB/s</td>
+<td style="text-align: left;"><code>Call-ID</code> + Multi-attribute SDP count</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Large Multi-Stream Packet</strong></td>
+<td style="text-align: left;">31.18 µs</td>
+<td style="text-align: left;"><strong>32,070 msg/sec</strong></td>
+<td style="text-align: left;">46.64 MiB/s</td>
+<td style="text-align: left;"><code>Call-ID</code> + Multi-stream SDP count</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="2-single-stream-architectural-study-parseasync-vs-parse-vs-thread-pool">2. Single Stream Architectural Study: <code>parseAsync</code> vs. <code>parse</code> vs. Thread Pool<a class="headerlink" href="#2-single-stream-architectural-study-parseasync-vs-parse-vs-thread-pool" title="Permanent link">&para;</a></h2>
+<h3 id="architectural-question">Architectural Question<a class="headerlink" href="#architectural-question" title="Permanent link">&para;</a></h3>
+<p>When receiving a single continuous TCP/TLS stream of SIP messages on a single network socket, <strong>which approach yields the highest processing throughput?</strong></p>
+<ol>
+<li><strong>Option A (<code>parseAsync</code> Single-Thread Callback)</strong>: Execute <code>sip2json::parseAsync</code> directly on the network I/O thread. Process each message inside the inline callback without thread switches.</li>
+<li><strong>Option B (<code>parse</code> Single-Thread Vector)</strong>: Execute <code>sip2json::parse</code> on the network thread to build a <code>std::vector&lt;sipmessage&gt;</code>, then iterate sequentially over the vector.</li>
+<li><strong>Option C (<code>parseAsync</code> + Thread Pool Offload)</strong>: Execute <code>parseAsync</code> on the I/O thread and push parsed <code>sipmessage</code> objects into a thread pool queue for 4 worker threads to process.</li>
+<li><strong>Option D (<code>parse</code> + Thread Pool Handoff)</strong>: Execute <code>parse</code> on the I/O thread to build a vector, then push elements to a thread pool queue.</li>
+</ol>
+<h3 id="empirical-single-stream-comparison-results">Empirical Single Stream Comparison Results<a class="headerlink" href="#empirical-single-stream-comparison-results" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Architectural Strategy</th>
+<th style="text-align: left;">Execution Time (1,000 Msgs)</th>
+<th style="text-align: left;">Stream Throughput</th>
+<th style="text-align: left;">Bandwidth</th>
+<th style="text-align: left;">Performance Comparison</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong><code>parseAsync</code> (Single Thread Inline)</strong></td>
+<td style="text-align: left;"><strong>4.19 ms</strong></td>
+<td style="text-align: left;"><strong>238,708 msg/sec</strong></td>
+<td style="text-align: left;"><strong>70.12 MiB/s</strong></td>
+<td style="text-align: left;"><strong>BEST overall (Optimal)</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>parse</code> (Single Thread Vector)</strong></td>
+<td style="text-align: left;"><strong>4.17 ms</strong></td>
+<td style="text-align: left;"><strong>239,927 msg/sec</strong></td>
+<td style="text-align: left;"><strong>70.47 MiB/s</strong></td>
+<td style="text-align: left;">Virtually identical (~0.5%), extra vector alloc</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>parseAsync</code> + Thread Pool Queue</strong></td>
+<td style="text-align: left;"><strong>5.40 ms</strong></td>
+<td style="text-align: left;"><strong>188,490 msg/sec</strong></td>
+<td style="text-align: left;"><strong>55.37 MiB/s</strong></td>
+<td style="text-align: left;"><strong>21% SLOWER</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>parse</code> + Thread Pool Handoff</strong></td>
+<td style="text-align: left;"><strong>6.41 ms</strong></td>
+<td style="text-align: left;"><strong>229,228 msg/sec</strong></td>
+<td style="text-align: left;"><strong>67.33 MiB/s</strong></td>
+<td style="text-align: left;"><strong>17% SLOWER (6.41ms Total)</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="why-single-thread-parseasync-wins-for-single-streams">Why Single-Thread <code>parseAsync</code> Wins for Single Streams<a class="headerlink" href="#why-single-thread-parseasync-wins-for-single-streams" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p>[!IMPORTANT]
+<strong>Zero Thread Synchronization Overhead</strong>
+Because <code>sip2json</code> parses a SIP message in just <strong>~4.1 microseconds</strong>, pushing individual parsed messages onto a synchronized queue for worker threads introduces <code>std::mutex</code> locking, condition variable signaling, and CPU cache invalidation overhead that takes <strong>longer than parsing the message itself</strong>.</p>
+<p>Processing messages directly inside the <code>parseAsync</code> callback on the network thread avoids queue lock contention entirely and retains full L1/L2 CPU cache locality.</p>
+</blockquote>
+<hr />
+<h2 id="3-worst-case-noisy-stream-buffer-resilience">3. Worst-Case Noisy Stream Buffer Resilience<a class="headerlink" href="#3-worst-case-noisy-stream-buffer-resilience" title="Permanent link">&para;</a></h2>
+<p>In production environments, network buffers can contain leading junk, corrupted protocol lines, binary noise, or fragmented TCP frames before valid start lines.</p>
+<p><code>sip2json</code> uses Compile-Time Regular Expression searching to scan forward in the buffer, skip over noise bytes, and recover valid SIP message start lines automatically:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Stream Buffer Setup</th>
+<th style="text-align: left;">Time / Batch</th>
+<th style="text-align: left;">Effective Parse Rate</th>
+<th style="text-align: left;">Processing Bandwidth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>10 Messages + Noise</strong></td>
+<td style="text-align: left;">29.83 µs</td>
+<td style="text-align: left;"><strong>335,255 msg/sec</strong></td>
+<td style="text-align: left;">167.89 MiB/s</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>100 Messages + Noise</strong></td>
+<td style="text-align: left;">45.62 µs</td>
+<td style="text-align: left;"><strong>2,191,860 msg/sec</strong></td>
+<td style="text-align: left;">1.03 GiB/s</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>500 Messages + Noise</strong></td>
+<td style="text-align: left;">40.30 µs</td>
+<td style="text-align: left;"><strong>12,408,600 msg/sec</strong></td>
+<td style="text-align: left;">5.82 GiB/s</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>1,000 Messages + Noise (<code>parse</code>)</strong></td>
+<td style="text-align: left;">36.50 µs</td>
+<td style="text-align: left;"><strong>27,397,200 msg/sec</strong></td>
+<td style="text-align: left;"><strong>12.85 GiB/s</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>1,000 Messages + Noise (<code>parseAsync</code>)</strong></td>
+<td style="text-align: left;">43.87 µs</td>
+<td style="text-align: left;"><strong>22,794,300 msg/sec</strong></td>
+<td style="text-align: left;"><strong>10.69 GiB/s</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="4-multi-threaded-scaling-across-independent-streams">4. Multi-Threaded Scaling across Independent Streams<a class="headerlink" href="#4-multi-threaded-scaling-across-independent-streams" title="Permanent link">&para;</a></h2>
+<p>While offloading single-stream messages to worker threads incurs queue lock overhead, <strong>parallelizing independent network streams across multiple worker threads</strong> scales multi-core CPU throughput linearly:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Active Worker Threads</th>
+<th style="text-align: left;">Real Time / Batch</th>
+<th style="text-align: left;">Aggregate Throughput</th>
+<th style="text-align: left;">Aggregate Bandwidth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>2 Worker Threads</strong></td>
+<td style="text-align: left;">45.84 µs</td>
+<td style="text-align: left;"><strong>21,813,100 msg/sec</strong></td>
+<td style="text-align: left;">6.26 GiB/s</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>4 Worker Threads</strong></td>
+<td style="text-align: left;">82.21 µs</td>
+<td style="text-align: left;"><strong>24,326,800 msg/sec</strong></td>
+<td style="text-align: left;">6.98 GiB/s</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>8 Worker Threads</strong></td>
+<td style="text-align: left;">157.88 µs</td>
+<td style="text-align: left;"><strong>25,335,100 msg/sec</strong></td>
+<td style="text-align: left;">7.27 GiB/s</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>16 Worker Threads</strong></td>
+<td style="text-align: left;">288.93 µs</td>
+<td style="text-align: left;"><strong>27,688,800 msg/sec</strong></td>
+<td style="text-align: left;"><strong>7.94 GiB/s</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>16 Threads (Noisy Stream)</strong></td>
+<td style="text-align: left;">339.69 µs</td>
+<td style="text-align: left;"><strong>23,550,900 msg/sec</strong></td>
+<td style="text-align: left;"><strong>11.05 GiB/s</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="architectural-recommendations">Architectural Recommendations<a class="headerlink" href="#architectural-recommendations" title="Permanent link">&para;</a></h2>
+<blockquote>
+<p>[!TIP]
+1. <strong>Single Connection / Socket</strong>: Use <code>sip2json::parseAsync</code> inline on the network thread. Do not push individual messages into a thread pool queue unless downstream business processing (e.g. database IO, disk storage) requires heavy blocking operations.
+2. <strong>Multi-Socket Server</strong>: Assign independent sockets or stream buffers to dedicated worker threads, with each worker executing <code>parseAsync</code> on its assigned socket buffer.
+3. <strong>Memory Optimization</strong>: Prefer <code>parseAsync</code> over <code>parse</code> to avoid allocating intermediate <code>std::vector&lt;sipmessage&gt;</code> containers on the heap.</p>
+</blockquote>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../async/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Async Stream Parsing">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Async Stream Parsing
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../json_schema/" class="md-footer__link md-footer__link--next" aria-label="Next: JSON Metaphor &amp; Schema">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                JSON Metaphor & Schema
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "2.5.2"}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+      
+    
+  </body>
+</html>
