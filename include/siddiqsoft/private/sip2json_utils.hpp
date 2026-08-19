@@ -272,6 +272,8 @@ namespace siddiqsoft
     static const std::string HF_PROXY_AUTHENTICATE {"Proxy-Authenticate"};
     static const std::string HF_RETRY_AFTER {"Retry-After"};
     static const std::string HF_SERVER {"Server"};
+    static const std::string HF_SUPPORTED {"Supported"};
+    static const std::string HF_ALLOW {"Allow"};
     static const std::string HF_UNSUPPORTED {"Unsupported"};
     static const std::string HF_WARNING {"Warning"};
     static const std::string HF_WWW_AUTHENTICATE {"WWW-Authenticate"};

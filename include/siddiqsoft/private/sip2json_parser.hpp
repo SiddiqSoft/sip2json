@@ -55,7 +55,9 @@ namespace siddiqsoft
     /// @param bufferStart Start of the stream.
     /// @param bufferEnd End of the stream
     /// @return true/false depending on the state of the decode of start line.
-    inline bool sip2json::parseStartLine(sipmessage& sipm, std::string::iterator& bufferStart, const std::string::iterator& bufferEnd) noexcept(false)
+    inline bool sip2json::parseStartLine(sipmessage&                  sipm,
+                                         std::string::iterator&       bufferStart,
+                                         const std::string::iterator& bufferEnd) noexcept(false)
     {
         using namespace std;
 
@@ -108,29 +110,45 @@ namespace siddiqsoft
     /// @return Returns true if the store was successful.
     inline bool sip2json::storeHeaderValue(sipmessage& sipm, const std::string& key, const std::string& value) noexcept(false)
     {
-        if (key.compare(HF_VIA) == 0)
+        std::string targetKey = key;
+        if (key.compare("uthorization") == 0)
         {
-            // Via is an array
-            sipm["h"][HF_VIA].push_back(value);
-        }
-        else if (key.compare("uthorization") == 0)
-        {
-            // Some encoders send "uthorization" instead of "Authorization"
-            sipm["h"][HF_AUTHORIZATION] = value;
+            targetKey = HF_AUTHORIZATION;
         }
         else if (key.compare(HF_CONTENT_TYPE) == 0 || key.compare(HF_CONTENT_TYPE2) == 0)
         {
-            // Some encoders send Content-type instead of the standard Content-Type; here we normalize it.
-            sipm["h"][HF_CONTENT_TYPE] = value;
+            targetKey = HF_CONTENT_TYPE;
         }
-        else if (key.compare(HF_CONTENT_LENGTH) == 0)
+
+        auto isMultiLineHeader = (targetKey.compare(HF_VIA) == 0) || (targetKey.compare(HF_ROUTE) == 0) ||
+                                 (targetKey.compare(HF_RECORD_ROUTE) == 0) || (targetKey.compare(HF_SUPPORTED) == 0) ||
+                                 (targetKey.compare(HF_ACCEPT) == 0) || (targetKey.compare(HF_WARNING) == 0);
+
+        if (sipm["h"].contains(targetKey))
+        {
+            if (sipm["h"][targetKey].is_array())
+            {
+                sipm["h"][targetKey].push_back(value);
+            }
+            else
+            {
+                auto existing = sipm["h"][targetKey];
+                sipm["h"][targetKey] = nlohmann::json::array({existing, value});
+            }
+        }
+        else if (isMultiLineHeader)
+        {
+            // These headers can be multi-line, so we store them as an array of values.
+            sipm["h"][targetKey] = nlohmann::json::array({value});
+        }
+        else if (targetKey.compare(HF_CONTENT_LENGTH) == 0)
         {
             try
             {
                 long long len = std::stoll(value);
                 if (len < 0 || len > 100 * 1024 * 1024)
                     throw invalid_document_error {std::format("{}:Invalid Content-Length value '{}'", __func__, value)};
-                sipm["h"][key] = static_cast<uint32_t>(len);
+                sipm["h"][targetKey] = static_cast<uint32_t>(len);
             }
             catch (const invalid_document_error&)
             {
@@ -141,14 +159,13 @@ namespace siddiqsoft
                 throw invalid_document_error {std::format("{}:Invalid Content-Length value '{}'", __func__, value)};
             }
         }
-        else if (key.compare(HF_EXPIRES) == 0)
+        else if (targetKey.compare(HF_EXPIRES) == 0)
         {
             try
             {
                 long long val = std::stoll(value);
-                if (val < 0)
-                    throw invalid_document_error {std::format("{}:Invalid Expires value '{}'", __func__, value)};
-                sipm["h"][key] = static_cast<uint32_t>(val);
+                if (val < 0) throw invalid_document_error {std::format("{}:Invalid Expires value '{}'", __func__, value)};
+                sipm["h"][targetKey] = static_cast<uint32_t>(val);
             }
             catch (const invalid_document_error&)
             {
@@ -159,10 +176,10 @@ namespace siddiqsoft
                 throw invalid_document_error {std::format("{}:Invalid Expires value '{}'", __func__, value)};
             }
         }
-        else if (value.empty()) { sipm["h"][key] = ""; }
+        else if (value.empty()) { sipm["h"][targetKey] = ""; }
         else
         {
-            sipm["h"][key] = value;
+            sipm["h"][targetKey] = value;
         }
 
         return true;
@@ -173,7 +190,9 @@ namespace siddiqsoft
     /// @param bufferStart Start of the buffer. Just past the end of the start line section (tip of the header section).
     /// @param bufferEnd End of the stream
     /// @return true/false depending on the state of the decode of headers.
-    inline bool sip2json::parseHeaders(sipmessage& sipm, std::string::iterator& bufferStart, const std::string::iterator& bufferEnd) noexcept(false)
+    inline bool sip2json::parseHeaders(sipmessage&                  sipm,
+                                       std::string::iterator&       bufferStart,
+                                       const std::string::iterator& bufferEnd) noexcept(false)
     {
         using namespace std::string_literals;
 
@@ -202,8 +221,7 @@ namespace siddiqsoft
         // Assert header end delimiter must exist!
         auto headerSectionSize = size_t(bufferEnd - headerEnd);
         if (headerSectionSize < headerDelimiterSize)
-            throw incomplete_buffer_for_header_error {
-                    std::format("{}:Cannot find header section delimiter.", __func__).c_str()};
+            throw incomplete_buffer_for_header_error {std::format("{}:Cannot find header section delimiter.", __func__).c_str()};
 
         while (!done)
         {
