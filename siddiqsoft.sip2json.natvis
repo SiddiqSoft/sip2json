@@ -61,13 +61,27 @@
     <DisplayString>notspecified</DisplayString>
   </Type>
 
-  <!-- Visualization for nlohmann::json (base class of sipmessage) -->
-  <Type Name="nlohmann::basic_json&lt;*&gt;">
-    <DisplayString>{dump()}</DisplayString>
+  <!-- Visualization for sip2jsonErrors enum -->
+  <Type Name="siddiqsoft::sip2jsonErrors">
+    <DisplayString Condition="*this == 0">ok</DisplayString>
+    <DisplayString Condition="*this == 1">incomplete_buffer_for_parse</DisplayString>
+    <DisplayString Condition="*this == 2">incomplete_buffer_for_content</DisplayString>
+    <DisplayString Condition="*this == 3">incomplete_buffer_for_header</DisplayString>
+    <DisplayString Condition="*this == 4">invalid_startline</DisplayString>
+    <DisplayString Condition="*this == 5">unsupported_contenttype</DisplayString>
+    <DisplayString Condition="*this == 6">missing_required_element</DisplayString>
+    <DisplayString Condition="*this == 7">invalid_document</DisplayString>
+    <DisplayString Condition="*this == 8">invalid_document_unsupported_method</DisplayString>
+    <DisplayString Condition="*this == 9">invalid_document_unsupported_content</DisplayString>
+    <DisplayString Condition="*this == 10">empty_message</DisplayString>
+    <DisplayString>unknown</DisplayString>
+  </Type>
+
+  <!-- Visualization for sip2json_exception -->
+  <Type Name="siddiqsoft::sip2json_exception">
+    <DisplayString>Error {errCode}</DisplayString>
     <Expand HideRawView="true">
-      <Item Name="[JSON Value]">
-        dump()
-      </Item>
+      <Item Name="[Error Code]">errCode</Item>
     </Expand>
   </Type>
 
