@@ -273,3 +273,195 @@ TEST(ImplementationChecks, Test_formatters_1)
     std::cerr << "msg2 : " << msg2 << std::endl;
     std::cerr << "msg  : " << msg << std::endl;
 }
+
+// ============================================================================
+// GITHUB ISSUE #32 TESTS: Header Layout & Private Folder Refactoring
+// ============================================================================
+
+TEST(Issue32_HeaderRefactoring, ModularHeaderIntegrity)
+{
+    using namespace siddiqsoft;
+
+    // Test 1: Verify sipmessage creation and status mapping via private response codes header
+    sipmessage req(METHOD_INVITE, "sip:alice@atlanta.com", "issue32-call-id", 1);
+    EXPECT_EQ("INVITE", req.getMethod());
+    EXPECT_EQ("sip:alice@atlanta.com", req.getUri());
+    EXPECT_EQ("issue32-call-id", req.getCallID());
+
+    sipmessage resp(200, req);
+    EXPECT_EQ(200, resp.getStatusCode());
+    EXPECT_EQ("OK", resp.getReason());
+
+    // Test 2: Verify wire serialization via refactored private/sip2json_serializer.hpp
+    std::string serialized = sip2json::serialize(resp);
+    EXPECT_FALSE(serialized.empty());
+    EXPECT_TRUE(serialized.find("SIP/2.0 200 OK\r\n") != std::string::npos);
+    EXPECT_TRUE(serialized.find("Call-ID: issue32-call-id\r\n") != std::string::npos);
+
+    // Test 3: Verify parsing via refactored private/sip2json_parser.hpp
+    auto start = serialized.begin();
+    auto parsedResp = sip2json::parseFromBuffer(start, serialized.end());
+    EXPECT_EQ(200, parsedResp.getStatusCode());
+    EXPECT_EQ("OK", parsedResp.getReason());
+    EXPECT_EQ("issue32-call-id", parsedResp.getCallID());
+}
+
+TEST(Issue32_HeaderRefactoring, PrivateSDPAndAsyncParserExecution)
+{
+    using namespace siddiqsoft;
+
+    std::string sipWithSDP =
+        "INVITE sip:bob@biloxi.com SIP/2.0\r\n"
+        "Via: SIP/2.0/UDP pc33.atlanta.com;branch=z9hG4bK776asdhds\r\n"
+        "Max-Forwards: 70\r\n"
+        "To: Bob <sip:bob@biloxi.com>\r\n"
+        "From: Alice <sip:alice@atlanta.com>;tag=1928301774\r\n"
+        "Call-ID: a84b4c76e66710@pc33.atlanta.com\r\n"
+        "CSeq: 314159 INVITE\r\n"
+        "Contact: <sip:alice@pc33.atlanta.com>\r\n"
+        "Content-Type: application/sdp\r\n"
+        "Content-Length: 132\r\n"
+        "\r\n"
+        "v=0\r\n"
+        "o=user1 53655765 2353687637 IN IP4 127.0.0.1\r\n"
+        "s=Talk\r\n"
+        "c=IN IP4 127.0.0.1\r\n"
+        "t=0 0\r\n"
+        "m=audio 6000 RTP/AVP 0\r\n"
+        "a=rtpmap:0 PCMU/8000\r\n";
+
+    // Test 1: Asynchronous stream parsing via private/sip2json_parser.hpp and private/sip2json_sdp.hpp
+    size_t parsedCount = 0;
+    std::string buffer = sipWithSDP;
+    sip2json::parseAsync(
+        buffer,
+        [&parsedCount](sipmessage&& msg) {
+            parsedCount++;
+            EXPECT_EQ("INVITE", msg.getMethod());
+            EXPECT_EQ("a84b4c76e66710@pc33.atlanta.com", msg.getCallID());
+            EXPECT_TRUE(msg.contains("b"));
+            EXPECT_TRUE(msg.contains("/b/sdp"_json_pointer));
+        },
+        [](const sip2json_exception& ex, std::string::iterator&, const std::string::iterator&) {
+            FAIL() << "Unexpected parse exception: " << ex.what();
+        }
+    );
+
+    EXPECT_EQ(1u, parsedCount);
+    EXPECT_TRUE(buffer.empty()); // Check that consumed bytes were erased
+
+    // Test 2: Exception hierarchy in private/sip2json_exception.hpp
+    invalid_document_error err("Issue #32 Exception Test");
+    EXPECT_EQ(sip2jsonErrors::invalid_document, err.errCode);
+    EXPECT_STREQ("Issue #32 Exception Test", err.what());
+}
+
+TEST(Issue32_RepeatedHeaders, MultipleViaHeaders)
+{
+    using namespace siddiqsoft;
+
+    std::string sipWithMultipleVia =
+        "INVITE sip:user@example.com SIP/2.0\r\n"
+        "Via: SIP/2.0/UDP proxy1.example.com:5060;branch=z9hG4bK776a\r\n"
+        "Via: SIP/2.0/UDP proxy2.example.com:5060;branch=z9hG4bK776b\r\n"
+        "Via: SIP/2.0/UDP client.example.com:5060;branch=z9hG4bK776c\r\n"
+        "Max-Forwards: 70\r\n"
+        "To: <sip:user@example.com>\r\n"
+        "From: Alice <sip:alice@example.com>;tag=1928301774\r\n"
+        "Call-ID: multi-via-callid-101\r\n"
+        "CSeq: 1 INVITE\r\n"
+        "Content-Length: 0\r\n\r\n";
+
+    auto start = sipWithMultipleVia.begin();
+    auto sipm = sip2json::parseFromBuffer(start, sipWithMultipleVia.end());
+
+    // Verify Via header exists and is an array containing all 3 Via lines
+    EXPECT_TRUE(sipm["h"].contains("Via"));
+    EXPECT_TRUE(sipm["h"]["Via"].is_array());
+    EXPECT_EQ(3u, sipm["h"]["Via"].size());
+    EXPECT_EQ("SIP/2.0/UDP proxy1.example.com:5060;branch=z9hG4bK776a", sipm["h"]["Via"][0].get<std::string>());
+    EXPECT_EQ("SIP/2.0/UDP proxy2.example.com:5060;branch=z9hG4bK776b", sipm["h"]["Via"][1].get<std::string>());
+    EXPECT_EQ("SIP/2.0/UDP client.example.com:5060;branch=z9hG4bK776c", sipm["h"]["Via"][2].get<std::string>());
+
+    // Verify round-trip serialization preserves all Via header lines
+    std::string serialized = sip2json::serialize(sipm);
+    EXPECT_TRUE(serialized.find("Via: SIP/2.0/UDP proxy1.example.com:5060;branch=z9hG4bK776a\r\n") != std::string::npos);
+    EXPECT_TRUE(serialized.find("Via: SIP/2.0/UDP proxy2.example.com:5060;branch=z9hG4bK776b\r\n") != std::string::npos);
+    EXPECT_TRUE(serialized.find("Via: SIP/2.0/UDP client.example.com:5060;branch=z9hG4bK776c\r\n") != std::string::npos);
+}
+
+TEST(Issue32_RepeatedHeaders, MultipleRouteAndRecordRouteHeaders)
+{
+    using namespace siddiqsoft;
+
+    std::string sipWithRoutes =
+        "INVITE sip:user@example.com SIP/2.0\r\n"
+        "Via: SIP/2.0/UDP client.example.com:5060;branch=z9hG4bK1\r\n"
+        "Record-Route: <sip:p1.example.com;lr>\r\n"
+        "Record-Route: <sip:p2.example.com;lr>\r\n"
+        "Route: <sip:p3.example.com;lr>\r\n"
+        "Route: <sip:p4.example.com;lr>\r\n"
+        "To: <sip:user@example.com>\r\n"
+        "From: <sip:caller@example.com>;tag=abc\r\n"
+        "Call-ID: route-test-callid-202\r\n"
+        "CSeq: 2 INVITE\r\n"
+        "Content-Length: 0\r\n\r\n";
+
+    auto start = sipWithRoutes.begin();
+    auto sipm = sip2json::parseFromBuffer(start, sipWithRoutes.end());
+
+    // Verify Record-Route headers
+    EXPECT_TRUE(sipm["h"]["Record-Route"].is_array());
+    EXPECT_EQ(2u, sipm["h"]["Record-Route"].size());
+    EXPECT_EQ("<sip:p1.example.com;lr>", sipm["h"]["Record-Route"][0].get<std::string>());
+    EXPECT_EQ("<sip:p2.example.com;lr>", sipm["h"]["Record-Route"][1].get<std::string>());
+
+    // Verify Route headers
+    EXPECT_TRUE(sipm["h"]["Route"].is_array());
+    EXPECT_EQ(2u, sipm["h"]["Route"].size());
+    EXPECT_EQ("<sip:p3.example.com;lr>", sipm["h"]["Route"][0].get<std::string>());
+    EXPECT_EQ("<sip:p4.example.com;lr>", sipm["h"]["Route"][1].get<std::string>());
+}
+
+TEST(Issue32_RepeatedHeaders, MultipleCustomAndStandardHeaders)
+{
+    using namespace siddiqsoft;
+
+    std::string sipWithCustomRepeated =
+        "REGISTER sip:example.com SIP/2.0\r\n"
+        "Via: SIP/2.0/UDP 192.168.1.1:5060;branch=z9hG4bK-reg\r\n"
+        "Contact: <sip:user1@10.0.0.1:5060>\r\n"
+        "Contact: <sip:user2@10.0.0.2:5060>\r\n"
+        "X-Trace-ID: trace-001\r\n"
+        "X-Trace-ID: trace-002\r\n"
+        "X-Trace-ID: trace-003\r\n"
+        "To: <sip:user@example.com>\r\n"
+        "From: <sip:user@example.com>;tag=reg123\r\n"
+        "Call-ID: reg-call-303\r\n"
+        "CSeq: 1 REGISTER\r\n"
+        "Content-Length: 0\r\n\r\n";
+
+    auto start = sipWithCustomRepeated.begin();
+    auto sipm = sip2json::parseFromBuffer(start, sipWithCustomRepeated.end());
+
+    // Verify repeated Contact headers converted to array
+    EXPECT_TRUE(sipm["h"]["Contact"].is_array());
+    EXPECT_EQ(2u, sipm["h"]["Contact"].size());
+    EXPECT_EQ("<sip:user1@10.0.0.1:5060>", sipm["h"]["Contact"][0].get<std::string>());
+    EXPECT_EQ("<sip:user2@10.0.0.2:5060>", sipm["h"]["Contact"][1].get<std::string>());
+
+    // Verify repeated custom header X-Trace-ID converted to array
+    EXPECT_TRUE(sipm["h"]["X-Trace-ID"].is_array());
+    EXPECT_EQ(3u, sipm["h"]["X-Trace-ID"].size());
+    EXPECT_EQ("trace-001", sipm["h"]["X-Trace-ID"][0].get<std::string>());
+    EXPECT_EQ("trace-002", sipm["h"]["X-Trace-ID"][1].get<std::string>());
+    EXPECT_EQ("trace-003", sipm["h"]["X-Trace-ID"][2].get<std::string>());
+
+    // Verify serialization produces separate header lines for X-Trace-ID
+    std::string serialized = sip2json::serialize(sipm);
+    EXPECT_TRUE(serialized.find("X-Trace-ID: trace-001\r\n") != std::string::npos);
+    EXPECT_TRUE(serialized.find("X-Trace-ID: trace-002\r\n") != std::string::npos);
+    EXPECT_TRUE(serialized.find("X-Trace-ID: trace-003\r\n") != std::string::npos);
+}
+
+
