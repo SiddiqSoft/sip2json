@@ -2,7 +2,7 @@
   Bug Trigger Tests for sip2json
   Tests designed to expose the 18 reported bugs and undefined behavior issues
   
-  Compile with: g++ -std=c++20 -I../include bug_trigger_tests.cpp -o bug_tests
+  Compile with: g++ -std=C++23 -I../include bug_trigger_tests.cpp -o bug_tests
 */
 
 #include <mutex>

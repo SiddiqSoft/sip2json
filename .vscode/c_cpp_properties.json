@@ -13,7 +13,7 @@
             ],
             "compilerPath": "/usr/bin/clang",
             "cStandard": "c17",
-            "cppStandard": "c++20",
+            "cppStandard": "C++23",
             "intelliSenseMode": "macos-clang-arm64"
         }
     ],

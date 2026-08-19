@@ -382,3 +382,10 @@ build/**
 # MkDocs site output
 site/
 
+# Benchmark generated output files (reports are generated during publication build)
+benchmarks/benchmark_results.json
+benchmarks/benchmark_results.xml
+benchmarks/benchmark_report.html
+docs/assets/benchmark_report.html
+
+

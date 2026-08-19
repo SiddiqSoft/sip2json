@@ -13,6 +13,11 @@
     <a href="async.md">Learn more :octicons-arrow-right-24:</a>
   </div>
   <div class="card">
+    <h3>Performance & Benchmarks</h3>
+    <p>High-throughput benchmarks (~269k msgs/sec), noisy stream resilience, and single-stream vs multi-thread architectural analysis.</p>
+    <a href="benchmarks.md">Learn more :octicons-arrow-right-24:</a>
+  </div>
+  <div class="card">
     <h3>First-Class JSON Metaphor</h3>
     <p>Compact schema mapping SIP start lines, headers, and body attributes directly into <code>nlohmann::json</code> objects.</p>
     <a href="json_schema.md">Learn more :octicons-arrow-right-24:</a>
