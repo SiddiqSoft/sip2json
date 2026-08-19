@@ -194,14 +194,14 @@ def main():
     junit_path = Path(output_dir) / "benchmark_results.xml"
     with open(junit_path, 'w') as f:
         f.write(junit_xml)
-    print(f"✓ JUnit XML generated: {junit_path}")
+    print(f"JUnit XML generated: {junit_path}")
     
     # Generate HTML report
     html_report = generate_html_report(data)
     html_path = Path(output_dir) / "benchmark_report.html"
     with open(html_path, 'w') as f:
         f.write(html_report)
-    print(f"✓ HTML Report generated: {html_path}")
+    print(f"HTML Report generated: {html_path}")
 
 
 if __name__ == "__main__":

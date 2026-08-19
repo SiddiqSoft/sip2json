@@ -21,12 +21,12 @@
 
 Full guides, tutorials, API specifications, and interactive dependency graphs are hosted on our documentation site:
 
-* 🚀 [**Features & Usage**](docs/features/index.md): Asynchronous stream parsing, JSON schema metaphor, SDP support.
-* 📦 [**Integration & CMake**](docs/integration/cmake.md): `CPMAddPackage`, Git submodules, build options, testing.
-* 📊 [**Dependency Graph**](docs/integration/dependencies.md): Automated visual dependency diagram and version matrix.
-* 🏗️ [**Architecture & Design**](docs/architecture/index.md): Stateless design, design patterns, and data flow.
-* 📖 [**API Reference**](docs/api/index.md): Specifications for `sipmessage`, `sip2json` static methods, and exceptions.
-* 💡 [**Examples**](docs/examples/index.md): Standalone code examples for stream parsing and serialization.
+* [**Features & Usage**](docs/features/index.md): Asynchronous stream parsing, JSON schema metaphor, SDP support.
+* [**Integration & CMake**](docs/integration/cmake.md): `CPMAddPackage`, Git submodules, build options, testing.
+* [**Dependency Graph**](docs/integration/dependencies.md): Automated visual dependency diagram and version matrix.
+* [**Architecture & Design**](docs/architecture/index.md): Stateless design, design patterns, and data flow.
+* [**API Reference**](docs/api/index.md): Specifications for `sipmessage`, `sip2json` static methods, and exceptions.
+* [**Examples**](docs/examples/index.md): Standalone code examples for stream parsing and serialization.
 
 ---
 
