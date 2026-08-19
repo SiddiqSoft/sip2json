@@ -13,6 +13,29 @@
 
 ---
 
+## Header Layout & Modular Architecture
+
+`sip2json` uses a clean header layout separating public interfaces from private implementation details under `include/siddiqsoft/`:
+
+```
+include/siddiqsoft/
+├── sip2json.hpp                       # Public entry-point header
+├── sipmessage.hpp                     # Primary SIP message DTO class
+└── private/                           # Internal implementation headers
+    ├── sip2json_exception.hpp         # Error code enums & exception classes
+    ├── sip2json_parser.hpp            # Start-line, header & buffer parsing
+    ├── sip2json_response_codes.hpp    # SIP status code to reason phrase mapping
+    ├── sip2json_sdp.hpp               # SDP body parsing & serialization helpers
+    ├── sip2json_serializer.hpp        # SIP message wire-format serialization
+    └── sip2json_utils.hpp             # Utilities, CTRE regexes & date formatters
+```
+
+* **Single Include Entry**: End-user applications include `#include "siddiqsoft/sip2json.hpp"`.
+* **Decoupled Private Implementations**: Core parsing, SDP processing, serialization, and exception handling are split into focused private headers within `private/`.
+* **Header-Only Library**: Entirely inline implementation requiring no compiled library binaries.
+
+---
+
 ## Section Navigation
 
 - [**Design Patterns**](patterns.md): Factory methods, strategy patterns, and builder chain mechanics.

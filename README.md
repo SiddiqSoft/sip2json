@@ -15,7 +15,7 @@
 
 The complete documentation, API reference, architecture guides, performance benchmarks, and interactive dependency charts are hosted on our documentation site:
 
-👉 **[siddiqsoft.github.io/sip2json](https://siddiqsoft.github.io/sip2json/)**
+**[siddiqsoft.github.io/sip2json](https://siddiqsoft.github.io/sip2json/)**
 
 * [**Quick Start & Integration**](https://siddiqsoft.github.io/sip2json/integration/)
 * [**Asynchronous Stream Parsing**](https://siddiqsoft.github.io/sip2json/features/async/)
@@ -28,30 +28,26 @@ The complete documentation, API reference, architecture guides, performance benc
 ## Quick Example
 
 ```cpp
+#include <iostream>
 #include "siddiqsoft/sip2json.hpp"
 
 using namespace siddiqsoft;
 
 void onNetworkDataReceived(std::string& tcpReadBuffer)
 {
-    auto cursor = tcpReadBuffer.begin();
-
-    // Asynchronously parse multiple SIP frames from buffer iterator
+    // Asynchronously parse multiple SIP frames from buffer
     sip2json::parseAsync(
-        cursor,
-        tcpReadBuffer.end(),
+        tcpReadBuffer,
         [](sipmessage&& msg) {
             if (!msg.empty()) {
-                std::cout << "Parsed " << msg.type << " (" << msg.method << ") Call-ID: " << msg.callid << "\n";
+                std::cout << "Parsed " << msg.getMethod() << " Call-ID: " << msg.getCallID() << "\n";
             }
         },
-        [](sip2jsonErrors& errCode, const std::string& errMessage) {
-            std::cerr << "Parser warning: " << errMessage << "\n";
+        [](const sip2json_exception& ex, std::string::iterator& start, const std::string::iterator& end) {
+            std::cerr << "Parser warning: " << ex.what() << "\n";
         }
     );
-
-    // Erase processed frames from front of buffer; partial frames stay for next read
-    tcpReadBuffer.erase(tcpReadBuffer.begin(), cursor);
+    // Note: sip2json::parseAsync automatically erases decoded messages from tcpReadBuffer.
 }
 ```
 

@@ -1,6 +1,6 @@
-# `sip2json` Namespace Functions
+# `sip2json` Class Functions
 
-The `siddiqsoft::sip2json` namespace provides stateless utility functions for parsing and serializing SIP protocol payloads.
+The `siddiqsoft::sip2json` class provides static utility functions for parsing and serializing SIP protocol payloads.
 
 ---
 
@@ -9,38 +9,48 @@ The `siddiqsoft::sip2json` namespace provides stateless utility functions for pa
 ### `parse`
 
 ```cpp
-static sipmessage parse(const std::string& rawSipMessage);
+static std::vector<sipmessage> parse(std::string::iterator& bufferStart,
+                                   const std::string::iterator& bufferEnd) noexcept(false);
 ```
 
-Parses a single full SIP message string into a `sipmessage` instance. Throws `sip2json_exception` on syntax or format errors.
+Parses as many SIP messages as possible from the buffer range `[bufferStart, bufferEnd)`. Advanced `bufferStart` past successfully parsed frames. Returns a vector of `sipmessage` objects. Throws `std::invalid_argument` if no messages could be decoded.
+
+---
+
+### `parseFromBuffer`
+
+```cpp
+static sipmessage parseFromBuffer(std::string::iterator& bufferStart,
+                                  const std::string::iterator& bufferEnd) noexcept(false);
+```
+
+Extracts and deserializes the first SIP message from the buffer range. Advances `bufferStart` past the parsed message. Throws a derived `sip2json_exception` (such as `incomplete_buffer_for_parse_error`, `invalid_startline_error`, etc.) on syntax or framing errors.
 
 ---
 
 ### `parseAsync`
 
 ```cpp
-template <typename InputIterator, typename CallbackFn, typename ErrorFn>
-static void parseAsync(InputIterator& start,
-                       InputIterator end,
-                       CallbackFn&& onMessageParsed,
-                       ErrorFn&& onErrorEncountered);
+static std::string& parseAsync(
+        std::string& frameBuffer,
+        std::function<void(sipmessage&&)> parseCallback,
+        std::optional<std::function<void(const sip2json_exception&, std::string::iterator&, const std::string::iterator&)>> errorCallback = {}) noexcept;
 ```
 
-Parses multiple SIP messages from an iterator range `[start, end)`.
+Asynchronously parses multiple SIP messages from `frameBuffer`. Decoded messages are moved to `parseCallback(sipmessage&&)`. Automatically erases decoded bytes from the front of `frameBuffer`, retaining partial frames for subsequent read cycles.
 
 #### Parameters
 
-* `start`: Input iterator reference pointing to the start of the read buffer. Advanced past parsed frames on success.
-* `end`: Input iterator representing the end of the read buffer.
-* `onMessageParsed`: Callable with signature `void(sipmessage&& msg)`.
-* `onErrorEncountered`: Callable with signature `void(sip2jsonErrors& errCode, const std::string& errMessage)`.
+* `frameBuffer`: Reference to input string buffer.
+* `parseCallback`: Callable with signature `void(sipmessage&& msg)`.
+* `errorCallback`: Optional error callback with signature `void(const sip2json_exception& e, std::string::iterator& start, const std::string::iterator& end)`.
 
 ---
 
 ### `serialize`
 
 ```cpp
-static std::string serialize(const sipmessage& msg);
+static std::string serialize(sipmessage& msg) noexcept(false);
 ```
 
 Serializes a `sipmessage` object back into a standard RFC-3261 formatted SIP protocol string complete with headers and SDP body.
