@@ -6,27 +6,48 @@
 
 ## Core Capabilities
 
-<div class="grid">
-  <div class="card">
-    <h3>Non-Blocking Stream Parsing</h3>
-    <p>Parse multiple SIP frames from continuous TCP byte streams using zero-copy iterator advancement and asynchronous callbacks.</p>
-    <a href="async.md">Learn more :octicons-arrow-right-24:</a>
-  </div>
-  <div class="card">
-    <h3>Performance & Benchmarks</h3>
-    <p>High-throughput benchmarks (~269k msgs/sec), noisy stream resilience, and single-stream vs multi-thread architectural analysis.</p>
-    <a href="benchmarks.md">Learn more :octicons-arrow-right-24:</a>
-  </div>
-  <div class="card">
-    <h3>First-Class JSON Metaphor</h3>
-    <p>Compact schema mapping SIP start lines, headers, and body attributes directly into <code>nlohmann::json</code> objects.</p>
-    <a href="json_schema.md">Learn more :octicons-arrow-right-24:</a>
-  </div>
-  <div class="card">
-    <h3>Native SDP Encoding & Decoding</h3>
-    <p>Full Session Description Protocol (<code>application/sdp</code>) parsing and formatting integrated directly into message objects.</p>
-    <a href="sdp.md">Learn more :octicons-arrow-right-24:</a>
-  </div>
+<div class="grid" markdown="1">
+
+<div class="card" markdown="1">
+
+### Non-Blocking Stream Parsing
+
+Parse multiple SIP frames from continuous TCP byte streams using zero-copy iterator advancement and asynchronous callbacks.
+
+[Learn more :octicons-arrow-right-24:](async.md)
+
+</div>
+
+<div class="card" markdown="1">
+
+### Performance & Benchmarks
+
+High-throughput benchmarks (~269k msgs/sec), noisy stream resilience, and single-stream vs multi-thread architectural analysis.
+
+[Learn more :octicons-arrow-right-24:](benchmarks.md)
+
+</div>
+
+<div class="card" markdown="1">
+
+### First-Class JSON Metaphor
+
+Compact schema mapping SIP start lines, headers, and body attributes directly into `nlohmann::json` objects.
+
+[Learn more :octicons-arrow-right-24:](json_schema.md)
+
+</div>
+
+<div class="card" markdown="1">
+
+### Native SDP Encoding & Decoding
+
+Full Session Description Protocol (`application/sdp`) parsing and formatting integrated directly into message objects.
+
+[Learn more :octicons-arrow-right-24:](sdp.md)
+
+</div>
+
 </div>
 
 ---
