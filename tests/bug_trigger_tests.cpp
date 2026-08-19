@@ -291,9 +291,9 @@ TEST(BugTrigger_High, Bug_7_IncompleteSdpTimingValidation)
                                    "Content-Length: 100\r\n"
                                    "\r\n"
                                    "v=0\r\n"
-                                   "o=user1 53655765 2353687637 IN IP4 128.3.4.5\r\n"
+                                   "o=user1 53655765 2353687637 IN IP4 198.51.100.5\r\n"
                                    "s=Session SDP\r\n"
-                                   "c=IN IP4 128.3.4.5\r\n"
+                                   "c=IN IP4 198.51.100.5\r\n"
                                    "t=0\r\n" // Only one value instead of two
                                    "m=audio 6000 RTP/AVP 0\r\n";
 
@@ -333,9 +333,9 @@ TEST(BugTrigger_High, Bug_8_MissingBoundsCheckSerialization)
     nlohmann::json sdp = nlohmann::json::array();
     nlohmann::json block;
     block["v"] = 0;
-    block["o"] = "user1 53655765 2353687637 IN IP4 128.3.4.5";
+    block["o"] = "user1 53655765 2353687637 IN IP4 198.51.100.5";
     block["s"] = "Session";
-    block["c"] = nlohmann::json {{"type", "IN"}, {"subtype", "IP4"}, {"dn", "128.3.4.5"}};
+    block["c"] = nlohmann::json {{"type", "IN"}, {"subtype", "IP4"}, {"dn", "198.51.100.5"}};
     block["t"] = nlohmann::json::array();
     block["t"].push_back(0); // Only one value - incomplete!
     block["m"] = "audio 6000 RTP/AVP 0";
@@ -416,9 +416,9 @@ TEST(BugTrigger_Medium, Bug_10_IncompleteRegexPattern)
                                         "Content-Length: 150\r\n"
                                         "\r\n"
                                         "v=0\r\n"
-                                        "o=user1 53655765 2353687637 IN IP4 128.3.4.5\r\n"
+                                        "o=user1 53655765 2353687637 IN IP4 198.51.100.5\r\n"
                                         "s=Session SDP\r\n"
-                                        "c=IN IP4 128.3.4.5\r\n"
+                                        "c=IN IP4 198.51.100.5\r\n"
                                         "t=0 0\r\n"
                                         "m=audio 6000 RTP/AVP 0\r\n"
                                         "a=:\r\n" // Empty attribute name
@@ -497,9 +497,9 @@ TEST(BugTrigger_Medium, Bug_13_UnsafeJsonPointer)
                                       "Content-Length: 150\r\n"
                                       "\r\n"
                                       "v=0\r\n"
-                                      "o=user1 53655765 2353687637 IN IP4 128.3.4.5\r\n"
+                                      "o=user1 53655765 2353687637 IN IP4 198.51.100.5\r\n"
                                       "s=Session SDP\r\n"
-                                      "c=IN IP4 128.3.4.5\r\n"
+                                      "c=IN IP4 198.51.100.5\r\n"
                                       "t=0 0\r\n"
                                       "m=audio 6000 RTP/AVP 0\r\n"
                                       "a=rtpmap/0:PCMU/8000\r\n"; // Forward slash in attribute - JSON pointer injection
@@ -610,9 +610,9 @@ TEST(BugTrigger_Stress, CombinedBugStress)
                                  "Content-Length: 200\r\n"
                                  "\r\n"
                                  "v=0\r\n"
-                                 "o=user1 53655765 2353687637 IN IP4 128.3.4.5\r\n"
+                                 "o=user1 53655765 2353687637 IN IP4 198.51.100.5\r\n"
                                  "s=Session SDP\r\n"
-                                 "c=IN IP4 128.3.4.5\r\n"
+                                 "c=IN IP4 198.51.100.5\r\n"
                                  "t=0\r\n" // Incomplete timing
                                  "m=audio 6000 RTP/AVP 0\r\n"
                                  "a=rtpmap:0 PCMU/8000\r\n";
