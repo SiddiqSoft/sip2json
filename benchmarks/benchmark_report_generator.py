@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Benchmark Report Generator
-Converts Google Benchmark JSON output to JUnit XML and HTML formats.
+Converts Google Benchmark JSON output to JUnit XML and HTML formats with visual charts.
 
 Usage:
     python3 benchmark_report_generator.py <input_json> [output_dir]
@@ -39,76 +39,124 @@ def generate_junit_xml(data: dict) -> str:
 
 
 def generate_html_report(data: dict) -> str:
-    """Generate HTML report from benchmark data."""
+    """Generate HTML report with visual interactive charts from benchmark data."""
     total_benchmarks = len(data['benchmarks'])
     total_iterations = sum(int(b.get('iterations', 0)) for b in data['benchmarks'])
     fastest_time = round(min(b['real_time'] for b in data['benchmarks']), 2)
     slowest_time = round(max(b['real_time'] for b in data['benchmarks']), 2)
-    time_unit = data['benchmarks'][0]['time_unit']
+    time_unit = data['benchmarks'][0]['time_unit'] if data['benchmarks'] else "ns"
+
+    # Categorize benchmarks for charts
+    parse_rate_labels = []
+    parse_rate_values = []
     
-    html_report = '''<!DOCTYPE html>
+    stream_arch_labels = []
+    stream_arch_values = []
+    
+    multithread_labels = []
+    multithread_values = []
+
+    for b in data['benchmarks']:
+        name = b['name']
+        items_sec = b.get('items_per_second', 0)
+
+        # Single-stream architecture benchmarks
+        if "BM_SimulatedStream" in name:
+            label = name.replace("BM_SimulatedStream_", "").replace("_", " ")
+            stream_arch_labels.append(label)
+            stream_arch_values.append(round(items_sec, 0))
+        # Multi-threaded async benchmarks
+        elif "BM_MultiThreaded" in name:
+            multithread_labels.append(name.replace("BM_MultiThreaded", "").replace("_", " "))
+            multithread_values.append(round(items_sec, 0))
+        # Core parsing benchmarks
+        elif any(k in name for k in ["BM_ParseMinimalResponse", "BM_ParseRegisterRequest", "BM_ParseInviteWithSDP", "BM_ParseInviteComplexSDP", "BM_ParseNotifyLF"]):
+            parse_rate_labels.append(name.replace("BM_Parse", ""))
+            parse_rate_values.append(round(items_sec, 0))
+
+    html_report = f'''<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>sip2json Benchmark Report</title>
+    <title>sip2json Benchmark Performance Report</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: #f5f5f5; color: #333; }
-        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
-        header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 8px; margin-bottom: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        header h1 { font-size: 2.5em; margin-bottom: 10px; }
-        header p { font-size: 1.1em; opacity: 0.9; }
-        .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .summary-card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-left: 4px solid #667eea; }
-        .summary-card h3 { color: #667eea; margin-bottom: 10px; font-size: 0.9em; text-transform: uppercase; }
-        .summary-card .value { font-size: 2em; font-weight: bold; color: #333; }
-        .summary-card .unit { font-size: 0.9em; color: #999; margin-left: 5px; }
-        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 30px; }
-        thead { background: #f8f9fa; border-bottom: 2px solid #dee2e6; }
-        th { padding: 15px; text-align: left; font-weight: 600; color: #495057; }
-        td { padding: 12px 15px; border-bottom: 1px solid #dee2e6; }
-        tbody tr:hover { background: #f8f9fa; }
-        .benchmark-name { font-family: "Courier New", monospace; font-size: 0.9em; color: #667eea; font-weight: 500; }
-        .time-value { font-family: "Courier New", monospace; text-align: right; }
-        .iterations { text-align: center; color: #666; }
-        .cpu-time { text-align: right; color: #666; }
-        footer { text-align: center; color: #999; margin-top: 40px; padding-top: 20px; border-top: 1px solid #dee2e6; }
-        .section-title { font-size: 1.5em; font-weight: 600; color: #333; margin: 30px 0 20px 0; }
-        .stress-tests { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; border-radius: 4px; margin-bottom: 20px; }
-        .stress-tests strong { color: #856404; }
-        .stress-tests ul { margin-left: 20px; margin-top: 10px; }
-        a { color: #667eea; text-decoration: none; }
-        a:hover { text-decoration: underline; }
+        * {{ margin: 0; padding: 0; box-sizing: border-box; }}
+        body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: #f4f6f9; color: #333; }}
+        .container {{ max-width: 1400px; margin: 0 auto; padding: 30px 20px; }}
+        header {{ background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: white; padding: 35px; border-radius: 12px; margin-bottom: 30px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }}
+        header h1 {{ font-size: 2.4em; margin-bottom: 8px; font-weight: 700; }}
+        header p {{ font-size: 1.1em; opacity: 0.9; }}
+        .summary {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 30px; }}
+        .summary-card {{ background: white; padding: 22px; border-radius: 10px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border-left: 5px solid #4f46e5; }}
+        .summary-card h3 {{ color: #6b7280; margin-bottom: 8px; font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.05em; }}
+        .summary-card .value {{ font-size: 2.1em; font-weight: 700; color: #1f2937; }}
+        .summary-card .unit {{ font-size: 0.9em; color: #9ca3af; margin-left: 4px; }}
+        .charts-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(600px, 1fr)); gap: 25px; margin-bottom: 35px; }}
+        .chart-card {{ background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }}
+        .chart-card h3 {{ margin-bottom: 20px; color: #1f2937; font-size: 1.2em; font-weight: 600; border-bottom: 2px solid #f3f4f6; padding-bottom: 10px; }}
+        table {{ width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 35px; }}
+        thead {{ background: #f9fafb; border-bottom: 2px solid #e5e7eb; }}
+        th {{ padding: 16px; text-align: left; font-weight: 600; color: #374151; font-size: 0.9em; text-transform: uppercase; }}
+        td {{ padding: 14px 16px; border-bottom: 1px solid #f3f4f6; font-size: 0.95em; }}
+        tbody tr:hover {{ background: #f9fafb; }}
+        .benchmark-name {{ font-family: "JetBrains Mono", "Courier New", monospace; font-size: 0.9em; color: #4f46e5; font-weight: 600; }}
+        .time-value {{ font-family: "JetBrains Mono", "Courier New", monospace; text-align: right; font-weight: 600; }}
+        .iterations {{ text-align: center; color: #6b7280; }}
+        .cpu-time {{ text-align: right; color: #6b7280; }}
+        footer {{ text-align: center; color: #9ca3af; margin-top: 50px; padding-top: 20px; border-top: 1px solid #e5e7eb; font-size: 0.9em; }}
+        .section-title {{ font-size: 1.6em; font-weight: 700; color: #1f2937; margin: 35px 0 20px 0; }}
+        a {{ color: #4f46e5; text-decoration: none; font-weight: 500; }}
+        a:hover {{ text-decoration: underline; }}
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>sip2json Benchmark Report</h1>
-            <p>Performance Analysis - Generated on ''' + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + '''</p>
+            <h1>sip2json Benchmark Performance Report</h1>
+            <p>Generated on {datetime.now().strftime("%Y-%m-%d %H:%M:%S")} | Modern C++23 Header-Only SIP Parser</p>
         </header>
         
         <div class="summary">
             <div class="summary-card">
                 <h3>Total Benchmarks</h3>
-                <div class="value">''' + str(total_benchmarks) + '''</div>
+                <div class="value">{total_benchmarks}</div>
             </div>
             <div class="summary-card">
                 <h3>Total Iterations</h3>
-                <div class="value">''' + str(total_iterations) + '''</div>
+                <div class="value">{total_iterations:,}</div>
             </div>
             <div class="summary-card">
-                <h3>Fastest Benchmark</h3>
-                <div class="value">''' + str(fastest_time) + ''' <span class="unit">''' + time_unit + '''</span></div>
+                <h3>Fastest Operation</h3>
+                <div class="value">{fastest_time} <span class="unit">{time_unit}</span></div>
             </div>
             <div class="summary-card">
-                <h3>Slowest Benchmark</h3>
-                <div class="value">''' + str(slowest_time) + ''' <span class="unit">''' + time_unit + '''</span></div>
+                <h3>Slowest Operation</h3>
+                <div class="value">{slowest_time} <span class="unit">{time_unit}</span></div>
+            </div>
+        </div>
+
+        <h2 class="section-title">Visual Performance Graphs</h2>
+        <div class="charts-grid">
+            <div class="chart-card">
+                <h3>Single-Threaded Parsing Rate (Messages / Sec)</h3>
+                <canvas id="parseRateChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3>Single Stream Architecture Comparison (Messages / Sec)</h3>
+                <canvas id="streamArchChart"></canvas>
+            </div>
+        </div>
+
+        <div class="charts-grid">
+            <div class="chart-card" style="grid-column: 1 / -1;">
+                <h3>Multi-Threaded Stream Scaling (Messages / Sec)</h3>
+                <canvas id="multiThreadChart"></canvas>
             </div>
         </div>
         
-        <h2 class="section-title">Benchmark Results</h2>
+        <h2 class="section-title">Detailed Benchmark Data</h2>
         <table>
             <thead>
                 <tr>
@@ -116,7 +164,7 @@ def generate_html_report(data: dict) -> str:
                     <th>Real Time</th>
                     <th>CPU Time</th>
                     <th>Iterations</th>
-                    <th>Items/Sec</th>
+                    <th>Items/Sec (Throughput)</th>
                 </tr>
             </thead>
             <tbody>
@@ -127,38 +175,93 @@ def generate_html_report(data: dict) -> str:
         real_time = benchmark['real_time']
         cpu_time = benchmark.get('cpu_time', 0)
         iterations = benchmark.get('iterations', 0)
-        time_unit = benchmark['time_unit']
+        t_unit = benchmark['time_unit']
         items_per_sec = benchmark.get('items_per_second', 0)
         
         html_report += f'''
                 <tr>
                     <td><span class="benchmark-name">{name}</span></td>
-                    <td class="time-value">{real_time:.2f} {time_unit}</td>
-                    <td class="cpu-time">{cpu_time:.2f} {time_unit}</td>
-                    <td class="iterations">{iterations}</td>
-                    <td class="time-value">{items_per_sec:.0f}</td>
+                    <td class="time-value">{real_time:.2f} {t_unit}</td>
+                    <td class="cpu-time">{cpu_time:.2f} {t_unit}</td>
+                    <td class="iterations">{iterations:,}</td>
+                    <td class="time-value">{items_per_sec:,.0f}</td>
                 </tr>
 '''
     
-    html_report += '''
+    html_report += f'''
             </tbody>
         </table>
         
-        <h2 class="section-title">Stress Test Benchmarks</h2>
-        <div class="stress-tests">
-            <strong>Note:</strong> The following benchmarks test high-frequency decoding with large packets:
-            <ul>
-                <li>High-Frequency Decode: Single large packet parsing</li>
-                <li>Stress Tests (100/1000): Multiple large packets in sequence</li>
-                <li>Variable-Size Tests: Parameterized stress testing (10, 50, 100, 500 packets)</li>
-            </ul>
-        </div>
-        
         <footer>
-            <p>sip2json Benchmark Suite | C++20 Header-Only SIP Parser</p>
-            <p>For more information, visit: <a href="https://github.com/siddiqsoftware/sip2json">github.com/siddiqsoftware/sip2json</a></p>
+            <p>sip2json Benchmark Suite | Siddiq Software LLC</p>
+            <p>Repository: <a href="https://github.com/SiddiqSoft/sip2json">github.com/SiddiqSoft/sip2json</a></p>
         </footer>
     </div>
+
+    <script>
+        // Chart 1: Parsing Rate
+        const ctxParse = document.getElementById('parseRateChart').getContext('2d');
+        new Chart(ctxParse, {{
+            type: 'bar',
+            data: {{
+                labels: {json.dumps(parse_rate_labels)},
+                datasets: [{{
+                    label: 'Parse Rate (Messages / Sec)',
+                    data: {json.dumps(parse_rate_values)},
+                    backgroundColor: 'rgba(79, 70, 229, 0.85)',
+                    borderColor: '#4f46e5',
+                    borderWidth: 1,
+                    borderRadius: 6
+                }}]
+            }},
+            options: {{
+                responsive: true,
+                plugins: {{ legend: {{ display: false }} }},
+                scales: {{ y: {{ beginAtZero: true, title: {{ display: true, text: 'Messages / Sec' }} }} }}
+            }}
+        }});
+
+        // Chart 2: Single Stream Architecture Comparison
+        const ctxStream = document.getElementById('streamArchChart').getContext('2d');
+        new Chart(ctxStream, {{
+            type: 'bar',
+            data: {{
+                labels: {json.dumps(stream_arch_labels)},
+                datasets: [{{
+                    label: 'Throughput (Messages / Sec)',
+                    data: {json.dumps(stream_arch_values)},
+                    backgroundColor: ['#10b981', '#3b82f6', '#ef4444', '#f59e0b'],
+                    borderRadius: 6
+                }}]
+            }},
+            options: {{
+                responsive: true,
+                plugins: {{ legend: {{ display: false }} }},
+                scales: {{ y: {{ beginAtZero: true, title: {{ display: true, text: 'Messages / Sec' }} }} }}
+            }}
+        }});
+
+        // Chart 3: Multi-Threaded Scaling
+        const ctxMulti = document.getElementById('multiThreadChart').getContext('2d');
+        new Chart(ctxMulti, {{
+            type: 'bar',
+            data: {{
+                labels: {json.dumps(multithread_labels)},
+                datasets: [{{
+                    label: 'Aggregate Multi-Thread Throughput (Messages / Sec)',
+                    data: {json.dumps(multithread_values)},
+                    backgroundColor: 'rgba(124, 58, 237, 0.85)',
+                    borderColor: '#7c3aed',
+                    borderRadius: 6
+                }}]
+            }},
+            options: {{
+                responsive: true,
+                plugins: {{ legend: {{ display: false }} }},
+                scales: {{ y: {{ beginAtZero: true, title: {{ display: true, text: 'Aggregate Throughput (Msgs / Sec)' }} }} }}
+            }}
+        }});
+    </script>
 </body>
 </html>
 '''
@@ -194,14 +297,14 @@ def main():
     junit_path = Path(output_dir) / "benchmark_results.xml"
     with open(junit_path, 'w') as f:
         f.write(junit_xml)
-    print(f"✓ JUnit XML generated: {junit_path}")
+    print(f"JUnit XML generated: {junit_path}")
     
-    # Generate HTML report
+    # Generate HTML report with visual graphs
     html_report = generate_html_report(data)
     html_path = Path(output_dir) / "benchmark_report.html"
     with open(html_path, 'w') as f:
         f.write(html_report)
-    print(f"✓ HTML Report generated: {html_path}")
+    print(f"HTML Report with visual graphs generated: {html_path}")
 
 
 if __name__ == "__main__":

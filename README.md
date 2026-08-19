@@ -1,6 +1,4 @@
-# sip2json
-<b>SIP Parser for Modern C++</b><br/>
-<small>Copyright &copy;2020-2024 Abdelkareem Siddiq. All rights reserved.</small>
+# sip2json: A Focused SIP Parser for Modern C++
 
 <!-- badges -->
 [![Build Status](https://dev.azure.com/siddiqsoft/siddiqsoft/_apis/build/status/siddiqsoftware.sip2json?branchName=master)](https://dev.azure.com/siddiqsoft/siddiqsoft/_build/latest?definitionId=21&branchName=master)
@@ -9,524 +7,120 @@
 ![](https://img.shields.io/azure-devops/tests/siddiqsoft/siddiqsoft/21/master.svg)
 <!-- end badges -->
 
-## Design Goals
+**`sip2json`** is a header-only Modern C++23 SIP protocol parser and serializer library designed with `nlohmann::json` as a first-class API metaphor for seamlessly converting SIP protocol messages to/from JSON for NoSQL databases and distributed event processing.
 
-A modern C++20 SIP parser that converts between SIP protocol messages and JSON for seamless integration with distributed systems and NoSQL databases.
+* **Header-Only Library**: Direct include and zero compiled binary dependencies.
+* **JSON-First Metaphor**: Request/status lines, headers, and SDP bodies are represented as compact `nlohmann::json` objects.
+* **Asynchronous Stream Parsing**: High-performance stream iterator parser with non-blocking callbacks for multi-frame TCP buffers.
+* **Full SDP Support**: Native decoding and encoding of Session Description Protocol (`application/sdp`) payloads.
+* **Modern C++23**: Built for C++23 standards using Compile-Time Regular Expressions (CTRE), move semantics, and concepts.
 
-**Compiler Requirements:** C++20 compliant compiler
-- Clang 17+
-- GCC 14+
-- Visual Studio 2022+
+---
 
-**Design Tradeoffs:**
-- Native C++20 API without wrappers
-- Minimal, focused codebase
-- Widely-used, respected dependencies
-- Easy JSON transformations for NoSQL integration
+## Documentation Site
 
-### Features
-- **Header-only library** - Easy integration, no compilation required
-- **Efficient JSON representation** - Compact storage with minimal intermediate processing
-- **Bidirectional conversion** - Serialize to/from SIP messages
-- **Streaming support** - Parse multiple messages from a buffer asynchronously
-- **SDP support** - Full encoding/decoding of Session Description Protocol bodies
-- **Modern C++20** - Leverages latest language features for type safety and performance
+Full guides, tutorials, API specifications, and interactive dependency graphs are hosted on our documentation site:
 
-### Dependencies
-- [nlohmann/json](https://github.com/nlohmann/json) v3.12.0+ - JSON library
-- [compile-time-regular-expressions](https://github.com/hanickadot/compile-time-regular-expressions) v3.9.0+ - CTRE for compile-time regex patterns
-- C++20 standard library
+* [**Features & Usage**](docs/features/index.md): Asynchronous stream parsing, JSON schema metaphor, SDP support.
+* [**Integration & CMake**](docs/integration/cmake.md): `CPMAddPackage`, Git submodules, build options, testing.
+* [**Dependency Graph**](docs/integration/dependencies.md): Automated visual dependency diagram and version matrix.
+* [**Architecture & Design**](docs/architecture/index.md): Stateless design, design patterns, and data flow.
+* [**API Reference**](docs/api/index.md): Specifications for `sipmessage`, `sip2json` static methods, and exceptions.
+* [**Examples**](docs/examples/index.md): Standalone code examples for stream parsing and serialization.
 
-### Out of scope
-This library is intendended to be used as a basis for you application and does not provide:
-- IO facility
-- Buffer management
-- Encryption
-- Managing CSeq
-- Thread safety is your responsibility
-- No statemachine is provided and the `sipmessage` class as well as the `sip2json` class are stateless.
+---
 
-## Usage
-
-### Nuget
-Use [`siddiqsoft.sip2json`](https://www.nuget.org/packages/SiddiqSoft.sip2json) nuget package.
-
-### CMakeList
-
-```cmake
-    CPMAddPackage(NAME sip2json   GIT_REPOSITORY https://github.com/siddiqsoftware/sip2json.git
-                                  GIT_TAG "v1.17.0" )
-    ..
-    ..
-    target_link_libraries(your-project PRIVATE sip2json::sip2json)
-```
-
-Using the CPM will automatically pull in the latest nlohmann_json package and any other dependencies.
-As user you'll be linking only with this package!
-
-### Code
-```cpp
-#include "siddiqsoftware/sip2json.hpp"
-
-// Assume a method invoked by the IO system on each "frame" read
-// from the tcp stream.
-void onReadCompleted(std::string& readBuffer)
-{
-  auto bufferStart= readBuffer.begin();
-  
-  // Invokes the callback per each decoded sipmessage from the buffer
-  // Keep track of the bufferStart as it is advanced to reach the readBuffer.end()
-  // as objects are parsed.
-  sip2json::parseAsync(bufferStart,
-          readBuffer.end(),
-          [](sipmessage&& msg) {
-              // Got a valid sipmessage object.. the object has been moved into this argument.
-              // The parameter msg has been std::move()'d and therefore the lifetime ends when
-              // the callback is completed. It is up to the client to ensure that they
-              // make copies as necessary.
-              if(!msg.empty()) {
-                 // Do something..
-              }
-          },
-          [](sip2jsonErrors& errCode, const std::string& msg){
-              // Invoked for an error during the processing of the buffer.
-      });
-
-  // Client is responsible for managing the state of the readBuffer
-  // the library uses an iterator to parse the stream and advances
-  // as each SIP frame is processed.
-  readBuffer.erase(readBuffer.begin(), bufferStart); // what remains can be processed as more data arrives
-}
-```
-
-## Documentation
-
-Comprehensive documentation is available in the `docs/` folder:
-
-| Document | Purpose |
-|----------|---------|
-| **[docs/INDEX.md](docs/INDEX.md)** | 📚 Documentation index and quick navigation |
-| **[docs/API.md](docs/API.md)** | 📖 Complete API reference with 20+ examples |
-| **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** | 🏗️ Design patterns and architecture guide |
-| **[docs/MIGRATION.md](docs/MIGRATION.md)** | 🔄 Migration guide and troubleshooting |
-
-### Quick Start
-
-For a quick introduction to the API, see [docs/API.md - Quick Start](docs/API.md#examples).
-
-### Complete API Reference
-
-See [docs/API.md](docs/API.md) for:
-- Complete method documentation
-- Constructor details
-- Getter/setter methods
-- Exception handling
-- Best practices
-
-### Architecture & Design
-
-See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for:
-- Design patterns (Factory, Builder, Strategy, etc.)
-- Class hierarchy
-- Data flow diagrams
-- Performance optimization
-- Memory management
-
-### Troubleshooting & Migration
-
-See [docs/MIGRATION.md](docs/MIGRATION.md) for:
-- Migration from v1.x to v2.0+
-- Common issues and solutions
-- FAQ
-- Performance tips
-
-## Quick Example
+## Quick Start
 
 ```cpp
 #include "siddiqsoft/sip2json.hpp"
 
 using namespace siddiqsoft;
 
-int main()
+void onNetworkDataReceived(std::string& tcpReadBuffer)
 {
-    // Create an INVITE request
-    sipmessage msg("INVITE", "sip:user@example.com", "call-123", 1);
-    
-    // Set headers with method chaining
-    msg.setHeader("From", "sip:caller@example.com")
-       .setHeader("To", "sip:user@example.com")
-       .setHeader("User-Agent", "MyApp/1.0");
-    
-    // Add Via header (can have multiple)
-    msg.headers()["Via"].push_back("SIP/2.0/TCP example.com");
-    
-    // Serialize to SIP message
-    try {
-        auto sip_message = sip2json::serialize(msg);
-        std::cout << sip_message << std::endl;
-    } catch (const sip2json_exception& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
-    }
-    
-    return 0;
+    auto cursor = tcpReadBuffer.begin();
+
+    // Asynchronously parse multiple SIP frames from buffer iterator
+    sip2json::parseAsync(
+        cursor,
+        tcpReadBuffer.end(),
+        [](sipmessage&& msg) {
+            if (!msg.empty()) {
+                std::cout << "Parsed " << msg.type << " (" << msg.method << ") Call-ID: " << msg.callid << "\n";
+            }
+        },
+        [](sip2jsonErrors& errCode, const std::string& errMessage) {
+            std::cerr << "Parser warning: " << errMessage << "\n";
+        }
+    );
+
+    // Erase processed frames from front of buffer; partial frames stay for next read
+    tcpReadBuffer.erase(tcpReadBuffer.begin(), cursor);
 }
 ```
 
-For more examples, see [docs/API.md - Examples](docs/API.md#examples).
+---
 
-## Code Quality & Best Practices
+## Integration
 
-The codebase has been thoroughly reviewed and improved to follow modern C++ best practices:
+### Using CPM / FetchContent
 
-For detailed information on design patterns and architecture, see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+```cmake
+CPMAddPackage("gh:SiddiqSoft/sip2json#v1.17.0")
+target_link_libraries(${PROJECT_NAME} INTERFACE sip2json::sip2json)
+```
+
+### Git Submodule
+
+```bash
+git submodule add https://github.com/SiddiqSoft/sip2json.git vendor/sip2json
+```
+
+```cmake
+add_subdirectory(vendor/sip2json)
+target_link_libraries(your_target PRIVATE sip2json::sip2json)
+```
+
+For full setup guides and NuGet usage, view the [Integration Guide](docs/integration/index.md).
+
+---
+
+## Requirements & Building
+
+| Requirement | Details |
+| :--- | :--- |
+| **Language Standard** | C++23 (`/std:c++latest` on MSVC, `-std=c++23` on Clang/GCC) |
+| **Platforms** | Windows (MSVC 2022+), Linux (GCC 14+, Clang 17+), macOS (Apple Clang 15+) |
+| **Dependencies** | [`nlohmann/json`](https://github.com/nlohmann/json), [`ctre`](https://github.com/hanickadot/compile-time-regular-expressions) |
+
+### Building with CMake Presets
+
+```bash
+# Configure with a preset matching your OS/compiler (e.g. Apple-Debug, Linux-GCC-Debug, Windows-Debug)
+cmake --preset Apple-Debug
+
+# Build target
+cmake --build --preset Apple-Debug
+
+# Run test suite
+ctest --preset Apple-Debug
+```
+
+---
 
 ## Tests
 
-- There is a single C++ Native Unit Test using the Microsoft C++ Framework under vstest.
-- Code Coverage is enabled (only if you're using Visual Studio Enterprise).
-- Azure pipelines CI reports on the test results and the coverage results.
-- There are to date `142+` tests covering parsing, serialization, and Rule of Five compliance.
-- [Clang-Tidy](.clang-tidy) is used as a linter to highlight issues with best-practices and static code analysis.
-- Consistent formatting using [Clang Format](.clang-format).
-
-### Test Categories
-- **Parsing Tests** - Verify correct SIP message parsing
-- **Serialization Tests** - Verify correct SIP message serialization
-- **Edge Cases** - Handle malformed and boundary condition messages
-- **Stress Tests** - Performance and scalability testing
-- **Rule of Five Tests** - Verify copy/move semantics compliance (24 tests)
-- **Synthetic Tests** - Generated test cases for comprehensive coverage
-
-
-## References
-
-### Json Schema
-
-#### Container
-
-The document contains single character entries: `s`, `h`, `b` and the diagnostic element `meta` which is used to track such items as version, time of arrival, time to decode, etc.
-
-```json
-{
-    "meta": {"version": "sip2json/1.10.2/1.0.1", "time": "2020-08-13T12:27:30.555Z", "ttx": 0},
-    "s": {},
-    "h": {},
-    "b": null
-}
-```
-
-This approach acknowledges the fact that SIP messages are generated at a very high rate and processing size of data matters.
-Keeping the data compact and mapping the raw SIP and SDP means less intermediate processing is involved and keeps our container usage to a single model (map).
-
-
-Field | Type | Description
------:|:-----|--------------------
-**`s`**   | object | Represents the [SIP start line](#sip-start-line).
-**`meta`**   | object | Diagnostic object that contains `version`, `time` of arrival and `ttx` milliseconds taken to parse.
-**`h`**   | object | Contains the [SIP headers](#sip-headers).
-`b`   | object | Contains the [SIP body](#sip-body). Optional.<br/>Currently, only the `application/sdp` body encode/decode is supported.<br/>If the `Content-Length` is `0`, despite the value of the `Content-Type` this element is skipped.
-
-#### SIP Start Line
-
-Field | Type | Description
------:|:-----|--------------------
-**`type`**   | string | One of `request` or `response`.
-`method`   | string | Present for `request` type. Represents the SIP method.
-`uri`   | string | Present when the type is `request`, this represents the SIP URI element of the SIP request line.
-`status` | string | Present when the type is `response` and represents the status code of the SIP response line.
-`reason` | string | Present when the type is `response` and represents the response phrase of the SIP response line.
-**`version`**   | string | Always `SIP/2.0`.
-
-#### SIP Headers
-
-The object contains key-value elements found in the SIP header section.
-
-- SIP headers with boolean value types are stored as JSON boolean.
-- Default storage type is string
-- The header field `Content-Length` is encoded as JSON number.
-- When more than one item with the same header name is found, it is stored in an array.
-   ```json
-    "h": { "Authorization": "",
-           "Via": [ "via-1",
-                    "via-2",
-                    "via-3"
-           ],
-           "Content-Length": 0 }
-   ```
-- For header elements that are "empty", the JSON value `""` is stored against that header key instead of `null`.
-
-#### SIP Body
-
-The object contains key-value elements found in the body section.
-
-Field | Type | Description
-------|------|-------------
-**`v`** | integer | Contant; Set to `0`. Do not modify! This tag is used to delimit a session descriptor block.
-**`o`** | string |
-**`s`** | string | This can be set to `null` if the item is empty in the SIP message.
-`i` | string | Optional.
-`u` | string | Optional.
-`e` | string | Optional.
-`p` | string | Optional.
-`c` | string | Optional.
-`b` | string | Optional.
-**`t`** | Array | Timing for this block. Array of integer values representing the start and end time of the leg.
-`z` | string | Optional.
-`k` | string | Optional. Encryption key.
-**`m`** | string | Media descriptors
-**`a`** | array | Media-level a-line items. **Session-level a-line items are not supported.**
-
-- Elements with boolean value types are stored as JSON boolean.
-- Default storage type is string
-- When more than one item with the same name is found, it is stored in an array. `"a":{"rtpmap":""}` or `"a":{"rtpmap":["",""]}`.
-   ```json
-    "a": { "remote": "",
-           "rtpmap": [ "",
-                       ""],
-           "new_change": true }
-   ```
-- Attribute keys that are `a=new_change` are stored as `"a":{"new_change":true}`
-
-
-
-#### Request Document
-```json
-{
-    "meta": {"version": "sip2json/1.10.2/1.0.0", "time": "2020-08-13T12:27:30.555Z", "ttx": 0},
-    "s": {
-        "type": "request",
-        "method": "INVITE",
-        "uri": "sip:hello@world.com",
-        "version": "SIP/.20"
-    },
-    "h": {},
-    "b": {
-        "sdp": [{
-            "v": 0,
-            "s": "",
-            "c": {
-                "type": "",
-                "subtype": "",
-                "dn": ""
-            },
-            "i": { "dn": "",
-                   "name": "",
-                   "type": ""
-            },
-            "o": {
-                "user": "",
-                "t1": "",
-                "t2": "",
-                "type": "",
-                "subtype": "",
-                "host": ""
-            },
-            "m": "",
-            "t": [0, 0],
-            "a": {}
-        }]
-    }
-}
-```
-
-#### Response Document
-```json
-{
-    "meta": {"version": "sip2json/1.10.2/1.0.0", "time": "2020-08-13T12:27:30.555Z", "ttx": 0},
-    "s": {
-        "type": "response",
-        "status": 100,
-        "reason": "Trying",
-        "version": "SIP/.20"
-    },
-    "h": {}
-}
-```
-
-#### Request Sample
-The source for the following is this [sample SIP](test/samples/NOTIFY_generic_1.sip).
-
-```json
-{
-    "b": {
-        "sdp": [
-            {
-                "a": {
-                    "access_code": "0000000",
-                    "acs_guid": "001010000004",
-                    "audio_payload": "PCMU",
-                    "cdr_start_time": "1594555399.0",
-                    "cli-screening": "00",
-                    "clir": "false",
-                    "dial_once": "aaaa1-aaa13.aaaa2.com",
-                    "dialout": "click_in",
-                    "far_end": "10.254.254.33:12196",
-                    "flags": "1049122",
-                    "fmtp": "101 0-15",
-                    "ivr": "dialout",
-                    "legCallid": "1000000009@10.100.100.100",
-                    "leg_no": "3",
-                    "mediastatus": "nomedia",
-                    "new_change": true,
-                    "privs": "participant",
-                    "remote": "10.254.254.38:12224",
-                    "rtpmap": [
-                        "0 pcmu/8000/1",
-                        "101 telephone-event/8000"
-                    ],
-                    "server": "ukdc1-edm18.mediaco.com",
-                    "sipphone": "usecallid_80000000000000aa-aa-aaaaaa-00@10.254.254.33;port=5060",
-                    "status": "(205) answered hold ",
-                    "trunk": "8:chan:0",
-                    "useforfrom": "hello@world.com",
-                    "user-agent": "mediaco mediaserver ACS 9.1.0b8050"
-                },
-                "c": {
-                    "dn": "10.254.254.33",
-                    "subtype": "IP4",
-                    "type": "IN"
-                },
-                "i": {
-                    "dn": "usecallid-leg-3",
-                    "name": "usecallid-leg-3",
-                    "type": "CallByPhone"
-                },
-                "m": "audio 8766 RTP/AVP 0 101",
-                "o": {
-                    "host": "localhost",
-                    "subtype": "IP4",
-                    "t1": "1011084562",
-                    "t2": "804064065",
-                    "type": "IN",
-                    "user": "hello@world.com"
-                },
-                "s": "",
-                "t": [
-                    3803029099,
-                    0
-                ],
-                "v": 0
-            }
-        ]
-    },
-    "h": {
-        "CSeq": "9 NOTIFY",
-        "Call-ID": "80000000000000aa-aa-aaaaaa-00",
-        "Contact": "<sip:localhost:8443;transport=ssl>",
-        "Content-Length": 880,
-        "Content-Type": "application/sdp",
-        "From": "sip:hello@world.com;pool=uk-ed-mediaserver2;box=s1.example.com;tag=12345678",
-        "To": "\"mmyers\" <sip:hello@world.com>",
-        "Via": [
-            "SIP/2.0/tcp localhost:8443",
-            "SIP/2.0/tcp localhost:8443;branch=hello@world.com__mediaserver_sep__hello@world.com"
-        ],
-        "X-Billing-code-required": false,
-        "X-Call-Instance-ID": "ODQ0NDMaNaU5MaaaOTa1aa1lZC10aGFtZXMtMDE6MTU5NDA0MDI3Naa2NjQ5Nja=",
-        "X-Call-Start-Time": "1594040277.665005",
-        "X-Call-URL": true,
-        "X-Conf_no": "236398",
-        "X-From": "hello@world.com",
-        "X-Route-ID": "1",
-        "X-Sticky": "1",
-        "X-Video-SingleView": "0",
-        "X-Video-UsingMCU": false,
-        "X-client-address": "10.44.200.95",
-        "X-control-master": "hello@world.com",
-        "X-dialout": "allowed",
-        "X-domain": "DEFAULT",
-        "X-last-change": "1594040299",
-        "X-leader-required": true,
-        "X-legs-on-server": "244",
-        "X-no-audio": false,
-        "X-no-unmute": false,
-        "X-no-video": false,
-        "X-notify-im": false,
-        "X-recording-enabled": true,
-        "X-restrict-notify": false,
-        "X-restrict-participants": false,
-        "X-rollcall": "disabled",
-        "X-rss-id": "",
-        "X-slave-site": "localhost",
-        "X-start-muted": false,
-        "X-subject": "Robert Bonds' Meeting Room",
-        "X-suppress-system-im": false
-    },
-    "meta": {
-        "version": "sip2json/1.10.2/1.0.0",
-        "time": "2020-08-13T12:27:30.555Z",
-        "ttx": 0
-    },
-    "s": {
-        "method": "NOTIFY",
-        "type": "request",
-        "uri": "sip:hello@world.com",
-        "version": "SIP/2.0"
-    }
-}
-```
-
-## Build and Testing
-
-### Build
-
-The project uses CMake with presets for easy configuration across multiple platforms and compilers.
-
-#### Using CMake Presets (Recommended)
+The project includes a comprehensive GoogleTest unit test suite covering parsing, serialization, edge cases, synthetic streams, stress tests, and Rule of Five copy/move compliance.
 
 ```bash
-# Configure with a preset
-cmake --preset <preset-name>
-
-# Build
-cmake --build --preset <preset-name>
-
-# Run tests
-ctest --preset <preset-name>
+cmake -Dsip2json_BUILD_TESTS=ON -B build
+cmake --build build
+ctest --test-dir build --output-on-failure
 ```
 
-**Available Presets:**
-- **macOS:** `Apple-Debug`, `Apple-Release`, `Apple-Benchmark`
-- **Linux (GCC):** `Linux-GCC-Debug`, `Linux-GCC-Release`
-- **Linux (Clang):** `Linux-Clang-Debug`, `Linux-Clang-Release`
-- **Windows:** `Windows-Debug`, `Windows-Release`
+---
 
-#### Manual Build
+## License
 
-```bash
-# Configure
-cmake . -DCMAKE_BUILD_TYPE=Release -Dsip2json_BUILD_TESTS=ON
-
-# Build
-cmake --build .
-
-# Run tests
-ctest .
-```
-
-#### Cleaning Build Artifacts
-
-To clean the repository of CMake-generated files and cached data:
-
-```bash
-git clean -d -x -f
-```
-
-### File Termination (CRLF)
-
-The SIP message samples are `CRLF` terminated. The repository includes a `.gitattributes` file that specifies proper handling of `*.sip` files. If tests fail, verify the EOL markers in sample files are correct.
-
-### Windows-specific
-
-The CTRE has very odd requirements that are not clearly spelled out:
-- Enable long file names setting otherwise you get stange errors.
-  - Regedit `HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem\LongPathsEnabled = DWORD:1`
-
-## External resources
-- [JSON for Modern C++](https://nlohmann.github.io/json/)
-- [FMT Library](https://fmt.dev/latest/index.html)
-- [GoogleTest primer](https://github.com/google/googletest/blob/master/googletest/docs/primer.md)
-- [SIP Messages Definition](https://tools.ietf.org/html/rfc3261#section-7)
-- [SDP specification](https://en.wikipedia.org/wiki/Session_Description_Protocol)
-- [SIP Response Codes](https://en.wikipedia.org/wiki/List_of_SIP_response_codes)
-- Out gitversion scheme has been adapted from [GitVersion](https://gitversion.net/docs/reference/configuration) `GitFlow/v1`.
+Licensed under the [BSD 3-Clause License](LICENSE).

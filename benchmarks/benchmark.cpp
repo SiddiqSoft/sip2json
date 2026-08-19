@@ -11,6 +11,10 @@
 #include <chrono>
 #include <ctime>
 #include <limits>
+#include <thread>
+#include <future>
+#include <atomic>
+#include <numeric>
 
 #include "nlohmann/json.hpp"
 #include "siddiqsoft/sip2json.hpp"
@@ -170,10 +174,79 @@ static std::string createLargeSIPMessageWithExtendedSDP()
     return msg;
 }
 
+// Generate a worst-case noisy buffer containing valid SIP messages interleaved with random noise/garbage headers/lines
+static std::string createWorstCaseNoisyBuffer(int validMessageCount, int noiseBytesPerMessage = 256)
+{
+    static const std::string junkLines[] = {
+            "NOISE_GARBAGE_HEADER_1234567890: random-junk-data-here-1234567890\r\n",
+            "X-CORRUPTED-JUNK-KEY-ABCDEF: 999999999999999999999999\r\n",
+            "random junk data without any key value separator\r\n",
+            "\r\n\r\n\r\n",
+            "GARBAGE_LINE_BEFORE_STARTLINE 123456789\r\n",
+            "SIP/2.0 INVALID STATUS LINE WITHOUT REASON\r\n",
+            "MALFORMED_HEADER_TEST: \r\n"};
+
+    std::string buffer;
+    buffer.reserve(validMessageCount * (SIP_INVITE_WITH_SDP.size() + noiseBytesPerMessage));
+
+    for (int i = 0; i < validMessageCount; ++i)
+    {
+        // Inject leading junk before valid start-line (forces parser to skip ahead)
+        buffer += junkLines[i % 7];
+        buffer += junkLines[(i + 3) % 7];
+
+        // Append valid message (either INVITE with SDP, REGISTER, or response)
+        if (i % 3 == 0)
+            buffer += SIP_INVITE_WITH_SDP;
+        else if (i % 3 == 1)
+            buffer += SIP_REGISTER_REQUEST;
+        else
+            buffer += SIP_RESPONSE_MINIMAL;
+
+        // Inject trailing noise after message body
+        buffer += junkLines[(i + 5) % 7];
+    }
+
+    return buffer;
+}
+
 
 // ============================================================================
-// PARSING BENCHMARKS
+// PARSING BENCHMARKS WITH JSON OUTPUT VALIDATION
 // ============================================================================
+
+// Helper function to validate parsed JSON by accessing Call-ID and counting items in SDP payload
+static inline std::pair<std::string, size_t> validateParsedSipMessage(const siddiqsoft::sipmessage& sipm)
+{
+    using namespace std::string_literals;
+    std::string callId {};
+    size_t sdpItemCount = 0;
+
+    // 1. Access Call-ID header from headers section
+    callId = sipm.getCallID();
+
+    // 2. Count items in SDP payload if present
+    if (sipm.contains("b"s) && !sipm.body().is_null() && sipm.contains("/b/sdp"_json_pointer))
+    {
+        const auto& sdpArray = sipm.at("/b/sdp"_json_pointer);
+        if (sdpArray.is_array())
+        {
+            for (const auto& block : sdpArray)
+            {
+                if (block.is_object())
+                {
+                    sdpItemCount += block.size();
+                    if (block.contains("a") && block["a"].is_object())
+                    {
+                        sdpItemCount += block["a"].size();
+                    }
+                }
+            }
+        }
+    }
+
+    return {callId, sdpItemCount};
+}
 
 // Parse a minimal SIP response (no body)
 static void BM_ParseMinimalResponse(benchmark::State& state)
@@ -183,7 +256,9 @@ static void BM_ParseMinimalResponse(benchmark::State& state)
         std::string buffer = SIP_RESPONSE_MINIMAL;
         auto        bs     = buffer.begin();
         auto        sipm   = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end());
-        benchmark::DoNotOptimize(sipm);
+        auto [callId, sdpCount] = validateParsedSipMessage(sipm);
+        benchmark::DoNotOptimize(callId);
+        benchmark::DoNotOptimize(sdpCount);
     }
     state.SetItemsProcessed(state.iterations());
     state.SetBytesProcessed(state.iterations() * SIP_RESPONSE_MINIMAL.size());
@@ -198,7 +273,9 @@ static void BM_ParseRegisterRequest(benchmark::State& state)
         std::string buffer = SIP_REGISTER_REQUEST;
         auto        bs     = buffer.begin();
         auto        sipm   = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end());
-        benchmark::DoNotOptimize(sipm);
+        auto [callId, sdpCount] = validateParsedSipMessage(sipm);
+        benchmark::DoNotOptimize(callId);
+        benchmark::DoNotOptimize(sdpCount);
     }
     state.SetItemsProcessed(state.iterations());
     state.SetBytesProcessed(state.iterations() * SIP_REGISTER_REQUEST.size());
@@ -213,7 +290,9 @@ static void BM_ParseInviteWithSDP(benchmark::State& state)
         std::string buffer = SIP_INVITE_WITH_SDP;
         auto        bs     = buffer.begin();
         auto        sipm   = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end());
-        benchmark::DoNotOptimize(sipm);
+        auto [callId, sdpCount] = validateParsedSipMessage(sipm);
+        benchmark::DoNotOptimize(callId);
+        benchmark::DoNotOptimize(sdpCount);
     }
     state.SetItemsProcessed(state.iterations());
     state.SetBytesProcessed(state.iterations() * SIP_INVITE_WITH_SDP.size());
@@ -228,7 +307,9 @@ static void BM_ParseInviteComplexSDP(benchmark::State& state)
         std::string buffer = SIP_INVITE_COMPLEX_SDP;
         auto        bs     = buffer.begin();
         auto        sipm   = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end());
-        benchmark::DoNotOptimize(sipm);
+        auto [callId, sdpCount] = validateParsedSipMessage(sipm);
+        benchmark::DoNotOptimize(callId);
+        benchmark::DoNotOptimize(sdpCount);
     }
     state.SetItemsProcessed(state.iterations());
     state.SetBytesProcessed(state.iterations() * SIP_INVITE_COMPLEX_SDP.size());
@@ -243,7 +324,9 @@ static void BM_ParseNotifyLF(benchmark::State& state)
         std::string buffer = SIP_NOTIFY_LF;
         auto        bs     = buffer.begin();
         auto        sipm   = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end());
-        benchmark::DoNotOptimize(sipm);
+        auto [callId, sdpCount] = validateParsedSipMessage(sipm);
+        benchmark::DoNotOptimize(callId);
+        benchmark::DoNotOptimize(sdpCount);
     }
     state.SetItemsProcessed(state.iterations());
     state.SetBytesProcessed(state.iterations() * SIP_NOTIFY_LF.size());
@@ -266,7 +349,12 @@ static void BM_ParseMultipleMessages(benchmark::State& state)
         std::string copy = buffer;
         auto        bs   = copy.begin();
         auto        msgs = siddiqsoft::sip2json::parse(bs, copy.end());
-        benchmark::DoNotOptimize(msgs);
+        for (const auto& sipm : msgs)
+        {
+            auto [callId, sdpCount] = validateParsedSipMessage(sipm);
+            benchmark::DoNotOptimize(callId);
+            benchmark::DoNotOptimize(sdpCount);
+        }
     }
     state.SetItemsProcessed(state.iterations() * msgCount);
     state.SetBytesProcessed(state.iterations() * buffer.size());
@@ -283,7 +371,12 @@ static void BM_ParseAsyncMultipleMessages(benchmark::State& state)
     {
         std::string copy      = buffer;
         int         count     = 0;
-        auto        remaining = siddiqsoft::sip2json::parseAsync(copy, [&](auto&& sipm) { count++; });
+        auto        remaining = siddiqsoft::sip2json::parseAsync(copy, [&](auto&& sipm) {
+            count++;
+            auto [callId, sdpCount] = validateParsedSipMessage(sipm);
+            benchmark::DoNotOptimize(callId);
+            benchmark::DoNotOptimize(sdpCount);
+        });
         benchmark::DoNotOptimize(remaining);
         benchmark::DoNotOptimize(count);
     }
@@ -574,7 +667,9 @@ static void BM_HighFrequencyDecodeLargePacket(benchmark::State& state)
         std::string buffer = largeMsg;
         auto        bs     = buffer.begin();
         auto        sipm   = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end());
-        benchmark::DoNotOptimize(sipm);
+        auto [callId, sdpCount] = validateParsedSipMessage(sipm);
+        benchmark::DoNotOptimize(callId);
+        benchmark::DoNotOptimize(sdpCount);
     }
     state.SetItemsProcessed(state.iterations());
     state.SetBytesProcessed(state.iterations() * largeMsg.size());
@@ -597,7 +692,12 @@ static void BM_StressTest100LargePackets(benchmark::State& state)
         std::string copy = buffer;
         auto        bs   = copy.begin();
         auto        msgs = siddiqsoft::sip2json::parse(bs, copy.end());
-        benchmark::DoNotOptimize(msgs);
+        for (const auto& sipm : msgs)
+        {
+            auto [callId, sdpCount] = validateParsedSipMessage(sipm);
+            benchmark::DoNotOptimize(callId);
+            benchmark::DoNotOptimize(sdpCount);
+        }
     }
     state.SetItemsProcessed(state.iterations() * 100);
     state.SetBytesProcessed(state.iterations() * buffer.size());
@@ -619,7 +719,12 @@ static void BM_StressTestAsyncParse100LargePackets(benchmark::State& state)
     {
         std::string copy      = buffer;
         int         count     = 0;
-        auto        remaining = siddiqsoft::sip2json::parseAsync(copy, [&](auto&& sipm) { count++; });
+        auto        remaining = siddiqsoft::sip2json::parseAsync(copy, [&](auto&& sipm) {
+            count++;
+            auto [callId, sdpCount] = validateParsedSipMessage(sipm);
+            benchmark::DoNotOptimize(callId);
+            benchmark::DoNotOptimize(sdpCount);
+        });
         benchmark::DoNotOptimize(remaining);
         benchmark::DoNotOptimize(count);
     }
@@ -644,7 +749,12 @@ static void BM_StressTest1000LargePackets(benchmark::State& state)
         std::string copy = buffer;
         auto        bs   = copy.begin();
         auto        msgs = siddiqsoft::sip2json::parse(bs, copy.end());
-        benchmark::DoNotOptimize(msgs);
+        for (const auto& sipm : msgs)
+        {
+            auto [callId, sdpCount] = validateParsedSipMessage(sipm);
+            benchmark::DoNotOptimize(callId);
+            benchmark::DoNotOptimize(sdpCount);
+        }
     }
     state.SetItemsProcessed(state.iterations() * 1000);
     state.SetBytesProcessed(state.iterations() * buffer.size());
@@ -666,7 +776,12 @@ static void BM_StressTestAsyncParse1000LargePackets(benchmark::State& state)
     {
         std::string copy      = buffer;
         int         count     = 0;
-        auto        remaining = siddiqsoft::sip2json::parseAsync(copy, [&](auto&& sipm) { count++; });
+        auto        remaining = siddiqsoft::sip2json::parseAsync(copy, [&](auto&& sipm) {
+            count++;
+            auto [callId, sdpCount] = validateParsedSipMessage(sipm);
+            benchmark::DoNotOptimize(callId);
+            benchmark::DoNotOptimize(sdpCount);
+        });
         benchmark::DoNotOptimize(remaining);
         benchmark::DoNotOptimize(count);
     }
@@ -692,7 +807,12 @@ static void BM_VariableSizeStressTest(benchmark::State& state)
         std::string copy = buffer;
         auto        bs   = copy.begin();
         auto        msgs = siddiqsoft::sip2json::parse(bs, copy.end());
-        benchmark::DoNotOptimize(msgs);
+        for (const auto& sipm : msgs)
+        {
+            auto [callId, sdpCount] = validateParsedSipMessage(sipm);
+            benchmark::DoNotOptimize(callId);
+            benchmark::DoNotOptimize(sdpCount);
+        }
     }
     state.SetItemsProcessed(state.iterations() * packetCount);
     state.SetBytesProcessed(state.iterations() * buffer.size());
@@ -715,7 +835,12 @@ static void BM_VariableSizeAsyncStressTest(benchmark::State& state)
     {
         std::string copy      = buffer;
         int         count     = 0;
-        auto        remaining = siddiqsoft::sip2json::parseAsync(copy, [&](auto&& sipm) { count++; });
+        auto        remaining = siddiqsoft::sip2json::parseAsync(copy, [&](auto&& sipm) {
+            count++;
+            auto [callId, sdpCount] = validateParsedSipMessage(sipm);
+            benchmark::DoNotOptimize(callId);
+            benchmark::DoNotOptimize(sdpCount);
+        });
         benchmark::DoNotOptimize(remaining);
         benchmark::DoNotOptimize(count);
     }
@@ -723,3 +848,326 @@ static void BM_VariableSizeAsyncStressTest(benchmark::State& state)
     state.SetBytesProcessed(state.iterations() * buffer.size());
 }
 BENCHMARK(BM_VariableSizeAsyncStressTest)->Arg(10)->Arg(50)->Arg(100)->Arg(500);
+
+
+// ============================================================================
+// WORST-CASE NOISY BUFFER PARSING BENCHMARKS (Pipelined Noise & Garbage Skipping)
+// ============================================================================
+
+// Worst-case benchmark: parse a buffer containing valid messages interleaved with garbage lines
+static void BM_WorstCaseNoisyBufferParsing(benchmark::State& state)
+{
+    const int         msgCount = static_cast<int>(state.range(0));
+    const std::string buffer   = createWorstCaseNoisyBuffer(msgCount);
+
+    for (auto _ : state)
+    {
+        std::string copy = buffer;
+        auto        bs   = copy.begin();
+        auto        msgs = siddiqsoft::sip2json::parse(bs, copy.end());
+        for (const auto& sipm : msgs)
+        {
+            auto [callId, sdpCount] = validateParsedSipMessage(sipm);
+            benchmark::DoNotOptimize(callId);
+            benchmark::DoNotOptimize(sdpCount);
+        }
+    }
+    state.SetItemsProcessed(state.iterations() * msgCount);
+    state.SetBytesProcessed(state.iterations() * buffer.size());
+}
+BENCHMARK(BM_WorstCaseNoisyBufferParsing)->Arg(10)->Arg(100)->Arg(500)->Arg(1000);
+
+// Worst-case async benchmark: parseAsync over a noisy buffer skipping noise & invoking callback
+static void BM_WorstCaseNoisyAsyncParsing(benchmark::State& state)
+{
+    const int         msgCount = static_cast<int>(state.range(0));
+    const std::string buffer   = createWorstCaseNoisyBuffer(msgCount);
+
+    for (auto _ : state)
+    {
+        std::string copy  = buffer;
+        int         count = 0;
+        siddiqsoft::sip2json::parseAsync(copy, [&](auto&& sipm) {
+            count++;
+            auto [callId, sdpCount] = validateParsedSipMessage(sipm);
+            benchmark::DoNotOptimize(callId);
+            benchmark::DoNotOptimize(sdpCount);
+        });
+        benchmark::DoNotOptimize(count);
+    }
+    state.SetItemsProcessed(state.iterations() * msgCount);
+    state.SetBytesProcessed(state.iterations() * buffer.size());
+}
+BENCHMARK(BM_WorstCaseNoisyAsyncParsing)->Arg(10)->Arg(100)->Arg(500)->Arg(1000);
+
+
+// ============================================================================
+// MULTI-THREADED ASYNC CALLBACK BENCHMARKS (Parallel Stream Decoding)
+// ============================================================================
+
+// Multi-threaded benchmark: Parallel stream parsing across N worker threads using parseAsync
+static void BM_MultiThreadedAsyncParsing(benchmark::State& state)
+{
+    const int numThreads = static_cast<int>(state.range(0));
+    const int msgCountPerThread = 500;
+    const std::string threadBuffer = createMultiMessageBuffer(msgCountPerThread);
+
+    for (auto _ : state)
+    {
+        std::atomic<size_t> totalParsedCount{0};
+        std::vector<std::future<size_t>> futures;
+        futures.reserve(numThreads);
+
+        for (int t = 0; t < numThreads; ++t)
+        {
+            futures.push_back(std::async(std::launch::async, [threadBuffer]() {
+                std::string copy = threadBuffer;
+                size_t parsedCount = 0;
+                siddiqsoft::sip2json::parseAsync(copy, [&](auto&& sipm) {
+                    parsedCount++;
+                    auto [callId, sdpCount] = validateParsedSipMessage(sipm);
+                    benchmark::DoNotOptimize(callId);
+                    benchmark::DoNotOptimize(sdpCount);
+                });
+                return parsedCount;
+            }));
+        }
+
+        for (auto& f : futures)
+        {
+            totalParsedCount += f.get();
+        }
+        benchmark::DoNotOptimize(totalParsedCount);
+    }
+
+    state.SetItemsProcessed(state.iterations() * msgCountPerThread * numThreads);
+    state.SetBytesProcessed(state.iterations() * threadBuffer.size() * numThreads);
+}
+BENCHMARK(BM_MultiThreadedAsyncParsing)->Arg(2)->Arg(4)->Arg(8)->Arg(16);
+
+// Multi-threaded worst-case benchmark: Parallel parseAsync over noisy streams across N worker threads
+static void BM_MultiThreadedNoisyAsyncParsing(benchmark::State& state)
+{
+    const int numThreads = static_cast<int>(state.range(0));
+    const int msgCountPerThread = 500;
+    const std::string noisyThreadBuffer = createWorstCaseNoisyBuffer(msgCountPerThread);
+
+    for (auto _ : state)
+    {
+        std::atomic<size_t> totalParsedCount{0};
+        std::vector<std::future<size_t>> futures;
+        futures.reserve(numThreads);
+
+        for (int t = 0; t < numThreads; ++t)
+        {
+            futures.push_back(std::async(std::launch::async, [noisyThreadBuffer]() {
+                std::string copy = noisyThreadBuffer;
+                size_t parsedCount = 0;
+                siddiqsoft::sip2json::parseAsync(copy, [&](auto&& sipm) {
+                    parsedCount++;
+                    auto [callId, sdpCount] = validateParsedSipMessage(sipm);
+                    benchmark::DoNotOptimize(callId);
+                    benchmark::DoNotOptimize(sdpCount);
+                });
+                return parsedCount;
+            }));
+        }
+
+        for (auto& f : futures)
+        {
+            totalParsedCount += f.get();
+        }
+        benchmark::DoNotOptimize(totalParsedCount);
+    }
+
+    state.SetItemsProcessed(state.iterations() * msgCountPerThread * numThreads);
+    state.SetBytesProcessed(state.iterations() * noisyThreadBuffer.size() * numThreads);
+}
+BENCHMARK(BM_MultiThreadedNoisyAsyncParsing)->Arg(2)->Arg(4)->Arg(8)->Arg(16);
+
+
+// ============================================================================
+// SINGLE STREAM COMPARISON: parseAsync vs parse (Single Thread vs Thread Pool Offload)
+// ============================================================================
+
+// Helper thread-safe queue for thread pool offloading benchmark
+struct ConcurrentSipMessageQueue
+{
+    std::vector<siddiqsoft::sipmessage> queue;
+    std::mutex                          mutex;
+    std::condition_variable             cv;
+    bool                                finished{false};
+
+    void push(siddiqsoft::sipmessage&& msg)
+    {
+        {
+            std::lock_guard<std::mutex> lock(mutex);
+            queue.push_back(std::move(msg));
+        }
+        cv.notify_one();
+    }
+
+    void setFinished()
+    {
+        {
+            std::lock_guard<std::mutex> lock(mutex);
+            finished = true;
+        }
+        cv.notify_all();
+    }
+
+    bool pop(siddiqsoft::sipmessage& msg)
+    {
+        std::unique_lock<std::mutex> lock(mutex);
+        cv.wait(lock, [this]() { return !queue.empty() || finished; });
+        if (queue.empty())
+            return false;
+        msg = std::move(queue.front());
+        queue.erase(queue.begin());
+        return true;
+    }
+};
+
+// Scenario A: Single-Thread parseAsync (Direct In-Line Stream Parsing)
+static void BM_SimulatedStream_ParseAsync_SingleThread(benchmark::State& state)
+{
+    const int         msgCount = 1000;
+    const std::string streamBuffer = createMultiMessageBuffer(msgCount);
+
+    for (auto _ : state)
+    {
+        std::string copy  = streamBuffer;
+        size_t      parsedCount = 0;
+        siddiqsoft::sip2json::parseAsync(copy, [&](auto&& sipm) {
+            parsedCount++;
+            auto [callId, sdpCount] = validateParsedSipMessage(sipm);
+            benchmark::DoNotOptimize(callId);
+            benchmark::DoNotOptimize(sdpCount);
+        });
+        benchmark::DoNotOptimize(parsedCount);
+    }
+    state.SetItemsProcessed(state.iterations() * msgCount);
+    state.SetBytesProcessed(state.iterations() * streamBuffer.size());
+}
+BENCHMARK(BM_SimulatedStream_ParseAsync_SingleThread);
+
+// Scenario B: Single-Thread parse (Vector Allocation & Sequential Iteration)
+static void BM_SimulatedStream_Parse_SingleThread(benchmark::State& state)
+{
+    const int         msgCount = 1000;
+    const std::string streamBuffer = createMultiMessageBuffer(msgCount);
+
+    for (auto _ : state)
+    {
+        std::string copy = streamBuffer;
+        auto        bs   = copy.begin();
+        auto        msgs = siddiqsoft::sip2json::parse(bs, copy.end());
+        for (const auto& sipm : msgs)
+        {
+            auto [callId, sdpCount] = validateParsedSipMessage(sipm);
+            benchmark::DoNotOptimize(callId);
+            benchmark::DoNotOptimize(sdpCount);
+        }
+    }
+    state.SetItemsProcessed(state.iterations() * msgCount);
+    state.SetBytesProcessed(state.iterations() * streamBuffer.size());
+}
+BENCHMARK(BM_SimulatedStream_Parse_SingleThread);
+
+// Scenario C: Stream I/O Thread running parseAsync + Offloading to Worker Thread Pool
+static void BM_SimulatedStream_ParseAsync_WithThreadPoolOffload(benchmark::State& state)
+{
+    const int         msgCount = 1000;
+    const int         workerCount = 4;
+    const std::string streamBuffer = createMultiMessageBuffer(msgCount);
+
+    for (auto _ : state)
+    {
+        ConcurrentSipMessageQueue queue;
+        std::atomic<size_t>       processedCount{0};
+        std::vector<std::thread>  workers;
+
+        // Spawn worker threads to process parsed SIP messages offloaded from callback
+        for (int i = 0; i < workerCount; ++i)
+        {
+            workers.emplace_back([&queue, &processedCount]() {
+                siddiqsoft::sipmessage msg;
+                while (queue.pop(msg))
+                {
+                    processedCount++;
+                    auto [callId, sdpCount] = validateParsedSipMessage(msg);
+                    benchmark::DoNotOptimize(callId);
+                    benchmark::DoNotOptimize(sdpCount);
+                }
+            });
+        }
+
+        // Single Stream I/O thread runs parseAsync and pushes parsed messages into queue
+        std::string copy = streamBuffer;
+        siddiqsoft::sip2json::parseAsync(copy, [&](auto&& sipm) {
+            queue.push(std::move(sipm));
+        });
+        queue.setFinished();
+
+        for (auto& w : workers)
+        {
+            if (w.joinable())
+                w.join();
+        }
+        benchmark::DoNotOptimize(processedCount);
+    }
+    state.SetItemsProcessed(state.iterations() * msgCount);
+    state.SetBytesProcessed(state.iterations() * streamBuffer.size());
+}
+BENCHMARK(BM_SimulatedStream_ParseAsync_WithThreadPoolOffload);
+
+// Scenario D: Stream I/O Thread running parse() to Vector + Handoff to Worker Thread Pool
+static void BM_SimulatedStream_Parse_WithThreadPoolHandoff(benchmark::State& state)
+{
+    const int         msgCount = 1000;
+    const int         workerCount = 4;
+    const std::string streamBuffer = createMultiMessageBuffer(msgCount);
+
+    for (auto _ : state)
+    {
+        ConcurrentSipMessageQueue queue;
+        std::atomic<size_t>       processedCount{0};
+        std::vector<std::thread>  workers;
+
+        for (int i = 0; i < workerCount; ++i)
+        {
+            workers.emplace_back([&queue, &processedCount]() {
+                siddiqsoft::sipmessage msg;
+                while (queue.pop(msg))
+                {
+                    processedCount++;
+                    auto [callId, sdpCount] = validateParsedSipMessage(msg);
+                    benchmark::DoNotOptimize(callId);
+                    benchmark::DoNotOptimize(sdpCount);
+                }
+            });
+        }
+
+        // Single Stream I/O thread runs parse() into vector first, then pushes to queue
+        std::string copy = streamBuffer;
+        auto        bs   = copy.begin();
+        auto        msgs = siddiqsoft::sip2json::parse(bs, copy.end());
+        for (auto& sipm : msgs)
+        {
+            queue.push(std::move(sipm));
+        }
+        queue.setFinished();
+
+        for (auto& w : workers)
+        {
+            if (w.joinable())
+                w.join();
+        }
+        benchmark::DoNotOptimize(processedCount);
+    }
+    state.SetItemsProcessed(state.iterations() * msgCount);
+    state.SetBytesProcessed(state.iterations() * streamBuffer.size());
+}
+BENCHMARK(BM_SimulatedStream_Parse_WithThreadPoolHandoff);
+
+

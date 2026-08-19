@@ -1,0 +1,109 @@
+site_name: sip2json
+site_description: SIP Parser for Modern C++
+site_author: Siddiq Software LLC
+site_url: https://siddiqsoft.github.io/sip2json/
+repo_url: https://github.com/SiddiqSoft/sip2json
+repo_name: SiddiqSoft/sip2json
+edit_uri: edit/main/docs/
+
+hooks:
+  - docs/hooks.py
+
+extra:
+  version: "0.0.0-dev"
+
+theme:
+  name: material
+  language: en
+  logo: assets/Siddiq-Software-Avatar.png
+  favicon: assets/Siddiq-Software-Avatar.png
+  palette:
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  font:
+    text: Roboto
+    code: JetBrains Mono
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.expand
+    - navigation.path
+    - navigation.top
+    - navigation.footer
+    - navigation.tracking
+    - search.suggest
+    - search.highlight
+    - search.share
+    - content.code.copy
+    - content.code.annotate
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+
+extra_css:
+  - css/custom.css
+
+extra_javascript:
+  - https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js
+
+nav:
+  - Home: index.md
+  - Features:
+      - Overview: features/index.md
+      - Async Stream Parsing: features/async.md
+      - Performance & Benchmarks: features/benchmarks.md
+      - JSON Metaphor & Schema: features/json_schema.md
+      - SDP Support: features/sdp.md
+  - Integration:
+      - Quick Start: integration/index.md
+      - CMake & Submodules: integration/cmake.md
+      - Dependencies Diagram: integration/dependencies.md
+      - NuGet Package: integration/nuget.md
+  - Architecture & Design:
+      - Overview: architecture/index.md
+      - Design Patterns: architecture/patterns.md
+      - Data Flow & Memory: architecture/dataflow.md
+  - API Reference:
+      - Overview: api/index.md
+      - sipmessage: api/sipmessage.md
+      - sip2json Functions: api/sip2json.md
+      - Exceptions & Errors: api/errors.md
+  - Examples:
+      - Overview: examples/index.md
+      - Stream Parsing Callback: examples/async_parsing.md
+      - Message Serialization: examples/serialization.md
+  - License: license.md

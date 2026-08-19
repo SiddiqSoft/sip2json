@@ -13,9 +13,9 @@
         <id>SiddiqSoft.sip2json</id>
         <version>$VERSION$</version>
         <authors>Abdulkareem Siddiq</authors>
-        <description>Modern C++20 SIP parser with bidirectional JSON conversion for distributed systems and NoSQL databases</description>
-        <summary>Header-only C++20 SIP to JSON parser with full SDP support</summary>
-        <tags>sip json sdp protocol parser c++20 header-only native nativepackage</tags>
+        <description>Modern C++23 SIP parser with bidirectional JSON conversion for distributed systems and NoSQL databases</description>
+        <summary>Header-only C++23 SIP to JSON parser with full SDP support</summary>
+        <tags>sip json sdp protocol parser C++23 header-only native nativepackage</tags>
         <projectUrl>https://github.com/siddiqsoftware/sip2json</projectUrl>
         <repository type="git" url="https://github.com/siddiqsoftware/sip2json" />
         <requireLicenseAcceptance>true</requireLicenseAcceptance>
