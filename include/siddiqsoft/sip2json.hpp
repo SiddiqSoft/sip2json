@@ -129,6 +129,23 @@ namespace siddiqsoft
         }
 
 
+        /// @brief Escapes key tokens for use in nlohmann::json::json_pointer per RFC 6901
+        static std::string escapeJsonPointerToken(std::string_view token)
+        {
+            std::string escaped;
+            escaped.reserve(token.size());
+            for (char c : token)
+            {
+                if (c == '~')
+                    escaped += "~0";
+                else if (c == '/')
+                    escaped += "~1";
+                else
+                    escaped += c;
+            }
+            return escaped;
+        }
+
         /// @brief Store the value in the header section. Performs from basic transforms/detection of bool, integer
         /// @param sipm The target sipmessage object
         /// @param key The key
@@ -155,7 +172,14 @@ namespace siddiqsoft
             {
                 try
                 {
-                    sipm["h"][key] = std::stoi(value);
+                    long long len = std::stoll(value);
+                    if (len < 0 || len > 100 * 1024 * 1024)
+                        throw invalid_document_error {std::format("{}:Invalid Content-Length value '{}'", __func__, value)};
+                    sipm["h"][key] = static_cast<uint32_t>(len);
+                }
+                catch (const invalid_document_error&)
+                {
+                    throw;
                 }
                 catch (const std::exception&)
                 {
@@ -166,7 +190,14 @@ namespace siddiqsoft
             {
                 try
                 {
-                    sipm["h"][key] = std::stoi(value);
+                    long long val = std::stoll(value);
+                    if (val < 0)
+                        throw invalid_document_error {std::format("{}:Invalid Expires value '{}'", __func__, value)};
+                    sipm["h"][key] = static_cast<uint32_t>(val);
+                }
+                catch (const invalid_document_error&)
+                {
+                    throw;
                 }
                 catch (const std::exception&)
                 {
@@ -269,7 +300,7 @@ namespace siddiqsoft
                                     // build up the value..
                                     value.append(hsep, hend);
                                     // Advance to past the fold indicator
-                                    hsep = hend + lineEndSize + 1;
+                                    hsep = std::min(hend + lineEndSize + 1, headerEnd);
                                     // Continue loop to process next folded line
                                 }
                                 else
@@ -357,44 +388,49 @@ namespace siddiqsoft
                     blockIndex++; // the first match will increment this to "0"
                     sipm["b"s]["sdp"s][blockIndex][key] = 0;
                 }
-                else if (key == "a"s)
-                {
-                    // attribute lines: https://en.wikipedia.org/wiki/Session_Description_Protocol#Attributes
-                    auto alineMatcher = ctre::search<SIP_PATTERN_BODY_ALINE_RE>(value);
-
-                    if (alineMatcher)
-                    {
-                        auto akey = string(alineMatcher.get<1>().to_view());
-                        auto aval = string(alineMatcher.get<2>().to_view());
-
-                        // This is the form where a=attribute:value
-                        nlohmann::json::json_pointer pkey(std::format("/b/sdp/{}/{}/{}", blockIndex, key, akey));
-
-                        // We may get multiple items for the same "key" such as `a=rtpmap:x` and `a=rtpmap:y`
-                        // In this case we should start an array
-                        if (sipm.contains(pkey) && !sipm[pkey].is_array())
-                        {
-                            auto previousValue = sipm[pkey]; // make a copy!
-                            sipm[pkey]         = {previousValue, aval};
-                        }
-                        else if (sipm[pkey].is_array())
-                            sipm[pkey].push_back(aval);
-                        else if (!aval.empty())
-                            sipm[pkey] = aval;
-                        else
-                            sipm[pkey] = nullptr;
-                    }
-                    else if (!value.empty())
-                    {
-                        // This is the form where a=flag
-                        // We matched a=key without the `:` or the "value" so we should store the value with nullptr
-                        nlohmann::json::json_pointer pkey(std::format("/b/sdp/{}/{}/{}", blockIndex, key, value));
-                        sipm[pkey] = true;
-                    }
-                }
                 else
                 {
-                    nlohmann::json::json_pointer pkey(std::format("/b/sdp/{}/{}", blockIndex, key));
+                    if (blockIndex < 0)
+                        throw invalid_document_error {std::format("{}:SDP block must start with v=0", __func__)};
+
+                    if (key == "a"s)
+                    {
+                        // attribute lines: https://en.wikipedia.org/wiki/Session_Description_Protocol#Attributes
+                        auto alineMatcher = ctre::search<SIP_PATTERN_BODY_ALINE_RE>(value);
+
+                        if (alineMatcher)
+                        {
+                            auto akey = string(alineMatcher.get<1>().to_view());
+                            auto aval = string(alineMatcher.get<2>().to_view());
+
+                            // This is the form where a=attribute:value
+                            nlohmann::json::json_pointer pkey(std::format("/b/sdp/{}/{}/{}", blockIndex, key, escapeJsonPointerToken(akey)));
+
+                            // We may get multiple items for the same "key" such as `a=rtpmap:x` and `a=rtpmap:y`
+                            // In this case we should start an array
+                            if (sipm.contains(pkey) && !sipm[pkey].is_array())
+                            {
+                                auto previousValue = sipm[pkey]; // make a copy!
+                                sipm[pkey]         = {previousValue, aval};
+                            }
+                            else if (sipm[pkey].is_array())
+                                sipm[pkey].push_back(aval);
+                            else if (!aval.empty())
+                                sipm[pkey] = aval;
+                            else
+                                sipm[pkey] = nullptr;
+                        }
+                        else if (!value.empty())
+                        {
+                            // This is the form where a=flag
+                            // We matched a=key without the `:` or the "value" so we should store the value with nullptr
+                            nlohmann::json::json_pointer pkey(std::format("/b/sdp/{}/{}/{}", blockIndex, key, escapeJsonPointerToken(value)));
+                            sipm[pkey] = true;
+                        }
+                    }
+                    else
+                    {
+                        nlohmann::json::json_pointer pkey(std::format("/b/sdp/{}/{}", blockIndex, escapeJsonPointerToken(key)));
 
                     if (key == "c"s)
                     {
@@ -463,6 +499,7 @@ namespace siddiqsoft
                     }
                     else if (!key.empty() && value.empty()) { sipm[pkey] = ""; }
                     else if (!key.empty()) { sipm[pkey] = value; }
+                }
                 }
 
                 // Offset the start to the point after the match.
@@ -665,8 +702,8 @@ namespace siddiqsoft
         {
             using namespace std;
 
-            static const std::string supportedMethods {
-                    "MESSAGE|INFO|INVITE|ACK|OPTIONS|BYE|CANCEL|REGISTER|SUBSCRIBE|NOTIFY|SIP/2.0"};
+            static const std::vector<std::string> supportedMethodsList {
+                    "MESSAGE", "INFO", "INVITE", "ACK", "OPTIONS", "BYE", "CANCEL", "REGISTER", "SUBSCRIBE", "NOTIFY", "SIP/2.0"};
             std::string buffer {};
             std::string contentType {};
 
@@ -678,21 +715,32 @@ namespace siddiqsoft
             // Assert: non-empty json document; starting with v1.9 we have a meta element for diagnostics; this is to be treated as "empty".
             if (sipm.contains("meta") && sipm.size() == 1)
                 throw empty_message_error {std::format("{}:sipm is empty (except for meta).", __func__)};
-            // Assert: Method is one of the supported items
-            if (supportedMethods.find(sipm.getMethod()) == std::string::npos)
-                throw invalid_document_error {std::format("{}:Unsupported method:{}", __func__, sipm.getMethod())};
+
             // Assert: Header must exist
             if (!sipm.contains("h"s)) throw invalid_document_error {std::format("{}:sipm does not contain `h`eaders.", __func__)};
 
             if (sipm.isMessageRequest())
             {
+                auto method = sipm.getMethod();
+                auto uri    = sipm.getUri();
+
+                if (method.find('\r') != std::string::npos || method.find('\n') != std::string::npos ||
+                    std::find(supportedMethodsList.begin(), supportedMethodsList.end(), method) == supportedMethodsList.end())
+                    throw invalid_document_error {std::format("{}:Unsupported method:{}", __func__, method)};
+
+                if (uri.find('\r') != std::string::npos || uri.find('\n') != std::string::npos)
+                    throw invalid_document_error {std::format("{}:URI contains line breaks:{}", __func__, uri)};
+
                 // Request Line
-                std::format_to(std::back_inserter(buffer), "{} {} SIP/2.0\r\n", sipm.getMethod(), sipm.getUri());
+                std::format_to(std::back_inserter(buffer), "{} {} SIP/2.0\r\n", method, uri);
             }
             else if (sipm.isMessageResponse())
             {
+                auto reason = sipm.getReason();
+                if (reason.find('\r') != std::string::npos || reason.find('\n') != std::string::npos)
+                    throw invalid_document_error {std::format("{}:Reason phrase contains line breaks:{}", __func__, reason)};
                 // Status Line
-                std::format_to(std::back_inserter(buffer), "SIP/2.0 {} {}\r\n", sipm.getStatusCode(), sipm.getReason());
+                std::format_to(std::back_inserter(buffer), "SIP/2.0 {} {}\r\n", sipm.getStatusCode(), reason);
             }
             else
             {
@@ -712,12 +760,15 @@ namespace siddiqsoft
                 // This is acceptable for SIP as header order is not significant per RFC 3261.
                 for (auto& [key, val] : sipm.headers().items())
                 {
+                    if (key.find('\r') != std::string::npos || key.find('\n') != std::string::npos)
+                        throw invalid_document_error {std::format("{}:Header key contains line breaks:{}", __func__, key)};
+
                     if (contentType.empty() && (key.compare(HF_CONTENT_TYPE) == 0) && val.is_string()) contentType = val;
 
                     if (val.is_null())
                     {
                         // For null entries, put a blank entry. This is the same as our decode
-                        std::format_to(std::back_inserter(buffer), "{}: \r\n", key.c_str());
+                        std::format_to(std::back_inserter(buffer), "{}: \r\n", key);
                     }
                     else if (val.is_number_unsigned())
                     {
@@ -733,7 +784,10 @@ namespace siddiqsoft
                     }
                     else if (val.is_string())
                     {
-                        std::format_to(std::back_inserter(buffer), "{}: {}\r\n", key, val.get<std::string>().c_str());
+                        std::string sval = val.get<std::string>();
+                        if (sval.find('\r') != std::string::npos || sval.find('\n') != std::string::npos)
+                            throw invalid_document_error {std::format("{}:Header value contains line breaks:{}", __func__, key)};
+                        std::format_to(std::back_inserter(buffer), "{}: {}\r\n", key, sval);
                     }
                     else if (val.is_boolean())
                     {
@@ -746,14 +800,20 @@ namespace siddiqsoft
                         for (auto& item : val.items())
                         {
                             auto iv = item.value();
-                            std::format_to(std::back_inserter(buffer), "{}: {}\r\n", key, iv.get<std::string>().c_str());
+                            if (iv.is_string())
+                            {
+                                std::string sval = iv.get<std::string>();
+                                if (sval.find('\r') != std::string::npos || sval.find('\n') != std::string::npos)
+                                    throw invalid_document_error {std::format("{}:Header array value contains line breaks:{}", __func__, key)};
+                                std::format_to(std::back_inserter(buffer), "{}: {}\r\n", key, sval);
+                            }
+                            else
+                            {
+                                std::format_to(std::back_inserter(buffer), "{}: {}\r\n", key, iv.dump());
+                            }
                         }
                     }
-                    //else
-                    //{ // unsupported/unknown
-                    //    std::format_to(std::back_inserter(buffer), "{}: {{}}\r\n"s, key, val);
-                    //}
-                };
+                }
 
                 // End of the message header section
                 buffer += ELEM_NEWLINE;
