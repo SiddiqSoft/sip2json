@@ -379,13 +379,17 @@ build/**
 /test/validation_tests/test.nativecodeanalysis.xml
 *.filters
 
-# MkDocs site output
+# MkDocs site output and virtual environments
 site/
+.venv/
+venv/
 
-# Benchmark generated output files (reports are generated during publication build)
+# Benchmark generated output files (reports are generated during publication build in Azure Pipelines)
 benchmarks/benchmark_results.json
 benchmarks/benchmark_results.xml
 benchmarks/benchmark_report.html
 docs/assets/benchmark_report.html
+
+
 
 

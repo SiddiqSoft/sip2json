@@ -19,10 +19,10 @@ from pathlib import Path
 
 def run_cmd(cmd, cwd=None):
     """Helper to run command and log output."""
-    print(f"[publish_benchmarks] Running: {' '.join(cmd)}")
+    print(f"[publish_benchmarks] Running: {' '.join(cmd)}", flush=True)
     res = subprocess.run(cmd, cwd=cwd, text=True, capture_output=True)
     if res.returncode != 0:
-        print(f"[publish_benchmarks] Command failed with exit code {res.returncode}:\n{res.stderr}")
+        print(f"[publish_benchmarks] Command failed with exit code {res.returncode}:\n{res.stderr}", flush=True)
         return False
     return True
 
@@ -30,6 +30,7 @@ def main():
     parser = argparse.ArgumentParser(description="Publish sip2json benchmark reports")
     parser.add_argument("--root", type=str, help="Repository root path")
     parser.add_argument("--skip-build", action="store_true", help="Skip building benchmark binary if executable already exists")
+    parser.add_argument("--skip-exec", action="store_true", help="Skip running benchmark executable if json output already exists")
     args = parser.parse_args()
 
     repo_root = Path(args.root).resolve() if args.root else Path(__file__).resolve().parent.parent
@@ -37,7 +38,7 @@ def main():
     docs_assets_dir = repo_root / "docs" / "assets"
     docs_assets_dir.mkdir(parents=True, exist_ok=True)
 
-    # 1. Locate existing benchmark executable or build it via CMake
+    # 1. Locate existing benchmark executable or search build tree
     possible_exe_locations = [
         repo_root / "build" / "Apple-Release" / "benchmarks" / "sip2json_benchmarks",
         repo_root / "build" / "Release" / "benchmarks" / "sip2json_benchmarks",
@@ -52,9 +53,17 @@ def main():
             bench_exe = loc
             break
 
-    if not bench_exe or not args.skip_build:
+    if not bench_exe:
+        build_root = repo_root / "build"
+        if build_root.exists():
+            for exe in build_root.glob("**/sip2json_benchmarks*"):
+                if exe.is_file() and os.access(exe, os.X_OK):
+                    bench_exe = exe
+                    break
+
+    if (not bench_exe and not args.skip_build):
         build_dir = repo_root / "build" / "Release"
-        print(f"[publish_benchmarks] Configuring CMake in {build_dir}...")
+        print(f"[publish_benchmarks] Configuring CMake in {build_dir}...", flush=True)
         cfg_cmd = [
             "cmake", "-B", str(build_dir), "-S", str(repo_root),
             "-DCMAKE_BUILD_TYPE=Release",
@@ -62,42 +71,45 @@ def main():
             "-Dsip2json_BUILD_TESTS=OFF"
         ]
         if run_cmd(cfg_cmd):
-            print(f"[publish_benchmarks] Building sip2json_benchmarks in Release mode...")
+            print(f"[publish_benchmarks] Building sip2json_benchmarks in Release mode...", flush=True)
             build_cmd = ["cmake", "--build", str(build_dir), "--config", "Release", "--target", "sip2json_benchmarks"]
             if run_cmd(build_cmd):
                 new_exe = build_dir / "benchmarks" / "sip2json_benchmarks"
                 if new_exe.exists():
                     bench_exe = new_exe
 
-    if not bench_exe or not bench_exe.exists():
-        print("[publish_benchmarks] Warning: Benchmark executable could not be found or built. Skipping benchmark execution.")
-        return
-
-    # 2. Run benchmark executable and output JSON
     json_out_path = benchmarks_dir / "benchmark_results.json"
-    run_bench_cmd = [
-        str(bench_exe),
-        f"--benchmark_out={json_out_path}",
-        "--benchmark_out_format=json"
-    ]
-    print(f"[publish_benchmarks] Executing benchmark suite: {bench_exe}")
-    if not run_cmd(run_bench_cmd):
-        print("[publish_benchmarks] Error: Benchmark execution failed.")
-        return
-
-    # 3. Generate XML and HTML reports using benchmark_report_generator.py
     generator_script = benchmarks_dir / "benchmark_report_generator.py"
-    if generator_script.exists():
+    html_report = benchmarks_dir / "benchmark_report.html"
+    published_html = docs_assets_dir / "benchmark_report.html"
+
+    # 2. Execute benchmark executable if available and allowed
+    if bench_exe and bench_exe.exists() and not args.skip_exec:
+        run_bench_cmd = [
+            str(bench_exe),
+            f"--benchmark_out={json_out_path}",
+            "--benchmark_out_format=json"
+        ]
+        print(f"[publish_benchmarks] Executing benchmark suite: {bench_exe}", flush=True)
+        run_cmd(run_bench_cmd)
+    else:
+        print("[publish_benchmarks] Skipping benchmark binary execution (using existing benchmark outputs).", flush=True)
+
+    # 3. Generate XML and HTML reports using benchmark_report_generator.py if JSON exists
+    if json_out_path.exists() and generator_script.exists():
         gen_cmd = [sys.executable, str(generator_script), str(json_out_path), str(benchmarks_dir)]
         if run_cmd(gen_cmd):
-            print(f"[publish_benchmarks] Generated benchmark reports in {benchmarks_dir}")
+            print(f"[publish_benchmarks] Generated benchmark reports in {benchmarks_dir}", flush=True)
 
-            # 4. Copy HTML report into docs/assets/ so it is published into the documentation website
-            html_report = benchmarks_dir / "benchmark_report.html"
-            if html_report.exists():
-                published_html = docs_assets_dir / "benchmark_report.html"
-                shutil.copy2(html_report, published_html)
-                print(f"[publish_benchmarks] Published interactive HTML report to: {published_html}")
+    # 4. Copy HTML report into docs/assets/ so it is published into the documentation website
+    if html_report.exists():
+        shutil.copy2(html_report, published_html)
+        print(f"[publish_benchmarks] Published interactive HTML report to: {published_html}", flush=True)
+    elif published_html.exists():
+        print(f"[publish_benchmarks] Pre-compiled interactive HTML report present at: {published_html}", flush=True)
+    else:
+        print("[publish_benchmarks] Warning: No benchmark HTML report found to publish.", flush=True)
 
 if __name__ == "__main__":
     main()
+

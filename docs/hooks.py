@@ -42,7 +42,7 @@ def on_config(config, **kwargs):
         root_dir = Path(__file__).resolve().parent.parent
         bench_script = root_dir / "scripts" / "publish_benchmarks.py"
         if bench_script.exists():
-            subprocess.run([sys.executable, str(bench_script), "--root", str(root_dir), "--skip-build"], check=True)
+            subprocess.run([sys.executable, str(bench_script), "--root", str(root_dir), "--skip-build", "--skip-exec"], check=True)
     except Exception as e:
         print(f"[docs/hooks.py] Warning: Failed to generate benchmark reports during publication: {e}")
 
