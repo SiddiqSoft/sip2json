@@ -258,7 +258,7 @@ TEST(siphelpers, Test_empty_mb)
     EXPECT_FALSE(sipm.hasBody()) << sipm.dump(2);
 
     sipm.setHeader("Content-Type", siddiqsoft::CONTENT_TYPE_TEXT_PLAIN);
-    EXPECT_EQ(siddiqsoft::CONTENT_TYPE_TEXT_PLAIN, sipm.getHeader<std::string>(siddiqsoft::HF_CONTENT_TYPE, "unknown"))
+    EXPECT_EQ(siddiqsoft::CONTENT_TYPE_TEXT_PLAIN, sipm.getHeader<std::string>(siddiqsoft::HFS_CONTENT_TYPE[1], "unknown"))
             << sipm.dump(2);
 }
 
@@ -321,7 +321,7 @@ TEST(siphelpers, Test_empty_mb_2)
     EXPECT_FALSE(sipm.hasBody()) << sipm.dump(2);
 
     sipm.setHeader("Content-Type", siddiqsoft::CONTENT_TYPE_TEXT_PLAIN);
-    EXPECT_EQ(siddiqsoft::CONTENT_TYPE_TEXT_PLAIN, sipm.getHeader<std::string>(siddiqsoft::HF_CONTENT_TYPE, "unknown"))
+    EXPECT_EQ(siddiqsoft::CONTENT_TYPE_TEXT_PLAIN, sipm.getHeader<std::string>(siddiqsoft::HFS_CONTENT_TYPE[1], "unknown"))
             << sipm.dump(2);
 }
 
@@ -389,7 +389,7 @@ TEST(siphelpers, Test_empty_mb_3)
     EXPECT_FALSE(sipm.hasBody()) << sipm.dump(2);
 
     sipm.setHeader("Content-Type", siddiqsoft::CONTENT_TYPE_TEXT_PLAIN);
-    EXPECT_EQ(siddiqsoft::CONTENT_TYPE_TEXT_PLAIN, sipm.getHeader<std::string>(siddiqsoft::HF_CONTENT_TYPE, "unknown"))
+    EXPECT_EQ(siddiqsoft::CONTENT_TYPE_TEXT_PLAIN, sipm.getHeader<std::string>(siddiqsoft::HFS_CONTENT_TYPE[1], "unknown"))
             << sipm.dump(2);
 }
 

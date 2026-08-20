@@ -104,81 +104,74 @@ namespace siddiqsoft
         return found;
     }
 
-    struct CanonicalHeaderKeyResult
+
+
+
+    /// @brief Appends or initializes a header entry as a multi-line array in the headers JSON block.
+    /// @param headersJson The headers JSON object (`sipm["h"]`).
+    /// @param targetKey The target header key string.
+    /// @param value The header value to store or append.
+    inline void storeMultiLineHeader(nlohmann::json& headersJson, const std::string& targetKey, const std::string& value)
     {
-        bool             isCanonical {false};
-        bool             isMultiLine {false};
-        std::string_view canonicalKey {};
-                         operator std::string() const { return std::string {canonicalKey}; }
-    };
-
-    inline CanonicalHeaderKeyResult canonicalizeHeaderKey(const std::string& keyFromPayload)
-    {
-#if defined(sip2json_HEADERKEY_MODE_INSENSITIVE)
-        // Convert the key to lowercase for comparison
-        std::string lowerKey;
-        lowerKey.reserve(keyFromPayload.size());
-        std::transform(keyFromPayload.begin(), keyFromPayload.end(), std::back_inserter(lowerKey), ::tolower);
-#else
-        std::string lowerKey = keyFromPayload;
-#endif
-
-        // compare the lowerKey against the known header key sets and return the canonical form if found
-        // compare the lowerKey against the known header key sets and return the canonical form if found
-        // we match against the lowercase version of the key or the abbreviation (if present) in the HeaderKeySet
-        // Note: The Authorization header has a special case where some implementations send "uthorization" instead of "Authorization".
-        if (HFS_AUTHORIZATION[0] == lowerKey || HFS_AUTHORIZATION[2] == lowerKey || "uthorization" == lowerKey)
-            return {true, false, HFS_AUTHORIZATION[1]};
-
-        if (HFS_FROM[0] == lowerKey || HFS_FROM[2] == lowerKey) return {true, false, HFS_FROM[1]};
-        if (HFS_TO[0] == lowerKey || HFS_TO[2] == lowerKey) return {true, false, HFS_TO[1]};
-        if (HFS_PRIORITY[0] == lowerKey || HFS_PRIORITY[2] == lowerKey) return {true, false, HFS_PRIORITY[1]};
-        if (HFS_CONTENT_ENCODING[0] == lowerKey || HFS_CONTENT_ENCODING[2] == lowerKey)
-            return {true, false, HFS_CONTENT_ENCODING[1]};
-        if (HFS_CONTENT_LENGTH[0] == lowerKey || HFS_CONTENT_LENGTH[2] == lowerKey) return {true, false, HFS_CONTENT_LENGTH[1]};
-        if (HFS_CONTENT_TYPE[0] == lowerKey || HFS_CONTENT_TYPE[2] == lowerKey) return {true, false, HFS_CONTENT_TYPE[1]};
-        if (HFS_CALLID[0] == lowerKey || HFS_CALLID[2] == lowerKey) return {true, false, HFS_CALLID[1]};
-        if (HFS_CSEQ[0] == lowerKey || HFS_CSEQ[2] == lowerKey) return {true, false, HFS_CSEQ[1]};
-        if (HFS_VIA[0] == lowerKey || HFS_VIA[2] == lowerKey) return {true, true, HFS_VIA[1]};
-        if (HFS_ENCRYPTION[0] == lowerKey || HFS_ENCRYPTION[2] == lowerKey) return {true, false, HFS_ENCRYPTION[1]};
-        if (HFS_SUBJECT[0] == lowerKey || HFS_SUBJECT[2] == lowerKey) return {true, false, HFS_SUBJECT[1]};
-        if (HFS_LOCATION[0] == lowerKey || HFS_LOCATION[2] == lowerKey) return {true, false, HFS_LOCATION[1]};
-        if (HFS_EXPIRES[0] == lowerKey || HFS_EXPIRES[2] == lowerKey) return {true, false, HFS_EXPIRES[1]};
-        if (HFS_CONTACT[0] == lowerKey || HFS_CONTACT[2] == lowerKey) return {true, false, HFS_CONTACT[1]};
-        if (HFS_ACCEPT[0] == lowerKey || HFS_ACCEPT[2] == lowerKey) return {true, true, HFS_ACCEPT[1]};
-        if (HFS_ACCEPT_ENCODING[0] == lowerKey || HFS_ACCEPT_ENCODING[2] == lowerKey) return {true, false, HFS_ACCEPT_ENCODING[1]};
-        if (HFS_ACCEPT_LANGUAGE[0] == lowerKey || HFS_ACCEPT_LANGUAGE[2] == lowerKey) return {true, false, HFS_ACCEPT_LANGUAGE[1]};
-        if (HFS_DATE[0] == lowerKey || HFS_DATE[2] == lowerKey) return {true, false, HFS_DATE[1]};
-        if (HFS_RECORD_ROUTE[0] == lowerKey || HFS_RECORD_ROUTE[2] == lowerKey) return {true, true, HFS_RECORD_ROUTE[1]};
-        if (HFS_TIMESTAMP[0] == lowerKey || HFS_TIMESTAMP[2] == lowerKey) return {true, false, HFS_TIMESTAMP[1]};
-        if (HFS_HIDE[0] == lowerKey || HFS_HIDE[2] == lowerKey) return {true, false, HFS_HIDE[1]};
-        if (HFS_MAX_FORWARDS[0] == lowerKey || HFS_MAX_FORWARDS[2] == lowerKey) return {true, false, HFS_MAX_FORWARDS[1]};
-        if (HFS_ORGANIZATION[0] == lowerKey || HFS_ORGANIZATION[2] == lowerKey) return {true, false, HFS_ORGANIZATION[1]};
-        if (HFS_PROXY_AUTHORIZATION[0] == lowerKey || HFS_PROXY_AUTHORIZATION[2] == lowerKey)
-            return {true, false, HFS_PROXY_AUTHORIZATION[1]};
-        if (HFS_PROXY_REQUIRE[0] == lowerKey || HFS_PROXY_REQUIRE[2] == lowerKey) return {true, false, HFS_PROXY_REQUIRE[1]};
-        if (HFS_ROUTE[0] == lowerKey || HFS_ROUTE[2] == lowerKey) return {true, true, HFS_ROUTE[1]};
-        if (HFS_REQUIRE[0] == lowerKey || HFS_REQUIRE[2] == lowerKey) return {true, false, HFS_REQUIRE[1]};
-        if (HFS_RESPONSE_KEY[0] == lowerKey || HFS_RESPONSE_KEY[2] == lowerKey) return {true, false, HFS_RESPONSE_KEY[1]};
-        if (HFS_USER_AGENT[0] == lowerKey || HFS_USER_AGENT[2] == lowerKey) return {true, false, HFS_USER_AGENT[1]};
-        if (HFS_PROXY_AUTHENTICATE[0] == lowerKey || HFS_PROXY_AUTHENTICATE[2] == lowerKey)
-            return {true, false, HFS_PROXY_AUTHENTICATE[1]};
-        if (HFS_RETRY_AFTER[0] == lowerKey || HFS_RETRY_AFTER[2] == lowerKey) return {true, false, HFS_RETRY_AFTER[1]};
-        if (HFS_SERVER[0] == lowerKey || HFS_SERVER[2] == lowerKey) return {true, false, HFS_SERVER[1]};
-        if (HFS_SUPPORTED[0] == lowerKey || HFS_SUPPORTED[2] == lowerKey) return {true, true, HFS_SUPPORTED[1]};
-        if (HFS_ALLOW[0] == lowerKey || HFS_ALLOW[2] == lowerKey) return {true, false, HFS_ALLOW[1]};
-        if (HFS_UNSUPPORTED[0] == lowerKey || HFS_UNSUPPORTED[2] == lowerKey) return {true, false, HFS_UNSUPPORTED[1]};
-        if (HFS_WARNING[0] == lowerKey || HFS_WARNING[2] == lowerKey) return {true, true, HFS_WARNING[1]};
-        if (HFS_WWW_AUTHENTICATE[0] == lowerKey || HFS_WWW_AUTHENTICATE[2] == lowerKey)
-            return {true, false, HFS_WWW_AUTHENTICATE[1]};
-        if (HFS_AUTHORIZATION[0] == lowerKey || HFS_AUTHORIZATION[2] == lowerKey) return {true, false, HFS_AUTHORIZATION[1]};
-        if (HFS_SUBSCRIPTION_STATE[0] == lowerKey || HFS_SUBSCRIPTION_STATE[2] == lowerKey)
-            return {true, false, HFS_SUBSCRIPTION_STATE[1]};
-
-        // Return original keyFromPayload if no match found for custom headers
-        return {false, false, keyFromPayload};
+        if (headersJson.contains(targetKey))
+        {
+            if (headersJson[targetKey].is_array())
+                headersJson[targetKey].push_back(value);
+            else
+            {
+                auto existing          = headersJson[targetKey];
+                headersJson[targetKey] = nlohmann::json::array({existing, value});
+            }
+        }
+        else
+        {
+            headersJson[targetKey] = nlohmann::json::array({value});
+        }
     }
 
+    /// @brief Validates and parses the Content-Length header value.
+    /// @param value The header value string to parse.
+    /// @return Returns parsed uint32_t content length.
+    inline uint32_t parseContentLengthValue(const std::string& value) noexcept(false)
+    {
+        try
+        {
+            long long len = std::stoll(value);
+            if (len < 0 || len > 100 * 1024 * 1024)
+                throw invalid_document_error {std::format("storeHeaderValue:Invalid Content-Length value '{}'", value)};
+            return static_cast<uint32_t>(len);
+        }
+        catch (const invalid_document_error&)
+        {
+            throw;
+        }
+        catch (const std::exception&)
+        {
+            throw invalid_document_error {std::format("storeHeaderValue:Invalid Content-Length value '{}'", value)};
+        }
+    }
+
+    /// @brief Validates and parses the Expires header value.
+    /// @param value The header value string to parse.
+    /// @return Returns parsed uint32_t expires value.
+    inline uint32_t parseExpiresValue(const std::string& value) noexcept(false)
+    {
+        try
+        {
+            long long val = std::stoll(value);
+            if (val < 0)
+                throw invalid_document_error {std::format("storeHeaderValue:Invalid Expires value '{}'", value)};
+            return static_cast<uint32_t>(val);
+        }
+        catch (const invalid_document_error&)
+        {
+            throw;
+        }
+        catch (const std::exception&)
+        {
+            throw invalid_document_error {std::format("storeHeaderValue:Invalid Expires value '{}'", value)};
+        }
+    }
 
     /// @brief Store the value in the header section. Performs from basic transforms/detection of bool, integer
     /// @param sipm The target sipmessage object
@@ -187,65 +180,28 @@ namespace siddiqsoft
     /// @return Returns true if the store was successful.
     inline bool sip2json::storeHeaderValue(sipmessage& sipm, const std::string& key, const std::string& value) noexcept(false)
     {
-        auto targetKey = canonicalizeHeaderKey(key);
+        auto targetKey    = canonicalizeHeaderKey(key);
+        std::string keyStr {targetKey};
 
-        // Check if we already have this header key in the sipmessage. If so, we need to handle it as a multi-line header.
-        if (sipm["h"].contains(targetKey))
+        if (sipm["h"].contains(keyStr) || targetKey.isMultiLine)
         {
-            // If the header is already present, we need to handle it as a multi-line header.
-            // We will store the values in an array.
-            if (sipm["h"][targetKey].is_array())
-                sipm["h"][targetKey].push_back(value);
-            else
-            {
-                auto existing        = sipm["h"][targetKey];
-                sipm["h"][targetKey] = nlohmann::json::array({existing, value});
-            }
-        }
-        else if (targetKey.isMultiLine)
-        {
-            // These headers can be multi-line, so we store them as an array of values.
-            sipm["h"][targetKey] = nlohmann::json::array({value});
+            storeMultiLineHeader(sipm["h"], keyStr, value);
         }
         else if (targetKey.canonicalKey == HFS_CONTENT_LENGTH[1])
         {
-            try
-            {
-                long long len = std::stoll(value);
-                if (len < 0 || len > 100 * 1024 * 1024)
-                    throw invalid_document_error {std::format("{}:Invalid Content-Length value '{}'", __func__, value)};
-                sipm["h"][targetKey] = static_cast<uint32_t>(len);
-            }
-            catch (const invalid_document_error&)
-            {
-                throw;
-            }
-            catch (const std::exception&)
-            {
-                throw invalid_document_error {std::format("{}:Invalid Content-Length value '{}'", __func__, value)};
-            }
+            sipm["h"][keyStr] = parseContentLengthValue(value);
         }
         else if (targetKey.canonicalKey == HFS_EXPIRES[1])
         {
-            try
-            {
-                long long val = std::stoll(value);
-                if (val < 0) throw invalid_document_error {std::format("{}:Invalid Expires value '{}'", __func__, value)};
-                sipm["h"][targetKey] = static_cast<uint32_t>(val);
-            }
-            catch (const invalid_document_error&)
-            {
-                throw;
-            }
-            catch (const std::exception&)
-            {
-                throw invalid_document_error {std::format("{}:Invalid Expires value '{}'", __func__, value)};
-            }
+            sipm["h"][keyStr] = parseExpiresValue(value);
         }
-        else if (value.empty()) { sipm["h"][targetKey] = ""; }
+        else if (value.empty())
+        {
+            sipm["h"][keyStr] = "";
+        }
         else
         {
-            sipm["h"][targetKey] = value;
+            sipm["h"][keyStr] = value;
         }
 
         return true;

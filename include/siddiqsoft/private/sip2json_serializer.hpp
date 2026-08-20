@@ -117,7 +117,7 @@ namespace siddiqsoft
                 if (key.find('\r') != std::string::npos || key.find('\n') != std::string::npos)
                     throw invalid_document_error {std::format("{}:Header key contains line breaks:{}", __func__, key)};
 
-                if (contentType.empty() && (key.compare(HF_CONTENT_TYPE) == 0) && val.is_string()) contentType = val;
+                if (contentType.empty() && (key.compare(HFS_CONTENT_TYPE[1]) == 0) && val.is_string()) contentType = val;
 
                 if (val.is_null())
                 {
