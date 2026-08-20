@@ -50,5 +50,6 @@ target_link_libraries(your_target PRIVATE sip2json::sip2json)
 
 | Option | Default | Description |
 | :--- | :--- | :--- |
+| `sip2json_HEADERKEY_MODE_INSENSITIVE` | `ON` | Enable RFC 3261 case-insensitive header key matching and normalization to canonical Pascal-Kebab-Case keys (`Content-Length`, `Via`, `Call-ID`, etc.) and compact form abbreviations (`l`, `v`, `i`, `c`, `m`, `f`, `t`, `s`, `e`). |
 | `sip2json_BUILD_TESTS` | `OFF` | Build unit tests (requires GoogleTest) |
 | `sip2json_BUILD_BENCHMARKS` | `OFF` | Build performance benchmark suite |

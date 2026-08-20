@@ -66,6 +66,18 @@ For full setup guides, submodules, and NuGet usage, visit the [Integration Guide
 
 ---
 
+## Configuration Options
+
+`sip2json` provides the following CMake options when integrated into host projects:
+
+| CMake Option | Default | Description |
+| :--- | :--- | :--- |
+| `sip2json_HEADERKEY_MODE_INSENSITIVE` | `ON` | Enable RFC 3261 case-insensitive header key matching and normalization to canonical Pascal-Kebab-Case keys (`Content-Length`, `Via`, `Call-ID`, etc.) and compact form abbreviations (`l`, `v`, `i`, `c`, `m`, `f`, `t`, `s`, `e`). |
+| `sip2json_BUILD_TESTS` | `OFF` | Build CTest unit test suite. |
+| `sip2json_BUILD_BENCHMARKS` | `OFF` | Build Google Benchmark performance test suite. |
+
+---
+
 ## License
 
 Licensed under the [BSD 3-Clause License](LICENSE).

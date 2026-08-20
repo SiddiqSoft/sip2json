@@ -62,7 +62,7 @@
 namespace siddiqsoft
 {
     /// @brief SIP message encoder and decoder utility class
-    class sip2json
+    class sip2json final
     {
     private:
         // Named constants for magic numbers

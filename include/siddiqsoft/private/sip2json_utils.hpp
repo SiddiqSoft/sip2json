@@ -46,6 +46,7 @@
 #include "ctre.hpp"
 #include "nlohmann/json.hpp"
 
+
 namespace siddiqsoft
 {
 #pragma region Datetime helpers
@@ -207,86 +208,156 @@ namespace siddiqsoft
     static constexpr int REGISTER_PERIOD_MIN_SEC {30};                                  // 30s
     static constexpr int REGISTER_PERIOD_10MIN_MS {REGISTER_PERIOD_10MIN_SEC * 1000};   // 600s = 10 minutes
 
-    static const std::string SIPVER_20 {"SIP/2.0"};
+    static constexpr std::string_view SIPVER_20 {"SIP/2.0"};
 
-    static const std::string METHOD_INVITE {"INVITE"};
-    static const std::string METHOD_ACK {"ACK"};
-    static const std::string METHOD_OPTIONS {"OPTIONS"};
-    static const std::string METHOD_BYE {"BYE"};
-    static const std::string METHOD_CANCEL {"CANCEL"};
-    static const std::string METHOD_REGISTER {"REGISTER"};
-    static const std::string METHOD_SUBSCRIBE {"SUBSCRIBE"};
-    static const std::string METHOD_NOTIFY {"NOTIFY"};
-    static const std::string METHOD_HEARTBEAT {"HEARTBEAT"};
+    static constexpr std::string_view METHOD_INVITE {"INVITE"};
+    static constexpr std::string_view METHOD_ACK {"ACK"};
+    static constexpr std::string_view METHOD_OPTIONS {"OPTIONS"};
+    static constexpr std::string_view METHOD_BYE {"BYE"};
+    static constexpr std::string_view METHOD_CANCEL {"CANCEL"};
+    static constexpr std::string_view METHOD_REGISTER {"REGISTER"};
+    static constexpr std::string_view METHOD_SUBSCRIBE {"SUBSCRIBE"};
+    static constexpr std::string_view METHOD_NOTIFY {"NOTIFY"};
+    static constexpr std::string_view METHOD_HEARTBEAT {"HEARTBEAT"};
     // Microsoft Extensions
-    static const std::string METHOD_MESSAGE {"MESSAGE"};
-    static const std::string METHOD_INFO {"INFO"};
+    static constexpr std::string_view METHOD_MESSAGE {"MESSAGE"};
+    static constexpr std::string_view METHOD_INFO {"INFO"};
 
-    static const std::string VIA_BRANCH_PREFIX {"z9hG4bK"};
+    static constexpr std::string_view VIA_BRANCH_PREFIX {"z9hG4bK"};
 
-    static const std::string EMPTY_STD_STRING_VALUE {""};
+    static constexpr std::string_view EMPTY_STD_STRING_VALUE {""};
 
-    static const std::string HF_FROM {"From"};
-    static const std::string HF_FROM_ALT {"f"};
-    static const std::string HF_TO {"To"};
-    static const std::string HF_TO_ALT {"t"};
-    static const std::string HF_PRIORTY {"Priority"};
-    static const std::string HF_CONTENT_ENCODING {"Content-Encoding"};
-    static const std::string HF_CONTENT_ENCODING_ALT {"e"};
-    static const std::string HF_CONTENT_LENGTH {"Content-Length"};
-    static const std::string HF_CONTENT_LENGTH_ALT {"L"};
-    static const std::string HF_CONTENT_TYPE {"Content-Type"};
-    static const std::string HF_CONTENT_TYPE2 {"Content-type"};
-    static const std::string HF_CONTENT_TYPE_ALT {"c"};
-    static const std::string HF_CALLID {"Call-ID"};
-    static const std::string HF_CALLID_ALT {"i"};
-    static const std::string HF_CSEQ {"CSeq"};
-    static const std::string HF_VIA {"Via"};
-    static const std::string HF_VIA_ALT {"v"};
-    static const std::string HF_ENCRYPTION {"Encryption"};
-    static const std::string HF_SUBJECT {"Subject"};
-    static const std::string HF_SUBJECT_ALT {"s"};
-    static const std::string HF_LOCATION {"Location"};
-    static const std::string HF_LOCATION_ALT {"Location"};
-    static const std::string HF_EXPIRES {"Expires"};
-    static const std::string HF_CONTACT {"Contact"};
-    static const std::string HF_CONTACT_ALT {"m"};
-    static const std::string HF_ACCEPT {"Accept"};
-    static const std::string HF_ACCEPT_ALT {"Accept"};
-    static const std::string HF_ACCEPT_ENCODING {"Accept-Encoding"};
-    static const std::string HF_ACCEPT_ENCODING_ALT {"Accept-Encoding"};
-    static const std::string HF_ACCEPT_LANGUAGE {"Accept-Language"};
-    static const std::string HF_ACCEPT_LANGUAGE_ALT {"Accept-Language"};
-    static const std::string HF_DATE {"Date"};
-    static const std::string HF_RECORD_ROUTE {"Record-Route"};
-    static const std::string HF_TIMESTAMP {"Timestamp"};
-    static const std::string HF_HIDE {"Hide"};
-    static const std::string HF_MAX_FORWARDS {"Max-Forwards"};
-    static const std::string HF_ORGANIZATION {"Organization"};
-    static const std::string HF_PROXY_AUTHORIZATION {"Proxy-Authorization"};
-    static const std::string HF_PROXY_REQUIRE {"Proxy-Require"};
-    static const std::string HF_ROUTE {"Route"};
-    static const std::string HF_REQUIRE {"Require"};
-    static const std::string HF_RESPONSE_KEY {"Response-Key"};
-    static const std::string HF_USER_AGENT {"User-Agent"};
-    static const std::string HF_PROXY_AUTHENTICATE {"Proxy-Authenticate"};
-    static const std::string HF_RETRY_AFTER {"Retry-After"};
-    static const std::string HF_SERVER {"Server"};
-    static const std::string HF_SUPPORTED {"Supported"};
-    static const std::string HF_ALLOW {"Allow"};
-    static const std::string HF_UNSUPPORTED {"Unsupported"};
-    static const std::string HF_WARNING {"Warning"};
-    static const std::string HF_WWW_AUTHENTICATE {"WWW-Authenticate"};
+    // We're defining header key set as an array that contains the canonical header key
+    // and any other variations of the header key that we want to support.
+    // The second element is the canonical header key, and the first element is the lowercase version of the canonical header key.
+    // The last item (if present) is the single character abbreviation for the header key.
+    using HeaderKeySet = std::array<std::string_view, 3>; // {lowercase, canonical, abbreviation}
+    // This allows us to compare incoming header keys against a set of known variations, making the parser more robust and flexible.
+    static constexpr std::string_view HF_FROM {"From"};
+    static constexpr HeaderKeySet     HFS_FROM {"from", "From", "f"};
+
+    static constexpr std::string_view HF_TO {"To"};
+    static constexpr HeaderKeySet     HFS_TO {"to", "To", "t"};
+
+    static constexpr std::string_view HF_PRIORITY {"Priority"};
+    static constexpr HeaderKeySet     HFS_PRIORITY {"priority", "Priority", {}};
+
+    static constexpr std::string_view HF_CONTENT_ENCODING {"Content-Encoding"};
+    static constexpr HeaderKeySet     HFS_CONTENT_ENCODING {"content-encoding", "Content-Encoding", "e"};
+
+    static constexpr std::string_view HF_CONTENT_LENGTH {"Content-Length"};
+    static constexpr HeaderKeySet     HFS_CONTENT_LENGTH {"content-length", "Content-Length", "l"};
+
+    static constexpr std::string_view HF_CONTENT_TYPE {"Content-Type"};
+    static constexpr HeaderKeySet     HFS_CONTENT_TYPE {"content-type", "Content-Type", "c"};
+
+    static constexpr std::string_view HF_CALLID {"Call-ID"};
+    static constexpr HeaderKeySet     HFS_CALLID {"call-id", "Call-ID", "i"};
+
+    static constexpr std::string_view HF_CSEQ {"CSeq"};
+    static constexpr HeaderKeySet     HFS_CSEQ {"cseq", "CSeq", {}};
+
+    static constexpr std::string_view HF_VIA {"Via"};
+    static constexpr HeaderKeySet     HFS_VIA {"via", "Via", "v"};
+
+    static constexpr std::string_view HF_ENCRYPTION {"Encryption"};
+    static constexpr HeaderKeySet     HFS_ENCRYPTION {"encryption", "Encryption", {}};
+
+    static constexpr std::string_view HF_SUBJECT {"Subject"};
+    static constexpr HeaderKeySet     HFS_SUBJECT {"subject", "Subject", "s"};
+
+    static constexpr std::string_view HF_LOCATION {"Location"};
+    static constexpr HeaderKeySet     HFS_LOCATION {"location", "Location", {}};
+
+    static constexpr std::string_view HF_EXPIRES {"Expires"};
+    static constexpr HeaderKeySet     HFS_EXPIRES {"expires", "Expires", {}};
+
+    static constexpr std::string_view HF_CONTACT {"Contact"};
+    static constexpr HeaderKeySet     HFS_CONTACT {"contact", "Contact", "m"};
+
+    static constexpr std::string_view HF_ACCEPT {"Accept"};
+    static constexpr HeaderKeySet     HFS_ACCEPT {"accept", "Accept", {}};
+
+    static constexpr std::string_view HF_ACCEPT_ENCODING {"Accept-Encoding"};
+    static constexpr HeaderKeySet     HFS_ACCEPT_ENCODING {"accept-encoding", "Accept-Encoding", {}};
+
+    static constexpr std::string_view HF_ACCEPT_LANGUAGE {"Accept-Language"};
+    static constexpr HeaderKeySet     HFS_ACCEPT_LANGUAGE {"accept-language", "Accept-Language", {}};
+
+    static constexpr std::string_view HF_DATE {"Date"};
+    static constexpr HeaderKeySet     HFS_DATE {"date", "Date", {}};
+
+    static constexpr std::string_view HF_RECORD_ROUTE {"Record-Route"};
+    static constexpr HeaderKeySet     HFS_RECORD_ROUTE {"record-route", "Record-Route", {}};
+
+    static constexpr std::string_view HF_TIMESTAMP {"Timestamp"};
+    static constexpr HeaderKeySet     HFS_TIMESTAMP {"timestamp", "Timestamp", {}};
+
+    static constexpr std::string_view HF_HIDE {"Hide"};
+    static constexpr HeaderKeySet     HFS_HIDE {"hide", "Hide", {}};
+
+    static constexpr std::string_view HF_MAX_FORWARDS {"Max-Forwards"};
+    static constexpr HeaderKeySet     HFS_MAX_FORWARDS {"max-forwards", "Max-Forwards", {}};
+
+    static constexpr std::string_view HF_ORGANIZATION {"Organization"};
+    static constexpr HeaderKeySet     HFS_ORGANIZATION {"organization", "Organization", {}};
+
+    static constexpr std::string_view HF_PROXY_AUTHORIZATION {"Proxy-Authorization"};
+    static constexpr HeaderKeySet     HFS_PROXY_AUTHORIZATION {"proxy-authorization", "Proxy-Authorization", {}};
+
+    static constexpr std::string_view HF_PROXY_REQUIRE {"Proxy-Require"};
+    static constexpr HeaderKeySet     HFS_PROXY_REQUIRE {"proxy-require", "Proxy-Require", {}};
+
+    static constexpr std::string_view HF_ROUTE {"Route"};
+    static constexpr HeaderKeySet     HFS_ROUTE {"route", "Route", {}};
+
+    static constexpr std::string_view HF_REQUIRE {"Require"};
+    static constexpr HeaderKeySet     HFS_REQUIRE {"require", "Require", {}};
+
+    static constexpr std::string_view HF_RESPONSE_KEY {"Response-Key"};
+    static constexpr HeaderKeySet     HFS_RESPONSE_KEY {"response-key", "Response-Key", {}};
+
+    static constexpr std::string_view HF_USER_AGENT {"User-Agent"};
+    static constexpr HeaderKeySet     HFS_USER_AGENT {"user-agent", "User-Agent", {}};
+
+    static const std::string      HF_PROXY_AUTHENTICATE {"Proxy-Authenticate"};
+    static constexpr HeaderKeySet HFS_PROXY_AUTHENTICATE {"proxy-authenticate", "Proxy-Authenticate", {}};
+
+    static const std::string      HF_RETRY_AFTER {"Retry-After"};
+    static constexpr HeaderKeySet HFS_RETRY_AFTER {"retry-after", "Retry-After", {}};
+
+    static const std::string      HF_SERVER {"Server"};
+    static constexpr HeaderKeySet HFS_SERVER {"server", "Server", {}};
+
+    static const std::string      HF_SUPPORTED {"Supported"};
+    static constexpr HeaderKeySet HFS_SUPPORTED {"supported", "Supported", {}};
+
+    static const std::string      HF_ALLOW {"Allow"};
+    static constexpr HeaderKeySet HFS_ALLOW {"allow", "Allow", {}};
+
+    static const std::string      HF_UNSUPPORTED {"Unsupported"};
+    static constexpr HeaderKeySet HFS_UNSUPPORTED {"unsupported", "Unsupported", {}};
+
+    static const std::string      HF_WARNING {"Warning"};
+    static constexpr HeaderKeySet HFS_WARNING {"warning", "Warning", {}};
+
+    static const std::string      HF_WWW_AUTHENTICATE {"WWW-Authenticate"};
+    static constexpr HeaderKeySet HFS_WWW_AUTHENTICATE {"www-authenticate", "WWW-Authenticate", {}};
+
     static const std::string HF_AUTHORIZATION {"Authorization"};
+    // DO NOT CHANGE THIS! There are some some implementations that send "uthorization" instead of "Authorization"; yes--without the leading "A".
+    // This is a bug in those implementations, but we must support it for interoperability.
+    static constexpr HeaderKeySet HFS_AUTHORIZATION {"authorization", "Authorization", "uthorization"};
 
     // Subscribe/Notify header fields
-    static const std::string HF_SUBSCRIPTION_STATE {"Subscription-State"};
+    static const std::string      HF_SUBSCRIPTION_STATE {"Subscription-State"};
+    static constexpr HeaderKeySet HFS_SUBSCRIPTION_STATE {"subscription-state", "Subscription-State", {}};
 
     // Parsing elements
     static const std::string ELEM_SPACE {" "};
-    static const std::string ELEM_SEPERATOR {":"};
-    static const std::string ELEM_PADDEDSEPERATOR {": "};
-    static const std::string ELEM_TAGSEPERATOR {"{"};
+    static const std::string ELEM_SEPARATOR {":"};
+    static const std::string ELEM_PADDED_SEPARATOR {": "};
+    static const std::string ELEM_TAG_SEPARATOR {"{"};
     // Common elements over the wire (and WIN32)
     static const std::string ELEM_NEWLINE {"\r\n"};
     static const std::string ELEM_HEADERSECTIONDELIMITER {"\r\n\r\n"};

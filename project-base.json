@@ -7,8 +7,11 @@
             "description": "Base preset for all project configurations.",
             "cacheVariables": {
                 "sip2json_BUILD_TESTS": "ON",
-                "sip2json_BUILD_BENCHMARKS": "OFF",
-                "CI_BUILDID": "0.0.0"
+                "CI_BUILDID": "0.0.0",
+                "CMAKE_CXX_STANDARD": "23",
+                "CMAKE_CXX_STANDARD_REQUIRED": "ON",
+                "CMAKE_CXX_EXTENSIONS": "OFF",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
             },
             "hidden": true
         }

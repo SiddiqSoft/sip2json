@@ -12,6 +12,18 @@ cmake_minimum_required(VERSION 3.31)
 # Version detection; must preceed the declaration of the actual project()
 # Figures out the value ${CURRENT_PROJECT_VERSION} and therefore the ${PROJECT_VERSION}
 # Brings in the CPM module into pack/CPM.make
+if(WIN32)
+    if(DEFINED ENV{LOCALAPPDATA})
+        set(CPM_SOURCE_CACHE "$ENV{LOCALAPPDATA}/CPM/.cpmcache")
+    elseif(DEFINED ENV{USERPROFILE})
+        set(CPM_SOURCE_CACHE "$ENV{USERPROFILE}/AppData/Local/CPM/.cpmcache")
+    else()
+        set(CPM_SOURCE_CACHE "${CMAKE_BINARY_DIR}/.cpmcache")
+    endif()
+else()
+    set(CPM_SOURCE_CACHE "$ENV{HOME}/.cache/.cpmcache")
+endif()
+set(CPM_SOURCE_CACHE ${CPM_SOURCE_CACHE} CACHE PATH "CPM source cache")
 include(pack/CMakeCommonHelpers.cmake)
 
 # ______________________
@@ -22,16 +34,11 @@ project(sip2json
         HOMEPAGE_URL    "%%myurl%%"
         DESCRIPTION     "A SIP Parser for Modern C++. Header-only library to parse and serialize SIP messages to/from JSON.")
 
-# Set C++ standard for this library
-set(CMAKE_CXX_STANDARD 23)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-    
 # ____________________________________
 # Options; define and declare defaults
 option(${PROJECT_NAME}_BUILD_TESTS "${PROJECT_NAME} - Build tests. Uncheck for install only runs" OFF)
 option(${PROJECT_NAME}_BUILD_BENCHMARKS "${PROJECT_NAME} - Build benchmarks" OFF)
+option(${PROJECT_NAME}_HEADERKEY_MODE_INSENSITIVE "${PROJECT_NAME} - Use case-insensitive header keys" ON)
 
 # ____________________________________
 #  Library Definition
@@ -51,8 +58,14 @@ install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/SiddiqSoft.sip2json.natvis
         COMPONENT natvis
         OPTIONAL)
         
-target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_23)
+target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_${CMAKE_CXX_STANDARD})
 
+if(${PROJECT_NAME}_HEADERKEY_MODE_INSENSITIVE)
+    target_compile_definitions(${PROJECT_NAME} INTERFACE sip2json_HEADERKEY_MODE_INSENSITIVE=1)
+    message(STATUS "${PROJECT_NAME} - Case-insensitive header keys enabled: sip2json_HEADERKEY_MODE_INSENSITIVE=1")
+else()
+    message(STATUS "${PROJECT_NAME} - Case-sensitive header keys enabled (sip2json_HEADERKEY_MODE_INSENSITIVE=OFF)")
+endif()
 
 # ____________________________________
 # Dependencies
