@@ -38,7 +38,7 @@ project(sip2json
 # Options; define and declare defaults
 option(${PROJECT_NAME}_BUILD_TESTS "${PROJECT_NAME} - Build tests. Uncheck for install only runs" OFF)
 option(${PROJECT_NAME}_BUILD_BENCHMARKS "${PROJECT_NAME} - Build benchmarks" OFF)
-option(${PROJECT_NAME}_CASE_INSENSITIVE_HEADERKEYS "${PROJECT_NAME} - Use case-insensitive header keys" OFF)
+option(${PROJECT_NAME}_CASE_INSENSITIVE_HEADERKEYS "${PROJECT_NAME} - Use case-insensitive header keys" ON)
 
 # ____________________________________
 #  Library Definition
@@ -61,7 +61,8 @@ install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/SiddiqSoft.sip2json.natvis
 target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_${CMAKE_CXX_STANDARD})
 
 if(${${PROJECT_NAME}_CASE_INSENSITIVE_HEADERKEYS})
-    target_compile_definitions(${PROJECT_NAME} INTERFACE SIP2JSON_CASE_INSENSITIVE_HEADERKEYS)
+    target_compile_definitions(${PROJECT_NAME} INTERFACE ${${PROJECT_NAME}_CASE_INSENSITIVE_HEADERKEYS}=1)
+    message(STATUS "${PROJECT_NAME} - Case-insensitive header keys enabled - ${${PROJECT_NAME}_CASE_INSENSITIVE_HEADERKEYS}")
 endif()
 
 # ____________________________________

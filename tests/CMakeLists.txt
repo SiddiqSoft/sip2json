@@ -10,7 +10,8 @@ if(${${PROJECT_NAME}_BUILD_TESTS})
     set(CMAKE_ENABLE_C_CLANG_TIDY ON)
     set(CMAKE_ENABLE_CXX_CLANG_TIDY ON)
     set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-
+    set(sip2json_CASE_INSENSITIVE_HEADERKEYS ON)
+    
     cpmaddpackage("gh:google/googletest#v1.17.0")
 
     add_executable(${TESTPROJ})
@@ -49,7 +50,7 @@ if(${${PROJECT_NAME}_BUILD_TESTS})
         set(ASAN_FLAGS "-fsanitize=address")
         set(UBSAN_FLAGS "-fsanitize=undefined")
         # Coverage Flags is not available on Windows
-        set(COVERAGE_FLAGS "-coverage")
+        #set(COVERAGE_FLAGS "-coverage")
         set(OTHER_FLAGS "-g")
         set(DEBUG_COMPILE_FLAGS -g3 -O0)
     endif()

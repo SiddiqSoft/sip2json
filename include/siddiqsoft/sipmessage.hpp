@@ -150,11 +150,11 @@ namespace siddiqsoft
         /// @param uri Request URI
         /// @param callId Optional CallId
         /// @param cseq Optional Cseq; the string value is build using this parameter and the method
-        sipmessage(std::string method, std::string uri, std::string callId = {}, uint32_t cseq = 0)
+        sipmessage(std::string_view method, std::string_view uri, std::string_view callId = {}, uint32_t cseq = 0)
         {
             using namespace std;
 
-            update({{"s"s, {{"type"s, SIPMessageType::request}, {"method"s, method}, {"uri"s, uri}, {"version"s, SIPVER_20}}},
+            update({{"s"s, {{"type"s, SIPMessageType::request}, {"method"s, std::string {method}}, {"uri"s, std::string {uri}}, {"version"s, SIPVER_20}}},
                     {"b"s, nullptr},
                     {"meta"s,
                      {{"version"s, std::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
@@ -166,7 +166,7 @@ namespace siddiqsoft
 
             // request-line: METHOD Request-URI SIP/2.0
             // message-headers
-            if (!callId.empty()) setHeader("Call-ID"s, callId);
+            if (!callId.empty()) setHeader("Call-ID"s, std::string {callId});
             if (cseq > 0) setHeader("CSeq"s, std::format("{} {}", cseq, method));
         }
 
@@ -235,9 +235,9 @@ namespace siddiqsoft
         /// @param key The header name to look up.
         /// @param defaultValue Optional default value if the header is not found.
         /// @return The header value or the default value if not found.
-        template <class T> auto getHeader(const std::string& key, std::optional<T> defaultValue = {}) const
+        template <class T> auto getHeader(std::string_view key, std::optional<T> defaultValue = {}) const
         {
-            return (*this)["h"].value(key, defaultValue.value_or(T {}));
+            return (*this)["h"].value(std::string {key}, defaultValue.value_or(T {}));
         }
 
         /// @brief Sets or updates the User-Agent header.
