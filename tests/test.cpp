@@ -820,4 +820,131 @@ TEST(Issue30_CompactHeaders, CompactHeaderSerialization)
 
 
 
+// ============================================================================
+// GITHUB ISSUE #29 TESTS: RFC 3261 Case-Insensitive Header Matching & Normalization
+// ============================================================================
+
+TEST(Issue29_CaseInsensitiveHeaders, LowercaseContentLengthAndSDP)
+{
+    using namespace siddiqsoft;
+
+    std::string sipLowercase =
+        "INVITE sip:bob@biloxi.com SIP/2.0\r\n"
+        "via: SIP/2.0/UDP pc33.atlanta.com;branch=z9hG4bK776asdhds\r\n"
+        "max-forwards: 70\r\n"
+        "to: Bob <sip:bob@biloxi.com>\r\n"
+        "from: Alice <sip:alice@atlanta.com>;tag=1928301774\r\n"
+        "call-id: lower-callid-101\r\n"
+        "cseq: 314159 INVITE\r\n"
+        "contact: <sip:alice@pc33.atlanta.com>\r\n"
+        "content-type: application/sdp\r\n"
+        "content-length: 132\r\n"
+        "\r\n"
+        "v=0\r\n"
+        "o=user1 53655765 2353687637 IN IP4 127.0.0.1\r\n"
+        "s=Talk\r\n"
+        "c=IN IP4 127.0.0.1\r\n"
+        "t=0 0\r\n"
+        "m=audio 6000 RTP/AVP 0\r\n"
+        "a=rtpmap:0 PCMU/8000\r\n";
+
+    auto start = sipLowercase.begin();
+    auto sipm = sip2json::parseFromBuffer(start, sipLowercase.end());
+
+    // Verify getter functions resolve correctly with lowercase headers
+    EXPECT_EQ(132u, sipm.getContentLength());
+    EXPECT_EQ("application/sdp", sipm.getContentType());
+    EXPECT_EQ("lower-callid-101", sipm.getCallID());
+    EXPECT_TRUE(sipm.contains("b"));
+    EXPECT_TRUE(sipm.contains("/b/sdp"_json_pointer));
+}
+
+#if defined(sip2json_HEADERKEY_MODE_INSENSITIVE)
+TEST(Issue29_CaseInsensitiveHeaders, MixedCaseHeaders)
+{
+    using namespace siddiqsoft;
+
+    std::string sipMixedCase =
+        "REGISTER sip:example.com SIP/2.0\r\n"
+        "vIa: SIP/2.0/UDP 192.168.1.1:5060;branch=z9hG4bK-reg\r\n"
+        "tO: <sip:user@example.com>\r\n"
+        "fRoM: <sip:user@example.com>;tag=reg123\r\n"
+        "cAlL-iD: mixed-callid-202\r\n"
+        "cSeq: 1 REGISTER\r\n"
+        "eXpIrEs: 3600\r\n"
+        "cOnTeNt-LeNgTh: 0\r\n\r\n";
+
+    auto start = sipMixedCase.begin();
+    auto sipm = sip2json::parseFromBuffer(start, sipMixedCase.end());
+
+    EXPECT_EQ(0u, sipm.getContentLength());
+    EXPECT_EQ("mixed-callid-202", sipm.getCallID());
+    EXPECT_EQ(3600u, sipm.getExpires());
+}
+
+TEST(Issue29_CaseInsensitiveHeaders, UppercaseHeaders)
+{
+    using namespace siddiqsoft;
+
+    std::string sipUppercase =
+        "INVITE sip:user@example.com SIP/2.0\r\n"
+        "VIA: SIP/2.0/UDP pc33.example.com;branch=z9hG4bK776a\r\n"
+        "MAX-FORWARDS: 70\r\n"
+        "TO: <sip:user@example.com>\r\n"
+        "FROM: Alice <sip:alice@example.com>;tag=1928301774\r\n"
+        "CALL-ID: upper-callid-303\r\n"
+        "CSEQ: 1 INVITE\r\n"
+        "CONTENT-TYPE: application/sdp\r\n"
+        "CONTENT-LENGTH: 132\r\n"
+        "\r\n"
+        "v=0\r\n"
+        "o=user1 53655765 2353687637 IN IP4 127.0.0.1\r\n"
+        "s=Talk\r\n"
+        "c=IN IP4 127.0.0.1\r\n"
+        "t=0 0\r\n"
+        "m=audio 6000 RTP/AVP 0\r\n"
+        "a=rtpmap:0 PCMU/8000\r\n";
+
+    auto start = sipUppercase.begin();
+    auto sipm = sip2json::parseFromBuffer(start, sipUppercase.end());
+
+    EXPECT_EQ(132u, sipm.getContentLength());
+    EXPECT_EQ("application/sdp", sipm.getContentType());
+    EXPECT_EQ("upper-callid-303", sipm.getCallID());
+    EXPECT_TRUE(sipm.contains("/b/sdp"_json_pointer));
+}
+#endif
+
+TEST(Issue29_CaseInsensitiveHeaders, CompactHeaderNames)
+{
+    using namespace siddiqsoft;
+
+    std::string sipCompact =
+        "INVITE sip:user@example.com SIP/2.0\r\n"
+        "v: SIP/2.0/UDP pc33.example.com;branch=z9hG4bK776a\r\n"
+        "t: <sip:user@example.com>\r\n"
+        "f: Alice <sip:alice@example.com>;tag=1928301774\r\n"
+        "i: compact-callid-404\r\n"
+        "CSeq: 1 INVITE\r\n"
+        "c: application/sdp\r\n"
+        "l: 132\r\n"
+        "\r\n"
+        "v=0\r\n"
+        "o=user1 53655765 2353687637 IN IP4 127.0.0.1\r\n"
+        "s=Talk\r\n"
+        "c=IN IP4 127.0.0.1\r\n"
+        "t=0 0\r\n"
+        "m=audio 6000 RTP/AVP 0\r\n"
+        "a=rtpmap:0 PCMU/8000\r\n";
+
+    auto start = sipCompact.begin();
+    auto sipm = sip2json::parseFromBuffer(start, sipCompact.end());
+
+    EXPECT_EQ(132u, sipm.getContentLength());
+    EXPECT_EQ("application/sdp", sipm.getContentType());
+    EXPECT_EQ("compact-callid-404", sipm.getCallID());
+    EXPECT_TRUE(sipm.contains("/b/sdp"_json_pointer));
+}
+
+
 
