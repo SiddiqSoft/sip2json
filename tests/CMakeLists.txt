@@ -40,6 +40,8 @@ if(${${PROJECT_NAME}_BUILD_TESTS})
             "--header-filter=^(${CMAKE_CURRENT_SOURCE_DIR}/|${PROJECT_SOURCE_DIR}/include/)")
     endif()
 
+    option(${PROJECT_NAME}_ENABLE_COVERAGE "${PROJECT_NAME} - Enable code coverage instrumentation" OFF)
+
     # UndefinedBehaviorSanitizer is not available on Windows
     if( CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" )
         message(STATUS "  >> UBSAN is not supported on Windows/MSVC, skipping..")
@@ -50,10 +52,20 @@ if(${${PROJECT_NAME}_BUILD_TESTS})
     else()
         set(ASAN_FLAGS "-fsanitize=address")
         set(UBSAN_FLAGS "-fsanitize=undefined")
-        # Coverage Flags is not available on Windows
-        #set(COVERAGE_FLAGS "-coverage")
+        if(${PROJECT_NAME}_ENABLE_COVERAGE)
+            message(STATUS "  >> Code coverage instrumentation enabled.")
+            set(COVERAGE_FLAGS "-coverage")
+        endif()
         set(OTHER_FLAGS "-g")
         set(DEBUG_COMPILE_FLAGS -g3 -O0)
+
+        # Remove stale GCDA coverage files before building/executing test binary to avoid "cannot merge previous GCDA file" warnings
+        add_custom_command(
+            TARGET ${TESTPROJ} PRE_BUILD
+            COMMAND ${CMAKE_COMMAND} -E rm -f "${CMAKE_CURRENT_BINARY_DIR}/*.gcda"
+            COMMAND ${CMAKE_COMMAND} -E rm -f "${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${TESTPROJ}.dir/*.gcda"
+            COMMENT "Cleaning stale GCDA coverage files..."
+        )
     endif()
 
     # LeakSanitizer is not available on Windows and Darwin/macOS with AppleClang
