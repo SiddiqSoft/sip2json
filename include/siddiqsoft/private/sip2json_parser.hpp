@@ -114,10 +114,14 @@ namespace siddiqsoft
 
     inline CanonicalHeaderKeyResult canonicalizeHeaderKey(const std::string& keyFromPayload)
     {
+#if defined(sip2json_HEADERKEY_MODE_INSENSITIVE)
         // Convert the key to lowercase for comparison
         std::string lowerKey;
         lowerKey.reserve(keyFromPayload.size());
         std::transform(keyFromPayload.begin(), keyFromPayload.end(), std::back_inserter(lowerKey), ::tolower);
+#else
+        std::string lowerKey = keyFromPayload;
+#endif
 
         // compare the lowerKey against the known header key sets and return the canonical form if found
         // compare the lowerKey against the known header key sets and return the canonical form if found

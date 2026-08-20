@@ -503,6 +503,7 @@ TEST(Issue29_CaseInsensitiveHeaders, LowercaseContentLengthAndSDP)
     EXPECT_TRUE(sipm.contains("/b/sdp"_json_pointer));
 }
 
+#if defined(sip2json_HEADERKEY_MODE_INSENSITIVE)
 TEST(Issue29_CaseInsensitiveHeaders, MixedCaseHeaders)
 {
     using namespace siddiqsoft;
@@ -556,6 +557,7 @@ TEST(Issue29_CaseInsensitiveHeaders, UppercaseHeaders)
     EXPECT_EQ("upper-callid-303", sipm.getCallID());
     EXPECT_TRUE(sipm.contains("/b/sdp"_json_pointer));
 }
+#endif
 
 TEST(Issue29_CaseInsensitiveHeaders, CompactHeaderNames)
 {

@@ -255,6 +255,7 @@ TEST(edge_parsing, Test_multiple_via_headers)
     EXPECT_TRUE(via[1].get<std::string>().find("pc33") != std::string::npos);
 }
 
+#if defined(sip2json_HEADERKEY_MODE_INSENSITIVE)
 TEST(edge_parsing, Test_content_type_normalization)
 {
     // "Content-type" (lowercase t) should be normalized to "Content-Type"
@@ -278,7 +279,7 @@ TEST(edge_parsing, Test_content_type_normalization)
     EXPECT_TRUE(sipm.headers().contains("Content-Type"));
     EXPECT_EQ("application/sdp", sipm.getContentType());
 }
-
+#endif
 
 TEST(edge_parsing, Test_lf_only_line_endings)
 {

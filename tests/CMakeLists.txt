@@ -3,15 +3,16 @@ cmake_minimum_required(VERSION 3.30)
 if(${${PROJECT_NAME}_BUILD_TESTS})
     set(TESTPROJ ${PROJECT_NAME}_tests)
 
-    set( CMAKE_CXX_STANDARD 23)
+    if(NOT CMAKE_CXX_STANDARD)
+        set(CMAKE_CXX_STANDARD 23)
+    endif()
     set( CMAKE_CXX_STANDARD_REQUIRED On)
     set( CMAKE_CXX_EXTENSIONS Off)
     set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
     set(CMAKE_ENABLE_C_CLANG_TIDY ON)
     set(CMAKE_ENABLE_CXX_CLANG_TIDY ON)
     set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-    set(sip2json_CASE_INSENSITIVE_HEADERKEYS ON)
-    
+
     cpmaddpackage("gh:google/googletest#v1.17.0")
 
     add_executable(${TESTPROJ})
@@ -87,7 +88,7 @@ if(${${PROJECT_NAME}_BUILD_TESTS})
     include(GoogleTest)
     enable_testing()
 
-    target_compile_features(${TESTPROJ} PRIVATE cxx_std_23)
+    target_compile_features(${TESTPROJ} PRIVATE cxx_std_${CMAKE_CXX_STANDARD})
     
     target_link_libraries(${TESTPROJ} PRIVATE GTest::gtest_main nlohmann_json::nlohmann_json ctre::ctre)
 

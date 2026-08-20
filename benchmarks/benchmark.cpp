@@ -1170,4 +1170,77 @@ static void BM_SimulatedStream_Parse_WithThreadPoolHandoff(benchmark::State& sta
 }
 BENCHMARK(BM_SimulatedStream_Parse_WithThreadPoolHandoff);
 
+// ============================================================================
+// Header Matching & Canonicalization Benchmarks: Case-Insensitive vs Case-Sensitive
+// ============================================================================
+
+static const std::vector<std::string> BENCHMARK_HEADER_KEYS = {
+    "Via", "via", "VIA", "v",
+    "Content-Length", "content-length", "CONTENT-LENGTH", "l",
+    "Content-Type", "content-type", "CONTENT-TYPE", "c",
+    "Call-ID", "call-id", "CALL-ID", "i",
+    "Contact", "contact", "CONTACT", "m",
+    "From", "from", "FROM", "f",
+    "To", "to", "TO", "t",
+    "CSeq", "cseq", "CSEQ",
+    "Expires", "expires", "EXPIRES",
+    "Max-Forwards", "max-forwards", "MAX-FORWARDS",
+    "X-Custom-Trace-ID", "x-custom-trace-id", "X-CUSTOM-TRACE-ID"
+};
+
+// Measures speed of header canonicalization & key matching
+static void BM_HeaderCanonicalization(benchmark::State& state)
+{
+    size_t keyCount = BENCHMARK_HEADER_KEYS.size();
+    size_t idx = 0;
+
+    for (auto _ : state)
+    {
+        const auto& key = BENCHMARK_HEADER_KEYS[idx % keyCount];
+        auto result = siddiqsoft::canonicalizeHeaderKey(key);
+        benchmark::DoNotOptimize(result);
+        idx++;
+    }
+    state.SetItemsProcessed(state.iterations());
+}
+BENCHMARK(BM_HeaderCanonicalization);
+
+// Measures parsing speed of frames with lowercase/mixed-case headers
+static void BM_ParseLowercaseAndMixedCaseHeaders(benchmark::State& state)
+{
+    static const std::string sipMixedCase =
+        "INVITE sip:bob@biloxi.com SIP/2.0\r\n"
+        "via: SIP/2.0/UDP pc33.atlanta.com;branch=z9hG4bK776asdhds\r\n"
+        "max-forwards: 70\r\n"
+        "to: Bob <sip:bob@biloxi.com>\r\n"
+        "from: Alice <sip:alice@atlanta.com>;tag=1928301774\r\n"
+        "call-id: lower-callid-101\r\n"
+        "cseq: 314159 INVITE\r\n"
+        "contact: <sip:alice@pc33.atlanta.com>\r\n"
+        "content-type: application/sdp\r\n"
+        "content-length: 132\r\n"
+        "\r\n"
+        "v=0\r\n"
+        "o=user1 53655765 2353687637 IN IP4 127.0.0.1\r\n"
+        "s=Talk\r\n"
+        "c=IN IP4 127.0.0.1\r\n"
+        "t=0 0\r\n"
+        "m=audio 6000 RTP/AVP 0\r\n"
+        "a=rtpmap:0 PCMU/8000\r\n";
+
+    for (auto _ : state)
+    {
+        std::string copy = sipMixedCase;
+        auto bs = copy.begin();
+        auto sipm = siddiqsoft::sip2json::parseFromBuffer(bs, copy.end());
+        auto [callId, sdpCount] = validateParsedSipMessage(sipm);
+        benchmark::DoNotOptimize(callId);
+        benchmark::DoNotOptimize(sdpCount);
+    }
+    state.SetItemsProcessed(state.iterations());
+    state.SetBytesProcessed(state.iterations() * sipMixedCase.size());
+}
+BENCHMARK(BM_ParseLowercaseAndMixedCaseHeaders);
+
+
 
