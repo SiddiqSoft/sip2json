@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../include/siddiqsoft/sip2json.hpp"
+#include "siddiqsoft/sip2json.hpp"
 
 TEST(security_tests, Test_negative_content_length_throws)
 {
