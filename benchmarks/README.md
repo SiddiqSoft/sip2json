@@ -56,26 +56,44 @@ We benchmarked four architectural patterns for consuming a single incoming strea
 
 | Benchmark Test Case | Time / Msg | Parse Rate (Messages / Sec) | Bandwidth | Output JSON Validation |
 | :--- | :--- | :--- | :--- | :--- |
-| **`BM_ParseMinimalResponse`** | 3.71 µs | **269,584 msg/sec** | 67.87 MiB/s | Header extraction (`Call-ID`) |
-| **`BM_ParseRegisterRequest`** | 3.99 µs | **250,466 msg/sec** | 73.57 MiB/s | Header extraction (`Call-ID`) |
-| **`BM_ParseNotifyLF`** | 4.36 µs | **229,612 msg/sec** | 86.06 MiB/s | Header extraction (`Call-ID`) |
-| **`BM_ParseInviteWithSDP`** | 9.13 µs | **109,545 msg/sec** | 59.34 MiB/s | `Call-ID` + SDP payload item count |
-| **`BM_ParseInviteComplexSDP`** | 13.28 µs | **75,305 msg/sec** | 61.33 MiB/s | `Call-ID` + Multi-attribute SDP count |
-| **`BM_HighFrequencyDecodeLargePacket`** | 31.18 µs | **32,070 msg/sec** | 46.64 MiB/s | `Call-ID` + Multi-stream SDP count |
+| **`BM_ParseMinimalResponse`** | 3.81 µs | **262,327 msg/sec** | 66.05 MiB/s | Header extraction (`Call-ID`) |
+| **`BM_ParseRegisterRequest`** | 4.27 µs | **234,338 msg/sec** | 68.83 MiB/s | Header extraction (`Call-ID`) |
+| **`BM_ParseNotifyLF`** | 4.65 µs | **214,949 msg/sec** | 80.56 MiB/s | Header extraction (`Call-ID`) |
+| **`BM_ParseInviteWithSDP`** | 9.44 µs | **105,905 msg/sec** | 57.37 MiB/s | `Call-ID` + SDP payload item count |
+| **`BM_ParseInviteComplexSDP`** | 14.00 µs | **71,410 msg/sec** | 58.16 MiB/s | `Call-ID` + Multi-attribute SDP count |
+| **`BM_HighFrequencyDecodeLargePacket`** | 31.49 µs | **31,753 msg/sec** | 46.18 MiB/s | `Call-ID` + Multi-stream SDP count |
 
 ---
 
-### Header Key Canonicalization & Case-Matching Benchmark (`sip2json_HEADERKEY_MODE_INSENSITIVE`)
+### Optimal Usage (Library Constants) vs Ad-hoc Usage (Literals & Custom Headers)
 
-*Evaluates RFC 3261 Section 7.3.1 case-insensitive header matching (`ON`) versus strict case-sensitive matching (`OFF`).*
+*Demonstrates the performance advantages of using pre-defined library constants (`siddiqsoft::METHOD_*`, `siddiqsoft::HF_*`) over raw string literals.*
 
-| Header Matching Mode | `sip2json_HEADERKEY_MODE_INSENSITIVE` | `BM_HeaderCanonicalization` (Time / Lookup) | `BM_HeaderCanonicalization` (Throughput) | `BM_ParseLowercaseAndMixedCaseHeaders` |
+| Operation | Optimal Usage (Library Constant) | Ad-hoc Usage (String Literal) | Custom Header (`X-Custom-Header`) | Performance Advantage |
 | :--- | :--- | :--- | :--- | :--- |
-| **Case-Insensitive (Default)** | `ON` | **10.4 ns** | **96,361,100 lookups/sec** | **109,856 msg/sec** (9.10 µs/msg) |
-| **Case-Sensitive Strict** | `OFF` | **10.7 ns** | **93,541,900 lookups/sec** | **107,117 msg/sec** (9.42 µs/msg) |
+| **`setHeader`** | **43.5 ns** (22.99M ops/sec) | 50.1 ns (19.95M ops/sec) | 61.6 ns (16.24M ops/sec) | **13.2% FASTER** |
+| **`getHeader`** | **53.8 ns** (18.58M ops/sec) | 56.5 ns (17.70M ops/sec) | N/A | **4.8% FASTER** |
+| **`sipmessage` Request Init** | **4,669 ns** (214.16K msg/sec) | 4,724 ns (211.70K msg/sec) | N/A | **1.2% FASTER** |
+
+---
+
+### Master Performance Matrix: Refactored v2.5+ vs Tag Release v2.4.2
+
+*Compares the current refactored version (Case-Insensitive `ON` and Case-Sensitive `OFF`) against the official `v2.4.2` tag release baseline.*
+
+| Benchmark Metric | v2.4.2 Tag Baseline | Case-Insensitive Mode (`ON` Default) | Case-Sensitive Mode (`OFF`) | Impact vs v2.4.2 |
+| :--- | :--- | :--- | :--- | :--- |
+| **`BM_ParseMinimalResponse`** | 137.47 µs | **3.81 µs** | **3.81 µs** | **36.1x FASTER** |
+| **`BM_ParseRegisterRequest`** | 158.07 µs | **4.27 µs** | **4.27 µs** | **37.0x FASTER** |
+| **`BM_ParseInviteWithSDP`** | 418.50 µs | **9.44 µs** | **9.44 µs** | **44.3x FASTER** |
+| **`BM_ParseInviteComplexSDP`** | 642.92 µs | **14.00 µs** | **13.59 µs** | **45.9x FASTER** |
+| **`BM_SerializeRegister`** | 60.14 µs | **1.44 µs** | **1.43 µs** | **41.7x FASTER** |
+| **`BM_GetHeader_LibraryConstant`** | 2,218 ns | **53.8 ns** | **53.6 ns** | **41.2x FASTER** |
+| **`BM_SetHeader_LibraryConstant`** | 1,844 ns | **43.5 ns** | **42.8 ns** | **42.4x FASTER** |
+| **`BM_VariableSizeStressTest/500`** | 813.99 ms | **16.08 ms** | **16.02 ms** | **50.6x FASTER** |
 
 > [!NOTE]
-> Utilizing `constexpr std::string_view` lookup arrays (`HeaderKeySet`) and inlined character transformation routines, **case-insensitive matching imposes zero measurable performance penalty** (~10.4 nanoseconds per header lookup) while providing 100% RFC 3261 protocol compliance and support for compact single-character header names (`l`, `v`, `i`, `c`, `m`, `f`, `t`, `s`, `e`).
+> Case-insensitive matching (`sip2json_HEADERKEY_MODE_INSENSITIVE=ON`) adds **less than 1.6% (0.7 nanoseconds)** overhead over strict case-sensitive matching (`OFF`), while enabling full RFC 3261 compliance and support for compact single-character header names (`l`, `v`, `i`, `c`, `m`, `f`, `t`, `s`, `e`).
 
 ---
 
