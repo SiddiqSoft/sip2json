@@ -100,6 +100,7 @@ nav:
       - Overview: architecture/index.md
       - Design Patterns: architecture/patterns.md
       - Data Flow & Memory: architecture/dataflow.md
+      - Native vs JSON Study: architecture/native_vs_json.md
   - API Reference:
       - Overview: api/index.md
       - sipmessage: api/sipmessage.md

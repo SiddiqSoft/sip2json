@@ -1330,4 +1330,256 @@ static void BM_ParseLowercaseAndMixedCaseHeaders(benchmark::State& state)
 BENCHMARK(BM_ParseLowercaseAndMixedCaseHeaders);
 
 
+// ============================================================================
+// WHAT-IF ARCHITECTURAL STUDY: Native C++ Struct vs nlohmann::json Subclass
+// ============================================================================
+namespace whatif
+{
+    struct sipmessage_native
+    {
+        siddiqsoft::SIPMessageType type{siddiqsoft::SIPMessageType::notspecified};
+        std::string method{};
+        std::string uri{};
+        uint32_t status{0};
+        std::string reason{};
+        std::string version{"SIP/2.0"};
+
+        // Headers stored in native C++ vector of pair (flat map)
+        std::vector<std::pair<std::string, std::string>> headers{};
+
+        // Body
+        std::string body{};
+
+        // Metadata
+        std::string meta_version{"sip2json/2.5.0/1.0.2"};
+        std::string meta_time{};
+        uint64_t meta_ttx{0};
+
+        sipmessage_native() = default;
+
+        sipmessage_native(const std::string& m, const std::string& u, const std::string& callId = {}, uint32_t cseq = 0)
+            : type(siddiqsoft::SIPMessageType::request), method(m), uri(u)
+        {
+            headers.push_back({"User-Agent", "sip2json/2.5.0"});
+            headers.push_back({"Date", siddiqsoft::TimeAsRFC1123()});
+            if (!callId.empty()) headers.push_back({"Call-ID", callId});
+            if (cseq > 0) headers.push_back({"CSeq", std::format("{} {}", cseq, m)});
+        }
+
+        void setHeader(const std::string& k, const std::string& v)
+        {
+            for (auto& [hk, hv] : headers)
+            {
+                if (hk == k)
+                {
+                    hv = v;
+                    return;
+                }
+            }
+            headers.push_back({k, v});
+        }
+
+        std::string getHeader(const std::string& k) const
+        {
+            for (const auto& [hk, hv] : headers)
+            {
+                if (hk == k) return hv;
+            }
+            return {};
+        }
+
+        std::string getCallID() const
+        {
+            return getHeader("Call-ID");
+        }
+
+        std::string getContentType() const
+        {
+            return getHeader("Content-Type");
+        }
+    };
+
+    inline sipmessage_native parseNative(std::string::iterator& bs, const std::string::iterator& be)
+    {
+        sipmessage_native msg;
+        auto matchStartLine = ctre::search<siddiqsoft::SIP_PATTERN_STARTLINE>(bs, be);
+        if (matchStartLine)
+        {
+            auto g1 = matchStartLine.get<1>().to_view();
+            auto g2 = matchStartLine.get<2>().to_view();
+            auto g3 = matchStartLine.get<3>().to_view();
+
+            if (siddiqsoft::SIPVER_20 == g3)
+            {
+                msg.type = siddiqsoft::SIPMessageType::request;
+                msg.method = std::string(g1);
+                msg.uri = std::string(g2);
+                msg.version = std::string(g3);
+            }
+            else if (siddiqsoft::SIPVER_20 == g1)
+            {
+                msg.type = siddiqsoft::SIPMessageType::response;
+                msg.reason = std::string(g3);
+                msg.status = std::stoi(std::string(g2));
+                msg.version = std::string(g1);
+            }
+            bs = matchStartLine.get<0>().end();
+            while (bs != be && (*bs == '\r' || *bs == '\n')) ++bs;
+        }
+
+        // Header section scanning
+        while (bs != be)
+        {
+            if (*bs == '\r' || *bs == '\n')
+            {
+                while (bs != be && (*bs == '\r' || *bs == '\n')) ++bs;
+                break; // End of headers
+            }
+            auto lineEnd = std::find(bs, be, '\n');
+            std::string line(bs, lineEnd);
+            if (!line.empty() && line.back() == '\r') line.pop_back();
+
+            auto colon = line.find(':');
+            if (colon != std::string::npos)
+            {
+                std::string k = line.substr(0, colon);
+                std::string v = line.substr(colon + 1);
+                size_t vStart = v.find_first_not_of(" \t");
+                if (vStart != std::string::npos) v = v.substr(vStart);
+                msg.setHeader(k, v);
+            }
+
+            if (lineEnd != be) bs = lineEnd + 1;
+            else bs = be;
+        }
+
+        // Remaining is body
+        if (bs != be)
+        {
+            msg.body = std::string(bs, be);
+        }
+
+        return msg;
+    }
+} // namespace whatif
+
+
+// 1. Instantiation Benchmark: Native Struct vs nlohmann::json Subclass
+static void BM_WhatIf_Construct_NativeStruct(benchmark::State& state)
+{
+    auto callId = siddiqsoft::createCallId();
+    for (auto _ : state)
+    {
+        whatif::sipmessage_native msg(siddiqsoft::METHOD_INVITE, "sip:bob@biloxi.com", callId, 1);
+        benchmark::DoNotOptimize(msg);
+    }
+    state.SetItemsProcessed(state.iterations());
+}
+BENCHMARK(BM_WhatIf_Construct_NativeStruct);
+
+static void BM_WhatIf_Construct_JsonSubclass(benchmark::State& state)
+{
+    auto callId = siddiqsoft::createCallId();
+    for (auto _ : state)
+    {
+        siddiqsoft::sipmessage msg(siddiqsoft::METHOD_INVITE, "sip:bob@biloxi.com", callId, 1);
+        benchmark::DoNotOptimize(msg);
+    }
+    state.SetItemsProcessed(state.iterations());
+}
+BENCHMARK(BM_WhatIf_Construct_JsonSubclass);
+
+
+// 2. SetHeader Benchmark: Native Struct vs nlohmann::json Subclass
+static void BM_WhatIf_SetHeader_NativeStruct(benchmark::State& state)
+{
+    whatif::sipmessage_native msg(siddiqsoft::METHOD_REGISTER, "sip:hello@world.com", siddiqsoft::createCallId(), 1);
+    for (auto _ : state)
+    {
+        msg.setHeader(siddiqsoft::HF_CALLID, "call-12345");
+        benchmark::DoNotOptimize(msg);
+    }
+    state.SetItemsProcessed(state.iterations());
+}
+BENCHMARK(BM_WhatIf_SetHeader_NativeStruct);
+
+static void BM_WhatIf_SetHeader_JsonSubclass(benchmark::State& state)
+{
+    siddiqsoft::sipmessage msg(siddiqsoft::METHOD_REGISTER, "sip:hello@world.com", siddiqsoft::createCallId(), 1);
+    for (auto _ : state)
+    {
+        msg.setHeader(siddiqsoft::HF_CALLID, "call-12345");
+        benchmark::DoNotOptimize(msg);
+    }
+    state.SetItemsProcessed(state.iterations());
+}
+BENCHMARK(BM_WhatIf_SetHeader_JsonSubclass);
+
+
+// 3. GetHeader Benchmark: Native Struct vs nlohmann::json Subclass
+static void BM_WhatIf_GetHeader_NativeStruct(benchmark::State& state)
+{
+    std::string copy = SIP_INVITE_WITH_SDP;
+    auto bs = copy.begin();
+    auto msg = whatif::parseNative(bs, copy.end());
+
+    for (auto _ : state)
+    {
+        auto v = msg.getCallID();
+        benchmark::DoNotOptimize(v);
+    }
+    state.SetItemsProcessed(state.iterations());
+}
+BENCHMARK(BM_WhatIf_GetHeader_NativeStruct);
+
+static void BM_WhatIf_GetHeader_JsonSubclass(benchmark::State& state)
+{
+    std::string copy = SIP_INVITE_WITH_SDP;
+    auto bs = copy.begin();
+    auto msg = siddiqsoft::sip2json::parseFromBuffer(bs, copy.end());
+
+    for (auto _ : state)
+    {
+        auto v = msg.getCallID();
+        benchmark::DoNotOptimize(v);
+    }
+    state.SetItemsProcessed(state.iterations());
+}
+BENCHMARK(BM_WhatIf_GetHeader_JsonSubclass);
+
+
+// 4. Full Parse Benchmark: Native Struct vs nlohmann::json Subclass
+static void BM_WhatIf_ParseInvite_NativeStruct(benchmark::State& state)
+{
+    for (auto _ : state)
+    {
+        std::string copy = SIP_INVITE_WITH_SDP;
+        auto bs = copy.begin();
+        auto msg = whatif::parseNative(bs, copy.end());
+        auto cid = msg.getCallID();
+        benchmark::DoNotOptimize(cid);
+        benchmark::DoNotOptimize(msg);
+    }
+    state.SetItemsProcessed(state.iterations());
+    state.SetBytesProcessed(state.iterations() * SIP_INVITE_WITH_SDP.size());
+}
+BENCHMARK(BM_WhatIf_ParseInvite_NativeStruct);
+
+static void BM_WhatIf_ParseInvite_JsonSubclass(benchmark::State& state)
+{
+    for (auto _ : state)
+    {
+        std::string copy = SIP_INVITE_WITH_SDP;
+        auto bs = copy.begin();
+        auto msg = siddiqsoft::sip2json::parseFromBuffer(bs, copy.end());
+        auto cid = msg.getCallID();
+        benchmark::DoNotOptimize(cid);
+        benchmark::DoNotOptimize(msg);
+    }
+    state.SetItemsProcessed(state.iterations());
+    state.SetBytesProcessed(state.iterations() * SIP_INVITE_WITH_SDP.size());
+}
+BENCHMARK(BM_WhatIf_ParseInvite_JsonSubclass);
+
+
 

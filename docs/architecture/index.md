@@ -40,3 +40,4 @@ include/siddiqsoft/
 
 - [**Design Patterns**](patterns.md): Factory methods, strategy patterns, and builder chain mechanics.
 - [**Data Flow & Memory**](dataflow.md): Stream buffer iteration, move semantics, and zero-allocation parsing paths.
+- [**Native vs JSON Study**](native_vs_json.md): Empirical trade-off study comparing standalone native C++ structs against `nlohmann::json` inheritance.
