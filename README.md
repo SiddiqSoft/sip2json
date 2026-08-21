@@ -78,6 +78,17 @@ For full setup guides, submodules, and NuGet usage, visit the [Integration Guide
 
 ---
 
+## Standards Compliance & Certification Test Suite
+
+`sip2json` includes an automated 226-test suite featuring dedicated RFC compliance and torture test suites located in `tests/compliance/`:
+
+- **RFC 3261 Core Compliance** (`tests/compliance/rfc3261_compliance_tests.cpp`): Validates 14 standard RFC request methods, status line classes (1xx-6xx), case-insensitive header canonicalization (`vIa`, `fRoM`, `cALL-id`), 10 compact header abbreviations (`v`, `f`, `t`, `i`, `c`, `l`, `m`, `s`, `k`, `e`), and body framing.
+- **RFC 4475 SIP Torture Tests** (`tests/compliance/rfc4475_torture_tests.cpp`): Official IETF torture test cases including multiline header folding with LWSP (`\r\n\t` / `\r\n `), unknown extension header preservation, multiple `Via` header array formatting, negative `Content-Length` rejection, and truncated stream buffer handling.
+- **SIP Standard Certification Suite** (`tests/compliance/sip_certification_suite.cpp`): Full end-to-end certification for RFC 3261, RFC 3262 (`PRACK`), RFC 6665 (`Event`/`Subscription-State`), RFC 3515 (`REFER`), and RFC 3903 (`PUBLISH`).
+- **SDP RFC 4566 / 8866 / 3264 Compliance Suite** (`tests/compliance/sdp_compliance_tests.cpp`): Complete Session Description Protocol parsing, Offer/Answer direction flags (`sendrecv`, `sendonly`, `recvonly`, `inactive`), WebRTC ICE/DTLS attributes (`a=candidate`, `a=ice-ufrag`, `a=fingerprint`), multiple SDP session blocks (`v=0` demarcation), and UNIX `\n` line endings.
+
+---
+
 ## License
 
 Licensed under the [BSD 3-Clause License](LICENSE).
