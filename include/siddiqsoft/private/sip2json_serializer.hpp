@@ -118,7 +118,7 @@ namespace siddiqsoft
 
         // Encode the body first so we can get the content-length properly.
         auto body = serializeSDP(sipm);
-        sipm.setHeader(HFS_CONTENT_LENGTH[1], body.length());
+        sipm.setHeader(HF_CONTENT_LENGTH, body.length());
 
         // Headers
         if (auto mh = sipm.headers(); mh.size() > 0)
@@ -131,7 +131,7 @@ namespace siddiqsoft
                 if (key.find('\r') != std::string::npos || key.find('\n') != std::string::npos)
                     throw invalid_document_error {std::format("{}:Header key contains line breaks:{}", __func__, key)};
 
-                if (contentType.empty() && (key.compare(HFS_CONTENT_TYPE[1]) == 0) && val.is_string()) contentType = val;
+                if (contentType.empty() && (key == HF_CONTENT_TYPE) && val.is_string()) contentType = val;
 
                 if (val.is_null())
                 {

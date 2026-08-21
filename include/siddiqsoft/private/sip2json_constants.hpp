@@ -47,26 +47,26 @@
 namespace siddiqsoft
 {
     // Top-Level Message JSON Section Keys
-    static constexpr std::string_view JSON_KEY_STARTLINE {"s"};
-    static constexpr std::string_view JSON_KEY_HEADERS {"h"};
-    static constexpr std::string_view JSON_KEY_BODY {"b"};
-    static constexpr std::string_view JSON_KEY_META {"meta"};
+    static inline const std::string JSON_KEY_STARTLINE {"s"};
+    static inline const std::string JSON_KEY_HEADERS {"h"};
+    static inline const std::string JSON_KEY_BODY {"b"};
+    static inline const std::string JSON_KEY_META {"meta"};
 
     // Start-Line JSON Field Keys
-    static constexpr std::string_view JSON_KEY_TYPE {"type"};
-    static constexpr std::string_view JSON_KEY_METHOD {"method"};
-    static constexpr std::string_view JSON_KEY_URI {"uri"};
-    static constexpr std::string_view JSON_KEY_VERSION {"version"};
-    static constexpr std::string_view JSON_KEY_STATUS {"status"};
-    static constexpr std::string_view JSON_KEY_REASON {"reason"};
+    static inline const std::string JSON_KEY_TYPE {"type"};
+    static inline const std::string JSON_KEY_METHOD {"method"};
+    static inline const std::string JSON_KEY_URI {"uri"};
+    static inline const std::string JSON_KEY_VERSION {"version"};
+    static inline const std::string JSON_KEY_STATUS {"status"};
+    static inline const std::string JSON_KEY_REASON {"reason"};
 
     // Meta JSON Field Keys
-    static constexpr std::string_view JSON_KEY_ID {"id"};
-    static constexpr std::string_view JSON_KEY_TIME {"time"};
-    static constexpr std::string_view JSON_KEY_TTX {"ttx"};
+    static inline const std::string JSON_KEY_ID {"id"};
+    static inline const std::string JSON_KEY_TIME {"time"};
+    static inline const std::string JSON_KEY_TTX {"ttx"};
 
     // SDP JSON Key
-    static constexpr std::string_view JSON_KEY_SDP {"sdp"};
+    static inline const std::string JSON_KEY_SDP {"sdp"};
 
     // URI Schemes
     static constexpr std::string_view URI_SCHEME_SIP {"sip:"};

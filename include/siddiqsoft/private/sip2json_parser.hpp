@@ -184,28 +184,55 @@ namespace siddiqsoft
     /// @return Returns true if the store was successful.
     inline bool sip2json::storeHeaderValue(sipmessage& sipm, const std::string& key, const std::string& value) noexcept(false)
     {
-        auto targetKey    = canonicalizeHeaderKey(key);
-        std::string keyStr {targetKey};
+        auto targetKey = canonicalizeHeaderKey(key);
 
-        if (sipm["h"].contains(keyStr) || targetKey.isMultiLine)
+        if (targetKey.canonicalStringPtr != nullptr)
         {
-            storeMultiLineHeader(sipm["h"], keyStr, value);
-        }
-        else if (targetKey.canonicalKey == HFS_CONTENT_LENGTH[1])
-        {
-            sipm["h"][keyStr] = parseContentLengthValue(value);
-        }
-        else if (targetKey.canonicalKey == HFS_EXPIRES[1])
-        {
-            sipm["h"][keyStr] = parseExpiresValue(value);
-        }
-        else if (value.empty())
-        {
-            sipm["h"][keyStr] = "";
+            const std::string& keyStr = *targetKey.canonicalStringPtr;
+            if (sipm[JSON_KEY_HEADERS].contains(keyStr) || targetKey.isMultiLine)
+            {
+                storeMultiLineHeader(sipm[JSON_KEY_HEADERS], keyStr, value);
+            }
+            else if (&keyStr == &HF_CONTENT_LENGTH)
+            {
+                sipm[JSON_KEY_HEADERS][keyStr] = parseContentLengthValue(value);
+            }
+            else if (&keyStr == &HF_EXPIRES)
+            {
+                sipm[JSON_KEY_HEADERS][keyStr] = parseExpiresValue(value);
+            }
+            else if (value.empty())
+            {
+                sipm[JSON_KEY_HEADERS][keyStr] = "";
+            }
+            else
+            {
+                sipm[JSON_KEY_HEADERS][keyStr] = value;
+            }
         }
         else
         {
-            sipm["h"][keyStr] = value;
+            std::string keyStr {targetKey.canonicalKey};
+            if (sipm[JSON_KEY_HEADERS].contains(keyStr) || targetKey.isMultiLine)
+            {
+                storeMultiLineHeader(sipm[JSON_KEY_HEADERS], keyStr, value);
+            }
+            else if (targetKey.canonicalKey == HFS_CONTENT_LENGTH[1])
+            {
+                sipm[JSON_KEY_HEADERS][keyStr] = parseContentLengthValue(value);
+            }
+            else if (targetKey.canonicalKey == HFS_EXPIRES[1])
+            {
+                sipm[JSON_KEY_HEADERS][keyStr] = parseExpiresValue(value);
+            }
+            else if (value.empty())
+            {
+                sipm[JSON_KEY_HEADERS][keyStr] = "";
+            }
+            else
+            {
+                sipm[JSON_KEY_HEADERS][keyStr] = value;
+            }
         }
 
         return true;
