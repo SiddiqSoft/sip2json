@@ -37,6 +37,7 @@
 #pragma once
 
 #include <string>
+#include <string_view>
 #include <vector>
 #include <algorithm>
 #include <iterator>
@@ -56,10 +57,24 @@ namespace siddiqsoft
     {
         using namespace std;
 
-        static const std::vector<std::string> supportedMethodsList {
-                "MESSAGE", "INFO", "INVITE", "ACK", "OPTIONS", "BYE", "CANCEL", "REGISTER", "SUBSCRIBE", "NOTIFY", "SIP/2.0"};
-        std::string buffer {};
-        std::string contentType {};
+        static const std::vector<std::string_view> supportedMethodsList {"MESSAGE",
+                                                                         "INFO",
+                                                                         "INVITE",
+                                                                         "ACK",
+                                                                         "OPTIONS",
+                                                                         "BYE",
+                                                                         "CANCEL",
+                                                                         "REGISTER",
+                                                                         "SUBSCRIBE",
+                                                                         "NOTIFY",
+                                                                         "REFER",
+                                                                         "PUBLISH",
+                                                                         "UPDATE",
+                                                                         "PRACK",
+                                                                         "BENCHMARK",
+                                                                         "SIP/2.0"};
+        std::string                                buffer {};
+        std::string                                contentType {};
 
         // Reserve the size of a typical SIP Message. Typical message size of 3K
         buffer.reserve(3 * 1024);
@@ -98,8 +113,8 @@ namespace siddiqsoft
         }
         else
         {
-            throw invalid_document_error {std::format(
-                    "{}:sipm /type is neither `SIPMessageType::request` nor `SIPMessageType::response`.", __func__)};
+            throw invalid_document_error {
+                    std::format("{}:sipm /type is neither `SIPMessageType::request` nor `SIPMessageType::response`.", __func__)};
         }
 
         // Encode the body first so we can get the content-length properly.
@@ -132,10 +147,7 @@ namespace siddiqsoft
                 {
                     std::format_to(std::back_inserter(buffer), "{}: {}\r\n", key, val.get<int64_t>());
                 }
-                else if (val.is_number_float())
-                {
-                    std::format_to(std::back_inserter(buffer), "{}: {}\r\n", key, val.get<float>());
-                }
+                else if (val.is_number_float()) { std::format_to(std::back_inserter(buffer), "{}: {}\r\n", key, val.get<float>()); }
                 else if (val.is_string())
                 {
                     std::string sval = val.get<std::string>();
@@ -158,7 +170,8 @@ namespace siddiqsoft
                         {
                             std::string sval = iv.get<std::string>();
                             if (sval.find('\r') != std::string::npos || sval.find('\n') != std::string::npos)
-                                throw invalid_document_error {std::format("{}:Header array value contains line breaks:{}", __func__, key)};
+                                throw invalid_document_error {
+                                        std::format("{}:Header array value contains line breaks:{}", __func__, key)};
                             std::format_to(std::back_inserter(buffer), "{}: {}\r\n", key, sval);
                         }
                         else
