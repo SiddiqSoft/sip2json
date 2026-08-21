@@ -24,7 +24,7 @@ static sipmessage parseFromBuffer(std::string::iterator& bufferStart,
                                   const std::string::iterator& bufferEnd) noexcept(false);
 ```
 
-Extracts and deserializes the first SIP message from the buffer range. Advances `bufferStart` past the parsed message. Throws a derived `sip2json_exception` (such as `incomplete_buffer_for_parse_error`, `invalid_startline_error`, etc.) on syntax or framing errors.
+Extracts and deserializes the first SIP message from the buffer range `[bufferStart, bufferEnd)`. Advances `bufferStart` past the parsed message. Validates the start line against standard RFC SIP methods (`INVITE`, `ACK`, `OPTIONS`, `BYE`, `CANCEL`, `REGISTER`, `SUBSCRIBE`, `NOTIFY`, `MESSAGE`, `INFO`, `REFER`, `PUBLISH`, `UPDATE`, `PRACK`). Throws a derived `sip2json_exception` (such as `invalid_startline_error` for custom/unknown method tokens, `incomplete_buffer_for_parse_error`, etc.) on syntax or framing errors.
 
 ---
 
@@ -53,4 +53,6 @@ Asynchronously parses multiple SIP messages from `frameBuffer`. Decoded messages
 static std::string serialize(sipmessage& msg) noexcept(false);
 ```
 
-Serializes a `sipmessage` object back into a standard RFC-3261 formatted SIP protocol string complete with headers and SDP body.
+Serializes a `sipmessage` object back into a standard RFC 3261 formatted SIP protocol string complete with headers and SDP body.
+
+Validates that request messages use a supported standard SIP method (`INVITE`, `ACK`, `OPTIONS`, `BYE`, `CANCEL`, `REGISTER`, `SUBSCRIBE`, `NOTIFY`, `MESSAGE`, `INFO`, `REFER`, `PUBLISH`, `UPDATE`, `PRACK`). Throws `invalid_document_error` if the method is unsupported (e.g. custom token) or if headers/URI contain CRLF injection characters.
