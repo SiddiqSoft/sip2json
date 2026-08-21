@@ -244,7 +244,11 @@ namespace siddiqsoft
         /// @details Automatically formats the User-Agent header with library name, version, and schema information.
         /// @param ua Optional additional user agent string to append.
         /// @return Reference to this sipmessage for method chaining.
-        auto& setUserAgent(const std::string& ua)
+        /// @brief Sets or updates the User-Agent header.
+        /// @details Automatically formats the User-Agent header with library name, version, and schema information.
+        /// @param ua Optional additional user agent string to append.
+        /// @return Reference to this sipmessage for method chaining.
+        auto& setUserAgent(std::string_view ua = {})
         {
             if (!ua.empty())
                 setHeader("User-Agent", std::format("{}/{} (schema:{}) {}", MetaLibName, MetaParserVersion, MetaSchemaVersion, ua));
@@ -298,6 +302,57 @@ namespace siddiqsoft
         /// @details Only applicable to request messages.
         /// @return The Request-URI string, or empty string if not a request.
         auto getUri() const { return this->value("/s/uri"_json_pointer, ""); }
+
+        /// @brief Zero-copy view accessor for SIP method.
+        /// @return std::string_view pointing to internal string storage.
+        std::string_view getMethodView() const
+        {
+            static const auto ptr = "/s/method"_json_pointer;
+            if (this->contains(ptr))
+            {
+                const auto& v = (*this)[ptr];
+                if (v.is_string()) return v.get_ref<const std::string&>();
+            }
+            return {};
+        }
+
+        /// @brief Zero-copy view accessor for Request-URI.
+        /// @return std::string_view pointing to internal string storage.
+        std::string_view getUriView() const
+        {
+            static const auto ptr = "/s/uri"_json_pointer;
+            if (this->contains(ptr))
+            {
+                const auto& v = (*this)[ptr];
+                if (v.is_string()) return v.get_ref<const std::string&>();
+            }
+            return {};
+        }
+
+        /// @brief Zero-copy view accessor for Reason phrase.
+        /// @return std::string_view pointing to internal string storage.
+        std::string_view getReasonView() const
+        {
+            static const auto ptr = "/s/reason"_json_pointer;
+            if (this->contains(ptr))
+            {
+                const auto& v = (*this)[ptr];
+                if (v.is_string()) return v.get_ref<const std::string&>();
+            }
+            return {};
+        }
+
+        /// @brief Zero-copy view accessor for Call-ID header.
+        /// @return std::string_view pointing to internal string storage.
+        std::string_view getCallIDView() const
+        {
+            if (headers().contains("Call-ID"))
+            {
+                const auto& cid = headers().at("Call-ID");
+                if (cid.is_string()) return cid.get_ref<const std::string&>();
+            }
+            return {};
+        }
 
         /// @brief Retrieves the status code from a response message.
         /// @details Only applicable to response messages (e.g., 200, 404, 500).
@@ -362,9 +417,9 @@ namespace siddiqsoft
         /// @param key The header name
         /// @param v The header value.
         /// @return Self.
-        template <typename T> inline sipmessage& setHeader(const std::string& key, const T& v)
+        template <typename T> inline sipmessage& setHeader(std::string_view key, const T& v)
         {
-            (*this)["h"][key] = v;
+            (*this)["h"][std::string{key}] = v;
             return *this;
         };
 

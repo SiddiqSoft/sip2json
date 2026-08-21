@@ -188,7 +188,7 @@ TEST(siphelpers, Test_incomplete_buffer_for_parse)
     EXPECT_THROW(
             []()
             {
-                auto buffer = siddiqsoft::SIP_SAMPLE_MINIMAL_MESSAGE;
+                auto buffer = std::string {siddiqsoft::SIP_SAMPLE_MINIMAL_MESSAGE};
                 auto bs     = buffer.begin();
                 auto dummy  = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end());
             }(),
@@ -591,7 +591,7 @@ TEST(siphelpers, Test_body_method)
 // NOLINTNEXTLINE
 TEST(siphelpers, Test_async_incomplete_buffer_for_parse)
 {
-    auto buffer   = siddiqsoft::SIP_SAMPLE_MINIMAL_MESSAGE;
+    auto buffer   = std::string {siddiqsoft::SIP_SAMPLE_MINIMAL_MESSAGE};
     bool passTest = false;
     auto bs       = buffer.begin();
 

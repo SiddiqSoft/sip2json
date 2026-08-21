@@ -48,29 +48,29 @@ namespace siddiqsoft
 {
     // CAUTION; this is used as a reference to break out of the processing loop if the remaining buffer is less than the
     // size of this sample message.
-    static std::string SIP_SAMPLE_MINIMAL_MESSAGE {
+    static constexpr std::string_view SIP_SAMPLE_MINIMAL_MESSAGE {
             "SIP/2.0 A B\r\nVia: SIP/2.0/TCP localhost\r\nCall-ID: A\r\nCSeq: 1 ACK\r\nFrom: sip:A\r\nTo: "
             "sip:A\r\nContact: A\r\nContent-Length: 0\r\n\r\n"};
 
     // Authorization Type
-    static const std::string AUTHORIZATION_CLEAR {"Clear"};
-    static const std::string AUTHORIZATION_BASIC {"Basic"};
-    static const std::string AUTHORIZATION_DIGEST {"Digest"};
+    static constexpr std::string_view AUTHORIZATION_CLEAR {"Clear"};
+    static constexpr std::string_view AUTHORIZATION_BASIC {"Basic"};
+    static constexpr std::string_view AUTHORIZATION_DIGEST {"Digest"};
 
     // Content-Type
-    static const std::string CONTENT_TYPE_TEXT_PLAIN {"text/plain"};
-    static const std::string CONTENT_TYPE_TEXT_HTML {"text/html"};
-    static const std::string CONTENT_TYPE_TEXT_XML {"text/xml"};
-    static const std::string CONTENT_TYPE_APP_SDP {"application/sdp"};
-    static const std::string CONTENT_TYPE_APP_XML {"application/xml"};
-    static const std::string CONTENT_TYPE_APP_PKCS7MIME {"application/pkcs7-mime"};
-    static const std::string CONTENT_TYPE_APP_XPRIVATE {"application/x-private"};
-    static const std::string CONTENT_TYPE_TEXT_X_METATEL1_PRESENCE {"text/x-metatel1.0-presence"};
+    static constexpr std::string_view CONTENT_TYPE_TEXT_PLAIN {"text/plain"};
+    static constexpr std::string_view CONTENT_TYPE_TEXT_HTML {"text/html"};
+    static constexpr std::string_view CONTENT_TYPE_TEXT_XML {"text/xml"};
+    static constexpr std::string_view CONTENT_TYPE_APP_SDP {"application/sdp"};
+    static constexpr std::string_view CONTENT_TYPE_APP_XML {"application/xml"};
+    static constexpr std::string_view CONTENT_TYPE_APP_PKCS7MIME {"application/pkcs7-mime"};
+    static constexpr std::string_view CONTENT_TYPE_APP_XPRIVATE {"application/x-private"};
+    static constexpr std::string_view CONTENT_TYPE_TEXT_X_METATEL1_PRESENCE {"text/x-metatel1.0-presence"};
 
     // Subscription State
-    static const std::string SUBSTATE_ACTIVE {"active"};
-    static const std::string SUBSTATE_PENDING {"pending"};
-    static const std::string SUBSTATE_TERMINATED {"terminated"};
+    static constexpr std::string_view SUBSTATE_ACTIVE {"active"};
+    static constexpr std::string_view SUBSTATE_PENDING {"pending"};
+    static constexpr std::string_view SUBSTATE_TERMINATED {"terminated"};
 
     // TTL constants
     static constexpr int DEFAULT_SERVER_PORT {5060};
@@ -104,25 +104,25 @@ namespace siddiqsoft
     static constexpr std::string_view EMPTY_STD_STRING_VALUE {""};
 
     // Parsing elements
-    static const std::string ELEM_SPACE {" "};
-    static const std::string ELEM_SEPARATOR {":"};
-    static const std::string ELEM_PADDED_SEPARATOR {": "};
-    static const std::string ELEM_TAG_SEPARATOR {"{"};
+    static constexpr std::string_view ELEM_SPACE {" "};
+    static constexpr std::string_view ELEM_SEPARATOR {":"};
+    static constexpr std::string_view ELEM_PADDED_SEPARATOR {": "};
+    static constexpr std::string_view ELEM_TAG_SEPARATOR {"{"};
     // Common elements over the wire (and WIN32)
-    static const std::string ELEM_NEWLINE {"\r\n"};
-    static const std::string ELEM_HEADERSECTIONDELIMITER {"\r\n\r\n"};
-    static const std::string ELEM_LWSP {"\r\n "};
-    static const std::string ELEM_LWSP1 {"\r\n\t"};
-    static const std::string ELEM_SDPBlockStart {" v=0\r\n"};
+    static constexpr std::string_view ELEM_NEWLINE {"\r\n"};
+    static constexpr std::string_view ELEM_HEADERSECTIONDELIMITER {"\r\n\r\n"};
+    static constexpr std::string_view ELEM_LWSP {"\r\n "};
+    static constexpr std::string_view ELEM_LWSP1 {"\r\n\t"};
+    static constexpr std::string_view ELEM_SDPBlockStart {" v=0\r\n"};
     // For UNIX systems
-    static const std::string ELEM_NEWLINE_LF {"\n"};
-    static const std::string ELEM_HEADERSECTIONDELIMITER_LF {"\n\n"};
-    static const std::string ELEM_LWSP_LF {"\n "};
-    static const std::string ELEM_LWSP1_LF {"\n\t"};
-    static const std::string ELEM_SDPBlockStart_LF {"v=0\n"};
+    static constexpr std::string_view ELEM_NEWLINE_LF {"\n"};
+    static constexpr std::string_view ELEM_HEADERSECTIONDELIMITER_LF {"\n\n"};
+    static constexpr std::string_view ELEM_LWSP_LF {"\n "};
+    static constexpr std::string_view ELEM_LWSP1_LF {"\n\t"};
+    static constexpr std::string_view ELEM_SDPBlockStart_LF {"v=0\n"};
 
     // Some common elements for building the SIP message
-    static const std::string SIP_ADDR_PREFIX {"sip:\\s"};
+    static constexpr std::string_view SIP_ADDR_PREFIX {"sip:\\s"};
 
     // Helpers to parse the SIP buffer (CTRE compile-time regular expressions)
     // Disallow any greedy consumption of the ending as it silently causes exceptions and slows down parsing!

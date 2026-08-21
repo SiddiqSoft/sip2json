@@ -460,6 +460,18 @@ TEST(coverage_serialization, Test_custom_method_tokens_serialize_rejected)
 }
 
 
+TEST(coverage_sipmessage, Test_string_view_accessors)
+{
+    siddiqsoft::sipmessage req("INVITE", "sip:alice@example.com", "callid-view-100", 1);
+    EXPECT_EQ("INVITE", req.getMethodView());
+    EXPECT_EQ("sip:alice@example.com", req.getUriView());
+    EXPECT_EQ("callid-view-100", req.getCallIDView());
+
+    siddiqsoft::sipmessage resp(200);
+    EXPECT_EQ("OK", resp.getReasonView());
+}
+
+
 // ============================================================================
 // ERROR COVERAGE TESTS
 // ============================================================================
