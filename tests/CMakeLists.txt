@@ -98,6 +98,7 @@ if(${${PROJECT_NAME}_BUILD_TESTS})
                     ${PROJECT_SOURCE_DIR}/tests/compliance/rfc3261_compliance_tests.cpp
                     ${PROJECT_SOURCE_DIR}/tests/compliance/rfc4475_torture_tests.cpp
                     ${PROJECT_SOURCE_DIR}/tests/compliance/sip_certification_suite.cpp
+                    ${PROJECT_SOURCE_DIR}/tests/compliance/sdp_compliance_tests.cpp
                     ${PROJECT_SOURCE_DIR}/tests/test.cpp)
 
     include(GoogleTest)
