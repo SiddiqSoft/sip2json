@@ -622,8 +622,24 @@ static void BM_GetMethod(benchmark::State& state)
 }
 BENCHMARK(BM_GetMethod);
 
-// getHeader on a parsed message
-static void BM_GetHeader(benchmark::State& state)
+// getHeader using library static constant (Optimal Path)
+static void BM_GetHeader_LibraryConstant(benchmark::State& state)
+{
+    std::string            buffer = SIP_INVITE_WITH_SDP;
+    auto                   bs     = buffer.begin();
+    siddiqsoft::sipmessage sipm   = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end());
+
+    for (auto _ : state)
+    {
+        auto v = sipm.getHeader<std::string>(siddiqsoft::HF_CALLID);
+        benchmark::DoNotOptimize(v);
+    }
+    state.SetItemsProcessed(state.iterations());
+}
+BENCHMARK(BM_GetHeader_LibraryConstant);
+
+// getHeader using raw string literal (Ad-hoc Path)
+static void BM_GetHeader_StringLiteral(benchmark::State& state)
 {
     std::string            buffer = SIP_INVITE_WITH_SDP;
     auto                   bs     = buffer.begin();
@@ -636,12 +652,57 @@ static void BM_GetHeader(benchmark::State& state)
     }
     state.SetItemsProcessed(state.iterations());
 }
-BENCHMARK(BM_GetHeader);
+BENCHMARK(BM_GetHeader_StringLiteral);
 
-// setHeader on a message
-static void BM_SetHeader(benchmark::State& state)
+// getHeader for custom un-canonicalized header
+static void BM_GetHeader_CustomHeader(benchmark::State& state)
 {
-    siddiqsoft::sipmessage sipm("REGISTER", "sip:hello@world.com", siddiqsoft::createCallId(), 1);
+    std::string            buffer = SIP_INVITE_WITH_SDP;
+    auto                   bs     = buffer.begin();
+    siddiqsoft::sipmessage sipm   = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end());
+    sipm.setHeader("X-Custom-Header", "custom-val");
+
+    for (auto _ : state)
+    {
+        auto v = sipm.getHeader<std::string>("X-Custom-Header");
+        benchmark::DoNotOptimize(v);
+    }
+    state.SetItemsProcessed(state.iterations());
+}
+BENCHMARK(BM_GetHeader_CustomHeader);
+
+// setHeader using library static constant (Optimal Path)
+static void BM_SetHeader_LibraryConstant(benchmark::State& state)
+{
+    siddiqsoft::sipmessage sipm(siddiqsoft::METHOD_REGISTER, "sip:hello@world.com", siddiqsoft::createCallId(), 1);
+
+    for (auto _ : state)
+    {
+        sipm.setHeader(siddiqsoft::HF_CALLID, "call-12345");
+        benchmark::DoNotOptimize(sipm);
+    }
+    state.SetItemsProcessed(state.iterations());
+}
+BENCHMARK(BM_SetHeader_LibraryConstant);
+
+// setHeader using raw string literal (Ad-hoc Path)
+static void BM_SetHeader_StringLiteral(benchmark::State& state)
+{
+    siddiqsoft::sipmessage sipm(siddiqsoft::METHOD_REGISTER, "sip:hello@world.com", siddiqsoft::createCallId(), 1);
+
+    for (auto _ : state)
+    {
+        sipm.setHeader("Call-ID", "call-12345");
+        benchmark::DoNotOptimize(sipm);
+    }
+    state.SetItemsProcessed(state.iterations());
+}
+BENCHMARK(BM_SetHeader_StringLiteral);
+
+// setHeader using custom header name
+static void BM_SetHeader_CustomHeader(benchmark::State& state)
+{
+    siddiqsoft::sipmessage sipm(siddiqsoft::METHOD_REGISTER, "sip:hello@world.com", siddiqsoft::createCallId(), 1);
 
     for (auto _ : state)
     {
@@ -650,7 +711,33 @@ static void BM_SetHeader(benchmark::State& state)
     }
     state.SetItemsProcessed(state.iterations());
 }
-BENCHMARK(BM_SetHeader);
+BENCHMARK(BM_SetHeader_CustomHeader);
+
+// Construct request using library constants (Optimal Path)
+static void BM_ConstructRequest_LibraryConstant(benchmark::State& state)
+{
+    auto callId = siddiqsoft::createCallId();
+    for (auto _ : state)
+    {
+        siddiqsoft::sipmessage sipm(siddiqsoft::METHOD_INVITE, "sip:bob@biloxi.com", callId, 1);
+        benchmark::DoNotOptimize(sipm);
+    }
+    state.SetItemsProcessed(state.iterations());
+}
+BENCHMARK(BM_ConstructRequest_LibraryConstant);
+
+// Construct request using raw string literal (Ad-hoc Path)
+static void BM_ConstructRequest_StringLiteral(benchmark::State& state)
+{
+    auto callId = siddiqsoft::createCallId();
+    for (auto _ : state)
+    {
+        siddiqsoft::sipmessage sipm("INVITE", "sip:bob@biloxi.com", callId, 1);
+        benchmark::DoNotOptimize(sipm);
+    }
+    state.SetItemsProcessed(state.iterations());
+}
+BENCHMARK(BM_ConstructRequest_StringLiteral);
 
 
 // ============================================================================

@@ -90,10 +90,10 @@ namespace siddiqsoft
         /// @brief Default constructor initializing an empty SIP message with metadata.
         /// @details Creates a new sipmessage with default metadata including version, timestamp, and TTX counter.
         sipmessage() : nlohmann::json({
-            {std::string{JSON_KEY_META}, {
-                {std::string{JSON_KEY_VERSION}, std::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
-                {std::string{JSON_KEY_TIME}, TimeAsISO8601()},
-                {std::string{JSON_KEY_TTX}, 0}
+            {JSON_KEY_META, {
+                {JSON_KEY_VERSION, std::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
+                {JSON_KEY_TIME, TimeAsISO8601()},
+                {JSON_KEY_TTX, 0}
             }}
         }) {}
 
@@ -151,24 +151,29 @@ namespace siddiqsoft
         /// @param uri Request URI
         /// @param callId Optional CallId
         /// @param cseq Optional Cseq; the string value is build using this parameter and the method
-        sipmessage(std::string_view method, std::string_view uri, std::string_view callId = {}, uint32_t cseq = 0)
+        /// @brief Instantiates request message given method and uri with option callId and cseq
+        /// @param method One of the supported SIP methods
+        /// @param uri Request URI
+        /// @param callId Optional CallId
+        /// @param cseq Optional Cseq; the string value is build using this parameter and the method
+        sipmessage(const std::string& method, const std::string& uri, const std::string& callId = {}, uint32_t cseq = 0)
         {
             using namespace std;
 
-            update({{std::string{JSON_KEY_STARTLINE}, {{std::string{JSON_KEY_TYPE}, SIPMessageType::request}, {std::string{JSON_KEY_METHOD}, std::string {method}}, {std::string{JSON_KEY_URI}, std::string {uri}}, {std::string{JSON_KEY_VERSION}, SIPVER_20}}},
-                    {std::string{JSON_KEY_BODY}, nullptr},
-                    {std::string{JSON_KEY_META},
-                     {{std::string{JSON_KEY_VERSION}, std::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
-                      {std::string{JSON_KEY_TIME}, TimeAsISO8601()},
-                      {std::string{JSON_KEY_TTX}, 0}}},
-                    {std::string{JSON_KEY_HEADERS},
-                     {{std::string{HFS_USER_AGENT[1]}, std::format("{}/{} (schema:{})", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
-                      {std::string{HFS_DATE[1]}, TimeAsRFC1123()}}}});
+            update({{JSON_KEY_STARTLINE, {{JSON_KEY_TYPE, SIPMessageType::request}, {JSON_KEY_METHOD, method}, {JSON_KEY_URI, uri}, {JSON_KEY_VERSION, SIPVER_20}}},
+                    {JSON_KEY_BODY, nullptr},
+                    {JSON_KEY_META,
+                     {{JSON_KEY_VERSION, std::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
+                      {JSON_KEY_TIME, TimeAsISO8601()},
+                      {JSON_KEY_TTX, 0}}},
+                    {JSON_KEY_HEADERS,
+                     {{HF_USER_AGENT, std::format("{}/{} (schema:{})", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
+                      {HF_DATE, TimeAsRFC1123()}}}});
 
             // request-line: METHOD Request-URI SIP/2.0
             // message-headers
-            if (!callId.empty()) setHeader(HFS_CALLID[1], std::string {callId});
-            if (cseq > 0) setHeader(HFS_CSEQ[1], std::format("{} {}", cseq, method));
+            if (!callId.empty()) setHeader(HF_CALLID, callId);
+            if (cseq > 0) setHeader(HF_CSEQ, std::format("{} {}", cseq, method));
         }
 
         /// @brief Instantiates a response message from scratch or optionally from existing sipmessage request
@@ -181,16 +186,16 @@ namespace siddiqsoft
             update(src);
 
             // Overwrite the source object's values
-            (*this)[std::string{JSON_KEY_META}] = {{std::string{JSON_KEY_VERSION}, std::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
-                                {std::string{JSON_KEY_TIME}, TimeAsISO8601()},
-                                {std::string{JSON_KEY_TTX}, 0}};
+            (*this)[JSON_KEY_META] = {{JSON_KEY_VERSION, std::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
+                                {JSON_KEY_TIME, TimeAsISO8601()},
+                                {JSON_KEY_TTX, 0}};
 
             // "status-line" (Status Reason Version)
-            (*this)[std::string{JSON_KEY_STARTLINE}] = {
-                    {std::string{JSON_KEY_TYPE}, SIPMessageType::response}, {std::string{JSON_KEY_STATUS}, statusCode}, {std::string{JSON_KEY_REASON}, getReasonPhrase(statusCode)}, {std::string{JSON_KEY_VERSION}, SIPVER_20}};
+            (*this)[JSON_KEY_STARTLINE] = {
+                    {JSON_KEY_TYPE, SIPMessageType::response}, {JSON_KEY_STATUS, statusCode}, {JSON_KEY_REASON, getReasonPhrase(statusCode)}, {JSON_KEY_VERSION, SIPVER_20}};
 
-            (*this)[std::string{JSON_KEY_HEADERS}][std::string{HFS_USER_AGENT[1]}] = std::format("{}/{} (schema:{})", MetaLibName, MetaParserVersion, MetaSchemaVersion);
-            setHeader(HFS_DATE[1], TimeAsRFC1123());
+            (*this)[JSON_KEY_HEADERS][HF_USER_AGENT] = std::format("{}/{} (schema:{})", MetaLibName, MetaParserVersion, MetaSchemaVersion);
+            setHeader(HF_DATE, TimeAsRFC1123());
         }
 
 
@@ -202,19 +207,19 @@ namespace siddiqsoft
             using namespace std;
 
             update(nlohmann::json {
-                    {std::string{JSON_KEY_STARTLINE},
-                     {{std::string{JSON_KEY_TYPE}, SIPMessageType::response},
-                      {std::string{JSON_KEY_STATUS}, statusCode},
-                      {std::string{JSON_KEY_REASON}, getReasonPhrase(statusCode)},
-                      {std::string{JSON_KEY_VERSION}, SIPVER_20}}},
-                    {std::string{JSON_KEY_BODY}, nullptr},
-                    {std::string{JSON_KEY_META},
-                     {{std::string{JSON_KEY_VERSION}, std::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
-                      {std::string{JSON_KEY_TIME}, TimeAsISO8601()},
-                      {std::string{JSON_KEY_TTX}, 0}}},
-                    {std::string{JSON_KEY_HEADERS},
-                     {{std::string{HFS_USER_AGENT[1]}, std::format("{}/{} (schema:{})", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
-                      {std::string{HFS_DATE[1]}, TimeAsRFC1123()}}}});
+                    {JSON_KEY_STARTLINE,
+                     {{JSON_KEY_TYPE, SIPMessageType::response},
+                      {JSON_KEY_STATUS, statusCode},
+                      {JSON_KEY_REASON, getReasonPhrase(statusCode)},
+                      {JSON_KEY_VERSION, SIPVER_20}}},
+                    {JSON_KEY_BODY, nullptr},
+                    {JSON_KEY_META,
+                     {{JSON_KEY_VERSION, std::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
+                      {JSON_KEY_TIME, TimeAsISO8601()},
+                      {JSON_KEY_TTX, 0}}},
+                    {JSON_KEY_HEADERS,
+                     {{HF_USER_AGENT, std::format("{}/{} (schema:{})", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
+                      {HF_DATE, TimeAsRFC1123()}}}});
         }
 
 
@@ -235,6 +240,26 @@ namespace siddiqsoft
         /// @param key The header name to look up.
         /// @param defaultValue Optional default value if the header is not found.
         /// @return The header value or the default value if not found.
+        template <class T> auto getHeader(const std::string& key, std::optional<T> defaultValue = {}) const
+        {
+            return (*this)[JSON_KEY_HEADERS].value(key, defaultValue.value_or(T {}));
+        }
+
+        /// @brief Retrieves a header value by key with optional default value.
+        /// @tparam T The type of the header value to retrieve.
+        /// @param key The header name to look up.
+        /// @param defaultValue Optional default value if the header is not found.
+        /// @return The header value or the default value if not found.
+        template <class T> auto getHeader(const char* key, std::optional<T> defaultValue = {}) const
+        {
+            return (*this)[JSON_KEY_HEADERS].value(key, defaultValue.value_or(T {}));
+        }
+
+        /// @brief Retrieves a header value by key with optional default value.
+        /// @tparam T The type of the header value to retrieve.
+        /// @param key The header name to look up.
+        /// @param defaultValue Optional default value if the header is not found.
+        /// @return The header value or the default value if not found.
         template <class T> auto getHeader(std::string_view key, std::optional<T> defaultValue = {}) const
         {
             return (*this)[JSON_KEY_HEADERS].value(std::string {key}, defaultValue.value_or(T {}));
@@ -244,26 +269,26 @@ namespace siddiqsoft
         /// @details Automatically formats the User-Agent header with library name, version, and schema information.
         /// @param ua Optional additional user agent string to append.
         /// @return Reference to this sipmessage for method chaining.
-        auto& setUserAgent(std::string_view ua = {})
+        auto& setUserAgent(const std::string& ua = {})
         {
             if (!ua.empty())
-                setHeader(HFS_USER_AGENT[1], std::format("{}/{} (schema:{}) {}", MetaLibName, MetaParserVersion, MetaSchemaVersion, ua));
+                setHeader(HF_USER_AGENT, std::format("{}/{} (schema:{}) {}", MetaLibName, MetaParserVersion, MetaSchemaVersion, ua));
             else
-                setHeader(HFS_USER_AGENT[1], std::format("{}/{} (schema:{})", MetaLibName, MetaParserVersion, MetaSchemaVersion));
+                setHeader(HF_USER_AGENT, std::format("{}/{} (schema:{})", MetaLibName, MetaParserVersion, MetaSchemaVersion));
             return *this;
         }
 
         /// @brief Retrieves the User-Agent header value.
         /// @return The User-Agent header string.
-        auto getUserAgent() const { return getHeader<std::string>(HFS_USER_AGENT[1]); }
+        auto getUserAgent() const { return getHeader<std::string>(HF_USER_AGENT); }
 
         /// @brief Retrieves the Content-Length header value.
         /// @return The Content-Length as a 32-bit unsigned integer.
-        uint32_t getContentLength() const { return getHeader<uint32_t>(HFS_CONTENT_LENGTH[1]); }
+        uint32_t getContentLength() const { return getHeader<uint32_t>(HF_CONTENT_LENGTH); }
 
         /// @brief Retrieves the Expires header value.
         /// @return The Expires value as a 32-bit unsigned integer.
-        uint32_t getExpires() const { return getHeader<uint32_t>(HFS_EXPIRES[1]); }
+        uint32_t getExpires() const { return getHeader<uint32_t>(HF_EXPIRES); }
 
         /// @brief Retrieves the Content-Type header value.
         /// @details Handles case-insensitive lookup for Content-Type and Content-type headers
@@ -271,9 +296,9 @@ namespace siddiqsoft
         /// @return The Content-Type header string, or empty string if not found.
         auto getContentType() const
         {
-            if (headers().contains(HFS_CONTENT_TYPE[1]))
+            if (headers().contains(HF_CONTENT_TYPE))
             {
-                auto ct = headers().at(HFS_CONTENT_TYPE[1]);
+                auto ct = headers().at(HF_CONTENT_TYPE);
                 return ct.is_null() ? std::string {} : ct.get<std::string>();
             }
             else if (headers().contains("Content-type"))
@@ -281,14 +306,14 @@ namespace siddiqsoft
                 auto ct = headers().at("Content-type");
                 return ct.is_null() ? std::string {} : ct.get<std::string>();
             }
-            else if (headers().contains(HFS_CONTENT_TYPE[0]))
+            else if (headers().contains("content-type"))
             {
-                auto ct = headers().at(HFS_CONTENT_TYPE[0]);
+                auto ct = headers().at("content-type");
                 return ct.is_null() ? std::string {} : ct.get<std::string>();
             }
-            else if (!HFS_CONTENT_TYPE[2].empty() && headers().contains(HFS_CONTENT_TYPE[2]))
+            else if (headers().contains("c"))
             {
-                auto ct = headers().at(HFS_CONTENT_TYPE[2]);
+                auto ct = headers().at("c");
                 return ct.is_null() ? std::string {} : ct.get<std::string>();
             }
 
@@ -297,7 +322,7 @@ namespace siddiqsoft
 
         /// @brief Retrieves the Call-ID header value.
         /// @return The Call-ID header string.
-        auto getCallID() const { return getHeader<std::string>(HFS_CALLID[1]); }
+        auto getCallID() const { return getHeader<std::string>(HF_CALLID); }
 
         /// @brief Retrieves the SIP method from a request message.
         /// @details Only applicable to request messages (e.g., INVITE, REGISTER, BYE).
@@ -418,6 +443,28 @@ namespace siddiqsoft
 
         // mutators
     public:
+        /// @brief Sets a header key-value
+        /// @tparam T Type of object; this is typically inferred by the compiler.
+        /// @param key The header name
+        /// @param v The header value.
+        /// @return Self.
+        template <typename T> inline sipmessage& setHeader(const std::string& key, const T& v)
+        {
+            (*this)[JSON_KEY_HEADERS][key] = v;
+            return *this;
+        };
+
+        /// @brief Sets a header key-value
+        /// @tparam T Type of object; this is typically inferred by the compiler.
+        /// @param key The header name
+        /// @param v The header value.
+        /// @return Self.
+        template <typename T> inline sipmessage& setHeader(const char* key, const T& v)
+        {
+            (*this)[JSON_KEY_HEADERS][key] = v;
+            return *this;
+        };
+
         /// @brief Sets a header key-value
         /// @tparam T Type of object; this is typically inferred by the compiler.
         /// @param key The header name
