@@ -92,10 +92,12 @@ namespace siddiqsoft
     static constexpr std::string_view METHOD_REGISTER {"REGISTER"};
     static constexpr std::string_view METHOD_SUBSCRIBE {"SUBSCRIBE"};
     static constexpr std::string_view METHOD_NOTIFY {"NOTIFY"};
-    static constexpr std::string_view METHOD_HEARTBEAT {"HEARTBEAT"};
-    // Microsoft Extensions
     static constexpr std::string_view METHOD_MESSAGE {"MESSAGE"};
     static constexpr std::string_view METHOD_INFO {"INFO"};
+    static constexpr std::string_view METHOD_REFER {"REFER"};
+    static constexpr std::string_view METHOD_PUBLISH {"PUBLISH"};
+    static constexpr std::string_view METHOD_UPDATE {"UPDATE"};
+    static constexpr std::string_view METHOD_PRACK {"PRACK"};
 
     static constexpr std::string_view VIA_BRANCH_PREFIX {"z9hG4bK"};
 
@@ -126,7 +128,7 @@ namespace siddiqsoft
     // Disallow any greedy consumption of the ending as it silently causes exceptions and slows down parsing!
     // This regex expression supports CRLF and LF
     static constexpr auto SIP_PATTERN_STARTLINE =
-            ctll::fixed_string {"(MESSAGE|INFO|INVITE|ACK|OPTIONS|BYE|CANCEL|REGISTER|SUBSCRIBE|NOTIFY|SIP/"
+            ctll::fixed_string {"(MESSAGE|INFO|INVITE|ACK|OPTIONS|BYE|CANCEL|REGISTER|SUBSCRIBE|NOTIFY|REFER|PUBLISH|UPDATE|PRACK|SIP/"
                                 "2\\.0)\\s([^\\s]+)\\s([^\\n\\f\\r]*)[\r\n|\n]"};
     static constexpr auto SIP_PATTERN_BODY_RE       = ctll::fixed_string {"([vosiuepcbtzkma])=([^\r\n]*)"};
     static constexpr auto SIP_PATTERN_BODY_ALINE_RE = ctll::fixed_string {"^([^:\r\n]*):(.*)$"};

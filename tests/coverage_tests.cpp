@@ -390,7 +390,7 @@ TEST(coverage_parsing, Test_folded_headers_tab)
 TEST(coverage_parsing, Test_all_supported_methods)
 {
     std::vector<std::string> methods = {
-            "INVITE", "ACK", "OPTIONS", "BYE", "CANCEL", "REGISTER", "SUBSCRIBE", "NOTIFY", "MESSAGE", "INFO"};
+            "INVITE", "ACK", "OPTIONS", "BYE", "CANCEL", "REGISTER", "SUBSCRIBE", "NOTIFY", "MESSAGE", "INFO", "REFER", "PUBLISH", "UPDATE", "PRACK"};
 
     for (const auto& method : methods)
     {
@@ -412,6 +412,50 @@ TEST(coverage_parsing, Test_all_supported_methods)
 
         EXPECT_NO_THROW(sipm = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end())) << "Failed for method: " << method;
         EXPECT_EQ(method, sipm.getMethod()) << "Method mismatch for: " << method;
+
+        std::string serialized;
+        EXPECT_NO_THROW(serialized = siddiqsoft::sip2json::serialize(sipm)) << "Serialization failed for method: " << method;
+        EXPECT_TRUE(serialized.find(method) != std::string::npos) << "Serialized output missing method: " << method;
+    }
+}
+
+
+TEST(coverage_parsing, Test_custom_method_tokens_rejected)
+{
+    std::vector<std::string> customTokens = {
+            "CUSTOMMETHOD", "FOOBAR", "BENCHMARK", "HEARTBEAT", "GET", "POST", "UNKNOWN"};
+
+    for (const auto& customMethod : customTokens)
+    {
+        std::string buffer = std::format("{} sip:test@test.com SIP/2.0\r\n"
+                                         "Via: SIP/2.0/TCP client.com:5060;branch=z9hG4bK776asdhds\r\n"
+                                         "To: sip:test@test.com\r\n"
+                                         "From: sip:sender@sender.com;tag=1928301774\r\n"
+                                         "Call-ID: custom-{}@client.com\r\n"
+                                         "CSeq: 1 {}\r\n"
+                                         "Content-Length: 0\r\n"
+                                         "\r\n",
+                                         customMethod,
+                                         customMethod,
+                                         customMethod);
+
+        auto bs = buffer.begin();
+        EXPECT_THROW(siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end()), siddiqsoft::invalid_startline_error)
+                << "Expected custom method to be rejected in parsing: " << customMethod;
+    }
+}
+
+
+TEST(coverage_serialization, Test_custom_method_tokens_serialize_rejected)
+{
+    std::vector<std::string> customTokens = {
+            "CUSTOMMETHOD", "FOOBAR", "BENCHMARK", "HEARTBEAT", "GET", "POST", "UNKNOWN"};
+
+    for (const auto& customMethod : customTokens)
+    {
+        siddiqsoft::sipmessage sipm(customMethod, "sip:user@example.com", "call-id-custom", 1);
+        EXPECT_THROW(siddiqsoft::sip2json::serialize(sipm), siddiqsoft::invalid_document_error)
+                << "Expected custom method to be rejected in serialization: " << customMethod;
     }
 }
 
