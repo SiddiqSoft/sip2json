@@ -34,6 +34,10 @@ project(sip2json
         HOMEPAGE_URL    "%%myurl%%"
         DESCRIPTION     "A SIP Parser for Modern C++. Header-only library to parse and serialize SIP messages to/from JSON.")
 
+if(NOT CMAKE_CXX_STANDARD)
+    set(CMAKE_CXX_STANDARD 23)
+endif()
+
 # ____________________________________
 # Options; define and declare defaults
 option(${PROJECT_NAME}_BUILD_TESTS "${PROJECT_NAME} - Build tests. Uncheck for install only runs" OFF)

@@ -20,12 +20,12 @@ if(${${PROJECT_NAME}_BUILD_TESTS})
     # Check if mold is available on the system
     find_program(MOLD_LINKER mold)
 
-    if(MOLD_LINKER)
+    if(MOLD_LINKER AND NOT (APPLE OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang"))
         message(STATUS "  >> Found mold linker, using it for build.")
         # Apply mold as the linker for executables and shared libraries
         add_link_options("-fuse-ld=mold")
     else()
-        message(STATUS "  >> mold not found, falling back to default linker.")
+        message(STATUS "  >> mold not found or unsupported on this compiler/platform, falling back to default linker.")
     endif()
 
     find_program(CLANG_TIDY_EXE NAMES "clang-tidy")
@@ -114,5 +114,10 @@ if(${${PROJECT_NAME}_BUILD_TESTS})
                         PROPERTIES ENVIRONMENT "SAMPLES_DIR=${PROJECT_SOURCE_DIR}/tests/samples")
 
     include(CTest)
+
+    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/validation" AND IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/validation")
+        add_subdirectory(validation)
+    endif()
+
     message(STATUS "  Finished configuring for ${PROJECT_NAME}_BUILD_TESTS = ${${PROJECT_NAME}_BUILD_TESTS}")
 endif()
