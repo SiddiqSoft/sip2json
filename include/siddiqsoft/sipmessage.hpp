@@ -151,11 +151,16 @@ namespace siddiqsoft
         /// @param uri Request URI
         /// @param callId Optional CallId
         /// @param cseq Optional Cseq; the string value is build using this parameter and the method
-        sipmessage(std::string_view method, std::string_view uri, std::string_view callId = {}, uint32_t cseq = 0)
+        /// @brief Instantiates request message given method and uri with option callId and cseq
+        /// @param method One of the supported SIP methods
+        /// @param uri Request URI
+        /// @param callId Optional CallId
+        /// @param cseq Optional Cseq; the string value is build using this parameter and the method
+        sipmessage(const std::string& method, const std::string& uri, const std::string& callId = {}, uint32_t cseq = 0)
         {
             using namespace std;
 
-            update({{JSON_KEY_STARTLINE, {{JSON_KEY_TYPE, SIPMessageType::request}, {JSON_KEY_METHOD, std::string {method}}, {JSON_KEY_URI, std::string {uri}}, {JSON_KEY_VERSION, SIPVER_20}}},
+            update({{JSON_KEY_STARTLINE, {{JSON_KEY_TYPE, SIPMessageType::request}, {JSON_KEY_METHOD, method}, {JSON_KEY_URI, uri}, {JSON_KEY_VERSION, SIPVER_20}}},
                     {JSON_KEY_BODY, nullptr},
                     {JSON_KEY_META,
                      {{JSON_KEY_VERSION, std::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
@@ -167,7 +172,7 @@ namespace siddiqsoft
 
             // request-line: METHOD Request-URI SIP/2.0
             // message-headers
-            if (!callId.empty()) setHeader(HF_CALLID, std::string {callId});
+            if (!callId.empty()) setHeader(HF_CALLID, callId);
             if (cseq > 0) setHeader(HF_CSEQ, std::format("{} {}", cseq, method));
         }
 
@@ -264,7 +269,7 @@ namespace siddiqsoft
         /// @details Automatically formats the User-Agent header with library name, version, and schema information.
         /// @param ua Optional additional user agent string to append.
         /// @return Reference to this sipmessage for method chaining.
-        auto& setUserAgent(std::string_view ua = {})
+        auto& setUserAgent(const std::string& ua = {})
         {
             if (!ua.empty())
                 setHeader(HF_USER_AGENT, std::format("{}/{} (schema:{}) {}", MetaLibName, MetaParserVersion, MetaSchemaVersion, ua));

@@ -49,7 +49,7 @@
 namespace siddiqsoft
 {
     /// @brief Escapes key tokens for use in nlohmann::json::json_pointer per RFC 6901
-    inline std::string sip2json::escapeJsonPointerToken(std::string_view token)
+    inline std::string sip2json::escapeJsonPointerToken(const std::string& token)
     {
         std::string escaped;
         escaped.reserve(token.size());
