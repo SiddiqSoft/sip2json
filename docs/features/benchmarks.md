@@ -99,6 +99,31 @@ While offloading single-stream messages to worker threads incurs queue lock over
 
 ---
 
+## 5. Micro-Optimization & Refactoring Performance Deltas
+
+Recent optimizations—converting global protocol constants and JSON keys to `static constexpr std::string_view` (`JSON_KEY_*`, `HFS_*`), adding zero-copy view accessors (`getMethodView()`, `getCallIDView()`), and avoiding redundant optional SDP field serializations per RFC 4566 (Fixes #33)—achieved measured performance gains across `Apple-Release` (`-O3 -g`) benchmarks:
+
+### Optimization Delta Summary (Baseline `f0b7c97` vs Current `abdulkareem-siddiq/issue33`)
+
+| Benchmark Category | Benchmark Name | Baseline (`f0b7c97`) | Current Branch | Speedup / Delta | Operational Rate |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Header Accessors** | `BM_GetMethod` | 111.77 ns | **97.09 ns** | **-13.14% (faster)** | **10,373,812 ops/sec** |
+| **Noisy Stream Decoders** | `BM_WorstCaseNoisyAsyncParsing/1000` | 51.24 µs | **44.78 µs** | **-12.61% (faster)** | **22,662,064 msg/sec** |
+| **SIP Message Construction** | `BM_ConstructRequestSipmessage` | 5.44 µs | **4.80 µs** | **-11.86% (faster)** | 208,604 msg/sec |
+| **Response Instantiation** | `BM_ConstructResponseFromRequest` | 4.64 µs | **4.16 µs** | **-10.29% (faster)** | 240,493 msg/sec |
+| **Variable Buffer Stress** | `BM_VariableSizeAsyncStressTest/50` | 1.85 ms | **1.66 ms** | **-10.27% (faster)** | 30,434 msg/sec |
+| **Variable Buffer Stress** | `BM_VariableSizeAsyncStressTest/10` | 360.71 µs | **327.27 µs** | **-9.27% (faster)** | 30,717 msg/sec |
+| **Variable Buffer Stress** | `BM_VariableSizeStressTest/500` | 18.59 ms | **16.87 ms** | **-9.21% (faster)** | 29,955 msg/sec |
+| **Noisy Stream Decoders** | `BM_WorstCaseNoisyAsyncParsing/500` | 40.11 µs | **36.71 µs** | **-8.48% (faster)** | 13,678,243 msg/sec |
+| **Noisy Stream Decoders** | `BM_WorstCaseNoisyAsyncParsing/100` | 33.18 µs | **30.62 µs** | **-7.72% (faster)** | 3,308,973 msg/sec |
+| **Default Construction** | `BM_ConstructDefaultSipmessage` | 1.59 µs | **1.49 µs** | **-6.04% (faster)** | 677,473 msg/sec |
+| **Stream Thread Pool Handoff** | `BM_SimulatedStream_Parse_WithThreadPoolHandoff` | 7.53 ms | **7.08 ms** | **-5.94% (faster)** | 209,221 msg/sec |
+| **Response Construction** | `BM_ConstructResponseSipmessage` | 4.82 µs | **4.60 µs** | **-4.42% (faster)** | 219,227 msg/sec |
+| **Multi-Thread Scaling** | `BM_MultiThreadedAsyncParsing/4` | 4.02 ms | **3.89 ms** | **-3.06% (faster)** | **21,996,876 msg/sec** |
+| **Multi-Thread Scaling** | `BM_MultiThreadedAsyncParsing/16` | 14.23 ms | **13.81 ms** | **-2.94% (faster)** | **23,790,194 msg/sec** |
+
+---
+
 ## Architectural Recommendations
 
 > [!TIP]
