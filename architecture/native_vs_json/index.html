@@ -12,13 +12,13 @@
         <meta name="author" content="Siddiq Software LLC">
       
       
-        <link rel="canonical" href="https://siddiqsoft.github.io/sip2json/examples/serialization/">
+        <link rel="canonical" href="https://siddiqsoft.github.io/sip2json/architecture/native_vs_json/">
       
       
-        <link rel="prev" href="../async_parsing/">
+        <link rel="prev" href="../dataflow/">
       
       
-        <link rel="next" href="../../license/">
+        <link rel="next" href="../../api/">
       
       
         
@@ -29,7 +29,7 @@
     
     
       
-        <title>Message Serialization - sip2json</title>
+        <title>Native vs JSON Study - sip2json</title>
       
     
     
@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#message-serialization-example" class="md-skip">
+        <a href="#architectural-study-native-c-struct-vs-json-subclassed-model" class="md-skip">
           Skip to content
         </a>
       
@@ -121,7 +121,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Message Serialization
+              Native vs JSON Study
             
           </span>
         </div>
@@ -290,11 +290,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../architecture/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
           
   
   
@@ -330,13 +332,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../examples/" class="md-tabs__link">
           
   
   
@@ -822,28 +822,31 @@
       
   
   
+    
   
   
+  
     
     
     
     
+      
+        
+        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
         
           
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
-        
-          
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
             
   
   
@@ -861,7 +864,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
@@ -879,7 +882,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/" class="md-nav__link">
+      <a href="../" class="md-nav__link">
         
   
   
@@ -907,7 +910,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/patterns/" class="md-nav__link">
+      <a href="../patterns/" class="md-nav__link">
         
   
   
@@ -935,7 +938,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/dataflow/" class="md-nav__link">
+      <a href="../dataflow/" class="md-nav__link">
         
   
   
@@ -960,10 +963,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../architecture/native_vs_json/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Native vs JSON Study
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -979,6 +1009,104 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-architectural-background-what-if-question" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Architectural Background &amp; What-If Question
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-empirical-benchmark-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Empirical Benchmark Matrix
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-low-level-performance-mechanics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Low-Level Performance Mechanics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Low-Level Performance Mechanics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#why-the-native-c-struct-is-88x-faster-9347k-msgsec" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why the Native C++ Struct is 8.8x Faster (934.7K msg/sec)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-comprehensive-trade-off-matrix-architectural-verdict" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Comprehensive Trade-off Matrix &amp; Architectural Verdict
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Comprehensive Trade-off Matrix &amp; Architectural Verdict">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#architectural-verdict-design-choice" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architectural Verdict &amp; Design Choice
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1168,31 +1296,28 @@
       
   
   
-    
   
   
-  
     
     
     
     
-      
-        
-        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
         
           
-          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
             
   
   
@@ -1210,7 +1335,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1228,7 +1353,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../" class="md-nav__link">
+      <a href="../../examples/" class="md-nav__link">
         
   
   
@@ -1256,7 +1381,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../async_parsing/" class="md-nav__link">
+      <a href="../../examples/async_parsing/" class="md-nav__link">
         
   
   
@@ -1281,19 +1406,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../examples/serialization/" class="md-nav__link">
         
   
   
@@ -1309,7 +1425,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -1369,6 +1484,92 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-architectural-background-what-if-question" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Architectural Background &amp; What-If Question
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-empirical-benchmark-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Empirical Benchmark Matrix
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-low-level-performance-mechanics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Low-Level Performance Mechanics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Low-Level Performance Mechanics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#why-the-native-c-struct-is-88x-faster-9347k-msgsec" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why the Native C++ Struct is 8.8x Faster (934.7K msg/sec)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-comprehensive-trade-off-matrix-architectural-verdict" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Comprehensive Trade-off Matrix &amp; Architectural Verdict
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Comprehensive Trade-off Matrix &amp; Architectural Verdict">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#architectural-verdict-design-choice" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architectural Verdict &amp; Design Choice
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1413,7 +1614,7 @@
         <a href="../" class="md-path__link">
           
   <span class="md-ellipsis">
-    Examples
+    Architecture & Design
   </span>
 
         </a>
@@ -1435,51 +1636,133 @@
   
 
 
-<h1 id="message-serialization-example">Message Serialization Example<a class="headerlink" href="#message-serialization-example" title="Permanent link">&para;</a></h1>
-<p>This example demonstrates constructing a SIP message using the builder syntax and serializing it into standard SIP wire format.</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"siddiqsoft/sip2json.hpp"</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">siddiqsoft</span><span class="p">;</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="p">{</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">    </span><span class="c1">// 1. Construct INVITE Request</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">    </span><span class="n">sipmessage</span><span class="w"> </span><span class="n">msg</span><span class="p">(</span><span class="s">"INVITE"</span><span class="p">,</span><span class="w"> </span><span class="s">"sip:bob@example.com"</span><span class="p">,</span><span class="w"> </span><span class="s">"call-id-99812"</span><span class="p">,</span><span class="w"> </span><span class="mi">42</span><span class="p">);</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">    </span><span class="c1">// 2. Set Headers using fluent method chaining</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">    </span><span class="n">msg</span><span class="p">.</span><span class="n">setHeader</span><span class="p">(</span><span class="s">"From"</span><span class="p">,</span><span class="w"> </span><span class="s">"sip:alice@example.com;tag=a831"</span><span class="p">)</span>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">       </span><span class="p">.</span><span class="n">setHeader</span><span class="p">(</span><span class="s">"To"</span><span class="p">,</span><span class="w"> </span><span class="s">"sip:bob@example.com"</span><span class="p">)</span>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">       </span><span class="p">.</span><span class="n">setHeader</span><span class="p">(</span><span class="s">"Contact"</span><span class="p">,</span><span class="w"> </span><span class="s">"&lt;sip:alice@10.0.0.4:5060&gt;"</span><span class="p">)</span>
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">       </span><span class="p">.</span><span class="n">setHeader</span><span class="p">(</span><span class="s">"Content-Type"</span><span class="p">,</span><span class="w"> </span><span class="s">"application/sdp"</span><span class="p">)</span>
-</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w">       </span><span class="p">.</span><span class="n">setHeader</span><span class="p">(</span><span class="s">"User-Agent"</span><span class="p">,</span><span class="w"> </span><span class="s">"sip2json/2.0"</span><span class="p">);</span>
-</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>
-</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="w">    </span><span class="c1">// 3. Attach SDP Body</span>
-</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="w">    </span><span class="n">msg</span><span class="p">.</span><span class="n">body</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="w">        </span><span class="p">{</span><span class="s">"sdp"</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="w">            </span><span class="p">{</span>
-</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="w">                </span><span class="p">{</span><span class="s">"v"</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">},</span>
-</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="w">                </span><span class="p">{</span><span class="s">"o"</span><span class="p">,</span><span class="w"> </span><span class="p">{{</span><span class="s">"user"</span><span class="p">,</span><span class="w"> </span><span class="s">"alice"</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="s">"t1"</span><span class="p">,</span><span class="w"> </span><span class="s">"1000"</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="s">"t2"</span><span class="p">,</span><span class="w"> </span><span class="s">"1000"</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="s">"type"</span><span class="p">,</span><span class="w"> </span><span class="s">"IN"</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="s">"subtype"</span><span class="p">,</span><span class="w"> </span><span class="s">"IP4"</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="s">"host"</span><span class="p">,</span><span class="w"> </span><span class="s">"10.0.0.4"</span><span class="p">}}},</span>
-</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="w">                </span><span class="p">{</span><span class="s">"s"</span><span class="p">,</span><span class="w"> </span><span class="s">"Talk"</span><span class="p">},</span>
-</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="w">                </span><span class="p">{</span><span class="s">"c"</span><span class="p">,</span><span class="w"> </span><span class="p">{{</span><span class="s">"type"</span><span class="p">,</span><span class="w"> </span><span class="s">"IN"</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="s">"subtype"</span><span class="p">,</span><span class="w"> </span><span class="s">"IP4"</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="s">"dn"</span><span class="p">,</span><span class="w"> </span><span class="s">"10.0.0.4"</span><span class="p">}}},</span>
-</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="w">                </span><span class="p">{</span><span class="s">"t"</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">}},</span>
-</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="w">                </span><span class="p">{</span><span class="s">"m"</span><span class="p">,</span><span class="w"> </span><span class="s">"audio 49170 RTP/AVP 0 101"</span><span class="p">},</span>
-</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="w">                </span><span class="p">{</span><span class="s">"a"</span><span class="p">,</span><span class="w"> </span><span class="p">{{</span><span class="s">"rtpmap"</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="s">"0 PCMU/8000"</span><span class="p">,</span><span class="w"> </span><span class="s">"101 telephone-event/8000"</span><span class="p">}}}}</span>
-</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="w">            </span><span class="p">}</span>
-</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a><span class="w">        </span><span class="p">}}</span>
-</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="w">    </span><span class="p">};</span>
-</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>
-</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a><span class="w">    </span><span class="c1">// 4. Serialize to wire format</span>
-</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a><span class="w">    </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a><span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">sipText</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sip2json</span><span class="o">::</span><span class="n">serialize</span><span class="p">(</span><span class="n">msg</span><span class="p">);</span>
-</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a><span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"Serialized SIP Output:</span><span class="se">\n\n</span><span class="s">"</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">sipText</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">sip2json_exception</span><span class="o">&amp;</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a><span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"Serialization error: "</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">what</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-</span><span id="__span-0-39"><a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a><span class="w">    </span><span class="p">}</span>
-</span><span id="__span-0-40"><a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a>
-</span><span id="__span-0-41"><a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
-</span><span id="__span-0-42"><a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a><span class="p">}</span>
-</span></code></pre></div>
+<h1 id="architectural-study-native-c-struct-vs-json-subclassed-model">Architectural Study: Native C++ Struct vs. JSON-Subclassed Model<a class="headerlink" href="#architectural-study-native-c-struct-vs-json-subclassed-model" title="Permanent link">&para;</a></h1>
+<p>This document presents an architectural trade-off analysis comparing a <strong>Native C++ Standalone Struct</strong> model (<code>sipmessage_native</code>) against the <strong><code>nlohmann::json</code>-subclassed</strong> model (<code>sipmessage</code>) used by <code>sip2json</code>.</p>
+<hr />
+<h2 id="1-architectural-background-what-if-question">1. Architectural Background &amp; What-If Question<a class="headerlink" href="#1-architectural-background-what-if-question" title="Permanent link">&para;</a></h2>
+<p>When designing a modern C++ SIP protocol parser, two primary data modeling approaches emerge:</p>
+<ol>
+<li><strong>Option A: Subclass <code>nlohmann::json</code> directly (<code>sipmessage</code>)</strong></li>
+<li><strong>Design Goal</strong>: Every parsed SIP message <em>is-a</em> native JSON object (<code>nlohmann::json</code>). It can be passed directly to JSON serializers, web API endpoints, database engines (MongoDB, PostgreSQL <code>jsonb</code>), and log processors with <strong>zero transformation overhead</strong>.</li>
+<li>
+<p><strong>Trade-off</strong>: Requires constructing a dynamic JSON Abstract Syntax Tree (AST) using heap-allocated <code>std::map&lt;std::string, nlohmann::basic_json&gt;</code> nodes for every field (<code>"s"</code>, <code>"h"</code>, <code>"b"</code>, <code>"meta"</code>).</p>
+</li>
+<li>
+<p><strong>Option B: Standalone Native C++ Struct (<code>sipmessage_native</code>)</strong></p>
+</li>
+<li><strong>Design Goal</strong>: Store parsed fields in stack-allocated native C++ members (<code>std::string method</code>, <code>std::string uri</code>, <code>std::vector&lt;std::pair&lt;std::string, std::string&gt;&gt; headers</code>).</li>
+<li><strong>Trade-off</strong>: Maximum raw parsing throughput and zero JSON AST allocation overhead, but requires an explicit transformation/serialization step to emit JSON.</li>
+</ol>
+<hr />
+<h2 id="2-empirical-benchmark-matrix">2. Empirical Benchmark Matrix<a class="headerlink" href="#2-empirical-benchmark-matrix" title="Permanent link">&para;</a></h2>
+<p>We benchmarked both models on Apple Silicon (<code>Apple-Release</code> <code>-O3</code>) executing identical parsing, header mutation, and header retrieval loops:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Benchmark Scenario / Metric</th>
+<th style="text-align: left;">Native C++ Struct (<code>sipmessage_native</code>)</th>
+<th style="text-align: left;"><code>nlohmann::json</code> Subclass (<code>sipmessage</code>)</th>
+<th style="text-align: left;">Performance Difference</th>
+<th style="text-align: left;">Operational Advantage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong><code>sipmessage</code> Instantiation</strong></td>
+<td style="text-align: left;"><strong>989 ns</strong> (1,011,110 msgs/sec)</td>
+<td style="text-align: left;">4,725 ns (211,639 msgs/sec)</td>
+<td style="text-align: left;"><strong>4.78x FASTER</strong></td>
+<td style="text-align: left;"><strong>1.01M</strong> vs 211.6K instantiations/sec</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>setHeader</code> Mutation</strong></td>
+<td style="text-align: left;"><strong>9.46 ns</strong> (105,703,000 ops/sec)</td>
+<td style="text-align: left;">45.0 ns (22,236,500 ops/sec)</td>
+<td style="text-align: left;"><strong>4.76x FASTER</strong></td>
+<td style="text-align: left;"><strong>105.70M</strong> vs 22.24M ops/sec</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>getHeader</code> Lookup</strong></td>
+<td style="text-align: left;"><strong>22.0 ns</strong> (45,513,900 ops/sec)</td>
+<td style="text-align: left;">57.1 ns (17,514,900 ops/sec)</td>
+<td style="text-align: left;"><strong>2.60x FASTER</strong></td>
+<td style="text-align: left;"><strong>45.51M</strong> vs 17.51M lookups/sec</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Full INVITE Parsing Rate</strong></td>
+<td style="text-align: left;"><strong>1,070 ns</strong> (<strong>934,691 msgs/sec</strong>)</td>
+<td style="text-align: left;">9,436 ns (105,982 msgs/sec)</td>
+<td style="text-align: left;"><strong>8.82x FASTER</strong></td>
+<td style="text-align: left;"><strong>934,691</strong> vs 105,982 msgs/sec</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Parsing Bandwidth</strong></td>
+<td style="text-align: left;"><strong>506.31 MiB/sec</strong></td>
+<td style="text-align: left;">57.41 MiB/sec</td>
+<td style="text-align: left;"><strong>8.82x FASTER</strong></td>
+<td style="text-align: left;">Half a Gigabyte/sec per core</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Memory Footprint (<code>sizeof</code>)</strong></td>
+<td style="text-align: left;"><strong>256 Bytes</strong></td>
+<td style="text-align: left;">280 Bytes + <code>std::map</code> heap nodes</td>
+<td style="text-align: left;"><strong>Significantly smaller</strong></td>
+<td style="text-align: left;">Zero dynamic JSON AST node overhead</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="3-low-level-performance-mechanics">3. Low-Level Performance Mechanics<a class="headerlink" href="#3-low-level-performance-mechanics" title="Permanent link">&para;</a></h2>
+<h3 id="why-the-native-c-struct-is-88x-faster-9347k-msgsec">Why the Native C++ Struct is 8.8x Faster (934.7K msg/sec)<a class="headerlink" href="#why-the-native-c-struct-is-88x-faster-9347k-msgsec" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Zero AST Overhead</strong>: Direct member assignments (<code>msg.method = string(g1)</code>, <code>msg.uri = string(g2)</code>) place strings into stack-allocated contiguous struct memory, avoiding <code>std::map</code> node allocations and variant type discriminators.</li>
+<li><strong>Cache Locality</strong>: Accessing struct fields operates within single CPU L1 cache lines, whereas <code>std::map</code> nodes require pointer dereferencing across scattered heap locations.</li>
+</ul>
+<hr />
+<h2 id="4-comprehensive-trade-off-matrix-architectural-verdict">4. Comprehensive Trade-off Matrix &amp; Architectural Verdict<a class="headerlink" href="#4-comprehensive-trade-off-matrix-architectural-verdict" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Architectural Criterion</th>
+<th style="text-align: left;">Native C++ Struct (<code>sipmessage_native</code>)</th>
+<th style="text-align: left;"><code>nlohmann::json</code> Subclass (<code>sipmessage</code>)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Raw Parsing Throughput</strong></td>
+<td style="text-align: left;"><strong>Ultra-Fast (934,691 msg/sec)</strong></td>
+<td style="text-align: left;">Fast (105,982 msg/sec)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Memory Allocations</strong></td>
+<td style="text-align: left;"><strong>Minimal (0 JSON AST nodes)</strong></td>
+<td style="text-align: left;">AST nodes per header &amp; section</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>JSON Export Cost</strong></td>
+<td style="text-align: left;">High (Requires custom serializer)</td>
+<td style="text-align: left;"><strong>Zero-cost (IS-A <code>nlohmann::json</code> object)</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Database &amp; Web API Integration</strong></td>
+<td style="text-align: left;">Requires manual mapping code</td>
+<td style="text-align: left;"><strong>Direct pass-through to MongoDB / PostgreSQL / REST APIs</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Dynamic Schema Extension</strong></td>
+<td style="text-align: left;">Rigid static struct fields</td>
+<td style="text-align: left;"><strong>Flexible dynamic JSON properties</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="architectural-verdict-design-choice">Architectural Verdict &amp; Design Choice<a class="headerlink" href="#architectural-verdict-design-choice" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p>[!NOTE]
+<strong>Why <code>sip2json</code> Chooses <code>nlohmann::json</code> Inheritance</strong>:
+The primary mission of <code>sip2json</code> is to convert raw SIP wire streams into <strong>first-class structured JSON data</strong> for modern cloud APIs, log analytics, and microservices.
+Subclassing <code>nlohmann::json</code> provides <strong>zero-cost JSON serialization, direct schema compatibility, and dynamic property extensibility</strong>. At <strong>&gt; 105,000 messages/sec per core</strong>, the <code>nlohmann::json</code> model easily satisfies high-throughput carrier-grade network requirements while delivering native JSON ergonomics.</p>
+</blockquote>
 
 
 
@@ -1515,7 +1798,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../async_parsing/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Stream Parsing Callback">
+          <a href="../dataflow/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Data Flow &amp; Memory">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1525,20 +1808,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Stream Parsing Callback
+                Data Flow & Memory
               </div>
             </div>
           </a>
         
         
           
-          <a href="../../license/" class="md-footer__link md-footer__link--next" aria-label="Next: License">
+          <a href="../../api/" class="md-footer__link md-footer__link--next" aria-label="Next: Overview">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                License
+                Overview
               </div>
             </div>
             <div class="md-footer__button md-icon">

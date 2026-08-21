@@ -956,6 +956,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/native_vs_json/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Native vs JSON Study
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1115,10 +1143,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#member-variables" class="md-nav__link">
+  <a href="#optimal-usage-guidelines" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Member Variables
+        Optimal Usage Guidelines
       
     </span>
   </a>
@@ -1165,16 +1193,27 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#methods" class="md-nav__link">
+  <a href="#key-methods-accessors" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Methods
+        Key Methods &amp; Accessors
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Methods">
+    <nav class="md-nav" aria-label="Key Methods &amp; Accessors">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#getheader" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        getHeader
+      
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#setheader" class="md-nav__link">
@@ -1188,21 +1227,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#empty" class="md-nav__link">
+  <a href="#zero-copy-view-accessors" class="md-nav__link">
     <span class="md-ellipsis">
       
-        empty
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#implicit-json-conversion" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Implicit JSON Conversion
+        Zero-Copy View Accessors
       
     </span>
   </a>
@@ -1485,10 +1513,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#member-variables" class="md-nav__link">
+  <a href="#optimal-usage-guidelines" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Member Variables
+        Optimal Usage Guidelines
       
     </span>
   </a>
@@ -1535,16 +1563,27 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#methods" class="md-nav__link">
+  <a href="#key-methods-accessors" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Methods
+        Key Methods &amp; Accessors
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Methods">
+    <nav class="md-nav" aria-label="Key Methods &amp; Accessors">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#getheader" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        getHeader
+      
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#setheader" class="md-nav__link">
@@ -1558,21 +1597,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#empty" class="md-nav__link">
+  <a href="#zero-copy-view-accessors" class="md-nav__link">
     <span class="md-ellipsis">
       
-        empty
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#implicit-json-conversion" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Implicit JSON Conversion
+        Zero-Copy View Accessors
       
     </span>
   </a>
@@ -1653,51 +1681,57 @@
 
 
 <h1 id="sipmessage-class-reference"><code>sipmessage</code> Class Reference<a class="headerlink" href="#sipmessage-class-reference" title="Permanent link">&para;</a></h1>
-<p>The <code>sipmessage</code> class represents a parsed or constructed SIP request or response message.</p>
+<p>The <code>sipmessage</code> class represents a parsed or constructed SIP request or response message, extending <code>nlohmann::json</code>.</p>
 <hr />
-<h2 id="member-variables">Member Variables<a class="headerlink" href="#member-variables" title="Permanent link">&para;</a></h2>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">struct</span><span class="w"> </span><span class="nc">sipmessage</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">type</span><span class="p">;</span><span class="w">       </span><span class="c1">// "request" or "response"</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">method</span><span class="p">;</span><span class="w">     </span><span class="c1">// Standard SIP method: "INVITE", "ACK", "OPTIONS", "BYE", "CANCEL", "REGISTER", "SUBSCRIBE", "NOTIFY", "MESSAGE", "INFO", "REFER", "PUBLISH", "UPDATE", "PRACK"</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">uri</span><span class="p">;</span><span class="w">        </span><span class="c1">// Request URI (e.g. "sip:user@example.com")</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">responseCode</span><span class="p">{</span><span class="mi">0</span><span class="p">};</span><span class="w">    </span><span class="c1">// Response status code (e.g. 200, 404, 180)</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">reason</span><span class="p">;</span><span class="w">     </span><span class="c1">// Response reason phrase (e.g. "OK", "Not Found")</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">version</span><span class="p">{</span><span class="s">"SIP/2.0"</span><span class="p">};</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">callid</span><span class="p">;</span><span class="w">     </span><span class="c1">// Call-ID header value</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">cseq</span><span class="p">{</span><span class="mi">0</span><span class="p">};</span><span class="w">       </span><span class="c1">// CSeq sequence number</span>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">    </span><span class="n">nlohmann</span><span class="o">::</span><span class="n">json</span><span class="w"> </span><span class="n">headers</span><span class="p">;</span><span class="w"> </span><span class="c1">// JSON object storing all message headers (RFC 3261 case-insensitive matching)</span>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">    </span><span class="n">nlohmann</span><span class="o">::</span><span class="n">json</span><span class="w"> </span><span class="n">body</span><span class="p">;</span><span class="w">    </span><span class="c1">// JSON object storing payload body (e.g. SDP)</span>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="p">};</span>
+<h2 id="optimal-usage-guidelines">Optimal Usage Guidelines<a class="headerlink" href="#optimal-usage-guidelines" title="Permanent link">&para;</a></h2>
+<blockquote>
+<p>[!TIP]
+<strong>Performance Best Practice</strong>:
+For maximum throughput and zero-allocation key lookups, use the pre-defined library constants (<code>siddiqsoft::METHOD_*</code>, <code>siddiqsoft::HF_*</code>, <code>siddiqsoft::CONTENT_TYPE_*</code>).
+Passing static string constants yields a <strong>13.2% performance gain for <code>setHeader</code></strong> and a <strong>4.8% gain for <code>getHeader</code></strong> over raw string literals.</p>
+</blockquote>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">// OPTIMAL (Zero-Allocation Static Reference Path)</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">siddiqsoft</span><span class="o">::</span><span class="n">sipmessage</span><span class="w"> </span><span class="n">msg</span><span class="p">(</span><span class="n">siddiqsoft</span><span class="o">::</span><span class="n">METHOD_INVITE</span><span class="p">,</span><span class="w"> </span><span class="s">"sip:bob@biloxi.com"</span><span class="p">,</span><span class="w"> </span><span class="n">callId</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">msg</span><span class="p">.</span><span class="n">setHeader</span><span class="p">(</span><span class="n">siddiqsoft</span><span class="o">::</span><span class="n">HF_CONTENT_TYPE</span><span class="p">,</span><span class="w"> </span><span class="n">siddiqsoft</span><span class="o">::</span><span class="n">CONTENT_TYPE_APP_SDP</span><span class="p">);</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="k">auto</span><span class="w"> </span><span class="n">callId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">msg</span><span class="p">.</span><span class="n">getHeader</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span><span class="n">siddiqsoft</span><span class="o">::</span><span class="n">HF_CALLID</span><span class="p">);</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="c1">// AD-HOC / FALLBACK (Works seamlessly, ~13% overhead for string literal strlen/conversions)</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="n">msg</span><span class="p">.</span><span class="n">setHeader</span><span class="p">(</span><span class="s">"X-Custom-Header"</span><span class="p">,</span><span class="w"> </span><span class="s">"custom-value"</span><span class="p">);</span>
 </span></code></pre></div>
 <hr />
 <h2 id="constructors">Constructors<a class="headerlink" href="#constructors" title="Permanent link">&para;</a></h2>
 <h3 id="default-constructor">Default Constructor<a class="headerlink" href="#default-constructor" title="Permanent link">&para;</a></h3>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">sipmessage</span><span class="p">();</span>
 </span></code></pre></div>
-<p>Creates an empty <code>sipmessage</code> instance.</p>
+<p>Creates an empty <code>sipmessage</code> instance initialized with metadata.</p>
 <h3 id="request-constructor">Request Constructor<a class="headerlink" href="#request-constructor" title="Permanent link">&para;</a></h3>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">sipmessage</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">reqMethod</span><span class="p">,</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">           </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">reqUri</span><span class="p">,</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">           </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">callId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">""</span><span class="p">,</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">           </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">cseqNumber</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">sipmessage</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">method</span><span class="p">,</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">           </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">uri</span><span class="p">,</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">           </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">callId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{},</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">           </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">cseq</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
 </span></code></pre></div>
-<p>Initializes a request message with specified method, URI, Call-ID, and CSeq.</p>
+<p>Initializes a request message with specified method, URI, optional Call-ID, and optional CSeq. Supports both <code>const std::string&amp;</code> references and string literals.</p>
 <hr />
-<h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
+<h2 id="key-methods-accessors">Key Methods &amp; Accessors<a class="headerlink" href="#key-methods-accessors" title="Permanent link">&para;</a></h2>
+<h3 id="getheader"><code>getHeader</code><a class="headerlink" href="#getheader" title="Permanent link">&para;</a></h3>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="k">class</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">getHeader</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">key</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">optional</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">defaultValue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{})</span><span class="w"> </span><span class="k">const</span><span class="p">;</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="k">class</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">getHeader</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">key</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">optional</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">defaultValue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{})</span><span class="w"> </span><span class="k">const</span><span class="p">;</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="k">class</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">getHeader</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string_view</span><span class="w"> </span><span class="n">key</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">optional</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">defaultValue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{})</span><span class="w"> </span><span class="k">const</span><span class="p">;</span>
+</span></code></pre></div>
+<p>Retrieves a header value by key with an optional default fallback value. Overloaded for <code>const std::string&amp;</code>, raw C-strings <code>const char*</code>, and <code>std::string_view</code>.</p>
 <h3 id="setheader"><code>setHeader</code><a class="headerlink" href="#setheader" title="Permanent link">&para;</a></h3>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">sipmessage</span><span class="o">&amp;</span><span class="w"> </span><span class="nf">setHeader</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">value</span><span class="p">);</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">sipmessage</span><span class="o">&amp;</span><span class="w"> </span><span class="n">setHeader</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">key</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="n">v</span><span class="p">);</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">sipmessage</span><span class="o">&amp;</span><span class="w"> </span><span class="n">setHeader</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">key</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="n">v</span><span class="p">);</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">sipmessage</span><span class="o">&amp;</span><span class="w"> </span><span class="n">setHeader</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string_view</span><span class="w"> </span><span class="n">key</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="n">v</span><span class="p">);</span>
 </span></code></pre></div>
 <p>Sets or updates a header key-value pair. Returns a reference to <code>*this</code> to support method chaining.</p>
-<h3 id="empty"><code>empty</code><a class="headerlink" href="#empty" title="Permanent link">&para;</a></h3>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kt">bool</span><span class="w"> </span><span class="nf">empty</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">noexcept</span><span class="p">;</span>
+<h3 id="zero-copy-view-accessors">Zero-Copy View Accessors<a class="headerlink" href="#zero-copy-view-accessors" title="Permanent link">&para;</a></h3>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">std</span><span class="o">::</span><span class="n">string_view</span><span class="w"> </span><span class="nf">getMethodView</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">std</span><span class="o">::</span><span class="n">string_view</span><span class="w"> </span><span class="nf">getUriView</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">std</span><span class="o">::</span><span class="n">string_view</span><span class="w"> </span><span class="nf">getReasonView</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="n">std</span><span class="o">::</span><span class="n">string_view</span><span class="w"> </span><span class="nf">getCallIDView</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span>
 </span></code></pre></div>
-<p>Returns <code>true</code> if the message is uninitialized or empty.</p>
-<h3 id="implicit-json-conversion">Implicit JSON Conversion<a class="headerlink" href="#implicit-json-conversion" title="Permanent link">&para;</a></h3>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">operator</span><span class="w"> </span><span class="n">nlohmann</span><span class="o">::</span><span class="n">json</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span>
-</span></code></pre></div>
-<p>Converts the message to its compact <code>nlohmann::json</code> schema representation.</p>
+<p>Returns a <code>std::string_view</code> pointing directly into internal JSON string storage with zero allocations.</p>
 
 
 
@@ -1793,7 +1827,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "2.5.7-20"}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "2.5.8-6"}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>

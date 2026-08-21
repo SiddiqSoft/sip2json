@@ -39,25 +39,25 @@
     <div class="container">
         <header>
             <h1>sip2json Benchmark Performance Report</h1>
-            <p>Generated on 2026-08-20 23:41:32 | Modern C++23 Header-Only SIP Parser</p>
+            <p>Generated on 2026-08-21 15:53:13 | Modern C++23 Header-Only SIP Parser</p>
         </header>
         
         <div class="summary">
             <div class="summary-card">
                 <h3>Total Benchmarks</h3>
-                <div class="value">64</div>
+                <div class="value">78</div>
             </div>
             <div class="summary-card">
                 <h3>Total Iterations</h3>
-                <div class="value">142,745,782</div>
+                <div class="value">669,571,011</div>
             </div>
             <div class="summary-card">
                 <h3>Fastest Operation</h3>
-                <div class="value">17.01 <span class="unit">ns</span></div>
+                <div class="value">2.62 <span class="unit">ns</span></div>
             </div>
             <div class="summary-card">
                 <h3>Slowest Operation</h3>
-                <div class="value">28096112.16 <span class="unit">ns</span></div>
+                <div class="value">28420972.88 <span class="unit">ns</span></div>
             </div>
         </div>
 
@@ -95,514 +95,626 @@
 
                 <tr>
                     <td><span class="benchmark-name">BM_ParseMinimalResponse</span></td>
-                    <td class="time-value">2238.95 ns</td>
-                    <td class="cpu-time">2227.87 ns</td>
-                    <td class="iterations">319,697</td>
-                    <td class="time-value">448,860</td>
+                    <td class="time-value">2211.55 ns</td>
+                    <td class="cpu-time">2199.20 ns</td>
+                    <td class="iterations">325,005</td>
+                    <td class="time-value">454,710</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_ParseRegisterRequest</span></td>
-                    <td class="time-value">2711.52 ns</td>
-                    <td class="cpu-time">2698.35 ns</td>
-                    <td class="iterations">257,279</td>
-                    <td class="time-value">370,597</td>
+                    <td class="time-value">2712.45 ns</td>
+                    <td class="cpu-time">2699.99 ns</td>
+                    <td class="iterations">255,945</td>
+                    <td class="time-value">370,372</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_ParseInviteWithSDP</span></td>
-                    <td class="time-value">7593.84 ns</td>
-                    <td class="cpu-time">7555.80 ns</td>
-                    <td class="iterations">91,673</td>
-                    <td class="time-value">132,349</td>
+                    <td class="time-value">7525.42 ns</td>
+                    <td class="cpu-time">7491.30 ns</td>
+                    <td class="iterations">93,317</td>
+                    <td class="time-value">133,488</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_ParseInviteComplexSDP</span></td>
-                    <td class="time-value">11186.21 ns</td>
-                    <td class="cpu-time">11132.32 ns</td>
-                    <td class="iterations">61,784</td>
-                    <td class="time-value">89,829</td>
+                    <td class="time-value">11206.74 ns</td>
+                    <td class="cpu-time">11158.58 ns</td>
+                    <td class="iterations">62,377</td>
+                    <td class="time-value">89,617</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_ParseNotifyLF</span></td>
-                    <td class="time-value">2730.98 ns</td>
-                    <td class="cpu-time">2718.59 ns</td>
-                    <td class="iterations">259,714</td>
-                    <td class="time-value">367,838</td>
+                    <td class="time-value">2618.22 ns</td>
+                    <td class="cpu-time">2607.73 ns</td>
+                    <td class="iterations">265,821</td>
+                    <td class="time-value">383,475</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_ParseMultipleMessages/1</span></td>
-                    <td class="time-value">2805.99 ns</td>
-                    <td class="cpu-time">2793.54 ns</td>
-                    <td class="iterations">249,747</td>
-                    <td class="time-value">357,969</td>
+                    <td class="time-value">2830.73 ns</td>
+                    <td class="cpu-time">2819.05 ns</td>
+                    <td class="iterations">250,605</td>
+                    <td class="time-value">354,729</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_ParseMultipleMessages/5</span></td>
-                    <td class="time-value">16881.90 ns</td>
-                    <td class="cpu-time">16800.79 ns</td>
-                    <td class="iterations">41,273</td>
-                    <td class="time-value">297,605</td>
+                    <td class="time-value">17293.44 ns</td>
+                    <td class="cpu-time">17219.78 ns</td>
+                    <td class="iterations">40,675</td>
+                    <td class="time-value">290,364</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_ParseMultipleMessages/10</span></td>
-                    <td class="time-value">34632.27 ns</td>
-                    <td class="cpu-time">34463.48 ns</td>
-                    <td class="iterations">20,590</td>
-                    <td class="time-value">290,162</td>
+                    <td class="time-value">34452.10 ns</td>
+                    <td class="cpu-time">34300.92 ns</td>
+                    <td class="iterations">20,112</td>
+                    <td class="time-value">291,537</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_ParseMultipleMessages/50</span></td>
-                    <td class="time-value">168408.43 ns</td>
-                    <td class="cpu-time">167627.05 ns</td>
-                    <td class="iterations">4,147</td>
-                    <td class="time-value">298,281</td>
+                    <td class="time-value">167370.06 ns</td>
+                    <td class="cpu-time">166706.53 ns</td>
+                    <td class="iterations">4,159</td>
+                    <td class="time-value">299,928</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_ParseAsyncMultipleMessages/1</span></td>
-                    <td class="time-value">2801.07 ns</td>
-                    <td class="cpu-time">2789.18 ns</td>
-                    <td class="iterations">251,011</td>
-                    <td class="time-value">358,528</td>
+                    <td class="time-value">2795.00 ns</td>
+                    <td class="cpu-time">2783.57 ns</td>
+                    <td class="iterations">254,580</td>
+                    <td class="time-value">359,251</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_ParseAsyncMultipleMessages/5</span></td>
-                    <td class="time-value">14094.20 ns</td>
-                    <td class="cpu-time">14031.78 ns</td>
-                    <td class="iterations">49,132</td>
-                    <td class="time-value">356,334</td>
+                    <td class="time-value">13980.25 ns</td>
+                    <td class="cpu-time">13923.97 ns</td>
+                    <td class="iterations">49,192</td>
+                    <td class="time-value">359,093</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_ParseAsyncMultipleMessages/10</span></td>
-                    <td class="time-value">28647.70 ns</td>
-                    <td class="cpu-time">28518.24 ns</td>
-                    <td class="iterations">24,917</td>
-                    <td class="time-value">350,653</td>
+                    <td class="time-value">28260.50 ns</td>
+                    <td class="cpu-time">28142.57 ns</td>
+                    <td class="iterations">25,016</td>
+                    <td class="time-value">355,334</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_ParseAsyncMultipleMessages/50</span></td>
-                    <td class="time-value">139296.05 ns</td>
-                    <td class="cpu-time">138488.76 ns</td>
-                    <td class="iterations">4,909</td>
-                    <td class="time-value">361,040</td>
+                    <td class="time-value">139986.28 ns</td>
+                    <td class="cpu-time">139372.89 ns</td>
+                    <td class="iterations">4,951</td>
+                    <td class="time-value">358,750</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_SerializeRegister</span></td>
-                    <td class="time-value">1159.87 ns</td>
-                    <td class="cpu-time">1155.16 ns</td>
-                    <td class="iterations">600,938</td>
-                    <td class="time-value">865,682</td>
+                    <td class="time-value">1119.66 ns</td>
+                    <td class="cpu-time">1115.11 ns</td>
+                    <td class="iterations">629,303</td>
+                    <td class="time-value">896,775</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_SerializeInviteWithSDP</span></td>
-                    <td class="time-value">3447.35 ns</td>
-                    <td class="cpu-time">3433.64 ns</td>
-                    <td class="iterations">203,007</td>
-                    <td class="time-value">291,236</td>
+                    <td class="time-value">3446.54 ns</td>
+                    <td class="cpu-time">3432.30 ns</td>
+                    <td class="iterations">203,916</td>
+                    <td class="time-value">291,350</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_RoundTripRegister</span></td>
-                    <td class="time-value">4444.24 ns</td>
-                    <td class="cpu-time">4421.22 ns</td>
-                    <td class="iterations">158,845</td>
-                    <td class="time-value">226,182</td>
+                    <td class="time-value">4288.04 ns</td>
+                    <td class="cpu-time">4270.88 ns</td>
+                    <td class="iterations">163,664</td>
+                    <td class="time-value">234,144</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_RoundTripInviteWithSDP</span></td>
-                    <td class="time-value">11995.35 ns</td>
-                    <td class="cpu-time">11944.01 ns</td>
-                    <td class="iterations">58,723</td>
-                    <td class="time-value">83,724</td>
+                    <td class="time-value">11954.06 ns</td>
+                    <td class="cpu-time">11894.66 ns</td>
+                    <td class="iterations">59,715</td>
+                    <td class="time-value">84,071</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_ConstructDefaultSipmessage</span></td>
-                    <td class="time-value">487.26 ns</td>
-                    <td class="cpu-time">485.25 ns</td>
-                    <td class="iterations">1,430,938</td>
-                    <td class="time-value">2,060,812</td>
+                    <td class="time-value">473.48 ns</td>
+                    <td class="cpu-time">471.67 ns</td>
+                    <td class="iterations">1,443,992</td>
+                    <td class="time-value">2,120,113</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_ConstructRequestSipmessage</span></td>
-                    <td class="time-value">2272.60 ns</td>
-                    <td class="cpu-time">2263.43 ns</td>
-                    <td class="iterations">312,514</td>
-                    <td class="time-value">441,807</td>
+                    <td class="time-value">2135.66 ns</td>
+                    <td class="cpu-time">2126.63 ns</td>
+                    <td class="iterations">323,886</td>
+                    <td class="time-value">470,228</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_ConstructResponseSipmessage</span></td>
-                    <td class="time-value">2044.11 ns</td>
-                    <td class="cpu-time">2035.52 ns</td>
-                    <td class="iterations">343,138</td>
-                    <td class="time-value">491,276</td>
+                    <td class="time-value">1974.43 ns</td>
+                    <td class="cpu-time">1966.42 ns</td>
+                    <td class="iterations">355,959</td>
+                    <td class="time-value">508,539</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_ConstructResponseFromRequest</span></td>
-                    <td class="time-value">1824.94 ns</td>
-                    <td class="cpu-time">1817.20 ns</td>
-                    <td class="iterations">388,791</td>
-                    <td class="time-value">550,298</td>
+                    <td class="time-value">1751.62 ns</td>
+                    <td class="cpu-time">1744.56 ns</td>
+                    <td class="iterations">400,196</td>
+                    <td class="time-value">573,209</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_TimeAsRFC1123</span></td>
-                    <td class="time-value">111.26 ns</td>
-                    <td class="cpu-time">110.78 ns</td>
-                    <td class="iterations">6,332,275</td>
-                    <td class="time-value">9,027,285</td>
+                    <td class="time-value">109.13 ns</td>
+                    <td class="cpu-time">108.72 ns</td>
+                    <td class="iterations">6,386,106</td>
+                    <td class="time-value">9,198,089</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_TimeAsRFC3339</span></td>
-                    <td class="time-value">143.40 ns</td>
-                    <td class="cpu-time">142.83 ns</td>
-                    <td class="iterations">4,925,486</td>
-                    <td class="time-value">7,001,549</td>
+                    <td class="time-value">145.03 ns</td>
+                    <td class="cpu-time">144.48 ns</td>
+                    <td class="iterations">4,876,687</td>
+                    <td class="time-value">6,921,603</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_TimeAsISO8601</span></td>
-                    <td class="time-value">118.18 ns</td>
-                    <td class="cpu-time">117.74 ns</td>
-                    <td class="iterations">5,985,775</td>
-                    <td class="time-value">8,493,618</td>
+                    <td class="time-value">119.12 ns</td>
+                    <td class="cpu-time">118.65 ns</td>
+                    <td class="iterations">5,978,565</td>
+                    <td class="time-value">8,428,004</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_CreateCallId</span></td>
-                    <td class="time-value">617.89 ns</td>
-                    <td class="cpu-time">615.41 ns</td>
-                    <td class="iterations">1,146,442</td>
-                    <td class="time-value">1,624,935</td>
+                    <td class="time-value">613.38 ns</td>
+                    <td class="cpu-time">611.04 ns</td>
+                    <td class="iterations">1,135,756</td>
+                    <td class="time-value">1,636,566</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_GetContentType</span></td>
-                    <td class="time-value">55.14 ns</td>
-                    <td class="cpu-time">54.93 ns</td>
-                    <td class="iterations">12,868,868</td>
-                    <td class="time-value">18,203,816</td>
+                    <td class="time-value">55.41 ns</td>
+                    <td class="cpu-time">55.19 ns</td>
+                    <td class="iterations">12,752,983</td>
+                    <td class="time-value">18,119,383</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_GetMethod</span></td>
-                    <td class="time-value">53.68 ns</td>
-                    <td class="cpu-time">53.45 ns</td>
-                    <td class="iterations">12,755,770</td>
-                    <td class="time-value">18,707,506</td>
+                    <td class="time-value">51.52 ns</td>
+                    <td class="cpu-time">51.31 ns</td>
+                    <td class="iterations">13,166,227</td>
+                    <td class="time-value">19,488,334</td>
                 </tr>
 
                 <tr>
-                    <td><span class="benchmark-name">BM_GetHeader</span></td>
-                    <td class="time-value">17.01 ns</td>
-                    <td class="cpu-time">16.94 ns</td>
-                    <td class="iterations">40,116,960</td>
-                    <td class="time-value">59,038,286</td>
+                    <td><span class="benchmark-name">BM_GetHeader_LibraryConstant</span></td>
+                    <td class="time-value">24.27 ns</td>
+                    <td class="cpu-time">24.17 ns</td>
+                    <td class="iterations">30,187,951</td>
+                    <td class="time-value">41,375,231</td>
                 </tr>
 
                 <tr>
-                    <td><span class="benchmark-name">BM_SetHeader</span></td>
-                    <td class="time-value">33.09 ns</td>
-                    <td class="cpu-time">32.95 ns</td>
-                    <td class="iterations">21,255,849</td>
-                    <td class="time-value">30,353,454</td>
+                    <td><span class="benchmark-name">BM_GetHeader_StringLiteral</span></td>
+                    <td class="time-value">23.40 ns</td>
+                    <td class="cpu-time">23.30 ns</td>
+                    <td class="iterations">29,376,017</td>
+                    <td class="time-value">42,911,755</td>
+                </tr>
+
+                <tr>
+                    <td><span class="benchmark-name">BM_GetHeader_CustomHeader</span></td>
+                    <td class="time-value">25.55 ns</td>
+                    <td class="cpu-time">25.43 ns</td>
+                    <td class="iterations">28,158,869</td>
+                    <td class="time-value">39,319,966</td>
+                </tr>
+
+                <tr>
+                    <td><span class="benchmark-name">BM_SetHeader_LibraryConstant</span></td>
+                    <td class="time-value">25.50 ns</td>
+                    <td class="cpu-time">25.40 ns</td>
+                    <td class="iterations">26,375,284</td>
+                    <td class="time-value">39,367,513</td>
+                </tr>
+
+                <tr>
+                    <td><span class="benchmark-name">BM_SetHeader_StringLiteral</span></td>
+                    <td class="time-value">23.47 ns</td>
+                    <td class="cpu-time">23.38 ns</td>
+                    <td class="iterations">28,927,486</td>
+                    <td class="time-value">42,777,354</td>
+                </tr>
+
+                <tr>
+                    <td><span class="benchmark-name">BM_SetHeader_CustomHeader</span></td>
+                    <td class="time-value">26.30 ns</td>
+                    <td class="cpu-time">26.20 ns</td>
+                    <td class="iterations">27,291,295</td>
+                    <td class="time-value">38,166,941</td>
+                </tr>
+
+                <tr>
+                    <td><span class="benchmark-name">BM_ConstructRequest_LibraryConstant</span></td>
+                    <td class="time-value">2159.26 ns</td>
+                    <td class="cpu-time">2150.31 ns</td>
+                    <td class="iterations">327,175</td>
+                    <td class="time-value">465,050</td>
+                </tr>
+
+                <tr>
+                    <td><span class="benchmark-name">BM_ConstructRequest_StringLiteral</span></td>
+                    <td class="time-value">2153.01 ns</td>
+                    <td class="cpu-time">2143.94 ns</td>
+                    <td class="iterations">323,247</td>
+                    <td class="time-value">466,431</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_HighFrequencyDecodeLargePacket</span></td>
-                    <td class="time-value">26682.96 ns</td>
-                    <td class="cpu-time">26567.41 ns</td>
-                    <td class="iterations">26,270</td>
-                    <td class="time-value">37,640</td>
+                    <td class="time-value">26687.23 ns</td>
+                    <td class="cpu-time">26577.49 ns</td>
+                    <td class="iterations">26,399</td>
+                    <td class="time-value">37,626</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_StressTest100LargePackets</span></td>
-                    <td class="time-value">2715944.63 ns</td>
-                    <td class="cpu-time">2703433.86 ns</td>
-                    <td class="iterations">260</td>
-                    <td class="time-value">36,990</td>
+                    <td class="time-value">2756324.38 ns</td>
+                    <td class="cpu-time">2743877.93 ns</td>
+                    <td class="iterations">255</td>
+                    <td class="time-value">36,445</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_StressTestAsyncParse100LargePackets</span></td>
-                    <td class="time-value">2693571.71 ns</td>
-                    <td class="cpu-time">2681848.87 ns</td>
-                    <td class="iterations">263</td>
-                    <td class="time-value">37,288</td>
+                    <td class="time-value">2701675.67 ns</td>
+                    <td class="cpu-time">2690070.02 ns</td>
+                    <td class="iterations">261</td>
+                    <td class="time-value">37,174</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_StressTest1000LargePackets</span></td>
-                    <td class="time-value">28096112.16 ns</td>
-                    <td class="cpu-time">27966549.60 ns</td>
+                    <td class="time-value">28420972.88 ns</td>
+                    <td class="cpu-time">28292540.04 ns</td>
                     <td class="iterations">25</td>
-                    <td class="time-value">35,757</td>
+                    <td class="time-value">35,345</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_StressTestAsyncParse1000LargePackets</span></td>
-                    <td class="time-value">26856533.77 ns</td>
-                    <td class="cpu-time">26734799.38 ns</td>
+                    <td class="time-value">27225258.89 ns</td>
+                    <td class="cpu-time">27099365.04 ns</td>
                     <td class="iterations">26</td>
-                    <td class="time-value">37,404</td>
+                    <td class="time-value">36,901</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_VariableSizeStressTest/10</span></td>
-                    <td class="time-value">274100.51 ns</td>
-                    <td class="cpu-time">272810.09 ns</td>
-                    <td class="iterations">2,587</td>
-                    <td class="time-value">36,656</td>
+                    <td class="time-value">279767.77 ns</td>
+                    <td class="cpu-time">278516.35 ns</td>
+                    <td class="iterations">2,514</td>
+                    <td class="time-value">35,905</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_VariableSizeStressTest/50</span></td>
-                    <td class="time-value">1359188.81 ns</td>
-                    <td class="cpu-time">1352919.47 ns</td>
-                    <td class="iterations">516</td>
-                    <td class="time-value">36,957</td>
+                    <td class="time-value">1383285.65 ns</td>
+                    <td class="cpu-time">1377061.03 ns</td>
+                    <td class="iterations">510</td>
+                    <td class="time-value">36,309</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_VariableSizeStressTest/100</span></td>
-                    <td class="time-value">2706106.67 ns</td>
-                    <td class="cpu-time">2693790.01 ns</td>
-                    <td class="iterations">257</td>
-                    <td class="time-value">37,122</td>
+                    <td class="time-value">2759595.00 ns</td>
+                    <td class="cpu-time">2747789.61 ns</td>
+                    <td class="iterations">254</td>
+                    <td class="time-value">36,393</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_VariableSizeStressTest/500</span></td>
-                    <td class="time-value">13899512.78 ns</td>
-                    <td class="cpu-time">13834980.20 ns</td>
-                    <td class="iterations">51</td>
-                    <td class="time-value">36,140</td>
+                    <td class="time-value">14044317.66 ns</td>
+                    <td class="cpu-time">13977741.12 ns</td>
+                    <td class="iterations">50</td>
+                    <td class="time-value">35,771</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_VariableSizeAsyncStressTest/10</span></td>
-                    <td class="time-value">268964.39 ns</td>
-                    <td class="cpu-time">267772.13 ns</td>
-                    <td class="iterations">2,602</td>
-                    <td class="time-value">37,345</td>
+                    <td class="time-value">271461.52 ns</td>
+                    <td class="cpu-time">270297.48 ns</td>
+                    <td class="iterations">2,595</td>
+                    <td class="time-value">36,996</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_VariableSizeAsyncStressTest/50</span></td>
-                    <td class="time-value">1346780.46 ns</td>
-                    <td class="cpu-time">1340701.70 ns</td>
-                    <td class="iterations">520</td>
-                    <td class="time-value">37,294</td>
+                    <td class="time-value">1358173.45 ns</td>
+                    <td class="cpu-time">1351894.19 ns</td>
+                    <td class="iterations">517</td>
+                    <td class="time-value">36,985</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_VariableSizeAsyncStressTest/100</span></td>
-                    <td class="time-value">2691650.92 ns</td>
-                    <td class="cpu-time">2679291.19 ns</td>
-                    <td class="iterations">263</td>
-                    <td class="time-value">37,323</td>
+                    <td class="time-value">2730065.95 ns</td>
+                    <td class="cpu-time">2718359.04 ns</td>
+                    <td class="iterations">258</td>
+                    <td class="time-value">36,787</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_VariableSizeAsyncStressTest/500</span></td>
-                    <td class="time-value">13478421.63 ns</td>
-                    <td class="cpu-time">13414384.19 ns</td>
-                    <td class="iterations">52</td>
-                    <td class="time-value">37,273</td>
+                    <td class="time-value">13489193.04 ns</td>
+                    <td class="cpu-time">13428610.37 ns</td>
+                    <td class="iterations">51</td>
+                    <td class="time-value">37,234</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_WorstCaseNoisyBufferParsing/10</span></td>
-                    <td class="time-value">17710.61 ns</td>
-                    <td class="cpu-time">17632.68 ns</td>
-                    <td class="iterations">39,490</td>
-                    <td class="time-value">567,129</td>
+                    <td class="time-value">17706.32 ns</td>
+                    <td class="cpu-time">17626.60 ns</td>
+                    <td class="iterations">39,753</td>
+                    <td class="time-value">567,324</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_WorstCaseNoisyBufferParsing/100</span></td>
-                    <td class="time-value">18264.05 ns</td>
-                    <td class="cpu-time">18173.49 ns</td>
-                    <td class="iterations">38,764</td>
-                    <td class="time-value">5,502,522</td>
+                    <td class="time-value">18117.75 ns</td>
+                    <td class="cpu-time">18028.28 ns</td>
+                    <td class="iterations">36,465</td>
+                    <td class="time-value">5,546,841</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_WorstCaseNoisyBufferParsing/500</span></td>
-                    <td class="time-value">21096.40 ns</td>
-                    <td class="cpu-time">20997.07 ns</td>
-                    <td class="iterations">32,794</td>
-                    <td class="time-value">23,812,850</td>
+                    <td class="time-value">21287.80 ns</td>
+                    <td class="cpu-time">21187.26 ns</td>
+                    <td class="iterations">33,274</td>
+                    <td class="time-value">23,599,090</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_WorstCaseNoisyBufferParsing/1000</span></td>
-                    <td class="time-value">25947.83 ns</td>
-                    <td class="cpu-time">25833.39 ns</td>
-                    <td class="iterations">26,437</td>
-                    <td class="time-value">38,709,587</td>
+                    <td class="time-value">24923.88 ns</td>
+                    <td class="cpu-time">24810.22 ns</td>
+                    <td class="iterations">28,795</td>
+                    <td class="time-value">40,305,969</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_WorstCaseNoisyAsyncParsing/10</span></td>
-                    <td class="time-value">17576.82 ns</td>
-                    <td class="cpu-time">17497.48 ns</td>
-                    <td class="iterations">39,998</td>
-                    <td class="time-value">571,511</td>
+                    <td class="time-value">17955.02 ns</td>
+                    <td class="cpu-time">17872.21 ns</td>
+                    <td class="iterations">39,221</td>
+                    <td class="time-value">559,528</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_WorstCaseNoisyAsyncParsing/100</span></td>
-                    <td class="time-value">19381.17 ns</td>
-                    <td class="cpu-time">19290.63 ns</td>
-                    <td class="iterations">36,326</td>
-                    <td class="time-value">5,183,863</td>
+                    <td class="time-value">19324.71 ns</td>
+                    <td class="cpu-time">19233.62 ns</td>
+                    <td class="iterations">35,804</td>
+                    <td class="time-value">5,199,228</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_WorstCaseNoisyAsyncParsing/500</span></td>
-                    <td class="time-value">26260.84 ns</td>
-                    <td class="cpu-time">26133.43 ns</td>
-                    <td class="iterations">27,105</td>
-                    <td class="time-value">19,132,586</td>
+                    <td class="time-value">26818.32 ns</td>
+                    <td class="cpu-time">26692.80 ns</td>
+                    <td class="iterations">25,995</td>
+                    <td class="time-value">18,731,643</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_WorstCaseNoisyAsyncParsing/1000</span></td>
-                    <td class="time-value">34242.12 ns</td>
-                    <td class="cpu-time">34078.31 ns</td>
-                    <td class="iterations">20,224</td>
-                    <td class="time-value">29,344,181</td>
+                    <td class="time-value">34053.87 ns</td>
+                    <td class="cpu-time">33898.34 ns</td>
+                    <td class="iterations">19,704</td>
+                    <td class="time-value">29,499,972</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_MultiThreadedAsyncParsing/2</span></td>
-                    <td class="time-value">1788817.14 ns</td>
-                    <td class="cpu-time">39975.35 ns</td>
+                    <td class="time-value">1765032.43 ns</td>
+                    <td class="cpu-time">40234.27 ns</td>
                     <td class="iterations">10,000</td>
-                    <td class="time-value">25,015,418</td>
+                    <td class="time-value">24,854,432</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_MultiThreadedAsyncParsing/4</span></td>
-                    <td class="time-value">2401957.14 ns</td>
-                    <td class="cpu-time">80656.29 ns</td>
-                    <td class="iterations">8,966</td>
-                    <td class="time-value">24,796,577</td>
+                    <td class="time-value">2379223.53 ns</td>
+                    <td class="cpu-time">80586.70 ns</td>
+                    <td class="iterations">9,201</td>
+                    <td class="time-value">24,817,992</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_MultiThreadedAsyncParsing/8</span></td>
-                    <td class="time-value">5634289.59 ns</td>
-                    <td class="cpu-time">182850.42 ns</td>
+                    <td class="time-value">5402786.73 ns</td>
+                    <td class="cpu-time">183080.70 ns</td>
                     <td class="iterations">1,000</td>
-                    <td class="time-value">21,875,805</td>
+                    <td class="time-value">21,848,289</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_MultiThreadedAsyncParsing/16</span></td>
-                    <td class="time-value">10666601.23 ns</td>
-                    <td class="cpu-time">384803.16 ns</td>
+                    <td class="time-value">9977912.02 ns</td>
+                    <td class="cpu-time">381003.76 ns</td>
                     <td class="iterations">1,000</td>
-                    <td class="time-value">20,789,850</td>
+                    <td class="time-value">20,997,168</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_MultiThreadedNoisyAsyncParsing/2</span></td>
-                    <td class="time-value">99312.35 ns</td>
-                    <td class="cpu-time">40022.64 ns</td>
-                    <td class="iterations">16,244</td>
-                    <td class="time-value">24,985,856</td>
+                    <td class="time-value">93939.82 ns</td>
+                    <td class="cpu-time">38157.25 ns</td>
+                    <td class="iterations">16,596</td>
+                    <td class="time-value">26,207,341</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_MultiThreadedNoisyAsyncParsing/4</span></td>
-                    <td class="time-value">120806.70 ns</td>
-                    <td class="cpu-time">67939.55 ns</td>
-                    <td class="iterations">10,387</td>
-                    <td class="time-value">29,437,936</td>
+                    <td class="time-value">119875.21 ns</td>
+                    <td class="cpu-time">67011.92 ns</td>
+                    <td class="iterations">10,269</td>
+                    <td class="time-value">29,845,435</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_MultiThreadedNoisyAsyncParsing/8</span></td>
-                    <td class="time-value">228681.29 ns</td>
-                    <td class="cpu-time">164325.51 ns</td>
-                    <td class="iterations">4,114</td>
-                    <td class="time-value">24,341,930</td>
+                    <td class="time-value">216810.81 ns</td>
+                    <td class="cpu-time">157440.63 ns</td>
+                    <td class="iterations">4,253</td>
+                    <td class="time-value">25,406,402</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_MultiThreadedNoisyAsyncParsing/16</span></td>
-                    <td class="time-value">477766.88 ns</td>
-                    <td class="cpu-time">393154.02 ns</td>
-                    <td class="iterations">1,973</td>
-                    <td class="time-value">20,348,259</td>
+                    <td class="time-value">456219.18 ns</td>
+                    <td class="cpu-time">375565.73 ns</td>
+                    <td class="iterations">1,623</td>
+                    <td class="time-value">21,301,198</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_SimulatedStream_ParseAsync_SingleThread</span></td>
-                    <td class="time-value">3326334.51 ns</td>
-                    <td class="cpu-time">3309929.11 ns</td>
-                    <td class="iterations">180</td>
-                    <td class="time-value">302,121</td>
+                    <td class="time-value">3441321.99 ns</td>
+                    <td class="cpu-time">3421645.86 ns</td>
+                    <td class="iterations">174</td>
+                    <td class="time-value">292,257</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_SimulatedStream_Parse_SingleThread</span></td>
-                    <td class="time-value">3952432.01 ns</td>
-                    <td class="cpu-time">3932509.84 ns</td>
-                    <td class="iterations">170</td>
-                    <td class="time-value">254,291</td>
+                    <td class="time-value">3821094.03 ns</td>
+                    <td class="cpu-time">3803442.13 ns</td>
+                    <td class="iterations">176</td>
+                    <td class="time-value">262,920</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_SimulatedStream_ParseAsync_WithThreadPoolOffload</span></td>
-                    <td class="time-value">20047754.54 ns</td>
-                    <td class="cpu-time">10056134.54 ns</td>
+                    <td class="time-value">19374023.31 ns</td>
+                    <td class="cpu-time">9845145.68 ns</td>
                     <td class="iterations">68</td>
-                    <td class="time-value">99,442</td>
+                    <td class="time-value">101,573</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_SimulatedStream_Parse_WithThreadPoolHandoff</span></td>
-                    <td class="time-value">8648346.59 ns</td>
-                    <td class="cpu-time">2866045.95 ns</td>
-                    <td class="iterations">244</td>
-                    <td class="time-value">348,913</td>
+                    <td class="time-value">8600916.94 ns</td>
+                    <td class="cpu-time">2831272.83 ns</td>
+                    <td class="iterations">247</td>
+                    <td class="time-value">353,198</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_HeaderCanonicalization</span></td>
-                    <td class="time-value">22.00 ns</td>
-                    <td class="cpu-time">21.91 ns</td>
-                    <td class="iterations">31,781,801</td>
-                    <td class="time-value">45,641,550</td>
+                    <td class="time-value">22.83 ns</td>
+                    <td class="cpu-time">22.74 ns</td>
+                    <td class="iterations">30,271,957</td>
+                    <td class="time-value">43,973,454</td>
                 </tr>
 
                 <tr>
                     <td><span class="benchmark-name">BM_ParseLowercaseAndMixedCaseHeaders</span></td>
-                    <td class="time-value">7430.75 ns</td>
-                    <td class="cpu-time">7400.03 ns</td>
-                    <td class="iterations">94,613</td>
-                    <td class="time-value">135,135</td>
+                    <td class="time-value">7356.70 ns</td>
+                    <td class="cpu-time">7324.47 ns</td>
+                    <td class="iterations">95,961</td>
+                    <td class="time-value">136,529</td>
+                </tr>
+
+                <tr>
+                    <td><span class="benchmark-name">BM_WhatIf_Construct_NativeStruct</span></td>
+                    <td class="time-value">245.17 ns</td>
+                    <td class="cpu-time">244.08 ns</td>
+                    <td class="iterations">2,860,352</td>
+                    <td class="time-value">4,097,057</td>
+                </tr>
+
+                <tr>
+                    <td><span class="benchmark-name">BM_WhatIf_Construct_JsonSubclass</span></td>
+                    <td class="time-value">2188.58 ns</td>
+                    <td class="cpu-time">2179.01 ns</td>
+                    <td class="iterations">321,971</td>
+                    <td class="time-value">458,924</td>
+                </tr>
+
+                <tr>
+                    <td><span class="benchmark-name">BM_WhatIf_SetHeader_NativeStruct</span></td>
+                    <td class="time-value">2.62 ns</td>
+                    <td class="cpu-time">2.61 ns</td>
+                    <td class="iterations">267,890,841</td>
+                    <td class="time-value">383,249,372</td>
+                </tr>
+
+                <tr>
+                    <td><span class="benchmark-name">BM_WhatIf_SetHeader_JsonSubclass</span></td>
+                    <td class="time-value">24.43 ns</td>
+                    <td class="cpu-time">24.32 ns</td>
+                    <td class="iterations">27,662,927</td>
+                    <td class="time-value">41,120,947</td>
+                </tr>
+
+                <tr>
+                    <td><span class="benchmark-name">BM_WhatIf_GetHeader_NativeStruct</span></td>
+                    <td class="time-value">7.71 ns</td>
+                    <td class="cpu-time">7.68 ns</td>
+                    <td class="iterations">90,433,383</td>
+                    <td class="time-value">130,241,404</td>
+                </tr>
+
+                <tr>
+                    <td><span class="benchmark-name">BM_WhatIf_GetHeader_JsonSubclass</span></td>
+                    <td class="time-value">23.25 ns</td>
+                    <td class="cpu-time">23.15 ns</td>
+                    <td class="iterations">28,210,118</td>
+                    <td class="time-value">43,193,560</td>
+                </tr>
+
+                <tr>
+                    <td><span class="benchmark-name">BM_WhatIf_ParseInvite_NativeStruct</span></td>
+                    <td class="time-value">768.82 ns</td>
+                    <td class="cpu-time">765.63 ns</td>
+                    <td class="iterations">883,975</td>
+                    <td class="time-value">1,306,117</td>
+                </tr>
+
+                <tr>
+                    <td><span class="benchmark-name">BM_WhatIf_ParseInvite_JsonSubclass</span></td>
+                    <td class="time-value">7409.72 ns</td>
+                    <td class="cpu-time">7377.06 ns</td>
+                    <td class="iterations">96,159</td>
+                    <td class="time-value">135,555</td>
                 </tr>
 
             </tbody>
@@ -623,7 +735,7 @@
                 labels: ["MinimalResponse", "RegisterRequest", "InviteWithSDP", "InviteComplexSDP", "NotifyLF"],
                 datasets: [{
                     label: 'Parse Rate (Messages / Sec)',
-                    data: [448860.0, 370597.0, 132349.0, 89829.0, 367838.0],
+                    data: [454710.0, 370372.0, 133488.0, 89617.0, 383475.0],
                     backgroundColor: 'rgba(79, 70, 229, 0.85)',
                     borderColor: '#4f46e5',
                     borderWidth: 1,
@@ -645,7 +757,7 @@
                 labels: ["ParseAsync SingleThread", "Parse SingleThread", "ParseAsync WithThreadPoolOffload", "Parse WithThreadPoolHandoff"],
                 datasets: [{
                     label: 'Throughput (Messages / Sec)',
-                    data: [302121.0, 254291.0, 99442.0, 348913.0],
+                    data: [292257.0, 262920.0, 101573.0, 353198.0],
                     backgroundColor: ['#10b981', '#3b82f6', '#ef4444', '#f59e0b'],
                     borderRadius: 6
                 }]
@@ -665,7 +777,7 @@
                 labels: ["AsyncParsing/2", "AsyncParsing/4", "AsyncParsing/8", "AsyncParsing/16", "NoisyAsyncParsing/2", "NoisyAsyncParsing/4", "NoisyAsyncParsing/8", "NoisyAsyncParsing/16"],
                 datasets: [{
                     label: 'Aggregate Multi-Thread Throughput (Messages / Sec)',
-                    data: [25015418.0, 24796577.0, 21875805.0, 20789850.0, 24985856.0, 29437936.0, 24341930.0, 20348259.0],
+                    data: [24854432.0, 24817992.0, 21848289.0, 20997168.0, 26207341.0, 29845435.0, 25406402.0, 21301198.0],
                     backgroundColor: 'rgba(124, 58, 237, 0.85)',
                     borderColor: '#7c3aed',
                     borderRadius: 6

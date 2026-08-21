@@ -647,10 +647,21 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#header-matching-canonicalization-performance-sip2json_headerkey_mode_insensitive" class="md-nav__link">
+  <a href="#optimal-usage-library-constants-vs-ad-hoc-usage-literals-custom-headers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Header Matching &amp; Canonicalization Performance (sip2json_HEADERKEY_MODE_INSENSITIVE)
+        Optimal Usage (Library Constants) vs Ad-hoc Usage (Literals &amp; Custom Headers)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#master-performance-matrix-refactored-v25-vs-tag-release-v242" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Master Performance Matrix: Refactored v2.5+ vs Tag Release v2.4.2
       
     </span>
   </a>
@@ -1156,6 +1167,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/native_vs_json/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Native vs JSON Study
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1558,10 +1597,21 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#header-matching-canonicalization-performance-sip2json_headerkey_mode_insensitive" class="md-nav__link">
+  <a href="#optimal-usage-library-constants-vs-ad-hoc-usage-literals-custom-headers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Header Matching &amp; Canonicalization Performance (sip2json_HEADERKEY_MODE_INSENSITIVE)
+        Optimal Usage (Library Constants) vs Ad-hoc Usage (Literals &amp; Custom Headers)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#master-performance-matrix-refactored-v25-vs-tag-release-v242" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Master Performance Matrix: Refactored v2.5+ vs Tag Release v2.4.2
       
     </span>
   </a>
@@ -1777,80 +1827,160 @@
 <tbody>
 <tr>
 <td style="text-align: left;"><strong>Minimal SIP Response</strong></td>
-<td style="text-align: left;">3.71 µs</td>
-<td style="text-align: left;"><strong>269,584 msg/sec</strong></td>
-<td style="text-align: left;">67.87 MiB/s</td>
+<td style="text-align: left;">3.81 µs</td>
+<td style="text-align: left;"><strong>262,327 msg/sec</strong></td>
+<td style="text-align: left;">66.05 MiB/s</td>
 <td style="text-align: left;">Header extraction (<code>Call-ID</code>)</td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>REGISTER Request</strong></td>
-<td style="text-align: left;">3.99 µs</td>
-<td style="text-align: left;"><strong>250,466 msg/sec</strong></td>
-<td style="text-align: left;">73.57 MiB/s</td>
+<td style="text-align: left;">4.27 µs</td>
+<td style="text-align: left;"><strong>234,338 msg/sec</strong></td>
+<td style="text-align: left;">68.83 MiB/s</td>
 <td style="text-align: left;">Header extraction (<code>Call-ID</code>)</td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>NOTIFY Request (LF Endings)</strong></td>
-<td style="text-align: left;">4.36 µs</td>
-<td style="text-align: left;"><strong>229,612 msg/sec</strong></td>
-<td style="text-align: left;">86.06 MiB/s</td>
+<td style="text-align: left;">4.65 µs</td>
+<td style="text-align: left;"><strong>214,949 msg/sec</strong></td>
+<td style="text-align: left;">80.56 MiB/s</td>
 <td style="text-align: left;">Header extraction (<code>Call-ID</code>)</td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>INVITE with SDP Body</strong></td>
-<td style="text-align: left;">9.13 µs</td>
-<td style="text-align: left;"><strong>109,545 msg/sec</strong></td>
-<td style="text-align: left;">59.34 MiB/s</td>
+<td style="text-align: left;">9.44 µs</td>
+<td style="text-align: left;"><strong>105,905 msg/sec</strong></td>
+<td style="text-align: left;">57.37 MiB/s</td>
 <td style="text-align: left;"><code>Call-ID</code> + SDP payload item count</td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>INVITE with Complex SDP</strong></td>
-<td style="text-align: left;">13.28 µs</td>
-<td style="text-align: left;"><strong>75,305 msg/sec</strong></td>
-<td style="text-align: left;">61.33 MiB/s</td>
+<td style="text-align: left;">14.00 µs</td>
+<td style="text-align: left;"><strong>71,410 msg/sec</strong></td>
+<td style="text-align: left;">58.16 MiB/s</td>
 <td style="text-align: left;"><code>Call-ID</code> + Multi-attribute SDP count</td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>Large Multi-Stream Packet</strong></td>
-<td style="text-align: left;">31.18 µs</td>
-<td style="text-align: left;"><strong>32,070 msg/sec</strong></td>
-<td style="text-align: left;">46.64 MiB/s</td>
+<td style="text-align: left;">31.49 µs</td>
+<td style="text-align: left;"><strong>31,753 msg/sec</strong></td>
+<td style="text-align: left;">46.18 MiB/s</td>
 <td style="text-align: left;"><code>Call-ID</code> + Multi-stream SDP count</td>
 </tr>
 </tbody>
 </table>
-<h3 id="header-matching-canonicalization-performance-sip2json_headerkey_mode_insensitive">Header Matching &amp; Canonicalization Performance (<code>sip2json_HEADERKEY_MODE_INSENSITIVE</code>)<a class="headerlink" href="#header-matching-canonicalization-performance-sip2json_headerkey_mode_insensitive" title="Permanent link">&para;</a></h3>
-<p><em>Evaluates RFC 3261 Section 7.3.1 case-insensitive header matching (<code>ON</code>) versus strict case-sensitive matching (<code>OFF</code>).</em></p>
+<hr />
+<h3 id="optimal-usage-library-constants-vs-ad-hoc-usage-literals-custom-headers">Optimal Usage (Library Constants) vs Ad-hoc Usage (Literals &amp; Custom Headers)<a class="headerlink" href="#optimal-usage-library-constants-vs-ad-hoc-usage-literals-custom-headers" title="Permanent link">&para;</a></h3>
+<p><em>Demonstrates the performance advantages of using pre-defined library constants (<code>siddiqsoft::METHOD_*</code>, <code>siddiqsoft::HF_*</code>) over raw string literals.</em></p>
 <table>
 <thead>
 <tr>
-<th style="text-align: left;">Header Matching Mode</th>
-<th style="text-align: left;"><code>sip2json_HEADERKEY_MODE_INSENSITIVE</code></th>
-<th style="text-align: left;"><code>BM_HeaderCanonicalization</code> (Time / Lookup)</th>
-<th style="text-align: left;">Lookups / Sec</th>
-<th style="text-align: left;"><code>BM_ParseLowercaseAndMixedCaseHeaders</code></th>
+<th style="text-align: left;">Operation</th>
+<th style="text-align: left;">Optimal Usage (Library Constant)</th>
+<th style="text-align: left;">Ad-hoc Usage (String Literal)</th>
+<th style="text-align: left;">Custom Header (<code>X-Custom-Header</code>)</th>
+<th style="text-align: left;">Performance Advantage</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><strong>Case-Insensitive (Default)</strong></td>
-<td style="text-align: left;"><code>ON</code></td>
-<td style="text-align: left;"><strong>10.4 ns</strong></td>
-<td style="text-align: left;"><strong>96,361,100 lookups/sec</strong></td>
-<td style="text-align: left;"><strong>109,856 msg/sec</strong> (9.10 µs/msg)</td>
+<td style="text-align: left;"><strong><code>setHeader</code></strong></td>
+<td style="text-align: left;"><strong>43.5 ns</strong> (22.99M ops/sec)</td>
+<td style="text-align: left;">50.1 ns (19.95M ops/sec)</td>
+<td style="text-align: left;">61.6 ns (16.24M ops/sec)</td>
+<td style="text-align: left;"><strong>13.2% FASTER</strong></td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>Case-Sensitive Strict</strong></td>
-<td style="text-align: left;"><code>OFF</code></td>
-<td style="text-align: left;"><strong>10.7 ns</strong></td>
-<td style="text-align: left;"><strong>93,541,900 lookups/sec</strong></td>
-<td style="text-align: left;"><strong>107,117 msg/sec</strong> (9.42 µs/msg)</td>
+<td style="text-align: left;"><strong><code>getHeader</code></strong></td>
+<td style="text-align: left;"><strong>53.8 ns</strong> (18.58M ops/sec)</td>
+<td style="text-align: left;">56.5 ns (17.70M ops/sec)</td>
+<td style="text-align: left;">N/A</td>
+<td style="text-align: left;"><strong>4.8% FASTER</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>sipmessage</code> Request Init</strong></td>
+<td style="text-align: left;"><strong>4,669 ns</strong> (214.16K msg/sec)</td>
+<td style="text-align: left;">4,724 ns (211.70K msg/sec)</td>
+<td style="text-align: left;">N/A</td>
+<td style="text-align: left;"><strong>1.2% FASTER</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="master-performance-matrix-refactored-v25-vs-tag-release-v242">Master Performance Matrix: Refactored v2.5+ vs Tag Release v2.4.2<a class="headerlink" href="#master-performance-matrix-refactored-v25-vs-tag-release-v242" title="Permanent link">&para;</a></h3>
+<p><em>Compares the current refactored version (Case-Insensitive <code>ON</code> and Case-Sensitive <code>OFF</code>) against the official <code>v2.4.2</code> tag release baseline.</em></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Benchmark Metric</th>
+<th style="text-align: left;">v2.4.2 Tag Baseline</th>
+<th style="text-align: left;">Case-Insensitive Mode (<code>ON</code> Default)</th>
+<th style="text-align: left;">Case-Sensitive Mode (<code>OFF</code>)</th>
+<th style="text-align: left;">Impact vs v2.4.2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong><code>BM_ParseMinimalResponse</code></strong></td>
+<td style="text-align: left;">137.47 µs</td>
+<td style="text-align: left;"><strong>3.81 µs</strong></td>
+<td style="text-align: left;"><strong>3.81 µs</strong></td>
+<td style="text-align: left;"><strong>36.1x FASTER</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>BM_ParseRegisterRequest</code></strong></td>
+<td style="text-align: left;">158.07 µs</td>
+<td style="text-align: left;"><strong>4.27 µs</strong></td>
+<td style="text-align: left;"><strong>4.27 µs</strong></td>
+<td style="text-align: left;"><strong>37.0x FASTER</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>BM_ParseInviteWithSDP</code></strong></td>
+<td style="text-align: left;">418.50 µs</td>
+<td style="text-align: left;"><strong>9.44 µs</strong></td>
+<td style="text-align: left;"><strong>9.44 µs</strong></td>
+<td style="text-align: left;"><strong>44.3x FASTER</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>BM_ParseInviteComplexSDP</code></strong></td>
+<td style="text-align: left;">642.92 µs</td>
+<td style="text-align: left;"><strong>14.00 µs</strong></td>
+<td style="text-align: left;"><strong>13.59 µs</strong></td>
+<td style="text-align: left;"><strong>45.9x FASTER</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>BM_SerializeRegister</code></strong></td>
+<td style="text-align: left;">60.14 µs</td>
+<td style="text-align: left;"><strong>1.44 µs</strong></td>
+<td style="text-align: left;"><strong>1.43 µs</strong></td>
+<td style="text-align: left;"><strong>41.7x FASTER</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>BM_GetHeader_LibraryConstant</code></strong></td>
+<td style="text-align: left;">2,218 ns</td>
+<td style="text-align: left;"><strong>53.8 ns</strong></td>
+<td style="text-align: left;"><strong>53.6 ns</strong></td>
+<td style="text-align: left;"><strong>41.2x FASTER</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>BM_SetHeader_LibraryConstant</code></strong></td>
+<td style="text-align: left;">1,844 ns</td>
+<td style="text-align: left;"><strong>43.5 ns</strong></td>
+<td style="text-align: left;"><strong>42.8 ns</strong></td>
+<td style="text-align: left;"><strong>42.4x FASTER</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>BM_VariableSizeStressTest/500</code></strong></td>
+<td style="text-align: left;">813.99 ms</td>
+<td style="text-align: left;"><strong>16.08 ms</strong></td>
+<td style="text-align: left;"><strong>16.02 ms</strong></td>
+<td style="text-align: left;"><strong>50.6x FASTER</strong></td>
 </tr>
 </tbody>
 </table>
 <blockquote>
 <p>[!NOTE]
-Utilizing <code>constexpr std::string_view</code> lookup arrays (<code>HeaderKeySet</code>) and inlined character transformation routines, <strong>case-insensitive matching imposes zero measurable performance penalty</strong> (~10.4 nanoseconds per header lookup) while providing 100% RFC 3261 protocol compliance and support for compact single-character header names (<code>l</code>, <code>v</code>, <code>i</code>, <code>c</code>, <code>m</code>, <code>f</code>, <code>t</code>, <code>s</code>, <code>e</code>).</p>
+Case-insensitive matching (<code>sip2json_HEADERKEY_MODE_INSENSITIVE=ON</code>) adds <strong>less than 1.6% (0.7 nanoseconds)</strong> overhead over strict case-sensitive matching (<code>OFF</code>), while enabling full RFC 3261 compliance and support for compact single-character header names (<code>l</code>, <code>v</code>, <code>i</code>, <code>c</code>, <code>m</code>, <code>f</code>, <code>t</code>, <code>s</code>, <code>e</code>).</p>
 </blockquote>
 <hr />
 <h2 id="2-single-stream-architectural-study-parseasync-vs-parse-vs-thread-pool">2. Single Stream Architectural Study: <code>parseAsync</code> vs. <code>parse</code> vs. Thread Pool<a class="headerlink" href="#2-single-stream-architectural-study-parseasync-vs-parse-vs-thread-pool" title="Permanent link">&para;</a></h2>
@@ -2235,7 +2365,7 @@ Because <code>sip2json</code> parses a SIP message in just <strong>~4.1 microsec
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "2.5.7-20"}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "2.5.8-6"}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
