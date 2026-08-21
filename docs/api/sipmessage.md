@@ -9,7 +9,7 @@ The `sipmessage` class represents a parsed or constructed SIP request or respons
 ```cpp
 struct sipmessage {
     std::string type;       // "request" or "response"
-    std::string method;     // "INVITE", "ACK", "BYE", "REGISTER", etc.
+    std::string method;     // Standard SIP method: "INVITE", "ACK", "OPTIONS", "BYE", "CANCEL", "REGISTER", "SUBSCRIBE", "NOTIFY", "MESSAGE", "INFO", "REFER", "PUBLISH", "UPDATE", "PRACK"
     std::string uri;        // Request URI (e.g. "sip:user@example.com")
     int responseCode{0};    // Response status code (e.g. 200, 404, 180)
     std::string reason;     // Response reason phrase (e.g. "OK", "Not Found")
@@ -18,7 +18,7 @@ struct sipmessage {
     std::string callid;     // Call-ID header value
     uint32_t cseq{0};       // CSeq sequence number
     
-    nlohmann::json headers; // JSON object storing all message headers
+    nlohmann::json headers; // JSON object storing all message headers (RFC 3261 case-insensitive matching)
     nlohmann::json body;    // JSON object storing payload body (e.g. SDP)
 };
 ```
