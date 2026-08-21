@@ -87,7 +87,9 @@ namespace siddiqsoft
     /// @note bufferStart must point to the location past the very first v=0 as this signals
     ///       the start of the body. The method starts with blockIndex = -1 and increments
     ///       it to 0 on the first v=0 match.
-    inline bool sip2json::parseBodySDP(sipmessage& sipm, std::string::iterator& bufferStart, const std::string::iterator& bufferEnd) noexcept(false)
+    inline bool sip2json::parseBodySDP(sipmessage&                  sipm,
+                                       std::string::iterator&       bufferStart,
+                                       const std::string::iterator& bufferEnd) noexcept(false)
     {
         using namespace std;
 
@@ -115,8 +117,7 @@ namespace siddiqsoft
             }
             else
             {
-                if (blockIndex < 0)
-                    throw invalid_document_error {std::format("{}:SDP block must start with v=0", __func__)};
+                if (blockIndex < 0) throw invalid_document_error {std::format("{}:SDP block must start with v=0", __func__)};
 
                 if (key == "a"s)
                 {
@@ -129,7 +130,8 @@ namespace siddiqsoft
                         auto aval = string(alineMatcher.get<2>().to_view());
 
                         // This is the form where a=attribute:value
-                        nlohmann::json::json_pointer pkey(std::format("/b/sdp/{}/{}/{}", blockIndex, key, escapeJsonPointerToken(akey)));
+                        nlohmann::json::json_pointer pkey(
+                                std::format("/b/sdp/{}/{}/{}", blockIndex, key, escapeJsonPointerToken(akey)));
 
                         // We may get multiple items for the same "key" such as `a=rtpmap:x` and `a=rtpmap:y`
                         // In this case we should start an array
@@ -149,7 +151,8 @@ namespace siddiqsoft
                     {
                         // This is the form where a=flag
                         // We matched a=key without the `:` or the "value" so we should store the value with nullptr
-                        nlohmann::json::json_pointer pkey(std::format("/b/sdp/{}/{}/{}", blockIndex, key, escapeJsonPointerToken(value)));
+                        nlohmann::json::json_pointer pkey(
+                                std::format("/b/sdp/{}/{}/{}", blockIndex, key, escapeJsonPointerToken(value)));
                         sipm[pkey] = true;
                     }
                 }
@@ -308,8 +311,7 @@ namespace siddiqsoft
                 }
                 if (element == "i"s)
                 {
-                    return std::format(
-                            "\"{}\" ({}) {}", item.value("name"s, ""), item.value("dn"s, ""), item.value("type"s, ""));
+                    return std::format("\"{}\" ({}) {}", item.value("name"s, ""), item.value("dn"s, ""), item.value("type"s, ""));
                 }
                 if (element == "c"s)
                 {
@@ -356,6 +358,10 @@ namespace siddiqsoft
             throw invalid_document_error {std::format("{}:Unsupported content-type:{}", __func__, contentType)};
 
         // Body
+        // We need to check if the following are empty
+        // i=, u=, e=, p=, c=
+        // ..skip them if they are empty.
+        // The only required elements are v=, o=, s=, t=, m=
         // NOTE: we extract the contentType value during the header serialization.
         if (contentType == CONTENT_TYPE_APP_SDP)
         {
@@ -369,23 +375,28 @@ namespace siddiqsoft
                     {
                         // Build each block; order is critical. We do not support session-level attributes (only media-level attributes)
                         std::format_to(std::back_inserter(buffer),
-                                       "v=0\r\no={}\r\ns={}\r\ni={}\r\n",
+                                       "v=0\r\no={}\r\ns={}\r\n",
                                        serializeSDPelement(block, "o"),
-                                       serializeSDPelement(block, "s"),
-                                       serializeSDPelement(block, "i"));
-                        // Optional..
-                        if (block.contains("u"))
-                            std::format_to(std::back_inserter(buffer), "u={}\r\n", serializeSDPelement(block, "u"s));
-                        // Optional..
-                        if (block.contains("e"))
-                            std::format_to(std::back_inserter(buffer), "e={}\r\n", serializeSDPelement(block, "e"s));
-                        // Optional..
-                        if (block.contains("p"))
-                            std::format_to(std::back_inserter(buffer), "p={}\r\n", serializeSDPelement(block, "p"s));
+                                       serializeSDPelement(block, "s"));
+                        // Optional.. "i"; note that in the serializeSDPelement we check for
+                        // the presence of the element and if it is not present we return an empty string.
+                        if (auto elem = serializeSDPelement(block, "i"s); !elem.empty())
+                            std::format_to(std::back_inserter(buffer), "i={}\r\n", elem);
+                        // Optional.. "u"
+                        if (auto elem = serializeSDPelement(block, "u"s); !elem.empty())
+                            std::format_to(std::back_inserter(buffer), "u={}\r\n", elem);
+                        // Optional.. "e"
+                        if (auto elem = serializeSDPelement(block, "e"s); !elem.empty())
+                            std::format_to(std::back_inserter(buffer), "e={}\r\n", elem);
+                        // Optional.. "p"
+                        if (auto elem = serializeSDPelement(block, "p"s); !elem.empty())
+                            std::format_to(std::back_inserter(buffer), "p={}\r\n", elem);
+                        // Optional.. "c"
+                        if (auto elem = serializeSDPelement(block, "c"s); !elem.empty())
+                            std::format_to(std::back_inserter(buffer), "c={}\r\n", elem);
                         // Mandatory (typical); No support for session a-lines.
                         std::format_to(std::back_inserter(buffer),
-                                       "c={}\r\nt={}\r\nm={}\r\n",
-                                       serializeSDPelement(block, "c"),
+                                       "t={}\r\nm={}\r\n",
                                        serializeSDPelement(block, "t"),
                                        serializeSDPelement(block, "m"));
                         // Media a-lines
