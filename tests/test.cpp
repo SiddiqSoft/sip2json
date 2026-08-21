@@ -299,7 +299,7 @@ TEST(Issue32_HeaderRefactoring, ModularHeaderIntegrity)
     EXPECT_TRUE(serialized.find("Call-ID: issue32-call-id\r\n") != std::string::npos);
 
     // Test 3: Verify parsing via refactored private/sip2json_parser.hpp
-    auto start = serialized.begin();
+    auto start      = serialized.begin();
     auto parsedResp = sip2json::parseFromBuffer(start, serialized.end());
     EXPECT_EQ(200, parsedResp.getStatusCode());
     EXPECT_EQ("OK", parsedResp.getReason());
@@ -310,42 +310,40 @@ TEST(Issue32_HeaderRefactoring, PrivateSDPAndAsyncParserExecution)
 {
     using namespace siddiqsoft;
 
-    std::string sipWithSDP =
-        "INVITE sip:bob@biloxi.com SIP/2.0\r\n"
-        "Via: SIP/2.0/UDP pc33.atlanta.com;branch=z9hG4bK776asdhds\r\n"
-        "Max-Forwards: 70\r\n"
-        "To: Bob <sip:bob@biloxi.com>\r\n"
-        "From: Alice <sip:alice@atlanta.com>;tag=1928301774\r\n"
-        "Call-ID: a84b4c76e66710@pc33.atlanta.com\r\n"
-        "CSeq: 314159 INVITE\r\n"
-        "Contact: <sip:alice@pc33.atlanta.com>\r\n"
-        "Content-Type: application/sdp\r\n"
-        "Content-Length: 132\r\n"
-        "\r\n"
-        "v=0\r\n"
-        "o=user1 53655765 2353687637 IN IP4 127.0.0.1\r\n"
-        "s=Talk\r\n"
-        "c=IN IP4 127.0.0.1\r\n"
-        "t=0 0\r\n"
-        "m=audio 6000 RTP/AVP 0\r\n"
-        "a=rtpmap:0 PCMU/8000\r\n";
+    std::string sipWithSDP = "INVITE sip:bob@biloxi.com SIP/2.0\r\n"
+                             "Via: SIP/2.0/UDP pc33.atlanta.com;branch=z9hG4bK776asdhds\r\n"
+                             "Max-Forwards: 70\r\n"
+                             "To: Bob <sip:bob@biloxi.com>\r\n"
+                             "From: Alice <sip:alice@atlanta.com>;tag=1928301774\r\n"
+                             "Call-ID: a84b4c76e66710@pc33.atlanta.com\r\n"
+                             "CSeq: 314159 INVITE\r\n"
+                             "Contact: <sip:alice@pc33.atlanta.com>\r\n"
+                             "Content-Type: application/sdp\r\n"
+                             "Content-Length: 132\r\n"
+                             "\r\n"
+                             "v=0\r\n"
+                             "o=user1 53655765 2353687637 IN IP4 127.0.0.1\r\n"
+                             "s=Talk\r\n"
+                             "c=IN IP4 127.0.0.1\r\n"
+                             "t=0 0\r\n"
+                             "m=audio 6000 RTP/AVP 0\r\n"
+                             "a=rtpmap:0 PCMU/8000\r\n";
 
     // Test 1: Asynchronous stream parsing via private/sip2json_parser.hpp and private/sip2json_sdp.hpp
-    size_t parsedCount = 0;
-    std::string buffer = sipWithSDP;
-    sip2json::parseAsync(
-        buffer,
-        [&parsedCount](sipmessage&& msg) {
-            parsedCount++;
-            EXPECT_EQ("INVITE", msg.getMethod());
-            EXPECT_EQ("a84b4c76e66710@pc33.atlanta.com", msg.getCallID());
-            EXPECT_TRUE(msg.contains("b"));
-            EXPECT_TRUE(msg.contains("/b/sdp"_json_pointer));
-        },
-        [](const sip2json_exception& ex, std::string::iterator&, const std::string::iterator&) {
-            FAIL() << "Unexpected parse exception: " << ex.what();
-        }
-    );
+    size_t      parsedCount = 0;
+    std::string buffer      = sipWithSDP;
+    auto        _           = sip2json::parseAsync(
+            buffer,
+            [&parsedCount](sipmessage&& msg)
+            {
+                parsedCount++;
+                EXPECT_EQ("INVITE", msg.getMethod());
+                EXPECT_EQ("a84b4c76e66710@pc33.atlanta.com", msg.getCallID());
+                EXPECT_TRUE(msg.contains("b"));
+                EXPECT_TRUE(msg.contains("/b/sdp"_json_pointer));
+            },
+            [](const sip2json_exception& ex, std::string::iterator&, const std::string::iterator&)
+            { FAIL() << "Unexpected parse exception: " << ex.what(); });
 
     EXPECT_EQ(1u, parsedCount);
     EXPECT_TRUE(buffer.empty()); // Check that consumed bytes were erased
@@ -360,20 +358,19 @@ TEST(Issue32_RepeatedHeaders, MultipleViaHeaders)
 {
     using namespace siddiqsoft;
 
-    std::string sipWithMultipleVia =
-        "INVITE sip:user@example.com SIP/2.0\r\n"
-        "Via: SIP/2.0/UDP proxy1.example.com:5060;branch=z9hG4bK776a\r\n"
-        "Via: SIP/2.0/UDP proxy2.example.com:5060;branch=z9hG4bK776b\r\n"
-        "Via: SIP/2.0/UDP client.example.com:5060;branch=z9hG4bK776c\r\n"
-        "Max-Forwards: 70\r\n"
-        "To: <sip:user@example.com>\r\n"
-        "From: Alice <sip:alice@example.com>;tag=1928301774\r\n"
-        "Call-ID: multi-via-callid-101\r\n"
-        "CSeq: 1 INVITE\r\n"
-        "Content-Length: 0\r\n\r\n";
+    std::string sipWithMultipleVia = "INVITE sip:user@example.com SIP/2.0\r\n"
+                                     "Via: SIP/2.0/UDP proxy1.example.com:5060;branch=z9hG4bK776a\r\n"
+                                     "Via: SIP/2.0/UDP proxy2.example.com:5060;branch=z9hG4bK776b\r\n"
+                                     "Via: SIP/2.0/UDP client.example.com:5060;branch=z9hG4bK776c\r\n"
+                                     "Max-Forwards: 70\r\n"
+                                     "To: <sip:user@example.com>\r\n"
+                                     "From: Alice <sip:alice@example.com>;tag=1928301774\r\n"
+                                     "Call-ID: multi-via-callid-101\r\n"
+                                     "CSeq: 1 INVITE\r\n"
+                                     "Content-Length: 0\r\n\r\n";
 
     auto start = sipWithMultipleVia.begin();
-    auto sipm = sip2json::parseFromBuffer(start, sipWithMultipleVia.end());
+    auto sipm  = sip2json::parseFromBuffer(start, sipWithMultipleVia.end());
 
     // Verify Via header exists and is an array containing all 3 Via lines
     EXPECT_TRUE(sipm["h"].contains("Via"));
@@ -394,21 +391,20 @@ TEST(Issue32_RepeatedHeaders, MultipleRouteAndRecordRouteHeaders)
 {
     using namespace siddiqsoft;
 
-    std::string sipWithRoutes =
-        "INVITE sip:user@example.com SIP/2.0\r\n"
-        "Via: SIP/2.0/UDP client.example.com:5060;branch=z9hG4bK1\r\n"
-        "Record-Route: <sip:p1.example.com;lr>\r\n"
-        "Record-Route: <sip:p2.example.com;lr>\r\n"
-        "Route: <sip:p3.example.com;lr>\r\n"
-        "Route: <sip:p4.example.com;lr>\r\n"
-        "To: <sip:user@example.com>\r\n"
-        "From: <sip:caller@example.com>;tag=abc\r\n"
-        "Call-ID: route-test-callid-202\r\n"
-        "CSeq: 2 INVITE\r\n"
-        "Content-Length: 0\r\n\r\n";
+    std::string sipWithRoutes = "INVITE sip:user@example.com SIP/2.0\r\n"
+                                "Via: SIP/2.0/UDP client.example.com:5060;branch=z9hG4bK1\r\n"
+                                "Record-Route: <sip:p1.example.com;lr>\r\n"
+                                "Record-Route: <sip:p2.example.com;lr>\r\n"
+                                "Route: <sip:p3.example.com;lr>\r\n"
+                                "Route: <sip:p4.example.com;lr>\r\n"
+                                "To: <sip:user@example.com>\r\n"
+                                "From: <sip:caller@example.com>;tag=abc\r\n"
+                                "Call-ID: route-test-callid-202\r\n"
+                                "CSeq: 2 INVITE\r\n"
+                                "Content-Length: 0\r\n\r\n";
 
     auto start = sipWithRoutes.begin();
-    auto sipm = sip2json::parseFromBuffer(start, sipWithRoutes.end());
+    auto sipm  = sip2json::parseFromBuffer(start, sipWithRoutes.end());
 
     // Verify Record-Route headers
     EXPECT_TRUE(sipm["h"]["Record-Route"].is_array());
@@ -427,22 +423,21 @@ TEST(Issue32_RepeatedHeaders, MultipleCustomAndStandardHeaders)
 {
     using namespace siddiqsoft;
 
-    std::string sipWithCustomRepeated =
-        "REGISTER sip:example.com SIP/2.0\r\n"
-        "Via: SIP/2.0/UDP 192.168.1.1:5060;branch=z9hG4bK-reg\r\n"
-        "Contact: <sip:user1@10.0.0.1:5060>\r\n"
-        "Contact: <sip:user2@10.0.0.2:5060>\r\n"
-        "X-Trace-ID: trace-001\r\n"
-        "X-Trace-ID: trace-002\r\n"
-        "X-Trace-ID: trace-003\r\n"
-        "To: <sip:user@example.com>\r\n"
-        "From: <sip:user@example.com>;tag=reg123\r\n"
-        "Call-ID: reg-call-303\r\n"
-        "CSeq: 1 REGISTER\r\n"
-        "Content-Length: 0\r\n\r\n";
+    std::string sipWithCustomRepeated = "REGISTER sip:example.com SIP/2.0\r\n"
+                                        "Via: SIP/2.0/UDP 192.168.1.1:5060;branch=z9hG4bK-reg\r\n"
+                                        "Contact: <sip:user1@10.0.0.1:5060>\r\n"
+                                        "Contact: <sip:user2@10.0.0.2:5060>\r\n"
+                                        "X-Trace-ID: trace-001\r\n"
+                                        "X-Trace-ID: trace-002\r\n"
+                                        "X-Trace-ID: trace-003\r\n"
+                                        "To: <sip:user@example.com>\r\n"
+                                        "From: <sip:user@example.com>;tag=reg123\r\n"
+                                        "Call-ID: reg-call-303\r\n"
+                                        "CSeq: 1 REGISTER\r\n"
+                                        "Content-Length: 0\r\n\r\n";
 
     auto start = sipWithCustomRepeated.begin();
-    auto sipm = sip2json::parseFromBuffer(start, sipWithCustomRepeated.end());
+    auto sipm  = sip2json::parseFromBuffer(start, sipWithCustomRepeated.end());
 
     // Verify repeated Contact headers converted to array
     EXPECT_TRUE(sipm["h"]["Contact"].is_array());
@@ -472,28 +467,27 @@ TEST(Issue29_CaseInsensitiveHeaders, LowercaseContentLengthAndSDP)
 {
     using namespace siddiqsoft;
 
-    std::string sipLowercase =
-        "INVITE sip:bob@biloxi.com SIP/2.0\r\n"
-        "via: SIP/2.0/UDP pc33.atlanta.com;branch=z9hG4bK776asdhds\r\n"
-        "max-forwards: 70\r\n"
-        "to: Bob <sip:bob@biloxi.com>\r\n"
-        "from: Alice <sip:alice@atlanta.com>;tag=1928301774\r\n"
-        "call-id: lower-callid-101\r\n"
-        "cseq: 314159 INVITE\r\n"
-        "contact: <sip:alice@pc33.atlanta.com>\r\n"
-        "content-type: application/sdp\r\n"
-        "content-length: 132\r\n"
-        "\r\n"
-        "v=0\r\n"
-        "o=user1 53655765 2353687637 IN IP4 127.0.0.1\r\n"
-        "s=Talk\r\n"
-        "c=IN IP4 127.0.0.1\r\n"
-        "t=0 0\r\n"
-        "m=audio 6000 RTP/AVP 0\r\n"
-        "a=rtpmap:0 PCMU/8000\r\n";
+    std::string sipLowercase = "INVITE sip:bob@biloxi.com SIP/2.0\r\n"
+                               "via: SIP/2.0/UDP pc33.atlanta.com;branch=z9hG4bK776asdhds\r\n"
+                               "max-forwards: 70\r\n"
+                               "to: Bob <sip:bob@biloxi.com>\r\n"
+                               "from: Alice <sip:alice@atlanta.com>;tag=1928301774\r\n"
+                               "call-id: lower-callid-101\r\n"
+                               "cseq: 314159 INVITE\r\n"
+                               "contact: <sip:alice@pc33.atlanta.com>\r\n"
+                               "content-type: application/sdp\r\n"
+                               "content-length: 132\r\n"
+                               "\r\n"
+                               "v=0\r\n"
+                               "o=user1 53655765 2353687637 IN IP4 127.0.0.1\r\n"
+                               "s=Talk\r\n"
+                               "c=IN IP4 127.0.0.1\r\n"
+                               "t=0 0\r\n"
+                               "m=audio 6000 RTP/AVP 0\r\n"
+                               "a=rtpmap:0 PCMU/8000\r\n";
 
     auto start = sipLowercase.begin();
-    auto sipm = sip2json::parseFromBuffer(start, sipLowercase.end());
+    auto sipm  = sip2json::parseFromBuffer(start, sipLowercase.end());
 
     // Verify getter functions resolve correctly with lowercase headers
     EXPECT_EQ(132u, sipm.getContentLength());
@@ -508,18 +502,17 @@ TEST(Issue29_CaseInsensitiveHeaders, MixedCaseHeaders)
 {
     using namespace siddiqsoft;
 
-    std::string sipMixedCase =
-        "REGISTER sip:example.com SIP/2.0\r\n"
-        "vIa: SIP/2.0/UDP 192.168.1.1:5060;branch=z9hG4bK-reg\r\n"
-        "tO: <sip:user@example.com>\r\n"
-        "fRoM: <sip:user@example.com>;tag=reg123\r\n"
-        "cAlL-iD: mixed-callid-202\r\n"
-        "cSeq: 1 REGISTER\r\n"
-        "eXpIrEs: 3600\r\n"
-        "cOnTeNt-LeNgTh: 0\r\n\r\n";
+    std::string sipMixedCase = "REGISTER sip:example.com SIP/2.0\r\n"
+                               "vIa: SIP/2.0/UDP 192.168.1.1:5060;branch=z9hG4bK-reg\r\n"
+                               "tO: <sip:user@example.com>\r\n"
+                               "fRoM: <sip:user@example.com>;tag=reg123\r\n"
+                               "cAlL-iD: mixed-callid-202\r\n"
+                               "cSeq: 1 REGISTER\r\n"
+                               "eXpIrEs: 3600\r\n"
+                               "cOnTeNt-LeNgTh: 0\r\n\r\n";
 
     auto start = sipMixedCase.begin();
-    auto sipm = sip2json::parseFromBuffer(start, sipMixedCase.end());
+    auto sipm  = sip2json::parseFromBuffer(start, sipMixedCase.end());
 
     EXPECT_EQ(0u, sipm.getContentLength());
     EXPECT_EQ("mixed-callid-202", sipm.getCallID());
@@ -530,27 +523,26 @@ TEST(Issue29_CaseInsensitiveHeaders, UppercaseHeaders)
 {
     using namespace siddiqsoft;
 
-    std::string sipUppercase =
-        "INVITE sip:user@example.com SIP/2.0\r\n"
-        "VIA: SIP/2.0/UDP pc33.example.com;branch=z9hG4bK776a\r\n"
-        "MAX-FORWARDS: 70\r\n"
-        "TO: <sip:user@example.com>\r\n"
-        "FROM: Alice <sip:alice@example.com>;tag=1928301774\r\n"
-        "CALL-ID: upper-callid-303\r\n"
-        "CSEQ: 1 INVITE\r\n"
-        "CONTENT-TYPE: application/sdp\r\n"
-        "CONTENT-LENGTH: 132\r\n"
-        "\r\n"
-        "v=0\r\n"
-        "o=user1 53655765 2353687637 IN IP4 127.0.0.1\r\n"
-        "s=Talk\r\n"
-        "c=IN IP4 127.0.0.1\r\n"
-        "t=0 0\r\n"
-        "m=audio 6000 RTP/AVP 0\r\n"
-        "a=rtpmap:0 PCMU/8000\r\n";
+    std::string sipUppercase = "INVITE sip:user@example.com SIP/2.0\r\n"
+                               "VIA: SIP/2.0/UDP pc33.example.com;branch=z9hG4bK776a\r\n"
+                               "MAX-FORWARDS: 70\r\n"
+                               "TO: <sip:user@example.com>\r\n"
+                               "FROM: Alice <sip:alice@example.com>;tag=1928301774\r\n"
+                               "CALL-ID: upper-callid-303\r\n"
+                               "CSEQ: 1 INVITE\r\n"
+                               "CONTENT-TYPE: application/sdp\r\n"
+                               "CONTENT-LENGTH: 132\r\n"
+                               "\r\n"
+                               "v=0\r\n"
+                               "o=user1 53655765 2353687637 IN IP4 127.0.0.1\r\n"
+                               "s=Talk\r\n"
+                               "c=IN IP4 127.0.0.1\r\n"
+                               "t=0 0\r\n"
+                               "m=audio 6000 RTP/AVP 0\r\n"
+                               "a=rtpmap:0 PCMU/8000\r\n";
 
     auto start = sipUppercase.begin();
-    auto sipm = sip2json::parseFromBuffer(start, sipUppercase.end());
+    auto sipm  = sip2json::parseFromBuffer(start, sipUppercase.end());
 
     EXPECT_EQ(132u, sipm.getContentLength());
     EXPECT_EQ("application/sdp", sipm.getContentType());
@@ -563,26 +555,25 @@ TEST(Issue29_CaseInsensitiveHeaders, CompactHeaderNames)
 {
     using namespace siddiqsoft;
 
-    std::string sipCompact =
-        "INVITE sip:user@example.com SIP/2.0\r\n"
-        "v: SIP/2.0/UDP pc33.example.com;branch=z9hG4bK776a\r\n"
-        "t: <sip:user@example.com>\r\n"
-        "f: Alice <sip:alice@example.com>;tag=1928301774\r\n"
-        "i: compact-callid-404\r\n"
-        "CSeq: 1 INVITE\r\n"
-        "c: application/sdp\r\n"
-        "l: 132\r\n"
-        "\r\n"
-        "v=0\r\n"
-        "o=user1 53655765 2353687637 IN IP4 127.0.0.1\r\n"
-        "s=Talk\r\n"
-        "c=IN IP4 127.0.0.1\r\n"
-        "t=0 0\r\n"
-        "m=audio 6000 RTP/AVP 0\r\n"
-        "a=rtpmap:0 PCMU/8000\r\n";
+    std::string sipCompact = "INVITE sip:user@example.com SIP/2.0\r\n"
+                             "v: SIP/2.0/UDP pc33.example.com;branch=z9hG4bK776a\r\n"
+                             "t: <sip:user@example.com>\r\n"
+                             "f: Alice <sip:alice@example.com>;tag=1928301774\r\n"
+                             "i: compact-callid-404\r\n"
+                             "CSeq: 1 INVITE\r\n"
+                             "c: application/sdp\r\n"
+                             "l: 132\r\n"
+                             "\r\n"
+                             "v=0\r\n"
+                             "o=user1 53655765 2353687637 IN IP4 127.0.0.1\r\n"
+                             "s=Talk\r\n"
+                             "c=IN IP4 127.0.0.1\r\n"
+                             "t=0 0\r\n"
+                             "m=audio 6000 RTP/AVP 0\r\n"
+                             "a=rtpmap:0 PCMU/8000\r\n";
 
     auto start = sipCompact.begin();
-    auto sipm = sip2json::parseFromBuffer(start, sipCompact.end());
+    auto sipm  = sip2json::parseFromBuffer(start, sipCompact.end());
 
     EXPECT_EQ(132u, sipm.getContentLength());
     EXPECT_EQ("application/sdp", sipm.getContentType());
@@ -609,30 +600,29 @@ TEST(Issue30_CompactHeaders, AllTenCompactHeaders)
     // s -> Subject
     // e -> Content-Encoding
     // k -> Supported
-    std::string sipCompactAll =
-        "INVITE sip:user@example.com SIP/2.0\r\n"
-        "v: SIP/2.0/UDP pc33.example.com;branch=z9hG4bK776a\r\n"
-        "f: Alice <sip:alice@example.com>;tag=1928301774\r\n"
-        "t: Bob <sip:bob@example.com>\r\n"
-        "i: compact-all-callid-101\r\n"
-        "m: <sip:alice@pc33.example.com>\r\n"
-        "c: application/sdp\r\n"
-        "l: 132\r\n"
-        "s: Regression Test Subject\r\n"
-        "e: gzip\r\n"
-        "k: 100rel\r\n"
-        "CSeq: 1 INVITE\r\n"
-        "\r\n"
-        "v=0\r\n"
-        "o=user1 53655765 2353687637 IN IP4 127.0.0.1\r\n"
-        "s=Talk\r\n"
-        "c=IN IP4 127.0.0.1\r\n"
-        "t=0 0\r\n"
-        "m=audio 6000 RTP/AVP 0\r\n"
-        "a=rtpmap:0 PCMU/8000\r\n";
+    std::string sipCompactAll = "INVITE sip:user@example.com SIP/2.0\r\n"
+                                "v: SIP/2.0/UDP pc33.example.com;branch=z9hG4bK776a\r\n"
+                                "f: Alice <sip:alice@example.com>;tag=1928301774\r\n"
+                                "t: Bob <sip:bob@example.com>\r\n"
+                                "i: compact-all-callid-101\r\n"
+                                "m: <sip:alice@pc33.example.com>\r\n"
+                                "c: application/sdp\r\n"
+                                "l: 132\r\n"
+                                "s: Regression Test Subject\r\n"
+                                "e: gzip\r\n"
+                                "k: 100rel\r\n"
+                                "CSeq: 1 INVITE\r\n"
+                                "\r\n"
+                                "v=0\r\n"
+                                "o=user1 53655765 2353687637 IN IP4 127.0.0.1\r\n"
+                                "s=Talk\r\n"
+                                "c=IN IP4 127.0.0.1\r\n"
+                                "t=0 0\r\n"
+                                "m=audio 6000 RTP/AVP 0\r\n"
+                                "a=rtpmap:0 PCMU/8000\r\n";
 
     auto start = sipCompactAll.begin();
-    auto sipm = sip2json::parseFromBuffer(start, sipCompactAll.end());
+    auto sipm  = sip2json::parseFromBuffer(start, sipCompactAll.end());
 
     // Verify getters and canonical header names in sipm["h"]
     EXPECT_EQ(132u, sipm.getContentLength());
@@ -673,30 +663,29 @@ TEST(Issue30_CompactHeaders, MixedCompactAndLongForm)
 {
     using namespace siddiqsoft;
 
-    std::string sipMixed =
-        "INVITE sip:user@example.com SIP/2.0\r\n"
-        "Via: SIP/2.0/UDP proxy1.example.com;branch=z9hG4bK1\r\n"
-        "v: SIP/2.0/UDP proxy2.example.com;branch=z9hG4bK2\r\n"
-        "From: Alice <sip:alice@example.com>;tag=123\r\n"
-        "t: Bob <sip:bob@example.com>\r\n"
-        "i: mixed-compact-callid-202\r\n"
-        "CSeq: 1 INVITE\r\n"
-        "c: application/sdp\r\n"
-        "Content-Length: 132\r\n"
-        "s: Test Mixed Form\r\n"
-        "Supported: path\r\n"
-        "k: 100rel\r\n"
-        "\r\n"
-        "v=0\r\n"
-        "o=user1 53655765 2353687637 IN IP4 127.0.0.1\r\n"
-        "s=Talk\r\n"
-        "c=IN IP4 127.0.0.1\r\n"
-        "t=0 0\r\n"
-        "m=audio 6000 RTP/AVP 0\r\n"
-        "a=rtpmap:0 PCMU/8000\r\n";
+    std::string sipMixed = "INVITE sip:user@example.com SIP/2.0\r\n"
+                           "Via: SIP/2.0/UDP proxy1.example.com;branch=z9hG4bK1\r\n"
+                           "v: SIP/2.0/UDP proxy2.example.com;branch=z9hG4bK2\r\n"
+                           "From: Alice <sip:alice@example.com>;tag=123\r\n"
+                           "t: Bob <sip:bob@example.com>\r\n"
+                           "i: mixed-compact-callid-202\r\n"
+                           "CSeq: 1 INVITE\r\n"
+                           "c: application/sdp\r\n"
+                           "Content-Length: 132\r\n"
+                           "s: Test Mixed Form\r\n"
+                           "Supported: path\r\n"
+                           "k: 100rel\r\n"
+                           "\r\n"
+                           "v=0\r\n"
+                           "o=user1 53655765 2353687637 IN IP4 127.0.0.1\r\n"
+                           "s=Talk\r\n"
+                           "c=IN IP4 127.0.0.1\r\n"
+                           "t=0 0\r\n"
+                           "m=audio 6000 RTP/AVP 0\r\n"
+                           "a=rtpmap:0 PCMU/8000\r\n";
 
     auto start = sipMixed.begin();
-    auto sipm = sip2json::parseFromBuffer(start, sipMixed.end());
+    auto sipm  = sip2json::parseFromBuffer(start, sipMixed.end());
 
     EXPECT_EQ(132u, sipm.getContentLength());
     EXPECT_EQ("application/sdp", sipm.getContentType());
@@ -727,22 +716,21 @@ TEST(Issue30_CompactHeaders, MultipleCompactHeadersArray)
 {
     using namespace siddiqsoft;
 
-    std::string sipMultiCompact =
-        "INVITE sip:user@example.com SIP/2.0\r\n"
-        "v: SIP/2.0/UDP proxy1.example.com;branch=z9hG4bK1\r\n"
-        "v: SIP/2.0/UDP proxy2.example.com;branch=z9hG4bK2\r\n"
-        "f: Alice <sip:alice@example.com>;tag=123\r\n"
-        "t: Bob <sip:bob@example.com>\r\n"
-        "i: multi-compact-callid-303\r\n"
-        "CSeq: 1 INVITE\r\n"
-        "m: <sip:user1@10.0.0.1:5060>\r\n"
-        "m: <sip:user2@10.0.0.2:5060>\r\n"
-        "k: 100rel\r\n"
-        "k: timer\r\n"
-        "l: 0\r\n\r\n";
+    std::string sipMultiCompact = "INVITE sip:user@example.com SIP/2.0\r\n"
+                                  "v: SIP/2.0/UDP proxy1.example.com;branch=z9hG4bK1\r\n"
+                                  "v: SIP/2.0/UDP proxy2.example.com;branch=z9hG4bK2\r\n"
+                                  "f: Alice <sip:alice@example.com>;tag=123\r\n"
+                                  "t: Bob <sip:bob@example.com>\r\n"
+                                  "i: multi-compact-callid-303\r\n"
+                                  "CSeq: 1 INVITE\r\n"
+                                  "m: <sip:user1@10.0.0.1:5060>\r\n"
+                                  "m: <sip:user2@10.0.0.2:5060>\r\n"
+                                  "k: 100rel\r\n"
+                                  "k: timer\r\n"
+                                  "l: 0\r\n\r\n";
 
     auto start = sipMultiCompact.begin();
-    auto sipm = sip2json::parseFromBuffer(start, sipMultiCompact.end());
+    auto sipm  = sip2json::parseFromBuffer(start, sipMultiCompact.end());
 
     EXPECT_EQ(0u, sipm.getContentLength());
     EXPECT_EQ("multi-compact-callid-303", sipm.getCallID());
@@ -774,23 +762,22 @@ TEST(Issue30_CompactHeaders, CompactHeaderSerialization)
 {
     using namespace siddiqsoft;
 
-    std::string sipCompact =
-        "INVITE sip:user@example.com SIP/2.0\r\n"
-        "v: SIP/2.0/UDP pc33.example.com;branch=z9hG4bK776a\r\n"
-        "f: Alice <sip:alice@example.com>;tag=1928301774\r\n"
-        "t: Bob <sip:bob@example.com>\r\n"
-        "i: compact-serial-404\r\n"
-        "CSeq: 1 INVITE\r\n"
-        "m: <sip:alice@pc33.example.com>\r\n"
-        "c: application/sdp\r\n"
-        "s: Test Subject\r\n"
-        "e: gzip\r\n"
-        "k: 100rel\r\n"
-        "l: 0\r\n"
-        "\r\n";
+    std::string sipCompact = "INVITE sip:user@example.com SIP/2.0\r\n"
+                             "v: SIP/2.0/UDP pc33.example.com;branch=z9hG4bK776a\r\n"
+                             "f: Alice <sip:alice@example.com>;tag=1928301774\r\n"
+                             "t: Bob <sip:bob@example.com>\r\n"
+                             "i: compact-serial-404\r\n"
+                             "CSeq: 1 INVITE\r\n"
+                             "m: <sip:alice@pc33.example.com>\r\n"
+                             "c: application/sdp\r\n"
+                             "s: Test Subject\r\n"
+                             "e: gzip\r\n"
+                             "k: 100rel\r\n"
+                             "l: 0\r\n"
+                             "\r\n";
 
     auto start = sipCompact.begin();
-    auto sipm = sip2json::parseFromBuffer(start, sipCompact.end());
+    auto sipm  = sip2json::parseFromBuffer(start, sipCompact.end());
 
     std::string serialized = sip2json::serialize(sipm);
 
