@@ -95,6 +95,8 @@ if(${${PROJECT_NAME}_BUILD_TESTS})
                     ${PROJECT_SOURCE_DIR}/tests/stress_tests.cpp
                     ${PROJECT_SOURCE_DIR}/tests/bug_trigger_tests.cpp
                     ${PROJECT_SOURCE_DIR}/tests/security_tests.cpp
+                    ${PROJECT_SOURCE_DIR}/tests/compliance/rfc3261_compliance_tests.cpp
+                    ${PROJECT_SOURCE_DIR}/tests/compliance/rfc4475_torture_tests.cpp
                     ${PROJECT_SOURCE_DIR}/tests/test.cpp)
 
     include(GoogleTest)
@@ -102,6 +104,8 @@ if(${${PROJECT_NAME}_BUILD_TESTS})
 
     target_compile_features(${TESTPROJ} PRIVATE cxx_std_${CMAKE_CXX_STANDARD})
     
+    target_include_directories(${TESTPROJ} PRIVATE ${PROJECT_SOURCE_DIR}/include)
+
     target_link_libraries(${TESTPROJ} PRIVATE GTest::gtest_main nlohmann_json::nlohmann_json ctre::ctre)
 
     gtest_discover_tests(${TESTPROJ} XML_OUTPUT_DIR "${PROJECT_SOURCE_DIR}/tests/results"

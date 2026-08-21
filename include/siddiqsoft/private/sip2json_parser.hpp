@@ -88,6 +88,10 @@ namespace siddiqsoft
                               {"status"s, std::stoi(string(g2))},
                               {"version"s, string(g1)}};
             }
+            else
+            {
+                throw invalid_startline_error {std::format("{}:Unsupported SIP version in startline: '{}'", __func__, string(g3))};
+            }
 
             // Offset the start to the point after the match (full match end).
             // This accounts for any prefix junk before the start-line.
