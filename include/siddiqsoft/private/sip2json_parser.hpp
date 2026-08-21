@@ -1,6 +1,6 @@
 /*
     A SIP Parser for Modern C++: SIP Message Parser Implementation
-    Version 1.0.0
+    Version 2.5.x
     https://github.com/siddiqsoftware/sip2json/
 
     BSD 3-Clause License
