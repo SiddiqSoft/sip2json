@@ -153,9 +153,12 @@ _TeamCity*
 .axoCover/*
 !.axoCover/settings.json
 
-# Visual Studio code coverage results
+# Visual Studio and GCC/Clang code coverage results
 *.coverage
 *.coveragexml
+*.gcda
+*.gcno
+*.gcov
 
 # NCrunch
 _NCrunch_*

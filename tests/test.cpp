@@ -590,5 +590,230 @@ TEST(Issue29_CaseInsensitiveHeaders, CompactHeaderNames)
     EXPECT_TRUE(sipm.contains("/b/sdp"_json_pointer));
 }
 
+// ============================================================================
+// GITHUB ISSUE #30 TESTS: RFC 3261 Compact Header Names Support
+// ============================================================================
 
+TEST(Issue30_CompactHeaders, AllTenCompactHeaders)
+{
+    using namespace siddiqsoft;
 
+    // SIP message using all 10 RFC 3261 compact header forms:
+    // v -> Via
+    // f -> From
+    // t -> To
+    // i -> Call-ID
+    // m -> Contact
+    // c -> Content-Type
+    // l -> Content-Length
+    // s -> Subject
+    // e -> Content-Encoding
+    // k -> Supported
+    std::string sipCompactAll =
+        "INVITE sip:user@example.com SIP/2.0\r\n"
+        "v: SIP/2.0/UDP pc33.example.com;branch=z9hG4bK776a\r\n"
+        "f: Alice <sip:alice@example.com>;tag=1928301774\r\n"
+        "t: Bob <sip:bob@example.com>\r\n"
+        "i: compact-all-callid-101\r\n"
+        "m: <sip:alice@pc33.example.com>\r\n"
+        "c: application/sdp\r\n"
+        "l: 132\r\n"
+        "s: Regression Test Subject\r\n"
+        "e: gzip\r\n"
+        "k: 100rel\r\n"
+        "CSeq: 1 INVITE\r\n"
+        "\r\n"
+        "v=0\r\n"
+        "o=user1 53655765 2353687637 IN IP4 127.0.0.1\r\n"
+        "s=Talk\r\n"
+        "c=IN IP4 127.0.0.1\r\n"
+        "t=0 0\r\n"
+        "m=audio 6000 RTP/AVP 0\r\n"
+        "a=rtpmap:0 PCMU/8000\r\n";
+
+    auto start = sipCompactAll.begin();
+    auto sipm = sip2json::parseFromBuffer(start, sipCompactAll.end());
+
+    // Verify getters and canonical header names in sipm["h"]
+    EXPECT_EQ(132u, sipm.getContentLength());
+    EXPECT_EQ("application/sdp", sipm.getContentType());
+    EXPECT_EQ("compact-all-callid-101", sipm.getCallID());
+    EXPECT_EQ("Alice <sip:alice@example.com>;tag=1928301774", sipm["h"]["From"].get<std::string>());
+    EXPECT_EQ("Bob <sip:bob@example.com>", sipm["h"]["To"].get<std::string>());
+    EXPECT_EQ("<sip:alice@pc33.example.com>", sipm["h"]["Contact"].get<std::string>());
+    EXPECT_EQ("Regression Test Subject", sipm["h"]["Subject"].get<std::string>());
+    EXPECT_EQ("gzip", sipm["h"]["Content-Encoding"].get<std::string>());
+
+    // Via and Supported are multi-line headers, stored as arrays
+    EXPECT_TRUE(sipm["h"]["Via"].is_array());
+    EXPECT_EQ(1u, sipm["h"]["Via"].size());
+    EXPECT_EQ("SIP/2.0/UDP pc33.example.com;branch=z9hG4bK776a", sipm["h"]["Via"][0].get<std::string>());
+
+    EXPECT_TRUE(sipm["h"]["Supported"].is_array());
+    EXPECT_EQ(1u, sipm["h"]["Supported"].size());
+    EXPECT_EQ("100rel", sipm["h"]["Supported"][0].get<std::string>());
+
+    // Verify SDP body was parsed correctly due to c: application/sdp
+    EXPECT_TRUE(sipm.contains("/b/sdp"_json_pointer));
+
+    // Verify raw compact header keys were NOT created in sipm["h"]
+    EXPECT_FALSE(sipm["h"].contains("v"));
+    EXPECT_FALSE(sipm["h"].contains("f"));
+    EXPECT_FALSE(sipm["h"].contains("t"));
+    EXPECT_FALSE(sipm["h"].contains("i"));
+    EXPECT_FALSE(sipm["h"].contains("m"));
+    EXPECT_FALSE(sipm["h"].contains("c"));
+    EXPECT_FALSE(sipm["h"].contains("l"));
+    EXPECT_FALSE(sipm["h"].contains("s"));
+    EXPECT_FALSE(sipm["h"].contains("e"));
+    EXPECT_FALSE(sipm["h"].contains("k"));
+}
+
+TEST(Issue30_CompactHeaders, MixedCompactAndLongForm)
+{
+    using namespace siddiqsoft;
+
+    std::string sipMixed =
+        "INVITE sip:user@example.com SIP/2.0\r\n"
+        "Via: SIP/2.0/UDP proxy1.example.com;branch=z9hG4bK1\r\n"
+        "v: SIP/2.0/UDP proxy2.example.com;branch=z9hG4bK2\r\n"
+        "From: Alice <sip:alice@example.com>;tag=123\r\n"
+        "t: Bob <sip:bob@example.com>\r\n"
+        "i: mixed-compact-callid-202\r\n"
+        "CSeq: 1 INVITE\r\n"
+        "c: application/sdp\r\n"
+        "Content-Length: 132\r\n"
+        "s: Test Mixed Form\r\n"
+        "Supported: path\r\n"
+        "k: 100rel\r\n"
+        "\r\n"
+        "v=0\r\n"
+        "o=user1 53655765 2353687637 IN IP4 127.0.0.1\r\n"
+        "s=Talk\r\n"
+        "c=IN IP4 127.0.0.1\r\n"
+        "t=0 0\r\n"
+        "m=audio 6000 RTP/AVP 0\r\n"
+        "a=rtpmap:0 PCMU/8000\r\n";
+
+    auto start = sipMixed.begin();
+    auto sipm = sip2json::parseFromBuffer(start, sipMixed.end());
+
+    EXPECT_EQ(132u, sipm.getContentLength());
+    EXPECT_EQ("application/sdp", sipm.getContentType());
+    EXPECT_EQ("mixed-compact-callid-202", sipm.getCallID());
+    EXPECT_EQ("Alice <sip:alice@example.com>;tag=123", sipm["h"]["From"].get<std::string>());
+    EXPECT_EQ("Bob <sip:bob@example.com>", sipm["h"]["To"].get<std::string>());
+
+    // Check Via array contains both long-form and compact-form entries in order
+    EXPECT_TRUE(sipm["h"]["Via"].is_array());
+    EXPECT_EQ(2u, sipm["h"]["Via"].size());
+    EXPECT_EQ("SIP/2.0/UDP proxy1.example.com;branch=z9hG4bK1", sipm["h"]["Via"][0].get<std::string>());
+    EXPECT_EQ("SIP/2.0/UDP proxy2.example.com;branch=z9hG4bK2", sipm["h"]["Via"][1].get<std::string>());
+
+    // Check Supported array contains both long-form and compact-form entries in order
+    EXPECT_TRUE(sipm["h"]["Supported"].is_array());
+    EXPECT_EQ(2u, sipm["h"]["Supported"].size());
+    EXPECT_EQ("path", sipm["h"]["Supported"][0].get<std::string>());
+    EXPECT_EQ("100rel", sipm["h"]["Supported"][1].get<std::string>());
+
+    EXPECT_FALSE(sipm["h"].contains("v"));
+    EXPECT_FALSE(sipm["h"].contains("t"));
+    EXPECT_FALSE(sipm["h"].contains("i"));
+    EXPECT_FALSE(sipm["h"].contains("c"));
+    EXPECT_FALSE(sipm["h"].contains("k"));
+}
+
+TEST(Issue30_CompactHeaders, MultipleCompactHeadersArray)
+{
+    using namespace siddiqsoft;
+
+    std::string sipMultiCompact =
+        "INVITE sip:user@example.com SIP/2.0\r\n"
+        "v: SIP/2.0/UDP proxy1.example.com;branch=z9hG4bK1\r\n"
+        "v: SIP/2.0/UDP proxy2.example.com;branch=z9hG4bK2\r\n"
+        "f: Alice <sip:alice@example.com>;tag=123\r\n"
+        "t: Bob <sip:bob@example.com>\r\n"
+        "i: multi-compact-callid-303\r\n"
+        "CSeq: 1 INVITE\r\n"
+        "m: <sip:user1@10.0.0.1:5060>\r\n"
+        "m: <sip:user2@10.0.0.2:5060>\r\n"
+        "k: 100rel\r\n"
+        "k: timer\r\n"
+        "l: 0\r\n\r\n";
+
+    auto start = sipMultiCompact.begin();
+    auto sipm = sip2json::parseFromBuffer(start, sipMultiCompact.end());
+
+    EXPECT_EQ(0u, sipm.getContentLength());
+    EXPECT_EQ("multi-compact-callid-303", sipm.getCallID());
+
+    // Via
+    EXPECT_TRUE(sipm["h"]["Via"].is_array());
+    EXPECT_EQ(2u, sipm["h"]["Via"].size());
+    EXPECT_EQ("SIP/2.0/UDP proxy1.example.com;branch=z9hG4bK1", sipm["h"]["Via"][0].get<std::string>());
+    EXPECT_EQ("SIP/2.0/UDP proxy2.example.com;branch=z9hG4bK2", sipm["h"]["Via"][1].get<std::string>());
+
+    // Contact
+    EXPECT_TRUE(sipm["h"]["Contact"].is_array());
+    EXPECT_EQ(2u, sipm["h"]["Contact"].size());
+    EXPECT_EQ("<sip:user1@10.0.0.1:5060>", sipm["h"]["Contact"][0].get<std::string>());
+    EXPECT_EQ("<sip:user2@10.0.0.2:5060>", sipm["h"]["Contact"][1].get<std::string>());
+
+    // Supported
+    EXPECT_TRUE(sipm["h"]["Supported"].is_array());
+    EXPECT_EQ(2u, sipm["h"]["Supported"].size());
+    EXPECT_EQ("100rel", sipm["h"]["Supported"][0].get<std::string>());
+    EXPECT_EQ("timer", sipm["h"]["Supported"][1].get<std::string>());
+
+    EXPECT_FALSE(sipm["h"].contains("v"));
+    EXPECT_FALSE(sipm["h"].contains("m"));
+    EXPECT_FALSE(sipm["h"].contains("k"));
+}
+
+TEST(Issue30_CompactHeaders, CompactHeaderSerialization)
+{
+    using namespace siddiqsoft;
+
+    std::string sipCompact =
+        "INVITE sip:user@example.com SIP/2.0\r\n"
+        "v: SIP/2.0/UDP pc33.example.com;branch=z9hG4bK776a\r\n"
+        "f: Alice <sip:alice@example.com>;tag=1928301774\r\n"
+        "t: Bob <sip:bob@example.com>\r\n"
+        "i: compact-serial-404\r\n"
+        "CSeq: 1 INVITE\r\n"
+        "m: <sip:alice@pc33.example.com>\r\n"
+        "c: application/sdp\r\n"
+        "s: Test Subject\r\n"
+        "e: gzip\r\n"
+        "k: 100rel\r\n"
+        "l: 0\r\n"
+        "\r\n";
+
+    auto start = sipCompact.begin();
+    auto sipm = sip2json::parseFromBuffer(start, sipCompact.end());
+
+    std::string serialized = sip2json::serialize(sipm);
+
+    // Serialization should format canonical header names instead of compact single-character keys
+    EXPECT_TRUE(serialized.find("Via: SIP/2.0/UDP pc33.example.com;branch=z9hG4bK776a\r\n") != std::string::npos);
+    EXPECT_TRUE(serialized.find("From: Alice <sip:alice@example.com>;tag=1928301774\r\n") != std::string::npos);
+    EXPECT_TRUE(serialized.find("To: Bob <sip:bob@example.com>\r\n") != std::string::npos);
+    EXPECT_TRUE(serialized.find("Call-ID: compact-serial-404\r\n") != std::string::npos);
+    EXPECT_TRUE(serialized.find("Contact: <sip:alice@pc33.example.com>\r\n") != std::string::npos);
+    EXPECT_TRUE(serialized.find("Content-Type: application/sdp\r\n") != std::string::npos);
+    EXPECT_TRUE(serialized.find("Subject: Test Subject\r\n") != std::string::npos);
+    EXPECT_TRUE(serialized.find("Content-Encoding: gzip\r\n") != std::string::npos);
+    EXPECT_TRUE(serialized.find("Supported: 100rel\r\n") != std::string::npos);
+    EXPECT_TRUE(serialized.find("Content-Length: 0\r\n") != std::string::npos);
+
+    EXPECT_FALSE(serialized.find("\r\nv: ") != std::string::npos);
+    EXPECT_FALSE(serialized.find("\r\nf: ") != std::string::npos);
+    EXPECT_FALSE(serialized.find("\r\nt: ") != std::string::npos);
+    EXPECT_FALSE(serialized.find("\r\ni: ") != std::string::npos);
+    EXPECT_FALSE(serialized.find("\r\nm: ") != std::string::npos);
+    EXPECT_FALSE(serialized.find("\r\nc: ") != std::string::npos);
+    EXPECT_FALSE(serialized.find("\r\ns: ") != std::string::npos);
+    EXPECT_FALSE(serialized.find("\r\ne: ") != std::string::npos);
+    EXPECT_FALSE(serialized.find("\r\nk: ") != std::string::npos);
+    EXPECT_FALSE(serialized.find("\r\nl: ") != std::string::npos);
+}
