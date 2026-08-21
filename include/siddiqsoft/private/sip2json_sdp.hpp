@@ -373,13 +373,15 @@ namespace siddiqsoft
                     auto sdp = sipm.at("/b/sdp"_json_pointer);
                     for (auto& block : sdp)
                     {
-                        // Build each block; order is critical. We do not support session-level attributes (only media-level attributes)
+                        // Build each block; order is critical.
+                        // We do not support session-level attributes (only media-level attributes)
                         std::format_to(std::back_inserter(buffer),
                                        "v=0\r\no={}\r\ns={}\r\n",
                                        serializeSDPelement(block, "o"),
                                        serializeSDPelement(block, "s"));
-                        // Optional.. "i"; note that in the serializeSDPelement we check for
-                        // the presence of the element and if it is not present we return an empty string.
+                        // Note the optional elements are skipped if they are not present.
+                        // The serializeSDPelement will return an empty string if the element is not present.
+                        // The standard has these optional elements in a "sequence".
                         if (auto elem = serializeSDPelement(block, "i"s); !elem.empty())
                             std::format_to(std::back_inserter(buffer), "i={}\r\n", elem);
                         // Optional.. "u"
