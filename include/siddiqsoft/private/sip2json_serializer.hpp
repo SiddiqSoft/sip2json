@@ -71,7 +71,6 @@ namespace siddiqsoft
                                                                          "PUBLISH",
                                                                          "UPDATE",
                                                                          "PRACK",
-                                                                         "BENCHMARK",
                                                                          "SIP/2.0"};
         std::string                                buffer {};
         std::string                                contentType {};
