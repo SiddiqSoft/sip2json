@@ -735,6 +735,34 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#5-micro-optimization-refactoring-performance-deltas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Micro-Optimization &amp; Refactoring Performance Deltas
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Micro-Optimization &amp; Refactoring Performance Deltas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#optimization-delta-summary-baseline-f0b7c97-vs-current-abdulkareem-siddiqissue33" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Optimization Delta Summary (Baseline f0b7c97 vs Current abdulkareem-siddiq/issue33)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#architectural-recommendations" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1618,6 +1646,34 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#5-micro-optimization-refactoring-performance-deltas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Micro-Optimization &amp; Refactoring Performance Deltas
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Micro-Optimization &amp; Refactoring Performance Deltas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#optimization-delta-summary-baseline-f0b7c97-vs-current-abdulkareem-siddiqissue33" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Optimization Delta Summary (Baseline f0b7c97 vs Current abdulkareem-siddiq/issue33)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#architectural-recommendations" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1947,6 +2003,136 @@ Because <code>sip2json</code> parses a SIP message in just <strong>~4.1 microsec
 </tbody>
 </table>
 <hr />
+<h2 id="5-micro-optimization-refactoring-performance-deltas">5. Micro-Optimization &amp; Refactoring Performance Deltas<a class="headerlink" href="#5-micro-optimization-refactoring-performance-deltas" title="Permanent link">&para;</a></h2>
+<p>Recent optimizations—converting global protocol constants and JSON keys to <code>static constexpr std::string_view</code> (<code>JSON_KEY_*</code>, <code>HFS_*</code>), adding zero-copy view accessors (<code>getMethodView()</code>, <code>getCallIDView()</code>), and avoiding redundant optional SDP field serializations per RFC 4566 (Fixes #33)—achieved measured performance gains across <code>Apple-Release</code> (<code>-O3 -g</code>) benchmarks:</p>
+<h3 id="optimization-delta-summary-baseline-f0b7c97-vs-current-abdulkareem-siddiqissue33">Optimization Delta Summary (Baseline <code>f0b7c97</code> vs Current <code>abdulkareem-siddiq/issue33</code>)<a class="headerlink" href="#optimization-delta-summary-baseline-f0b7c97-vs-current-abdulkareem-siddiqissue33" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Benchmark Category</th>
+<th style="text-align: left;">Benchmark Name</th>
+<th style="text-align: left;">Baseline (<code>f0b7c97</code>)</th>
+<th style="text-align: left;">Current Branch</th>
+<th style="text-align: left;">Speedup / Delta</th>
+<th style="text-align: left;">Operational Rate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Header Accessors</strong></td>
+<td style="text-align: left;"><code>BM_GetMethod</code></td>
+<td style="text-align: left;">111.77 ns</td>
+<td style="text-align: left;"><strong>97.09 ns</strong></td>
+<td style="text-align: left;"><strong>-13.14% (faster)</strong></td>
+<td style="text-align: left;"><strong>10,373,812 ops/sec</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Noisy Stream Decoders</strong></td>
+<td style="text-align: left;"><code>BM_WorstCaseNoisyAsyncParsing/1000</code></td>
+<td style="text-align: left;">51.24 µs</td>
+<td style="text-align: left;"><strong>44.78 µs</strong></td>
+<td style="text-align: left;"><strong>-12.61% (faster)</strong></td>
+<td style="text-align: left;"><strong>22,662,064 msg/sec</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SIP Message Construction</strong></td>
+<td style="text-align: left;"><code>BM_ConstructRequestSipmessage</code></td>
+<td style="text-align: left;">5.44 µs</td>
+<td style="text-align: left;"><strong>4.80 µs</strong></td>
+<td style="text-align: left;"><strong>-11.86% (faster)</strong></td>
+<td style="text-align: left;">208,604 msg/sec</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Response Instantiation</strong></td>
+<td style="text-align: left;"><code>BM_ConstructResponseFromRequest</code></td>
+<td style="text-align: left;">4.64 µs</td>
+<td style="text-align: left;"><strong>4.16 µs</strong></td>
+<td style="text-align: left;"><strong>-10.29% (faster)</strong></td>
+<td style="text-align: left;">240,493 msg/sec</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Variable Buffer Stress</strong></td>
+<td style="text-align: left;"><code>BM_VariableSizeAsyncStressTest/50</code></td>
+<td style="text-align: left;">1.85 ms</td>
+<td style="text-align: left;"><strong>1.66 ms</strong></td>
+<td style="text-align: left;"><strong>-10.27% (faster)</strong></td>
+<td style="text-align: left;">30,434 msg/sec</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Variable Buffer Stress</strong></td>
+<td style="text-align: left;"><code>BM_VariableSizeAsyncStressTest/10</code></td>
+<td style="text-align: left;">360.71 µs</td>
+<td style="text-align: left;"><strong>327.27 µs</strong></td>
+<td style="text-align: left;"><strong>-9.27% (faster)</strong></td>
+<td style="text-align: left;">30,717 msg/sec</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Variable Buffer Stress</strong></td>
+<td style="text-align: left;"><code>BM_VariableSizeStressTest/500</code></td>
+<td style="text-align: left;">18.59 ms</td>
+<td style="text-align: left;"><strong>16.87 ms</strong></td>
+<td style="text-align: left;"><strong>-9.21% (faster)</strong></td>
+<td style="text-align: left;">29,955 msg/sec</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Noisy Stream Decoders</strong></td>
+<td style="text-align: left;"><code>BM_WorstCaseNoisyAsyncParsing/500</code></td>
+<td style="text-align: left;">40.11 µs</td>
+<td style="text-align: left;"><strong>36.71 µs</strong></td>
+<td style="text-align: left;"><strong>-8.48% (faster)</strong></td>
+<td style="text-align: left;">13,678,243 msg/sec</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Noisy Stream Decoders</strong></td>
+<td style="text-align: left;"><code>BM_WorstCaseNoisyAsyncParsing/100</code></td>
+<td style="text-align: left;">33.18 µs</td>
+<td style="text-align: left;"><strong>30.62 µs</strong></td>
+<td style="text-align: left;"><strong>-7.72% (faster)</strong></td>
+<td style="text-align: left;">3,308,973 msg/sec</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Default Construction</strong></td>
+<td style="text-align: left;"><code>BM_ConstructDefaultSipmessage</code></td>
+<td style="text-align: left;">1.59 µs</td>
+<td style="text-align: left;"><strong>1.49 µs</strong></td>
+<td style="text-align: left;"><strong>-6.04% (faster)</strong></td>
+<td style="text-align: left;">677,473 msg/sec</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Stream Thread Pool Handoff</strong></td>
+<td style="text-align: left;"><code>BM_SimulatedStream_Parse_WithThreadPoolHandoff</code></td>
+<td style="text-align: left;">7.53 ms</td>
+<td style="text-align: left;"><strong>7.08 ms</strong></td>
+<td style="text-align: left;"><strong>-5.94% (faster)</strong></td>
+<td style="text-align: left;">209,221 msg/sec</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Response Construction</strong></td>
+<td style="text-align: left;"><code>BM_ConstructResponseSipmessage</code></td>
+<td style="text-align: left;">4.82 µs</td>
+<td style="text-align: left;"><strong>4.60 µs</strong></td>
+<td style="text-align: left;"><strong>-4.42% (faster)</strong></td>
+<td style="text-align: left;">219,227 msg/sec</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Multi-Thread Scaling</strong></td>
+<td style="text-align: left;"><code>BM_MultiThreadedAsyncParsing/4</code></td>
+<td style="text-align: left;">4.02 ms</td>
+<td style="text-align: left;"><strong>3.89 ms</strong></td>
+<td style="text-align: left;"><strong>-3.06% (faster)</strong></td>
+<td style="text-align: left;"><strong>21,996,876 msg/sec</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Multi-Thread Scaling</strong></td>
+<td style="text-align: left;"><code>BM_MultiThreadedAsyncParsing/16</code></td>
+<td style="text-align: left;">14.23 ms</td>
+<td style="text-align: left;"><strong>13.81 ms</strong></td>
+<td style="text-align: left;"><strong>-2.94% (faster)</strong></td>
+<td style="text-align: left;"><strong>23,790,194 msg/sec</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
 <h2 id="architectural-recommendations">Architectural Recommendations<a class="headerlink" href="#architectural-recommendations" title="Permanent link">&para;</a></h2>
 <blockquote>
 <p>[!TIP]
@@ -2049,7 +2235,7 @@ Because <code>sip2json</code> parses a SIP message in just <strong>~4.1 microsec
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "2.5.6"}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "2.5.7-20"}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
