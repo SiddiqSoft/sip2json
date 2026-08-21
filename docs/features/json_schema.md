@@ -11,7 +11,7 @@ The document uses single-character keys (`s`, `h`, `b`, `meta`) to minimize payl
 ```json
 {
   "meta": {
-    "version": "sip2json/1.17.0/1.0.0",
+    "version": "sip2json/1.17.0/2.5.x",
     "time": "2026-08-18T15:30:00.000Z",
     "ttx": 0
   },

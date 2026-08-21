@@ -1,5 +1,5 @@
 /*
-  A SIP Parser for Modern C++ / Version 1.0.0
+  A SIP Parser for Modern C++ / Version 2.5.x
   https://github.com/siddiqsoftware/sip2json/
   Copyright 2003-2020 Abdelkareem Siddiq.
   All rights reserved.
