@@ -81,11 +81,11 @@ namespace siddiqsoft
         // Assert: non-empty json document
         if (sipm.size() == 0) throw empty_message_error {std::format("{}:sipm is empty.", __func__)};
         // Assert: non-empty json document; starting with v1.9 we have a meta element for diagnostics; this is to be treated as "empty".
-        if (sipm.contains("meta") && sipm.size() == 1)
+        if (sipm.contains(JSON_KEY_META) && sipm.size() == 1)
             throw empty_message_error {std::format("{}:sipm is empty (except for meta).", __func__)};
 
         // Assert: Header must exist
-        if (!sipm.contains("h"s)) throw invalid_document_error {std::format("{}:sipm does not contain `h`eaders.", __func__)};
+        if (!sipm.contains(JSON_KEY_HEADERS)) throw invalid_document_error {std::format("{}:sipm does not contain `h`eaders.", __func__)};
 
         if (sipm.isMessageRequest())
         {

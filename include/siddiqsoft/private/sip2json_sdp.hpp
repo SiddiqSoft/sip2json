@@ -365,7 +365,7 @@ namespace siddiqsoft
         // NOTE: we extract the contentType value during the header serialization.
         if (contentType == CONTENT_TYPE_APP_SDP)
         {
-            if (sipm.contains("b"s) && !sipm.body().is_null())
+            if (sipm.contains(JSON_KEY_BODY) && !sipm.body().is_null())
             {
                 if (sipm.contains("/b/sdp"_json_pointer))
                 {
@@ -416,7 +416,7 @@ namespace siddiqsoft
                 // but also sets the Content-Length to `0` so we should avoid encoding anything.
             }
         }
-        else if ((contentType.compare(CONTENT_TYPE_TEXT_PLAIN) == 0) && (sipm.contains("b"s) && sipm.body().is_string()))
+        else if ((contentType.compare(CONTENT_TYPE_TEXT_PLAIN) == 0) && (sipm.contains(JSON_KEY_BODY) && sipm.body().is_string()))
         {
             buffer += sipm.body();
         }

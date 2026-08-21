@@ -90,10 +90,10 @@ namespace siddiqsoft
         /// @brief Default constructor initializing an empty SIP message with metadata.
         /// @details Creates a new sipmessage with default metadata including version, timestamp, and TTX counter.
         sipmessage() : nlohmann::json({
-            {"meta", {
-                {"version", std::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
-                {"time", TimeAsISO8601()},
-                {"ttx", 0}
+            {std::string{JSON_KEY_META}, {
+                {std::string{JSON_KEY_VERSION}, std::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
+                {std::string{JSON_KEY_TIME}, TimeAsISO8601()},
+                {std::string{JSON_KEY_TTX}, 0}
             }}
         }) {}
 
@@ -155,13 +155,13 @@ namespace siddiqsoft
         {
             using namespace std;
 
-            update({{"s"s, {{"type"s, SIPMessageType::request}, {"method"s, std::string {method}}, {"uri"s, std::string {uri}}, {"version"s, SIPVER_20}}},
-                    {"b"s, nullptr},
-                    {"meta"s,
-                     {{"version"s, std::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
-                      {"time"s, TimeAsISO8601()},
-                      {"ttx"s, 0}}},
-                    {"h"s,
+            update({{std::string{JSON_KEY_STARTLINE}, {{std::string{JSON_KEY_TYPE}, SIPMessageType::request}, {std::string{JSON_KEY_METHOD}, std::string {method}}, {std::string{JSON_KEY_URI}, std::string {uri}}, {std::string{JSON_KEY_VERSION}, SIPVER_20}}},
+                    {std::string{JSON_KEY_BODY}, nullptr},
+                    {std::string{JSON_KEY_META},
+                     {{std::string{JSON_KEY_VERSION}, std::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
+                      {std::string{JSON_KEY_TIME}, TimeAsISO8601()},
+                      {std::string{JSON_KEY_TTX}, 0}}},
+                    {std::string{JSON_KEY_HEADERS},
                      {{std::string{HFS_USER_AGENT[1]}, std::format("{}/{} (schema:{})", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
                       {std::string{HFS_DATE[1]}, TimeAsRFC1123()}}}});
 
@@ -181,17 +181,15 @@ namespace siddiqsoft
             update(src);
 
             // Overwrite the source object's values
-            (*this)["meta"s] = {{"version"s, std::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
-                                {"time"s, TimeAsISO8601()},
-                                {"ttx"s, 0}};
+            (*this)[std::string{JSON_KEY_META}] = {{std::string{JSON_KEY_VERSION}, std::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
+                                {std::string{JSON_KEY_TIME}, TimeAsISO8601()},
+                                {std::string{JSON_KEY_TTX}, 0}};
 
-            //// We must clear these values in case we are updating an existing object.
-            //erase("s"s);
             // "status-line" (Status Reason Version)
-            (*this)["s"s] = {
-                    {"type", "response"}, {"status", statusCode}, {"reason", getReasonPhrase(statusCode)}, {"version", SIPVER_20}};
+            (*this)[std::string{JSON_KEY_STARTLINE}] = {
+                    {std::string{JSON_KEY_TYPE}, SIPMessageType::response}, {std::string{JSON_KEY_STATUS}, statusCode}, {std::string{JSON_KEY_REASON}, getReasonPhrase(statusCode)}, {std::string{JSON_KEY_VERSION}, SIPVER_20}};
 
-            (*this)["h"s][std::string{HFS_USER_AGENT[1]}] = std::format("{}/{} (schema:{})", MetaLibName, MetaParserVersion, MetaSchemaVersion);
+            (*this)[std::string{JSON_KEY_HEADERS}][std::string{HFS_USER_AGENT[1]}] = std::format("{}/{} (schema:{})", MetaLibName, MetaParserVersion, MetaSchemaVersion);
             setHeader(HFS_DATE[1], TimeAsRFC1123());
         }
 
@@ -204,17 +202,17 @@ namespace siddiqsoft
             using namespace std;
 
             update(nlohmann::json {
-                    {"s"s,
-                     {{"type"s, SIPMessageType::response},
-                      {"status"s, statusCode},
-                      {"reason"s, getReasonPhrase(statusCode)},
-                      {"version"s, SIPVER_20}}},
-                    {"b"s, nullptr},
-                    {"meta"s,
-                     {{"version"s, std::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
-                      {"time"s, TimeAsISO8601()},
-                      {"ttx"s, 0}}},
-                    {"h"s,
+                    {std::string{JSON_KEY_STARTLINE},
+                     {{std::string{JSON_KEY_TYPE}, SIPMessageType::response},
+                      {std::string{JSON_KEY_STATUS}, statusCode},
+                      {std::string{JSON_KEY_REASON}, getReasonPhrase(statusCode)},
+                      {std::string{JSON_KEY_VERSION}, SIPVER_20}}},
+                    {std::string{JSON_KEY_BODY}, nullptr},
+                    {std::string{JSON_KEY_META},
+                     {{std::string{JSON_KEY_VERSION}, std::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
+                      {std::string{JSON_KEY_TIME}, TimeAsISO8601()},
+                      {std::string{JSON_KEY_TTX}, 0}}},
+                    {std::string{JSON_KEY_HEADERS},
                      {{std::string{HFS_USER_AGENT[1]}, std::format("{}/{} (schema:{})", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
                       {std::string{HFS_DATE[1]}, TimeAsRFC1123()}}}});
         }
@@ -224,12 +222,13 @@ namespace siddiqsoft
         /// @brief Returns the header object reference.
         /// @details Provides direct access to the headers section ("h") of the SIP message.
         /// @return Reference to the header object.
-        auto& headers() { return this->at("h"); }
+        /// @return Reference to the header object.
+        auto& headers() { return this->at(JSON_KEY_HEADERS); }
 
         /// @brief Returns the header object const reference.
         /// @details Provides const access to the headers section ("h") of the SIP message.
         /// @return Const reference to the header object.
-        const auto& headers() const { return this->at("h"); }
+        const auto& headers() const { return this->at(JSON_KEY_HEADERS); }
 
         /// @brief Retrieves a header value by key with optional default value.
         /// @tparam T The type of the header value to retrieve.
@@ -238,7 +237,7 @@ namespace siddiqsoft
         /// @return The header value or the default value if not found.
         template <class T> auto getHeader(std::string_view key, std::optional<T> defaultValue = {}) const
         {
-            return (*this)["h"].value(std::string {key}, defaultValue.value_or(T {}));
+            return (*this)[JSON_KEY_HEADERS].value(std::string {key}, defaultValue.value_or(T {}));
         }
 
         /// @brief Sets or updates the User-Agent header.
@@ -353,9 +352,9 @@ namespace siddiqsoft
         /// @return std::string_view pointing to internal string storage.
         std::string_view getCallIDView() const
         {
-            if (headers().contains("Call-ID"))
+            if (headers().contains(HFS_CALLID[1]))
             {
-                const auto& cid = headers().at("Call-ID");
+                const auto& cid = headers().at(HFS_CALLID[1]);
                 if (cid.is_string()) return cid.get_ref<const std::string&>();
             }
             return {};
@@ -376,18 +375,18 @@ namespace siddiqsoft
         /// This method should be used to change the body contents to text/plain or non-SDP content-type.
         /// @return Reference to the body element.
         /// @throws std::out_of_range if the body element does not exist.
-        auto& body() { return this->at("b"); }
+        auto& body() { return this->at(JSON_KEY_BODY); }
 
         /// @brief Returns a const reference to the body object.
         /// @details Provides const access to the body section ("b") of the SIP message.
         /// @return Const reference to the body element.
         /// @throws std::out_of_range if the body element does not exist.
-        const auto& body() const { return this->at("b"); }
+        const auto& body() const { return this->at(JSON_KEY_BODY); }
 
         /// @brief Checks if the message contains a body element.
         /// @details Verifies the presence of the "b" (body) element in the SIP message.
         /// @return True if the sipmessage contains the body element, false otherwise.
-        bool hasBody() const { return this->contains("b"); }
+        bool hasBody() const { return this->contains(JSON_KEY_BODY); }
 
         /// @brief Retrieves a body element using a JSON pointer with a default value.
         /// @details Accesses nested elements within the body section using JSON pointer notation.
@@ -398,7 +397,7 @@ namespace siddiqsoft
         /// @throws std::out_of_range if the body element does not exist.
         template <typename T> T getBodyElement(const nlohmann::json::json_pointer& jp, const T& defaultValue) const
         {
-            return this->at("b").value<T>(jp, defaultValue);
+            return this->at(JSON_KEY_BODY).value<T>(jp, defaultValue);
         }
 
         /// @brief Checks if this message is a SIP request.
@@ -426,7 +425,7 @@ namespace siddiqsoft
         /// @return Self.
         template <typename T> inline sipmessage& setHeader(std::string_view key, const T& v)
         {
-            (*this)["h"][std::string{key}] = v;
+            (*this)[JSON_KEY_HEADERS][std::string{key}] = v;
             return *this;
         };
 
@@ -436,10 +435,10 @@ namespace siddiqsoft
         /// @return the sipmessage
         inline sipmessage& setHeader(const nlohmann::json& arg)
         {
-            if (!this->contains("h"))
-                (*this)["h"] = arg;
+            if (!this->contains(JSON_KEY_HEADERS))
+                (*this)[JSON_KEY_HEADERS] = arg;
             else
-                (*this)["h"].merge_patch(arg);
+                (*this)[JSON_KEY_HEADERS].merge_patch(arg);
             return *this;
         };
 
@@ -451,7 +450,7 @@ namespace siddiqsoft
         /// @return Self
         template <typename T> inline sipmessage& setBody(const nlohmann::json::json_pointer& key, const T& v)
         {
-            (*this)["b"][key] = v;
+            (*this)[JSON_KEY_BODY][key] = v;
             return *this;
         };
 
@@ -461,10 +460,10 @@ namespace siddiqsoft
         /// @return the sipmessage
         inline sipmessage& setBody(const nlohmann::json& arg)
         {
-            if (!this->contains("b"))
-                (*this)["b"] = arg;
+            if (!this->contains(JSON_KEY_BODY))
+                (*this)[JSON_KEY_BODY] = arg;
             else
-                (*this).at("b").update(arg);
+                (*this).at(JSON_KEY_BODY).update(arg);
 
             return *this;
         };
