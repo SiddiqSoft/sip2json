@@ -76,17 +76,17 @@ namespace siddiqsoft
             // with an ill-formed (or unsupported) start-line.
             if (SIPVER_20 == g3)
             {
-                sipm["s"s] = {{"type"s, SIPMessageType::request},
-                              {"method"s, string(g1)},
-                              {"uri"s, string(g2)},
-                              {"version"s, string(g3)}};
+                sipm[JSON_KEY_STARTLINE] = {{JSON_KEY_TYPE, SIPMessageType::request},
+                                            {JSON_KEY_METHOD, string(g1)},
+                                            {JSON_KEY_URI, string(g2)},
+                                            {JSON_KEY_VERSION, string(g3)}};
             }
             else if (SIPVER_20 == g1)
             {
-                sipm["s"s] = {{"type"s, SIPMessageType::response},
-                              {"reason"s, string(g3)},
-                              {"status"s, std::stoi(string(g2))},
-                              {"version"s, string(g1)}};
+                sipm[JSON_KEY_STARTLINE] = {{JSON_KEY_TYPE, SIPMessageType::response},
+                                            {JSON_KEY_REASON, string(g3)},
+                                            {JSON_KEY_STATUS, std::stoi(string(g2))},
+                                            {JSON_KEY_VERSION, string(g1)}};
             }
             else
             {

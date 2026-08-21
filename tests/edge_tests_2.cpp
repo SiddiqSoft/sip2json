@@ -249,3 +249,72 @@ TEST(edge_cases_2, Test_serialize_missing_headers_throws)
 
     EXPECT_THROW(siddiqsoft::sip2json::serialize(sipm), siddiqsoft::invalid_document_error);
 }
+
+
+// NOLINTNEXTLINE
+TEST(Issue33_SDPOptionalFields, OmitUnpopulatedOptionalSDPLines)
+{
+    // Minimal SDP without optional i=, u=, e=, p=, c= fields
+    std::string rawMsg =
+        "INVITE sip:bob@example.com SIP/2.0\r\n"
+        "Via: SIP/2.0/UDP 192.0.2.1:5060;branch=z9hG4bK-issue33\r\n"
+        "From: <sip:alice@example.com>;tag=1\r\n"
+        "To: <sip:bob@example.com>\r\n"
+        "Call-ID: issue33-omit-optional-sdp\r\n"
+        "CSeq: 1 INVITE\r\n"
+        "Content-Type: application/sdp\r\n"
+        "Content-Length: 104\r\n"
+        "\r\n"
+        "v=0\r\n"
+        "o=alice 2890844526 2890844526 IN IP4 192.0.2.1\r\n"
+        "s=Issue 33 Test\r\n"
+        "t=0 0\r\n"
+        "m=audio 49170 RTP/AVP 0\r\n"
+        "a=rtpmap:0 PCMU/8000\r\n";
+
+    auto bs = rawMsg.begin();
+    siddiqsoft::sipmessage sipm = siddiqsoft::sip2json::parseFromBuffer(bs, rawMsg.end());
+
+    std::string serialized = siddiqsoft::sip2json::serialize(sipm);
+
+    EXPECT_FALSE(serialized.contains("i=\r\n"));
+    EXPECT_FALSE(serialized.contains("u=\r\n"));
+    EXPECT_FALSE(serialized.contains("e=\r\n"));
+    EXPECT_FALSE(serialized.contains("p=\r\n"));
+    EXPECT_FALSE(serialized.contains("c=\r\n"));
+}
+
+
+// NOLINTNEXTLINE
+TEST(Issue33_SDPOptionalFields, PreservePopulatedOptionalSDPLines)
+{
+    std::string rawMsg =
+        "INVITE sip:bob@example.com SIP/2.0\r\n"
+        "Via: SIP/2.0/UDP 192.0.2.1:5060;branch=z9hG4bK-issue33b\r\n"
+        "From: <sip:alice@example.com>;tag=1\r\n"
+        "To: <sip:bob@example.com>\r\n"
+        "Call-ID: issue33-preserve-optional-sdp\r\n"
+        "CSeq: 1 INVITE\r\n"
+        "Content-Type: application/sdp\r\n"
+        "Content-Length: 172\r\n"
+        "\r\n"
+        "v=0\r\n"
+        "o=alice 2890844526 2890844526 IN IP4 192.0.2.1\r\n"
+        "s=Issue 33 Test\r\n"
+        "i=Session Information Text\r\n"
+        "c=IN IP4 192.0.2.1\r\n"
+        "t=0 0\r\n"
+        "m=audio 49170 RTP/AVP 0\r\n"
+        "a=rtpmap:0 PCMU/8000\r\n";
+
+    auto bs = rawMsg.begin();
+    siddiqsoft::sipmessage sipm = siddiqsoft::sip2json::parseFromBuffer(bs, rawMsg.end());
+
+    std::string serialized = siddiqsoft::sip2json::serialize(sipm);
+
+    EXPECT_TRUE(serialized.contains("i=Session Information Text\r\n"));
+    EXPECT_TRUE(serialized.contains("c=IN IP4 192.0.2.1\r\n"));
+    EXPECT_FALSE(serialized.contains("u=\r\n"));
+    EXPECT_FALSE(serialized.contains("e=\r\n"));
+    EXPECT_FALSE(serialized.contains("p=\r\n"));
+}

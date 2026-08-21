@@ -46,6 +46,32 @@
 
 namespace siddiqsoft
 {
+    // Top-Level Message JSON Section Keys
+    static constexpr std::string_view JSON_KEY_STARTLINE {"s"};
+    static constexpr std::string_view JSON_KEY_HEADERS {"h"};
+    static constexpr std::string_view JSON_KEY_BODY {"b"};
+    static constexpr std::string_view JSON_KEY_META {"meta"};
+
+    // Start-Line JSON Field Keys
+    static constexpr std::string_view JSON_KEY_TYPE {"type"};
+    static constexpr std::string_view JSON_KEY_METHOD {"method"};
+    static constexpr std::string_view JSON_KEY_URI {"uri"};
+    static constexpr std::string_view JSON_KEY_VERSION {"version"};
+    static constexpr std::string_view JSON_KEY_STATUS {"status"};
+    static constexpr std::string_view JSON_KEY_REASON {"reason"};
+
+    // Meta JSON Field Keys
+    static constexpr std::string_view JSON_KEY_ID {"id"};
+    static constexpr std::string_view JSON_KEY_TIME {"time"};
+    static constexpr std::string_view JSON_KEY_TTX {"ttx"};
+
+    // SDP JSON Key
+    static constexpr std::string_view JSON_KEY_SDP {"sdp"};
+
+    // URI Schemes
+    static constexpr std::string_view URI_SCHEME_SIP {"sip:"};
+    static constexpr std::string_view URI_SCHEME_SIPS {"sips:"};
+
     // CAUTION; this is used as a reference to break out of the processing loop if the remaining buffer is less than the
     // size of this sample message.
     static constexpr std::string_view SIP_SAMPLE_MINIMAL_MESSAGE {
