@@ -57,21 +57,21 @@ namespace siddiqsoft
     {
         using namespace std;
 
-        static const std::vector<std::string_view> supportedMethodsList {"MESSAGE",
-                                                                         "INFO",
-                                                                         "INVITE",
-                                                                         "ACK",
-                                                                         "OPTIONS",
-                                                                         "BYE",
-                                                                         "CANCEL",
-                                                                         "REGISTER",
-                                                                         "SUBSCRIBE",
-                                                                         "NOTIFY",
-                                                                         "REFER",
-                                                                         "PUBLISH",
-                                                                         "UPDATE",
-                                                                         "PRACK",
-                                                                         "SIP/2.0"};
+        static const std::vector<std::string_view> supportedMethodsList {METHOD_MESSAGE,
+                                                                         METHOD_INFO,
+                                                                         METHOD_INVITE,
+                                                                         METHOD_ACK,
+                                                                         METHOD_OPTIONS,
+                                                                         METHOD_BYE,
+                                                                         METHOD_CANCEL,
+                                                                         METHOD_REGISTER,
+                                                                         METHOD_SUBSCRIBE,
+                                                                         METHOD_NOTIFY,
+                                                                         METHOD_REFER,
+                                                                         METHOD_PUBLISH,
+                                                                         METHOD_UPDATE,
+                                                                         METHOD_PRACK,
+                                                                         SIPVER_20};
         std::string                                buffer {};
         std::string                                contentType {};
 
@@ -100,7 +100,7 @@ namespace siddiqsoft
                 throw invalid_document_error {std::format("{}:URI contains line breaks:{}", __func__, uri)};
 
             // Request Line
-            std::format_to(std::back_inserter(buffer), "{} {} SIP/2.0\r\n", method, uri);
+            std::format_to(std::back_inserter(buffer), "{} {} {}\r\n", method, uri, SIPVER_20);
         }
         else if (sipm.isMessageResponse())
         {
@@ -108,7 +108,7 @@ namespace siddiqsoft
             if (reason.find('\r') != std::string::npos || reason.find('\n') != std::string::npos)
                 throw invalid_document_error {std::format("{}:Reason phrase contains line breaks:{}", __func__, reason)};
             // Status Line
-            std::format_to(std::back_inserter(buffer), "SIP/2.0 {} {}\r\n", sipm.getStatusCode(), reason);
+            std::format_to(std::back_inserter(buffer), "{} {} {}\r\n", SIPVER_20, sipm.getStatusCode(), reason);
         }
         else
         {
@@ -118,7 +118,7 @@ namespace siddiqsoft
 
         // Encode the body first so we can get the content-length properly.
         auto body = serializeSDP(sipm);
-        sipm.setHeader("Content-Length"s, body.length());
+        sipm.setHeader(HFS_CONTENT_LENGTH[1], body.length());
 
         // Headers
         if (auto mh = sipm.headers(); mh.size() > 0)

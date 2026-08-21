@@ -53,6 +53,7 @@
 #include "private/sip2json_response_codes.hpp"
 #include "private/sip2json_utils.hpp"
 #include "private/sip2json_exception.hpp"
+#include "private/sip2json_header_keys.hpp"
 
 
 namespace siddiqsoft
@@ -161,13 +162,13 @@ namespace siddiqsoft
                       {"time"s, TimeAsISO8601()},
                       {"ttx"s, 0}}},
                     {"h"s,
-                     {{"User-Agent"s, std::format("{}/{} (schema:{})", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
-                      {"Date"s, TimeAsRFC1123()}}}});
+                     {{std::string{HFS_USER_AGENT[1]}, std::format("{}/{} (schema:{})", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
+                      {std::string{HFS_DATE[1]}, TimeAsRFC1123()}}}});
 
             // request-line: METHOD Request-URI SIP/2.0
             // message-headers
-            if (!callId.empty()) setHeader("Call-ID"s, std::string {callId});
-            if (cseq > 0) setHeader("CSeq"s, std::format("{} {}", cseq, method));
+            if (!callId.empty()) setHeader(HFS_CALLID[1], std::string {callId});
+            if (cseq > 0) setHeader(HFS_CSEQ[1], std::format("{} {}", cseq, method));
         }
 
         /// @brief Instantiates a response message from scratch or optionally from existing sipmessage request
@@ -190,8 +191,8 @@ namespace siddiqsoft
             (*this)["s"s] = {
                     {"type", "response"}, {"status", statusCode}, {"reason", getReasonPhrase(statusCode)}, {"version", SIPVER_20}};
 
-            (*this)["h"s]["User-Agent"s] = std::format("{}/{} (schema:{})", MetaLibName, MetaParserVersion, MetaSchemaVersion);
-            setHeader("Date"s, TimeAsRFC1123());
+            (*this)["h"s][std::string{HFS_USER_AGENT[1]}] = std::format("{}/{} (schema:{})", MetaLibName, MetaParserVersion, MetaSchemaVersion);
+            setHeader(HFS_DATE[1], TimeAsRFC1123());
         }
 
 
@@ -214,8 +215,8 @@ namespace siddiqsoft
                       {"time"s, TimeAsISO8601()},
                       {"ttx"s, 0}}},
                     {"h"s,
-                     {{"User-Agent"s, std::format("{}/{} (schema:{})", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
-                      {"Date"s, TimeAsRFC1123()}}}});
+                     {{std::string{HFS_USER_AGENT[1]}, std::format("{}/{} (schema:{})", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
+                      {std::string{HFS_DATE[1]}, TimeAsRFC1123()}}}});
         }
 
 
@@ -244,30 +245,26 @@ namespace siddiqsoft
         /// @details Automatically formats the User-Agent header with library name, version, and schema information.
         /// @param ua Optional additional user agent string to append.
         /// @return Reference to this sipmessage for method chaining.
-        /// @brief Sets or updates the User-Agent header.
-        /// @details Automatically formats the User-Agent header with library name, version, and schema information.
-        /// @param ua Optional additional user agent string to append.
-        /// @return Reference to this sipmessage for method chaining.
         auto& setUserAgent(std::string_view ua = {})
         {
             if (!ua.empty())
-                setHeader("User-Agent", std::format("{}/{} (schema:{}) {}", MetaLibName, MetaParserVersion, MetaSchemaVersion, ua));
+                setHeader(HFS_USER_AGENT[1], std::format("{}/{} (schema:{}) {}", MetaLibName, MetaParserVersion, MetaSchemaVersion, ua));
             else
-                setHeader("User-Agent", std::format("{}/{} (schema:{})", MetaLibName, MetaParserVersion, MetaSchemaVersion));
+                setHeader(HFS_USER_AGENT[1], std::format("{}/{} (schema:{})", MetaLibName, MetaParserVersion, MetaSchemaVersion));
             return *this;
         }
 
         /// @brief Retrieves the User-Agent header value.
         /// @return The User-Agent header string.
-        auto getUserAgent() const { return getHeader<std::string>("User-Agent"); }
+        auto getUserAgent() const { return getHeader<std::string>(HFS_USER_AGENT[1]); }
 
         /// @brief Retrieves the Content-Length header value.
         /// @return The Content-Length as a 32-bit unsigned integer.
-        uint32_t getContentLength() const { return getHeader<uint32_t>("Content-Length"); }
+        uint32_t getContentLength() const { return getHeader<uint32_t>(HFS_CONTENT_LENGTH[1]); }
 
         /// @brief Retrieves the Expires header value.
         /// @return The Expires value as a 32-bit unsigned integer.
-        uint32_t getExpires() const { return getHeader<uint32_t>("Expires"); }
+        uint32_t getExpires() const { return getHeader<uint32_t>(HFS_EXPIRES[1]); }
 
         /// @brief Retrieves the Content-Type header value.
         /// @details Handles case-insensitive lookup for Content-Type and Content-type headers
@@ -275,14 +272,24 @@ namespace siddiqsoft
         /// @return The Content-Type header string, or empty string if not found.
         auto getContentType() const
         {
-            if (headers().contains("Content-Type"))
+            if (headers().contains(HFS_CONTENT_TYPE[1]))
             {
-                auto ct = headers().at("Content-Type");
+                auto ct = headers().at(HFS_CONTENT_TYPE[1]);
                 return ct.is_null() ? std::string {} : ct.get<std::string>();
             }
             else if (headers().contains("Content-type"))
             {
                 auto ct = headers().at("Content-type");
+                return ct.is_null() ? std::string {} : ct.get<std::string>();
+            }
+            else if (headers().contains(HFS_CONTENT_TYPE[0]))
+            {
+                auto ct = headers().at(HFS_CONTENT_TYPE[0]);
+                return ct.is_null() ? std::string {} : ct.get<std::string>();
+            }
+            else if (!HFS_CONTENT_TYPE[2].empty() && headers().contains(HFS_CONTENT_TYPE[2]))
+            {
+                auto ct = headers().at(HFS_CONTENT_TYPE[2]);
                 return ct.is_null() ? std::string {} : ct.get<std::string>();
             }
 
@@ -291,7 +298,7 @@ namespace siddiqsoft
 
         /// @brief Retrieves the Call-ID header value.
         /// @return The Call-ID header string.
-        auto getCallID() const { return getHeader<std::string>("Call-ID"); }
+        auto getCallID() const { return getHeader<std::string>(HFS_CALLID[1]); }
 
         /// @brief Retrieves the SIP method from a request message.
         /// @details Only applicable to request messages (e.g., INVITE, REGISTER, BYE).
