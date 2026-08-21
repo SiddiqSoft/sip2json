@@ -113,7 +113,7 @@
 
 ## Navigation
 
-- [**Features**](features/index.md): Streaming parser, JSON schema, and SDP body processing.
+- [**Features**](features/index.md): Streaming parser, JSON schema, SDP body processing, and [**Standards Compliance**](features/compliance.md).
 - [**Integration**](integration/index.md): CMake CPM, Git submodules, and build setup.
 - [**Architecture**](architecture/index.md): Stateless design, iterator processing, and memory layout.
 - [**API Reference**](api/index.md): Comprehensive specifications for `sipmessage`, `sip2json` methods, and exceptions.

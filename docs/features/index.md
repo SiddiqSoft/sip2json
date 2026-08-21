@@ -48,6 +48,16 @@ Full Session Description Protocol (`application/sdp`) parsing and formatting int
 
 </div>
 
+<div class="card" markdown="1">
+
+### Standards Compliance & Certification
+
+Automated 226-test suite validating RFC 3261, RFC 4475 (SIP Torture), RFC 4566/8866 (SDP), RFC 3264, and extension RFCs.
+
+[Learn more :octicons-arrow-right-24:](compliance.md)
+
+</div>
+
 </div>
 
 ---
