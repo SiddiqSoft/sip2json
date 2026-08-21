@@ -2,86 +2,86 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://siddiqsoft.github.io/sip2json/</loc>
-         <lastmod>2026-08-19</lastmod>
+         <lastmod>2026-08-21</lastmod>
     </url>
     <url>
          <loc>https://siddiqsoft.github.io/sip2json/license/</loc>
-         <lastmod>2026-08-19</lastmod>
+         <lastmod>2026-08-21</lastmod>
     </url>
     <url>
          <loc>https://siddiqsoft.github.io/sip2json/api/</loc>
-         <lastmod>2026-08-19</lastmod>
+         <lastmod>2026-08-21</lastmod>
     </url>
     <url>
          <loc>https://siddiqsoft.github.io/sip2json/api/errors/</loc>
-         <lastmod>2026-08-19</lastmod>
+         <lastmod>2026-08-21</lastmod>
     </url>
     <url>
          <loc>https://siddiqsoft.github.io/sip2json/api/sip2json/</loc>
-         <lastmod>2026-08-19</lastmod>
+         <lastmod>2026-08-21</lastmod>
     </url>
     <url>
          <loc>https://siddiqsoft.github.io/sip2json/api/sipmessage/</loc>
-         <lastmod>2026-08-19</lastmod>
+         <lastmod>2026-08-21</lastmod>
     </url>
     <url>
          <loc>https://siddiqsoft.github.io/sip2json/architecture/</loc>
-         <lastmod>2026-08-19</lastmod>
+         <lastmod>2026-08-21</lastmod>
     </url>
     <url>
          <loc>https://siddiqsoft.github.io/sip2json/architecture/dataflow/</loc>
-         <lastmod>2026-08-19</lastmod>
+         <lastmod>2026-08-21</lastmod>
     </url>
     <url>
          <loc>https://siddiqsoft.github.io/sip2json/architecture/patterns/</loc>
-         <lastmod>2026-08-19</lastmod>
+         <lastmod>2026-08-21</lastmod>
     </url>
     <url>
          <loc>https://siddiqsoft.github.io/sip2json/examples/</loc>
-         <lastmod>2026-08-19</lastmod>
+         <lastmod>2026-08-21</lastmod>
     </url>
     <url>
          <loc>https://siddiqsoft.github.io/sip2json/examples/async_parsing/</loc>
-         <lastmod>2026-08-19</lastmod>
+         <lastmod>2026-08-21</lastmod>
     </url>
     <url>
          <loc>https://siddiqsoft.github.io/sip2json/examples/serialization/</loc>
-         <lastmod>2026-08-19</lastmod>
+         <lastmod>2026-08-21</lastmod>
     </url>
     <url>
          <loc>https://siddiqsoft.github.io/sip2json/features/</loc>
-         <lastmod>2026-08-19</lastmod>
+         <lastmod>2026-08-21</lastmod>
     </url>
     <url>
          <loc>https://siddiqsoft.github.io/sip2json/features/async/</loc>
-         <lastmod>2026-08-19</lastmod>
+         <lastmod>2026-08-21</lastmod>
     </url>
     <url>
          <loc>https://siddiqsoft.github.io/sip2json/features/benchmarks/</loc>
-         <lastmod>2026-08-19</lastmod>
+         <lastmod>2026-08-21</lastmod>
     </url>
     <url>
          <loc>https://siddiqsoft.github.io/sip2json/features/json_schema/</loc>
-         <lastmod>2026-08-19</lastmod>
+         <lastmod>2026-08-21</lastmod>
     </url>
     <url>
          <loc>https://siddiqsoft.github.io/sip2json/features/sdp/</loc>
-         <lastmod>2026-08-19</lastmod>
+         <lastmod>2026-08-21</lastmod>
     </url>
     <url>
          <loc>https://siddiqsoft.github.io/sip2json/integration/</loc>
-         <lastmod>2026-08-19</lastmod>
+         <lastmod>2026-08-21</lastmod>
     </url>
     <url>
          <loc>https://siddiqsoft.github.io/sip2json/integration/cmake/</loc>
-         <lastmod>2026-08-19</lastmod>
+         <lastmod>2026-08-21</lastmod>
     </url>
     <url>
          <loc>https://siddiqsoft.github.io/sip2json/integration/dependencies/</loc>
-         <lastmod>2026-08-19</lastmod>
+         <lastmod>2026-08-21</lastmod>
     </url>
     <url>
          <loc>https://siddiqsoft.github.io/sip2json/integration/nuget/</loc>
-         <lastmod>2026-08-19</lastmod>
+         <lastmod>2026-08-21</lastmod>
     </url>
 </urlset>
