@@ -4,6 +4,31 @@
 
 ---
 
+## Standards Conformance Architecture
+
+```mermaid
+graph TD
+    subgraph Core ["SIP Core Standards"]
+        A["RFC 3261: Base Protocol Grammar"]
+        B["RFC 3261 §20: Compact Header Abbreviations"]
+        C["RFC 3261 §7.3.1: Case-Insensitive Normalization"]
+    end
+    subgraph Torture ["IETF RFC 4475 Torture Corpus"]
+        D["50 Bit-Exact Test Cases (.dat Fixtures)"]
+        E["Escaping, Long Fields & Character Sets"]
+        F["Malformed Frame Safety & Rejection"]
+    end
+    subgraph SDP ["SDP & WebRTC Specifications"]
+        G["RFC 4566 / RFC 8866 Session Syntax"]
+        H["RFC 3264 Offer / Answer Model"]
+        I["RFC 8829 / RFC 8839 WebRTC BUNDLE, ICE & DTLS"]
+    end
+    Core --> Torture
+    Torture --> SDP
+```
+
+---
+
 ## Automated Compliance & Torture Test Suite
 
 The library includes an automated compliance module located in `tests/compliance/`. For a complete section-by-section mapping of all test runner files, line numbers, sample fixtures, and direct links to official IETF standard specifications, see [**Test Suite Sources & Standards Reference**](test_suite_sources.md).

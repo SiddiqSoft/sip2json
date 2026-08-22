@@ -61,6 +61,27 @@ Every benchmark iteration validates the output JSON by extracting the `Call-ID` 
 
 ## 2. Single Stream Architectural Study: `parseAsync` vs. `parse` vs. Thread Pool
 
+### Architectural Pipeline Comparison
+
+```mermaid
+flowchart LR
+    subgraph OptionA ["Option A: parseAsync Single-Thread (Optimal - 33,260 msg/sec)"]
+        direction LR
+        SockA["Network Socket"] --> IOA["I/O Thread"]
+        IOA --> PA["parseAsync(buffer)"]
+        PA --> CBA["Inline Handler Callback"]
+    end
+    
+    subgraph OptionC ["Option C: parseAsync + Thread Pool Offload (21% Slower)"]
+        direction LR
+        SockC["Network Socket"] --> IOC["I/O Thread"]
+        IOC --> PC["parseAsync(buffer)"]
+        PC --> Mtx["std::mutex Queue Lock Contention"]
+        Mtx --> W1["Worker Thread 1"]
+        Mtx --> W2["Worker Thread 2"]
+    end
+```
+
 ### Architectural Question
 When receiving a single continuous TCP/TLS stream of SIP messages on a single network socket, **which approach yields the highest processing throughput?**
 
