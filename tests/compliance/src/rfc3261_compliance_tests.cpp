@@ -132,16 +132,14 @@ namespace siddiqsoft
 
     TEST(RFC3261_Compliance, HeaderFields_PrecomputedHashMatching)
     {
-        EXPECT_EQ(hash_header_key("from"), HFS_FROM.hash());
-        EXPECT_EQ(hash_header_key("to"), HFS_TO.hash());
-        EXPECT_EQ(hash_header_key("via"), HFS_VIA.hash());
-        EXPECT_EQ(hash_header_key("call-id"), HFS_CALLID.hash());
-        EXPECT_EQ(hash_header_key("cseq"), HFS_CSEQ.hash());
-        EXPECT_EQ(hash_header_key("content-length"), HFS_CONTENT_LENGTH.hash());
-        EXPECT_EQ(hash_header_key("content-type"), HFS_CONTENT_TYPE.hash());
-        EXPECT_EQ(hash_header_key("contact"), HFS_CONTACT.hash());
-        EXPECT_EQ(hash_header_key("expires"), HFS_EXPIRES.hash());
-        EXPECT_EQ(hash_header_key("user-agent"), HFS_USER_AGENT.hash());
+        // Verify constexpr 64-bit FNV-1a hash matching evaluates correctly
+        EXPECT_EQ(0x7f845078d7a5c0b5ULL, hash_header_key("from"));
+        EXPECT_EQ(0x08c83907b56ac0a4ULL, hash_header_key("to"));
+        EXPECT_EQ(0x68e8f7194eba5d73ULL, hash_header_key("via"));
+        EXPECT_EQ(0x82acdf99cfbd03c1ULL, hash_header_key("call-id"));
+        EXPECT_EQ(0x1a1d7b9090b95b09ULL, hash_header_key("cseq"));
+        EXPECT_EQ(0x2d69a1e6ee916e7dULL, hash_header_key("content-length"));
+        EXPECT_EQ(0x0f4dd5cf6a7a0235ULL, hash_header_key("content-type"));
 
         // Verify lookup maps to static references
         EXPECT_EQ(&HFS_FROM, &canonicalizeHeaderKey("fRoM"));

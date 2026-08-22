@@ -75,15 +75,13 @@ namespace siddiqsoft
         std::string m_abbreviation {};
 
     public:
-        uint64_t hashValue {0};
         bool     isCanonical {false};
         bool     isMultiLine {false};
         bool     isCustom {false};
 
         constexpr HeaderKeySet() = default;
 
-        HeaderKeySet(uint64_t           hashVal,
-                     const std::string& lower,
+        HeaderKeySet(const std::string& lower,
                      const std::string& canon,
                      const std::string& abbrev    = {},
                      bool               canonFlag = true,
@@ -91,7 +89,6 @@ namespace siddiqsoft
             : m_lowercase(lower)
             , m_canonical(canon)
             , m_abbreviation(abbrev)
-            , hashValue(hashVal)
             , isCanonical(canonFlag)
             , isMultiLine(multiFlag)
             , isCustom(false)
@@ -102,7 +99,6 @@ namespace siddiqsoft
             : m_lowercase(customKey)
             , m_canonical(customKey)
             , m_abbreviation({})
-            , hashValue(0) // no hash value for custom headers, as they are not predefined
             , isCanonical(false)
             , isMultiLine(false)
             , isCustom(true)
@@ -112,7 +108,6 @@ namespace siddiqsoft
         [[nodiscard]] inline const std::string& canonical() const { return m_canonical; }
         [[nodiscard]] inline const std::string& lower() const { return m_lowercase; }
         [[nodiscard]] inline const std::string& alt() const { return m_abbreviation; }
-        [[nodiscard]] inline uint64_t           hash() const { return hashValue; }
     };
 
     // Static const std::string definitions for canonical header keys to prevent temporary std::string allocations in nlohmann::json lookups
@@ -157,96 +152,46 @@ namespace siddiqsoft
     static inline const std::string HF_SUBSCRIPTION_STATE {"Subscription-State"};
 
     // This allows us to compare incoming header keys against a set of known variations, making the parser more robust and flexible.
-    static const HeaderKeySet HFS_FROM {hash_header_key("from"), "from", HF_FROM, "f", true, false};
-    static const HeaderKeySet HFS_TO {hash_header_key("to"), "to", HF_TO, "t", true, false};
-    static const HeaderKeySet HFS_PRIORITY {hash_header_key("priority"), "priority", HF_PRIORITY, {}, true, false};
-    static const HeaderKeySet HFS_CONTENT_ENCODING {hash_header_key("content-encoding"),
-                                                    "content-encoding",
-                                                    HF_CONTENT_ENCODING,
-                                                    "e",
-                                                    true,
-                                                    false};
-    static const HeaderKeySet HFS_CONTENT_LENGTH {hash_header_key("content-length"),
-                                                  "content-length",
-                                                  HF_CONTENT_LENGTH,
-                                                  "l",
-                                                  true,
-                                                  false};
-    static const HeaderKeySet HFS_CONTENT_TYPE {hash_header_key("content-type"), "content-type", HF_CONTENT_TYPE, "c", true, false};
-    static const HeaderKeySet HFS_CALLID {hash_header_key("call-id"), "call-id", HF_CALLID, "i", true, false};
-    static const HeaderKeySet HFS_CSEQ {hash_header_key("cseq"), "cseq", HF_CSEQ, {}, true, false};
-    static const HeaderKeySet HFS_VIA {hash_header_key("via"), "via", HF_VIA, "v", true, true};
-    static const HeaderKeySet HFS_ENCRYPTION {hash_header_key("encryption"), "encryption", HF_ENCRYPTION, {}, true, false};
-    static const HeaderKeySet HFS_SUBJECT {hash_header_key("subject"), "subject", HF_SUBJECT, "s", true, false};
-    static const HeaderKeySet HFS_LOCATION {hash_header_key("location"), "location", HF_LOCATION, {}, true, false};
-    static const HeaderKeySet HFS_EXPIRES {hash_header_key("expires"), "expires", HF_EXPIRES, {}, true, false};
-    static const HeaderKeySet HFS_CONTACT {hash_header_key("contact"), "contact", HF_CONTACT, "m", true, false};
-    static const HeaderKeySet HFS_ACCEPT {hash_header_key("accept"), "accept", HF_ACCEPT, {}, true, true};
-    static const HeaderKeySet HFS_ACCEPT_ENCODING {hash_header_key("accept-encoding"),
-                                                   "accept-encoding",
-                                                   HF_ACCEPT_ENCODING,
-                                                   {},
-                                                   true,
-                                                   false};
-    static const HeaderKeySet HFS_ACCEPT_LANGUAGE {hash_header_key("accept-language"),
-                                                   "accept-language",
-                                                   HF_ACCEPT_LANGUAGE,
-                                                   {},
-                                                   true,
-                                                   false};
-    static const HeaderKeySet HFS_DATE {hash_header_key("date"), "date", HF_DATE, {}, true, false};
-    static const HeaderKeySet HFS_RECORD_ROUTE {hash_header_key("record-route"), "record-route", HF_RECORD_ROUTE, {}, true, true};
-    static const HeaderKeySet HFS_TIMESTAMP {hash_header_key("timestamp"), "timestamp", HF_TIMESTAMP, {}, true, false};
-    static const HeaderKeySet HFS_HIDE {hash_header_key("hide"), "hide", HF_HIDE, {}, true, false};
-    static const HeaderKeySet HFS_MAX_FORWARDS {hash_header_key("max-forwards"), "max-forwards", HF_MAX_FORWARDS, {}, true, false};
-    static const HeaderKeySet HFS_ORGANIZATION {hash_header_key("organization"), "organization", HF_ORGANIZATION, {}, true, false};
-    static const HeaderKeySet HFS_PROXY_AUTHORIZATION {hash_header_key("proxy-authorization"),
-                                                       "proxy-authorization",
-                                                       HF_PROXY_AUTHORIZATION,
-                                                       {},
-                                                       true,
-                                                       false};
-    static const HeaderKeySet HFS_PROXY_REQUIRE {hash_header_key("proxy-require"),
-                                                 "proxy-require",
-                                                 HF_PROXY_REQUIRE,
-                                                 {},
-                                                 true,
-                                                 false};
-    static const HeaderKeySet HFS_ROUTE {hash_header_key("route"), "route", HF_ROUTE, {}, true, true};
-    static const HeaderKeySet HFS_REQUIRE {hash_header_key("require"), "require", HF_REQUIRE, {}, true, false};
-    static const HeaderKeySet HFS_RESPONSE_KEY {hash_header_key("response-key"), "response-key", HF_RESPONSE_KEY, {}, true, false};
-    static const HeaderKeySet HFS_USER_AGENT {hash_header_key("user-agent"), "user-agent", HF_USER_AGENT, {}, true, false};
-    static const HeaderKeySet HFS_PROXY_AUTHENTICATE {hash_header_key("proxy-authenticate"),
-                                                      "proxy-authenticate",
-                                                      HF_PROXY_AUTHENTICATE,
-                                                      {},
-                                                      true,
-                                                      false};
-    static const HeaderKeySet HFS_RETRY_AFTER {hash_header_key("retry-after"), "retry-after", HF_RETRY_AFTER, {}, true, false};
-    static const HeaderKeySet HFS_SERVER {hash_header_key("server"), "server", HF_SERVER, {}, true, false};
-    static const HeaderKeySet HFS_SUPPORTED {hash_header_key("supported"), "supported", HF_SUPPORTED, "k", true, true};
-    static const HeaderKeySet HFS_ALLOW {hash_header_key("allow"), "allow", HF_ALLOW, {}, true, false};
-    static const HeaderKeySet HFS_UNSUPPORTED {hash_header_key("unsupported"), "unsupported", HF_UNSUPPORTED, {}, true, false};
-    static const HeaderKeySet HFS_WARNING {hash_header_key("warning"), "warning", HF_WARNING, {}, true, true};
-    static const HeaderKeySet HFS_WWW_AUTHENTICATE {hash_header_key("www-authenticate"),
-                                                    "www-authenticate",
-                                                    HF_WWW_AUTHENTICATE,
-                                                    {},
-                                                    true,
-                                                    false};
-    static const HeaderKeySet HFS_AUTHORIZATION {hash_header_key("authorization"),
-                                                 "authorization",
-                                                 HF_AUTHORIZATION,
-                                                 "uthorization",
-                                                 true,
-                                                 false};
-    static const HeaderKeySet HFS_SUBSCRIPTION_STATE {hash_header_key("subscription-state"),
-                                                      "subscription-state",
-                                                      HF_SUBSCRIPTION_STATE,
-                                                      {},
-                                                      true,
-                                                      false};
-    static const HeaderKeySet HFS_EMPTY {0, "", "", {}, false, false};
+    static const HeaderKeySet HFS_FROM {"from", HF_FROM, "f", true, false};
+    static const HeaderKeySet HFS_TO {"to", HF_TO, "t", true, false};
+    static const HeaderKeySet HFS_PRIORITY {"priority", HF_PRIORITY, {}, true, false};
+    static const HeaderKeySet HFS_CONTENT_ENCODING {"content-encoding", HF_CONTENT_ENCODING, "e", true, false};
+    static const HeaderKeySet HFS_CONTENT_LENGTH {"content-length", HF_CONTENT_LENGTH, "l", true, false};
+    static const HeaderKeySet HFS_CONTENT_TYPE {"content-type", HF_CONTENT_TYPE, "c", true, false};
+    static const HeaderKeySet HFS_CALLID {"call-id", HF_CALLID, "i", true, false};
+    static const HeaderKeySet HFS_CSEQ {"cseq", HF_CSEQ, {}, true, false};
+    static const HeaderKeySet HFS_VIA {"via", HF_VIA, "v", true, true};
+    static const HeaderKeySet HFS_ENCRYPTION {"encryption", HF_ENCRYPTION, {}, true, false};
+    static const HeaderKeySet HFS_SUBJECT {"subject", HF_SUBJECT, "s", true, false};
+    static const HeaderKeySet HFS_LOCATION {"location", HF_LOCATION, {}, true, false};
+    static const HeaderKeySet HFS_EXPIRES {"expires", HF_EXPIRES, {}, true, false};
+    static const HeaderKeySet HFS_CONTACT {"contact", HF_CONTACT, "m", true, false};
+    static const HeaderKeySet HFS_ACCEPT {"accept", HF_ACCEPT, {}, true, true};
+    static const HeaderKeySet HFS_ACCEPT_ENCODING {"accept-encoding", HF_ACCEPT_ENCODING, {}, true, false};
+    static const HeaderKeySet HFS_ACCEPT_LANGUAGE {"accept-language", HF_ACCEPT_LANGUAGE, {}, true, false};
+    static const HeaderKeySet HFS_DATE {"date", HF_DATE, {}, true, false};
+    static const HeaderKeySet HFS_RECORD_ROUTE {"record-route", HF_RECORD_ROUTE, {}, true, true};
+    static const HeaderKeySet HFS_TIMESTAMP {"timestamp", HF_TIMESTAMP, {}, true, false};
+    static const HeaderKeySet HFS_HIDE {"hide", HF_HIDE, {}, true, false};
+    static const HeaderKeySet HFS_MAX_FORWARDS {"max-forwards", HF_MAX_FORWARDS, {}, true, false};
+    static const HeaderKeySet HFS_ORGANIZATION {"organization", HF_ORGANIZATION, {}, true, false};
+    static const HeaderKeySet HFS_PROXY_AUTHORIZATION {"proxy-authorization", HF_PROXY_AUTHORIZATION, {}, true, false};
+    static const HeaderKeySet HFS_PROXY_REQUIRE {"proxy-require", HF_PROXY_REQUIRE, {}, true, false};
+    static const HeaderKeySet HFS_ROUTE {"route", HF_ROUTE, {}, true, true};
+    static const HeaderKeySet HFS_REQUIRE {"require", HF_REQUIRE, {}, true, false};
+    static const HeaderKeySet HFS_RESPONSE_KEY {"response-key", HF_RESPONSE_KEY, {}, true, false};
+    static const HeaderKeySet HFS_USER_AGENT {"user-agent", HF_USER_AGENT, {}, true, false};
+    static const HeaderKeySet HFS_PROXY_AUTHENTICATE {"proxy-authenticate", HF_PROXY_AUTHENTICATE, {}, true, false};
+    static const HeaderKeySet HFS_RETRY_AFTER {"retry-after", HF_RETRY_AFTER, {}, true, false};
+    static const HeaderKeySet HFS_SERVER {"server", HF_SERVER, {}, true, false};
+    static const HeaderKeySet HFS_SUPPORTED {"supported", HF_SUPPORTED, "k", true, true};
+    static const HeaderKeySet HFS_ALLOW {"allow", HF_ALLOW, {}, true, false};
+    static const HeaderKeySet HFS_UNSUPPORTED {"unsupported", HF_UNSUPPORTED, {}, true, false};
+    static const HeaderKeySet HFS_WARNING {"warning", HF_WARNING, {}, true, true};
+    static const HeaderKeySet HFS_WWW_AUTHENTICATE {"www-authenticate", HF_WWW_AUTHENTICATE, {}, true, false};
+    static const HeaderKeySet HFS_AUTHORIZATION {"authorization", HF_AUTHORIZATION, "uthorization", true, false};
+    static const HeaderKeySet HFS_SUBSCRIPTION_STATE {"subscription-state", HF_SUBSCRIPTION_STATE, {}, true, false};
+    static const HeaderKeySet HFS_EMPTY {"", "", {}, false, false};
 
     inline const HeaderKeySet& canonicalizeHeaderKey(const std::string& keyFromPayload)
     {

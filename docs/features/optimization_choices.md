@@ -31,8 +31,8 @@ Why is 64-bit FNV-1a integer hash `switch (h)` matching **+74.4% to +93.8% faste
 1. **Zero String Memory Allocations or Copies**:
    - Computing the 64-bit FNV-1a hash (`hash_header_key`) operates directly over raw character pointers with inline ASCII lowercasing (`c | 0x20`). It eliminates `std::string lowerKey` allocations, string copying, and `std::transform` loops entirely.
 
-2. **Precomputed `hashValue` on `HFS_*` Static Objects**:
-   - Each canonical `HeaderKeySet` static object (`HFS_FROM`, `HFS_TO`, `HFS_VIA`, etc.) stores its precomputed 64-bit FNV-1a hash in `hashValue`. The switch labels use `case hash_header_key("from"):` compile-time constant expressions evaluated directly by the C++23 compiler.
+2. **`constexpr` Compile-Time Switch Labels**:
+   - The switch statement uses `case hash_header_key("from"):` compile-time constant expressions evaluated directly by the C++23 compiler. `HeaderKeySet` static objects remain lightweight and decoupled without storing redundant hash member variables.
 
 3. **100% Zero Hash Collisions Across All Canonical Headers**:
    - 64-bit FNV-1a produces **50 unique 64-bit hash values** with zero collisions across all standard SIP headers, compact field abbreviations (`v`, `f`, `t`, `i`, `c`, `l`, `m`, `s`, `k`, `e`), and alternate names (`uthorization`).
@@ -51,7 +51,7 @@ Why is 64-bit FNV-1a integer hash `switch (h)` matching **+74.4% to +93.8% faste
 | Optimization Technique | Replaced Pattern | Performance Gain | Hardware Mechanism |
 | :--- | :--- | :--- | :--- |
 | **64-bit FNV-1a Hash `switch(h)`** | Sequential `std::string` `if-else` chain | **+74.4% throughput** | 100% collision-free 64-bit FNV-1a hash matching via 1-cycle $O(1)$ jump table |
-| **Precomputed `HFS_*.hash()`** | Dynamic runtime string hashing | **0 ns overhead** | `constexpr` compile-time hash computation stored in static `HeaderKeySet` instances |
+| **`constexpr` Compile-Time Labels** | Dynamic runtime string hashing | **0 ns overhead** | `constexpr` compile-time `hash_header_key(...)` evaluated directly into switch jump table |
 | **Bitwise Register Case-Folding** | `std::transform(::tolower)` | **-42.6% latency** | Converts ASCII case in-register during 64-bit FNV-1a hashing |
 | **Merged `HeaderKeySet` Architecture** | `CanonicalHeaderKeyResult` wrapper | **+4.8% throughput** | Eliminates temporary wrapper objects; enables 1-cycle pointer comparison (`&keySet == &HFS_CONTENT_LENGTH`) |
 | **Inline Stream Callback (`parseAsync`)** | Vector accumulation (`std::vector<sipmessage>`) | **+93.8% vs master** | Zero-copy execution directly on network buffer |
