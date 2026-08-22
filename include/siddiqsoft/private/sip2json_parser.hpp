@@ -185,54 +185,28 @@ namespace siddiqsoft
     inline bool sip2json::storeHeaderValue(sipmessage& sipm, const std::string& key, const std::string& value) noexcept(false)
     {
         auto targetKey = canonicalizeHeaderKey(key);
+        const HeaderKeySet& keySet = targetKey;
+        const std::string& keyStr = keySet.canonical();
 
-        if (targetKey.canonicalStringPtr != nullptr)
+        if (sipm[JSON_KEY_HEADERS].contains(keyStr) || targetKey.isMultiLine)
         {
-            const std::string& keyStr = *targetKey.canonicalStringPtr;
-            if (sipm[JSON_KEY_HEADERS].contains(keyStr) || targetKey.isMultiLine)
-            {
-                storeMultiLineHeader(sipm[JSON_KEY_HEADERS], keyStr, value);
-            }
-            else if (&keyStr == &HF_CONTENT_LENGTH)
-            {
-                sipm[JSON_KEY_HEADERS][keyStr] = parseContentLengthValue(value);
-            }
-            else if (&keyStr == &HF_EXPIRES)
-            {
-                sipm[JSON_KEY_HEADERS][keyStr] = parseExpiresValue(value);
-            }
-            else if (value.empty())
-            {
-                sipm[JSON_KEY_HEADERS][keyStr] = "";
-            }
-            else
-            {
-                sipm[JSON_KEY_HEADERS][keyStr] = value;
-            }
+            storeMultiLineHeader(sipm[JSON_KEY_HEADERS], keyStr, value);
+        }
+        else if (targetKey.isCanonical && &targetKey.canonicalKeySet == &HFS_CONTENT_LENGTH)
+        {
+            sipm[JSON_KEY_HEADERS][keyStr] = parseContentLengthValue(value);
+        }
+        else if (targetKey.isCanonical && &targetKey.canonicalKeySet == &HFS_EXPIRES)
+        {
+            sipm[JSON_KEY_HEADERS][keyStr] = parseExpiresValue(value);
+        }
+        else if (value.empty())
+        {
+            sipm[JSON_KEY_HEADERS][keyStr] = "";
         }
         else
         {
-            std::string keyStr {targetKey.canonicalKey};
-            if (sipm[JSON_KEY_HEADERS].contains(keyStr) || targetKey.isMultiLine)
-            {
-                storeMultiLineHeader(sipm[JSON_KEY_HEADERS], keyStr, value);
-            }
-            else if (targetKey.canonicalKey == HFS_CONTENT_LENGTH[1])
-            {
-                sipm[JSON_KEY_HEADERS][keyStr] = parseContentLengthValue(value);
-            }
-            else if (targetKey.canonicalKey == HFS_EXPIRES[1])
-            {
-                sipm[JSON_KEY_HEADERS][keyStr] = parseExpiresValue(value);
-            }
-            else if (value.empty())
-            {
-                sipm[JSON_KEY_HEADERS][keyStr] = "";
-            }
-            else
-            {
-                sipm[JSON_KEY_HEADERS][keyStr] = value;
-            }
+            sipm[JSON_KEY_HEADERS][keyStr] = value;
         }
 
         return true;

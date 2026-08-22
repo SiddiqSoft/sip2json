@@ -11,9 +11,9 @@ The `sipmessage` class supports method chaining for configuring headers, start l
 ```cpp
 sipmessage msg("INVITE", "sip:alice@example.com", "call-id-100", 1);
 
-msg.setHeader("From", "sip:bob@example.com")
-   .setHeader("To", "sip:alice@example.com")
-   .setHeader("User-Agent", "sip2json/2.0");
+msg.setHeader(siddiqsoft::HF_FROM, "sip:bob@example.com")
+   .setHeader(siddiqsoft::HF_TO, "sip:alice@example.com")
+   .setHeader(siddiqsoft::HF_USER_AGENT, "sip2json/2.0");
 ```
 
 ---

@@ -132,8 +132,8 @@ TEST(stress, Test_serialize_1000_messages)
         auto  callId = siddiqsoft::createCallId();
 
         siddiqsoft::sipmessage sipm(method, "sip:test@test.com", callId, i + 1);
-        sipm.setHeader("To", "sip:test@test.com");
-        sipm.setHeader("From", "sip:sender@sender.com");
+        sipm.setHeader(siddiqsoft::HF_TO, "sip:test@test.com");
+        sipm.setHeader(siddiqsoft::HF_FROM, "sip:sender@sender.com");
 
         std::string serialized;
         ASSERT_NO_THROW(serialized = siddiqsoft::sip2json::serialize(sipm))
@@ -515,12 +515,12 @@ TEST(stress, Test_serialize_parse_response_codes)
     for (auto code : codes)
     {
         siddiqsoft::sipmessage sipm(code);
-        sipm.setHeader("Call-ID", std::format("code-{}", code));
-        sipm.setHeader("CSeq", "1 INVITE");
-        sipm.setHeader("Via", "SIP/2.0/TCP 10.0.0.1:5060;branch=z9hG4bK776");
-        sipm.setHeader("To", "sip:user@example.com");
-        sipm.setHeader("From", "sip:caller@example.com;tag=abc");
-        sipm.setHeader("Contact", "sip:user@10.0.0.2");
+        sipm.setHeader(siddiqsoft::HF_CALLID, std::format("code-{}", code));
+        sipm.setHeader(siddiqsoft::HF_CSEQ, "1 INVITE");
+        sipm.setHeader(siddiqsoft::HF_VIA, "SIP/2.0/TCP 10.0.0.1:5060;branch=z9hG4bK776");
+        sipm.setHeader(siddiqsoft::HF_TO, "sip:user@example.com");
+        sipm.setHeader(siddiqsoft::HF_FROM, "sip:caller@example.com;tag=abc");
+        sipm.setHeader(siddiqsoft::HF_CONTACT, "sip:user@10.0.0.2");
 
         std::string serialized;
         ASSERT_NO_THROW(serialized = siddiqsoft::sip2json::serialize(sipm)) << "Serialize failed for code " << code;

@@ -394,7 +394,7 @@ BENCHMARK(BM_ParseAsyncMultipleMessages)->Arg(1)->Arg(5)->Arg(10)->Arg(50);
 static void BM_SerializeRegister(benchmark::State& state)
 {
     siddiqsoft::sipmessage sipm(siddiqsoft::METHOD_REGISTER, "sip:hello@world.com", siddiqsoft::createCallId(), 1);
-    sipm.setHeader("To", "sip:hello@world.com").setHeader("Contact", "sip:hello@world.com").setHeader("Content-Length", 0);
+    sipm.setHeader(siddiqsoft::HF_TO, "sip:hello@world.com").setHeader(siddiqsoft::HF_CONTACT, "sip:hello@world.com").setHeader(siddiqsoft::HF_CONTENT_LENGTH, 0);
 
     for (auto _ : state)
     {
@@ -409,9 +409,9 @@ BENCHMARK(BM_SerializeRegister);
 static void BM_SerializeInviteWithSDP(benchmark::State& state)
 {
     siddiqsoft::sipmessage sipm(siddiqsoft::METHOD_INVITE, "sip:bob@biloxi.com", siddiqsoft::createCallId(), 1);
-    sipm.setHeader("To", "Bob <sip:bob@biloxi.com>")
-            .setHeader("Contact", "sip:alice@pc33.atlanta.com")
-            .setHeader("Content-Type", siddiqsoft::CONTENT_TYPE_APP_SDP);
+    sipm.setHeader(siddiqsoft::HF_TO, "Bob <sip:bob@biloxi.com>")
+            .setHeader(siddiqsoft::HF_CONTACT, "sip:alice@pc33.atlanta.com")
+            .setHeader(siddiqsoft::HF_CONTENT_TYPE, siddiqsoft::CONTENT_TYPE_APP_SDP);
 
     sipm.setBody("/sdp/0/v"_json_pointer, 0)
             .setBody("/sdp/0/o"_json_pointer,
@@ -521,7 +521,7 @@ BENCHMARK(BM_ConstructResponseSipmessage);
 static void BM_ConstructResponseFromRequest(benchmark::State& state)
 {
     siddiqsoft::sipmessage req("INVITE", "sip:bob@biloxi.com", siddiqsoft::createCallId(), 1);
-    req.setHeader("To", "sip:bob@biloxi.com").setHeader("Contact", "sip:bob@biloxi.com");
+    req.setHeader(siddiqsoft::HF_TO, "sip:bob@biloxi.com").setHeader(siddiqsoft::HF_CONTACT, "sip:bob@biloxi.com");
 
     for (auto _ : state)
     {

@@ -373,7 +373,7 @@ TEST(siphelpers, Test_serialize)
     siddiqsoft::sipmessage registerMessage("REGISTER", "sip:hello@world.com", myCallId, 1);
 
     ll = __LINE__;
-    registerMessage.setHeader("To", "sip:hello@world.com").setHeader("Contact", "sip:hello@world.com");
+    registerMessage.setHeader(siddiqsoft::HF_TO, "sip:hello@world.com").setHeader(siddiqsoft::HF_CONTACT, "sip:hello@world.com");
 
     try {
         ll           = __LINE__;
@@ -409,9 +409,9 @@ TEST(siphelpers, Test_serialize_empty_mb_fail)
 {
     siddiqsoft::sipmessage registerMessage("REGISTER", "sip:hello@world.com", siddiqsoft::createCallId(), 1);
 
-    registerMessage.setHeader("To", "sip:hello@world.com")
-            .setHeader("Contact", "sip:hello@world.com")
-            .setHeader("Content-Type", "application/dummy");
+    registerMessage.setHeader(siddiqsoft::HF_TO, "sip:hello@world.com")
+            .setHeader(siddiqsoft::HF_CONTACT, "sip:hello@world.com")
+            .setHeader(siddiqsoft::HF_CONTENT_TYPE, "application/dummy");
     // This will cause serialize to throw!
     registerMessage["b"] = 0;
     EXPECT_THROW(siddiqsoft::sip2json::serialize(registerMessage), std::exception);
@@ -423,7 +423,7 @@ TEST(siphelpers, Test_serialize_empty_mb_fail_2)
     siddiqsoft::sipmessage registerMessage("REGISTER", "sip:hello@world.com", siddiqsoft::createCallId(), 1);
 
     registerMessage.setHeader(
-            {{"To", "sip:hello@world.com"}, {"Contact", "sip:hello@world.com"}, {"Content-Type", "application/dummy"}});
+            {{siddiqsoft::HF_TO, "sip:hello@world.com"}, {siddiqsoft::HF_CONTACT, "sip:hello@world.com"}, {siddiqsoft::HF_CONTENT_TYPE, "application/dummy"}});
     // This will cause serialize to throw!
     registerMessage["b"] = 0;
     EXPECT_THROW(siddiqsoft::sip2json::serialize(registerMessage), std::exception);
@@ -434,9 +434,9 @@ TEST(siphelpers, Test_serialize_empty_mb_valid)
 {
     siddiqsoft::sipmessage registerMessage("REGISTER", "sip:hello@world.com", siddiqsoft::createCallId(), 1);
 
-    registerMessage.setHeader("To", "sip:hello@world.com")
-            .setHeader("Contact", "sip:hello@world.com")
-            .setHeader("Content-Type", siddiqsoft::CONTENT_TYPE_APP_SDP);
+    registerMessage.setHeader(siddiqsoft::HF_TO, "sip:hello@world.com")
+            .setHeader(siddiqsoft::HF_CONTACT, "sip:hello@world.com")
+            .setHeader(siddiqsoft::HF_CONTENT_TYPE, siddiqsoft::CONTENT_TYPE_APP_SDP);
     // Should not throw; body is null despite the header being SDP there is no body element set.
     // This is a supported use-case
     EXPECT_NO_THROW(siddiqsoft::sip2json::serialize(registerMessage));
@@ -447,9 +447,9 @@ TEST(siphelpers, Test_serialize_empty_mb_valid_2)
 {
     siddiqsoft::sipmessage registerMessage("REGISTER", "sip:hello@world.com", siddiqsoft::createCallId(), 1);
 
-    registerMessage.setHeader({{"To", "sip:hello@world.com"},
-                               {"Contact", "sip:hello@world.com"},
-                               {"Content-Type", siddiqsoft::CONTENT_TYPE_APP_SDP}});
+    registerMessage.setHeader({{siddiqsoft::HF_TO, "sip:hello@world.com"},
+                               {siddiqsoft::HF_CONTACT, "sip:hello@world.com"},
+                               {siddiqsoft::HF_CONTENT_TYPE, siddiqsoft::CONTENT_TYPE_APP_SDP}});
     // Should not throw; body is null despite the header being SDP there is no body element set.
     // This is a supported use-case
     EXPECT_NO_THROW(siddiqsoft::sip2json::serialize(registerMessage));
@@ -543,7 +543,7 @@ TEST(siphelpers, Test_empty_mb)
     siddiqsoft::sipmessage sipm("REGISTER", "sip:hello@world.com", siddiqsoft::createCallId(), 1);
 
     sipm.setHeader("To", "sip:hello@world.com")
-            .setHeader("Contact", "sip:hello@world.com")
+            .setHeader(siddiqsoft::HF_CONTACT, "sip:hello@world.com")
             .setHeader("Content-Type", siddiqsoft::CONTENT_TYPE_APP_SDP);
 
     // By default the body is null
@@ -572,8 +572,8 @@ TEST(siphelpers, Test_empty_mb)
     sipm.erase("b");
     EXPECT_FALSE(sipm.hasBody()) << sipm.dump(2);
 
-    sipm.setHeader("Content-Type", siddiqsoft::CONTENT_TYPE_TEXT_PLAIN);
-    EXPECT_EQ(siddiqsoft::CONTENT_TYPE_TEXT_PLAIN, sipm.getHeader<std::string>(siddiqsoft::HFS_CONTENT_TYPE[1], "unknown"))
+    sipm.setHeader(siddiqsoft::HF_CONTENT_TYPE, siddiqsoft::CONTENT_TYPE_TEXT_PLAIN);
+    EXPECT_EQ(siddiqsoft::CONTENT_TYPE_TEXT_PLAIN, sipm.getHeader<std::string>(siddiqsoft::HFS_CONTENT_TYPE.canonical(), "unknown"))
             << sipm.dump(2);
 }
 
@@ -584,9 +584,9 @@ TEST(siphelpers, Test_empty_mb_2)
 
     siddiqsoft::sipmessage sipm("REGISTER", "sip:hello@world.com", siddiqsoft::createCallId(), 1);
 
-    sipm.setHeader({{"To", "sip:hello@world.com"},
-                    {"Contact", "sip:hello@world.com"},
-                    {"Content-Type", siddiqsoft::CONTENT_TYPE_APP_SDP}});
+    sipm.setHeader({{siddiqsoft::HF_TO, "sip:hello@world.com"},
+                    {siddiqsoft::HF_CONTACT, "sip:hello@world.com"},
+                    {siddiqsoft::HF_CONTENT_TYPE, siddiqsoft::CONTENT_TYPE_APP_SDP}});
 
     // By default the body is null
     EXPECT_TRUE(sipm.body().empty());
@@ -635,8 +635,8 @@ TEST(siphelpers, Test_empty_mb_2)
     sipm.erase("b");
     EXPECT_FALSE(sipm.hasBody()) << sipm.dump(2);
 
-    sipm.setHeader("Content-Type", siddiqsoft::CONTENT_TYPE_TEXT_PLAIN);
-    EXPECT_EQ(siddiqsoft::CONTENT_TYPE_TEXT_PLAIN, sipm.getHeader<std::string>(siddiqsoft::HFS_CONTENT_TYPE[1], "unknown"))
+    sipm.setHeader(siddiqsoft::HF_CONTENT_TYPE, siddiqsoft::CONTENT_TYPE_TEXT_PLAIN);
+    EXPECT_EQ(siddiqsoft::CONTENT_TYPE_TEXT_PLAIN, sipm.getHeader<std::string>(siddiqsoft::HFS_CONTENT_TYPE.canonical(), "unknown"))
             << sipm.dump(2);
 }
 
@@ -645,9 +645,9 @@ TEST(siphelpers, Test_empty_mb_3)
 {
     siddiqsoft::sipmessage sipm("REGISTER", "sip:hello@world.com", siddiqsoft::createCallId(), 1);
 
-    sipm.setHeader("To", "sip:hello@world.com")
-            .setHeader("Contact", "sip:hello@world.com")
-            .setHeader("Content-Type", siddiqsoft::CONTENT_TYPE_APP_SDP);
+    sipm.setHeader(siddiqsoft::HF_TO, "sip:hello@world.com")
+            .setHeader(siddiqsoft::HF_CONTACT, "sip:hello@world.com")
+            .setHeader(siddiqsoft::HF_CONTENT_TYPE, siddiqsoft::CONTENT_TYPE_APP_SDP);
 
     // By default the body is null
     EXPECT_TRUE(sipm.body().empty());
@@ -703,8 +703,8 @@ TEST(siphelpers, Test_empty_mb_3)
     sipm.erase("b");
     EXPECT_FALSE(sipm.hasBody()) << sipm.dump(2);
 
-    sipm.setHeader("Content-Type", siddiqsoft::CONTENT_TYPE_TEXT_PLAIN);
-    EXPECT_EQ(siddiqsoft::CONTENT_TYPE_TEXT_PLAIN, sipm.getHeader<std::string>(siddiqsoft::HFS_CONTENT_TYPE[1], "unknown"))
+    sipm.setHeader(siddiqsoft::HF_CONTENT_TYPE, siddiqsoft::CONTENT_TYPE_TEXT_PLAIN);
+    EXPECT_EQ(siddiqsoft::CONTENT_TYPE_TEXT_PLAIN, sipm.getHeader<std::string>(siddiqsoft::HFS_CONTENT_TYPE.canonical(), "unknown"))
             << sipm.dump(2);
 }
 
@@ -716,10 +716,10 @@ TEST(siphelpers, Test_empty_h)
     std::string            cSeq {};
     siddiqsoft::sipmessage sipm("REGISTER", "sip:hello@world.com", callId, 1);
 
-    sipm.setHeader("To", "sip:hello@world.com")
-            .setHeader("Contact", "sip:hello@world.com")
-            .setHeader("Content-Type", siddiqsoft::CONTENT_TYPE_TEXT_PLAIN)
-            .setHeader("Content-Length", 0);
+    sipm.setHeader(siddiqsoft::HF_TO, "sip:hello@world.com")
+            .setHeader(siddiqsoft::HF_CONTACT, "sip:hello@world.com")
+            .setHeader(siddiqsoft::HF_CONTENT_TYPE, siddiqsoft::CONTENT_TYPE_TEXT_PLAIN)
+            .setHeader(siddiqsoft::HF_CONTENT_LENGTH, 0);
 
     std::clog << std::format("{} - contents\n{}\n", __func__, siddiqsoft::sip2json::serialize(sipm));
 
@@ -848,9 +848,9 @@ TEST(siphelpers, Test_header_method)
 {
     siddiqsoft::sipmessage sipm("REGISTER", "sip:hello@world.com", siddiqsoft::createCallId(), 1);
 
-    sipm.setHeader("To", "sip:hello@world.com")
-            .setHeader("Contact", "sip:hello@world.com")
-            .setHeader("Content-Type", siddiqsoft::CONTENT_TYPE_APP_SDP);
+    sipm.setHeader(siddiqsoft::HF_TO, "sip:hello@world.com")
+            .setHeader(siddiqsoft::HF_CONTACT, "sip:hello@world.com")
+            .setHeader(siddiqsoft::HF_CONTENT_TYPE, siddiqsoft::CONTENT_TYPE_APP_SDP);
 
     EXPECT_EQ("sip:hello@world.com", sipm.getHeader<std::string>("Contact"));
     EXPECT_EQ(siddiqsoft::CONTENT_TYPE_APP_SDP, sipm.getContentType());
@@ -862,7 +862,7 @@ TEST(siphelpers, Test_body_method)
     std::string            iName {"MY_INAME"};
     siddiqsoft::sipmessage sipm("INVITE", "sip:hello@world.com", siddiqsoft::createCallId(), 1);
 
-    sipm.setHeader("Content-Type", siddiqsoft::CONTENT_TYPE_APP_SDP);
+    sipm.setHeader(siddiqsoft::HF_CONTENT_TYPE, siddiqsoft::CONTENT_TYPE_APP_SDP);
 
     EXPECT_TRUE(sipm.body().empty());
 

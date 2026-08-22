@@ -68,16 +68,7 @@ namespace siddiqsoft
         const std::string& lower() const { return m_lowercase; }
         const std::string& alt() const { return m_abbreviation; }
 
-        auto operator[](size_t index) const
-        {
-            switch (index)
-            {
-            case 0: return m_lowercase;
-            case 1: return m_canonical;
-            case 2: return m_abbreviation;
-            default: throw std::out_of_range("HeaderKeySet index out of range");
-            }
-        }
+
     };
 
     // Static const std::string definitions for canonical header keys to prevent temporary std::string allocations in nlohmann::json lookups

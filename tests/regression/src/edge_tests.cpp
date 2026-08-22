@@ -415,7 +415,7 @@ TEST(edge_mutators, Test_hasBody)
 TEST(edge_mutators, Test_getContentLength)
 {
     siddiqsoft::sipmessage sipm("OPTIONS", "sip:test@test.com", siddiqsoft::createCallId(), 1);
-    sipm.setHeader("Content-Length", 42);
+    sipm.setHeader(siddiqsoft::HF_CONTENT_LENGTH, 42);
     EXPECT_EQ(42u, sipm.getContentLength());
 }
 
@@ -438,7 +438,7 @@ TEST(edge_mutators, Test_setUserAgent_custom)
 TEST(edge_mutators, Test_serialize_integer_header)
 {
     siddiqsoft::sipmessage sipm("OPTIONS", "sip:test@test.com", siddiqsoft::createCallId(), 1);
-    sipm.setHeader("Max-Forwards", 70);
+    sipm.setHeader(siddiqsoft::HF_MAX_FORWARDS, 70);
 
     auto serialized = siddiqsoft::sip2json::serialize(sipm);
     EXPECT_TRUE(serialized.find("Max-Forwards: 70") != std::string::npos);

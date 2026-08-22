@@ -71,20 +71,21 @@ TEST(security_tests, Test_sdp_json_pointer_escaping)
 TEST(security_tests, Test_serialize_exact_method_validation)
 {
     siddiqsoft::sipmessage msg("E", "sip:user@example.com");
-    msg.setHeader("Via", "SIP/2.0/TCP localhost");
+    msg.setHeader(siddiqsoft::HF_VIA, "SIP/2.0/TCP localhost");
     EXPECT_THROW(siddiqsoft::sip2json::serialize(msg), siddiqsoft::invalid_document_error);
 }
 
 TEST(security_tests, Test_serialize_crlf_injection_in_uri_throws)
 {
-    siddiqsoft::sipmessage msg("INVITE", "sip:user@example.com\r\nX-Injected: evil");
-    msg.setHeader("Via", "SIP/2.0/TCP localhost");
-    EXPECT_THROW(siddiqsoft::sip2json::serialize(msg), siddiqsoft::invalid_document_error);
+    siddiqsoft::sipmessage msg("INVITE", "sip:user\r\nX-Injected: header@example.com", "callid123", 1);
+    msg.setHeader(siddiqsoft::HF_VIA, "SIP/2.0/TCP localhost");
+    EXPECT_THROW((void)siddiqsoft::sip2json::serialize(msg), siddiqsoft::invalid_document_error);
 }
 
 TEST(security_tests, Test_serialize_crlf_injection_in_header_throws)
 {
-    siddiqsoft::sipmessage msg("INVITE", "sip:user@example.com");
-    msg.setHeader("User-Agent", "sip2json\r\nInjected-Header: evil");
-    EXPECT_THROW(siddiqsoft::sip2json::serialize(msg), siddiqsoft::invalid_document_error);
+    siddiqsoft::sipmessage msg("INVITE", "sip:user@example.com", "callid123", 1);
+    msg.setHeader(siddiqsoft::HF_VIA, "SIP/2.0/TCP localhost");
+    msg.setHeader(siddiqsoft::HF_USER_AGENT, "sip2json\r\nInjected-Header: evil");
+    EXPECT_THROW((void)siddiqsoft::sip2json::serialize(msg), siddiqsoft::invalid_document_error);
 }

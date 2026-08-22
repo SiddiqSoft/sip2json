@@ -152,7 +152,7 @@ The project uses Azure Pipelines for continuous integration with:
 siddiqsoft::sipmessage registerMsg("REGISTER", "sip:example.com", 
                                    siddiqsoft::createCallId(), 1);
 registerMsg.setHeader("To", "sip:user@example.com")
-           .setHeader("Contact", "sip:user@example.com");
+           .setHeader(siddiqsoft::HF_CONTACT, "sip:user@example.com");
 
 // Serialize to SIP format
 auto sipBuffer = siddiqsoft::sip2json::serialize(registerMsg);

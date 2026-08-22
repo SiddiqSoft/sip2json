@@ -14,11 +14,11 @@ int main()
     sipmessage msg("INVITE", "sip:bob@example.com", "call-id-99812", 42);
 
     // 2. Set Headers using fluent method chaining
-    msg.setHeader("From", "sip:alice@example.com;tag=a831")
-       .setHeader("To", "sip:bob@example.com")
-       .setHeader("Contact", "<sip:alice@10.0.0.4:5060>")
-       .setHeader("Content-Type", "application/sdp")
-       .setHeader("User-Agent", "sip2json/2.0");
+    msg.setHeader(siddiqsoft::HF_FROM, "sip:alice@example.com;tag=a831")
+       .setHeader(siddiqsoft::HF_TO, "sip:bob@example.com")
+       .setHeader(siddiqsoft::HF_CONTACT, "<sip:alice@10.0.0.4:5060>")
+       .setHeader(siddiqsoft::HF_CONTENT_TYPE, "application/sdp")
+       .setHeader(siddiqsoft::HF_USER_AGENT, "sip2json/2.0");
 
     // 3. Attach SDP Body
     msg.body = {

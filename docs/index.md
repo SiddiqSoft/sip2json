@@ -66,9 +66,9 @@
         // Construct SIP INVITE request
         sipmessage msg("INVITE", "sip:user@example.com", "call-8849-xyz", 1);
         
-        msg.setHeader("From", "sip:caller@example.com")
-           .setHeader("To", "sip:user@example.com")
-           .setHeader("User-Agent", "sip2json/2.0");
+        msg.setHeader(siddiqsoft::HF_FROM, "sip:caller@example.com")
+           .setHeader(siddiqsoft::HF_TO, "sip:user@example.com")
+           .setHeader(siddiqsoft::HF_USER_AGENT, "sip2json/2.0");
 
         // Serialize to standard SIP string format
         std::string rawSip = sip2json::serialize(msg);

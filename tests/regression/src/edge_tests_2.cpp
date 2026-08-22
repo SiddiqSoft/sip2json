@@ -93,7 +93,7 @@ TEST(edge_cases_2, Test_create_various_response_codes)
 TEST(edge_cases_2, Test_serialize_roundtrip_response)
 {
     siddiqsoft::sipmessage request("REGISTER", "sip:test@example.com", siddiqsoft::createCallId(), 1);
-    request.setHeader("To", "sip:test@example.com").setHeader("Contact", "sip:test@example.com");
+    request.setHeader(siddiqsoft::HF_TO, "sip:test@example.com").setHeader(siddiqsoft::HF_CONTACT, "sip:test@example.com");
 
     siddiqsoft::sipmessage response(200, request);
 
@@ -174,9 +174,9 @@ TEST(edge_cases_2, Test_body_text_plain)
 {
     siddiqsoft::sipmessage sipm("MESSAGE", "sip:test@example.com", siddiqsoft::createCallId(), 1);
 
-    sipm.setHeader("To", "sip:test@example.com")
-            .setHeader("Contact", "sip:test@example.com")
-            .setHeader("Content-Type", siddiqsoft::CONTENT_TYPE_TEXT_PLAIN);
+    sipm.setHeader(siddiqsoft::HF_TO, "sip:test@example.com")
+            .setHeader(siddiqsoft::HF_CONTACT, "sip:test@example.com")
+            .setHeader(siddiqsoft::HF_CONTENT_TYPE, siddiqsoft::CONTENT_TYPE_TEXT_PLAIN);
 
     sipm.body() = "Hello, World!";
     EXPECT_TRUE(sipm.body().is_string());

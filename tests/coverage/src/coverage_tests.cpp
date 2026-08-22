@@ -570,7 +570,7 @@ TEST(coverage_errors, Test_parseAsync_incomplete_content_callback)
 TEST(coverage_errors, Test_missing_required_sdp_element)
 {
     siddiqsoft::sipmessage sipm("INVITE", "sip:bob@biloxi.com", siddiqsoft::createCallId(), 1);
-    sipm.setHeader("Content-Type", siddiqsoft::CONTENT_TYPE_APP_SDP);
+    sipm.setHeader(siddiqsoft::HF_CONTENT_TYPE, siddiqsoft::CONTENT_TYPE_APP_SDP);
 
     sipm["b"]["sdp"][0]["x"] = "incomplete";
 
@@ -677,7 +677,7 @@ TEST(coverage_sipmessage, Test_accessors)
 TEST(coverage_sipmessage, Test_getExpires)
 {
     siddiqsoft::sipmessage sipm("REGISTER", "sip:registrar.com", "reg123", 1);
-    sipm.setHeader("Expires", 3600);
+    sipm.setHeader(siddiqsoft::HF_EXPIRES, 3600);
 
     EXPECT_EQ(3600, sipm.getExpires());
 }
@@ -686,7 +686,7 @@ TEST(coverage_sipmessage, Test_getExpires)
 TEST(coverage_sipmessage, Test_flatten)
 {
     siddiqsoft::sipmessage sipm("INVITE", "sip:bob@biloxi.com", "flatten123", 1);
-    sipm.setHeader("To", "sip:bob@biloxi.com");
+    sipm.setHeader(siddiqsoft::HF_TO, "sip:bob@biloxi.com");
 
     auto flattened = sipm.flatten();
 
@@ -699,9 +699,9 @@ TEST(coverage_sipmessage, Test_flatten)
 TEST(coverage_sipmessage, Test_response_from_request)
 {
     siddiqsoft::sipmessage request("INVITE", "sip:bob@biloxi.com", "invite-callid-123", 1);
-    request.setHeader("To", "sip:bob@biloxi.com");
-    request.setHeader("From", "sip:alice@atlanta.com");
-    request.setHeader("Via", "SIP/2.0/TCP pc33.atlanta.com");
+    request.setHeader(siddiqsoft::HF_TO, "sip:bob@biloxi.com");
+    request.setHeader(siddiqsoft::HF_FROM, "sip:alice@atlanta.com");
+    request.setHeader(siddiqsoft::HF_VIA, "SIP/2.0/TCP pc33.atlanta.com");
 
     siddiqsoft::sipmessage response(180, request);
 
@@ -719,9 +719,9 @@ TEST(coverage_sipmessage, Test_response_from_request)
 TEST(coverage_serialize, Test_serialize_text_plain_body)
 {
     siddiqsoft::sipmessage sipm("MESSAGE", "sip:bob@biloxi.com", siddiqsoft::createCallId(), 1);
-    sipm.setHeader("To", "sip:bob@biloxi.com");
-    sipm.setHeader("From", "sip:alice@atlanta.com");
-    sipm.setHeader("Content-Type", siddiqsoft::CONTENT_TYPE_TEXT_PLAIN);
+    sipm.setHeader(siddiqsoft::HF_TO, "sip:bob@biloxi.com");
+    sipm.setHeader(siddiqsoft::HF_FROM, "sip:alice@atlanta.com");
+    sipm.setHeader(siddiqsoft::HF_CONTENT_TYPE, siddiqsoft::CONTENT_TYPE_TEXT_PLAIN);
 
     sipm.body() = "Hello, World!";
 
@@ -772,10 +772,10 @@ TEST(coverage_serialize, Test_serialize_float_header)
 TEST(coverage_serialize, Test_serialize_response)
 {
     siddiqsoft::sipmessage sipm(200);
-    sipm.setHeader("To", "sip:bob@biloxi.com");
-    sipm.setHeader("From", "sip:alice@atlanta.com");
-    sipm.setHeader("Call-ID", "response123");
-    sipm.setHeader("CSeq", "1 INVITE");
+    sipm.setHeader(siddiqsoft::HF_TO, "sip:bob@biloxi.com");
+    sipm.setHeader(siddiqsoft::HF_FROM, "sip:alice@atlanta.com");
+    sipm.setHeader(siddiqsoft::HF_CALLID, "response123");
+    sipm.setHeader(siddiqsoft::HF_CSEQ, "1 INVITE");
 
     auto serialized = siddiqsoft::sip2json::serialize(sipm);
 
@@ -791,8 +791,8 @@ TEST(coverage_serialize, Test_serialize_all_methods)
     for (const auto& method : methods)
     {
         siddiqsoft::sipmessage sipm(method, "sip:test@test.com", siddiqsoft::createCallId(), 1);
-        sipm.setHeader("To", "sip:test@test.com");
-        sipm.setHeader("From", "sip:sender@sender.com");
+        sipm.setHeader(siddiqsoft::HF_TO, "sip:test@test.com");
+        sipm.setHeader(siddiqsoft::HF_FROM, "sip:sender@sender.com");
 
         std::string serialized;
         EXPECT_NO_THROW(serialized = siddiqsoft::sip2json::serialize(sipm)) << "Failed for method: " << method;

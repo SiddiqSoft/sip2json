@@ -261,8 +261,8 @@ namespace siddiqsoft
     TEST(SIP_Certification, CERT_Serialization_RoundTrip_Fidelity)
     {
         sipmessage originalReq("INVITE", "sip:bob@biloxi.example.com", "roundtrip-cert-id-555", 101);
-        originalReq.setHeader("Contact", "<sip:alice@pc33.atlanta.com>");
-        originalReq.setHeader("User-Agent", "Antigravity-Certified/1.0");
+        originalReq.setHeader(siddiqsoft::HF_CONTACT, "<sip:alice@pc33.atlanta.com>");
+        originalReq.setHeader(siddiqsoft::HF_USER_AGENT, "Antigravity-Certified/1.0");
 
         // Serialize
         std::string serializedStr = sip2json::serialize(originalReq);

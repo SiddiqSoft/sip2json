@@ -377,9 +377,9 @@ namespace siddiqsoft
         /// @return std::string_view pointing to internal string storage.
         std::string_view getCallIDView() const
         {
-            if (headers().contains(HFS_CALLID[1]))
+            if (headers().contains(HFS_CALLID.canonical()))
             {
-                const auto& cid = headers().at(HFS_CALLID[1]);
+                const auto& cid = headers().at(HFS_CALLID.canonical());
                 if (cid.is_string()) return cid.get_ref<const std::string&>();
             }
             return {};
