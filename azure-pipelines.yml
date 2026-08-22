@@ -88,11 +88,16 @@ parameters:
     values: [ Release, Debug ]
     displayName: "Build types to build (Release, Debug)"
   
-  # Testing
+  # Testing & Benchmarking
   - name: RunTests
     type: boolean
     default: true
-    displayName: "Run tests after building"
+    displayName: "Run unit tests after building"
+
+  - name: RunBenchmarks
+    type: boolean
+    default: true
+    displayName: "Run benchmarks after building"
 
   # Publishing
   - name: PublishNuGet
@@ -166,6 +171,7 @@ stages:
         compilers: ${{ parameters.Compilers_Windows }}
         buildTypes: ${{ parameters.BuildTypes }}
         runTests: ${{ parameters.RunTests }}
+        runBenchmarks: ${{ parameters.RunBenchmarks }}
         publishNuGet: ${{ variables.PublishNuGet }}
 
   # ==========================================================================
@@ -191,6 +197,7 @@ stages:
         compilers: ${{ parameters.Compilers_Linux }}
         buildTypes: ${{ parameters.BuildTypes }}
         runTests: ${{ parameters.RunTests }}
+        runBenchmarks: ${{ parameters.RunBenchmarks }}
 
   # ==========================================================================
   # STAGE 3: NUGET PUBLICATION
