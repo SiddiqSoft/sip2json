@@ -43,6 +43,7 @@
 #include <format>
 #include <optional>
 #include <string>
+#include <type_traits>
 
 namespace siddiqsoft
 {

@@ -28,6 +28,7 @@
 #include <Windows.h>
 #include <processenv.h>
 #else
+#include <cstdlib>
 #include <unistd.h>
 #endif
 

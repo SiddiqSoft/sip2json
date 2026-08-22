@@ -5,6 +5,8 @@
 #include <chrono>
 #include <filesystem>
 #include <iomanip>
+#include <cstddef>
+#include <cstdint>
 
 #include "siddiqsoft/sip2json.hpp"
 
