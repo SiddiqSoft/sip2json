@@ -85,10 +85,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE GTest::gtest_main
                                                 sip2json::sip2json)
 target_link_libraries(sip2json_benchmark PRIVATE sip2json::sip2json)
 
-enable_testing()
-
 include(GoogleTest)
-gtest_discover_tests(${PROJECT_NAME} XML_OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/tests/results"
+gtest_discover_tests(${PROJECT_NAME} TEST_PREFIX "${PROJECT_NAME}."
                     PROPERTIES ENVIRONMENT "SAMPLES_DIR=${CMAKE_CURRENT_SOURCE_DIR}/samples")
-
-include(CTest)
