@@ -1510,7 +1510,10 @@ TEST(validation, Test_RandomStream_Recv_File_1_counts)
     uint32_t xDomainCount = 0;
     uint32_t xSeamlessCount = 0;
     uint32_t xCallInstanceIdCount = 0;
-    uint32_t sdpCallOwnerAliasCount = 0;
+    uint32_t messagesWithSdpCallOwnerAlias = 0;
+    uint32_t totalSdpCallOwnerAlias = 0;
+    uint32_t totalSdpBlocks = 0;
+    uint32_t totalSdpElements = 0;
 
     auto remaining = siddiqsoft::sip2json::parseAsync(
             buffer,
@@ -1526,12 +1529,21 @@ TEST(validation, Test_RandomStream_Recv_File_1_counts)
                     xCallInstanceIdCount++;
                 }
                 if (sipm.hasBody() && sipm.body().contains("sdp") && sipm.body()["sdp"].is_array()) {
+                    bool msgHasAlias = false;
+                    totalSdpBlocks += sipm.body()["sdp"].size();
                     for (const auto& sdpBlock : sipm.body()["sdp"]) {
-                        if (sdpBlock.contains("a") && sdpBlock["a"].is_object() && sdpBlock["a"].contains("x-ring2-callowner-login_alias")) {
-                            sdpCallOwnerAliasCount++;
-                            break;
+                        if (sdpBlock.is_object()) {
+                            totalSdpElements += sdpBlock.size();
+                            if (sdpBlock.contains("a") && sdpBlock["a"].is_object()) {
+                                totalSdpElements += (sdpBlock["a"].size() - 1);
+                                if (sdpBlock["a"].contains("x-ring2-callowner-login_alias")) {
+                                    msgHasAlias = true;
+                                    totalSdpCallOwnerAlias++;
+                                }
+                            }
                         }
                     }
+                    if (msgHasAlias) messagesWithSdpCallOwnerAlias++;
                 }
             });
 
@@ -1540,13 +1552,20 @@ TEST(validation, Test_RandomStream_Recv_File_1_counts)
     std::clog << "  X-domain Header Count     : " << xDomainCount << std::endl;
     std::clog << "  X-Seamless Header Count   : " << xSeamlessCount << std::endl;
     std::clog << "  X-Call-Instance-ID Count  : " << xCallInstanceIdCount << std::endl;
-    std::clog << "  SDP CallOwner Alias Count : " << sdpCallOwnerAliasCount << std::endl;
+    std::clog << "  Msgs w/ SDP CallOwner     : " << messagesWithSdpCallOwnerAlias << std::endl;
+    std::clog << "  Total SDP CallOwner Alias : " << totalSdpCallOwnerAlias << std::endl;
+    std::clog << "  Total SDP Blocks          : " << totalSdpBlocks << std::endl;
+    std::clog << "  Total SDP Elements        : " << totalSdpElements << std::endl;
+    std::clog << "  Avg SDP Elements/Msg      : " << (double(totalSdpElements) / messageCount) << std::endl;
 
     EXPECT_EQ(459u, messageCount);
     EXPECT_EQ(459u, xDomainCount);
     EXPECT_EQ(34u, xSeamlessCount);
     EXPECT_EQ(344u, xCallInstanceIdCount);
-    EXPECT_EQ(336u, sdpCallOwnerAliasCount);
+    EXPECT_EQ(336u, messagesWithSdpCallOwnerAlias);
+    EXPECT_EQ(549u, totalSdpCallOwnerAlias);
+    EXPECT_EQ(557u, totalSdpBlocks);
+    EXPECT_EQ(21409u, totalSdpElements);
 }
 
 // NOLINTNEXTLINE
@@ -1559,7 +1578,10 @@ TEST(validation, Test_Mixed_Stream_1_counts)
     uint32_t xDomainCount = 0;
     uint32_t xSeamlessCount = 0;
     uint32_t xCallInstanceIdCount = 0;
-    uint32_t sdpCallOwnerAliasCount = 0;
+    uint32_t messagesWithSdpCallOwnerAlias = 0;
+    uint32_t totalSdpCallOwnerAlias = 0;
+    uint32_t totalSdpBlocks = 0;
+    uint32_t totalSdpElements = 0;
 
     auto remaining = siddiqsoft::sip2json::parseAsync(
             buffer,
@@ -1575,12 +1597,21 @@ TEST(validation, Test_Mixed_Stream_1_counts)
                     xCallInstanceIdCount++;
                 }
                 if (sipm.hasBody() && sipm.body().contains("sdp") && sipm.body()["sdp"].is_array()) {
+                    bool msgHasAlias = false;
+                    totalSdpBlocks += sipm.body()["sdp"].size();
                     for (const auto& sdpBlock : sipm.body()["sdp"]) {
-                        if (sdpBlock.contains("a") && sdpBlock["a"].is_object() && sdpBlock["a"].contains("x-ring2-callowner-login_alias")) {
-                            sdpCallOwnerAliasCount++;
-                            break;
+                        if (sdpBlock.is_object()) {
+                            totalSdpElements += sdpBlock.size();
+                            if (sdpBlock.contains("a") && sdpBlock["a"].is_object()) {
+                                totalSdpElements += (sdpBlock["a"].size() - 1);
+                                if (sdpBlock["a"].contains("x-ring2-callowner-login_alias")) {
+                                    msgHasAlias = true;
+                                    totalSdpCallOwnerAlias++;
+                                }
+                            }
                         }
                     }
+                    if (msgHasAlias) messagesWithSdpCallOwnerAlias++;
                 }
             });
 
@@ -1589,13 +1620,20 @@ TEST(validation, Test_Mixed_Stream_1_counts)
     std::clog << "  X-domain Header Count     : " << xDomainCount << std::endl;
     std::clog << "  X-Seamless Header Count   : " << xSeamlessCount << std::endl;
     std::clog << "  X-Call-Instance-ID Count  : " << xCallInstanceIdCount << std::endl;
-    std::clog << "  SDP CallOwner Alias Count : " << sdpCallOwnerAliasCount << std::endl;
+    std::clog << "  Msgs w/ SDP CallOwner     : " << messagesWithSdpCallOwnerAlias << std::endl;
+    std::clog << "  Total SDP CallOwner Alias : " << totalSdpCallOwnerAlias << std::endl;
+    std::clog << "  Total SDP Blocks          : " << totalSdpBlocks << std::endl;
+    std::clog << "  Total SDP Elements        : " << totalSdpElements << std::endl;
+    std::clog << "  Avg SDP Elements/Msg      : " << (double(totalSdpElements) / messageCount) << std::endl;
 
     EXPECT_EQ(18u, messageCount);
     EXPECT_EQ(18u, xDomainCount);
     EXPECT_EQ(0u, xSeamlessCount);
     EXPECT_EQ(16u, xCallInstanceIdCount);
-    EXPECT_EQ(16u, sdpCallOwnerAliasCount);
+    EXPECT_EQ(16u, messagesWithSdpCallOwnerAlias);
+    EXPECT_EQ(22u, totalSdpCallOwnerAlias);
+    EXPECT_EQ(22u, totalSdpBlocks);
+    EXPECT_EQ(853u, totalSdpElements);
 }
 
 // NOLINTNEXTLINE
@@ -1608,7 +1646,10 @@ TEST(validation, Test_Mixed_Stream_2_counts)
     uint32_t xDomainCount = 0;
     uint32_t xSeamlessCount = 0;
     uint32_t xCallInstanceIdCount = 0;
-    uint32_t sdpCallOwnerAliasCount = 0;
+    uint32_t messagesWithSdpCallOwnerAlias = 0;
+    uint32_t totalSdpCallOwnerAlias = 0;
+    uint32_t totalSdpBlocks = 0;
+    uint32_t totalSdpElements = 0;
 
     auto remaining = siddiqsoft::sip2json::parseAsync(
             buffer,
@@ -1624,12 +1665,21 @@ TEST(validation, Test_Mixed_Stream_2_counts)
                     xCallInstanceIdCount++;
                 }
                 if (sipm.hasBody() && sipm.body().contains("sdp") && sipm.body()["sdp"].is_array()) {
+                    bool msgHasAlias = false;
+                    totalSdpBlocks += sipm.body()["sdp"].size();
                     for (const auto& sdpBlock : sipm.body()["sdp"]) {
-                        if (sdpBlock.contains("a") && sdpBlock["a"].is_object() && sdpBlock["a"].contains("x-ring2-callowner-login_alias")) {
-                            sdpCallOwnerAliasCount++;
-                            break;
+                        if (sdpBlock.is_object()) {
+                            totalSdpElements += sdpBlock.size();
+                            if (sdpBlock.contains("a") && sdpBlock["a"].is_object()) {
+                                totalSdpElements += (sdpBlock["a"].size() - 1);
+                                if (sdpBlock["a"].contains("x-ring2-callowner-login_alias")) {
+                                    msgHasAlias = true;
+                                    totalSdpCallOwnerAlias++;
+                                }
+                            }
                         }
                     }
+                    if (msgHasAlias) messagesWithSdpCallOwnerAlias++;
                 }
             });
 
@@ -1638,13 +1688,20 @@ TEST(validation, Test_Mixed_Stream_2_counts)
     std::clog << "  X-domain Header Count     : " << xDomainCount << std::endl;
     std::clog << "  X-Seamless Header Count   : " << xSeamlessCount << std::endl;
     std::clog << "  X-Call-Instance-ID Count  : " << xCallInstanceIdCount << std::endl;
-    std::clog << "  SDP CallOwner Alias Count : " << sdpCallOwnerAliasCount << std::endl;
+    std::clog << "  Msgs w/ SDP CallOwner     : " << messagesWithSdpCallOwnerAlias << std::endl;
+    std::clog << "  Total SDP CallOwner Alias : " << totalSdpCallOwnerAlias << std::endl;
+    std::clog << "  Total SDP Blocks          : " << totalSdpBlocks << std::endl;
+    std::clog << "  Total SDP Elements        : " << totalSdpElements << std::endl;
+    std::clog << "  Avg SDP Elements/Msg      : " << (double(totalSdpElements) / messageCount) << std::endl;
 
     EXPECT_EQ(9u, messageCount);
     EXPECT_EQ(9u, xDomainCount);
     EXPECT_EQ(0u, xSeamlessCount);
     EXPECT_EQ(9u, xCallInstanceIdCount);
-    EXPECT_EQ(8u, sdpCallOwnerAliasCount);
+    EXPECT_EQ(8u, messagesWithSdpCallOwnerAlias);
+    EXPECT_EQ(9u, totalSdpCallOwnerAlias);
+    EXPECT_EQ(10u, totalSdpBlocks);
+    EXPECT_EQ(349u, totalSdpElements);
 }
 
 // NOLINTNEXTLINE
@@ -1657,7 +1714,10 @@ TEST(validation, Test_Mixed_Stream_3_counts)
     uint32_t xDomainCount = 0;
     uint32_t xSeamlessCount = 0;
     uint32_t xCallInstanceIdCount = 0;
-    uint32_t sdpCallOwnerAliasCount = 0;
+    uint32_t messagesWithSdpCallOwnerAlias = 0;
+    uint32_t totalSdpCallOwnerAlias = 0;
+    uint32_t totalSdpBlocks = 0;
+    uint32_t totalSdpElements = 0;
 
     auto remaining = siddiqsoft::sip2json::parseAsync(
             buffer,
@@ -1673,12 +1733,21 @@ TEST(validation, Test_Mixed_Stream_3_counts)
                     xCallInstanceIdCount++;
                 }
                 if (sipm.hasBody() && sipm.body().contains("sdp") && sipm.body()["sdp"].is_array()) {
+                    bool msgHasAlias = false;
+                    totalSdpBlocks += sipm.body()["sdp"].size();
                     for (const auto& sdpBlock : sipm.body()["sdp"]) {
-                        if (sdpBlock.contains("a") && sdpBlock["a"].is_object() && sdpBlock["a"].contains("x-ring2-callowner-login_alias")) {
-                            sdpCallOwnerAliasCount++;
-                            break;
+                        if (sdpBlock.is_object()) {
+                            totalSdpElements += sdpBlock.size();
+                            if (sdpBlock.contains("a") && sdpBlock["a"].is_object()) {
+                                totalSdpElements += (sdpBlock["a"].size() - 1);
+                                if (sdpBlock["a"].contains("x-ring2-callowner-login_alias")) {
+                                    msgHasAlias = true;
+                                    totalSdpCallOwnerAlias++;
+                                }
+                            }
                         }
                     }
+                    if (msgHasAlias) messagesWithSdpCallOwnerAlias++;
                 }
             });
 
@@ -1687,13 +1756,20 @@ TEST(validation, Test_Mixed_Stream_3_counts)
     std::clog << "  X-domain Header Count     : " << xDomainCount << std::endl;
     std::clog << "  X-Seamless Header Count   : " << xSeamlessCount << std::endl;
     std::clog << "  X-Call-Instance-ID Count  : " << xCallInstanceIdCount << std::endl;
-    std::clog << "  SDP CallOwner Alias Count : " << sdpCallOwnerAliasCount << std::endl;
+    std::clog << "  Msgs w/ SDP CallOwner     : " << messagesWithSdpCallOwnerAlias << std::endl;
+    std::clog << "  Total SDP CallOwner Alias : " << totalSdpCallOwnerAlias << std::endl;
+    std::clog << "  Total SDP Blocks          : " << totalSdpBlocks << std::endl;
+    std::clog << "  Total SDP Elements        : " << totalSdpElements << std::endl;
+    std::clog << "  Avg SDP Elements/Msg      : " << (double(totalSdpElements) / messageCount) << std::endl;
 
     EXPECT_EQ(21u, messageCount);
     EXPECT_EQ(21u, xDomainCount);
     EXPECT_EQ(0u, xSeamlessCount);
     EXPECT_EQ(21u, xCallInstanceIdCount);
-    EXPECT_EQ(8u, sdpCallOwnerAliasCount);
+    EXPECT_EQ(8u, messagesWithSdpCallOwnerAlias);
+    EXPECT_EQ(8u, totalSdpCallOwnerAlias);
+    EXPECT_EQ(23u, totalSdpBlocks);
+    EXPECT_EQ(739u, totalSdpElements);
 }
 
 // NOLINTNEXTLINE
@@ -1910,7 +1986,7 @@ TEST(validation_samples, Test_all_34_sample_files_exhaustive_coverage)
 
             size_t msgsInFile = 0;
             try {
-                siddiqsoft::sip2json::parseAsync(buffer, [&](siddiqsoft::sipmessage&&) {
+                (void)siddiqsoft::sip2json::parseAsync(buffer, [&](siddiqsoft::sipmessage&&) {
                     msgsInFile++;
                     totalMessagesParsed++;
                 });

@@ -166,6 +166,62 @@ int main(int argc, char** argv)
     std::cout << "  Total Messages      : " << single_messages_parsed << std::endl;
     std::cout << "  Throughput          : " << single_msg_per_sec << " msg/sec" << std::endl;
     std::cout << "  Avg Latency/Msg     : " << single_avg_us << " us/msg" << std::endl;
+
+    // Benchmark Pass 3: Stream Inspection & Per-Message SDP Element Metrics
+    std::vector<std::string> stream_files = {
+        "Mixed_Stream_1.sip",
+        "Mixed_Stream_2.sip",
+        "Mixed_Stream_3.sip",
+        "RandomStream_Recv_File_1.sip"
+    };
+
+    std::cout << "\n[BENCHMARK RESULTS - Stream Inspection & SDP Element Counts]" << std::endl;
+    for (const auto& target_file : stream_files) {
+        auto it = std::find_if(sample_files.begin(), sample_files.end(), [&](const SampleFile& sf) {
+            return sf.filename == target_file;
+        });
+        if (it != sample_files.end()) {
+            size_t msg_count = 0;
+            size_t x_domain = 0;
+            size_t x_seamless = 0;
+            size_t x_call_instance_id = 0;
+            size_t sdp_callowner_alias = 0;
+            size_t total_sdp_blocks = 0;
+            size_t total_sdp_elements = 0;
+
+            std::string buffer = it->content;
+            (void)siddiqsoft::sip2json::parseAsync(buffer, [&](siddiqsoft::sipmessage&& sipm) {
+                msg_count++;
+                if (sipm.headers().contains("X-domain")) x_domain++;
+                if (sipm.headers().contains("X-Seamless")) x_seamless++;
+                if (sipm.headers().contains("X-Call-Instance-ID")) x_call_instance_id++;
+                if (sipm.hasBody() && sipm.body().contains("sdp") && sipm.body()["sdp"].is_array()) {
+                    total_sdp_blocks += sipm.body()["sdp"].size();
+                    for (const auto& sdpBlock : sipm.body()["sdp"]) {
+                        if (sdpBlock.is_object()) {
+                            total_sdp_elements += sdpBlock.size();
+                            if (sdpBlock.contains("a") && sdpBlock["a"].is_object()) {
+                                total_sdp_elements += (sdpBlock["a"].size() - 1);
+                                if (sdpBlock["a"].contains("x-ring2-callowner-login_alias")) {
+                                    sdp_callowner_alias++;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            double avg_sdp_per_msg = msg_count > 0 ? (double)total_sdp_elements / msg_count : 0.0;
+            std::cout << "  File: " << target_file << std::endl;
+            std::cout << "    Messages Received      : " << msg_count << std::endl;
+            std::cout << "    Total SDP Elements     : " << total_sdp_elements << std::endl;
+            std::cout << "    Avg SDP Elements/Msg   : " << avg_sdp_per_msg << std::endl;
+            std::cout << "    X-domain Header        : " << x_domain << std::endl;
+            std::cout << "    X-Seamless Header      : " << x_seamless << std::endl;
+            std::cout << "    X-Call-Instance-ID     : " << x_call_instance_id << std::endl;
+            std::cout << "    SDP CallOwner Alias    : " << sdp_callowner_alias << std::endl;
+        }
+    }
     std::cout << "================================================================================" << std::endl;
 
     return 0;
