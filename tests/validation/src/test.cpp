@@ -49,10 +49,14 @@ static std::string loadSampleFile(const std::string& fileName)
             cwd.parent_path() / "samples",
             cwd.parent_path() / "tests" / "validation" / "samples",
             cwd.parent_path().parent_path() / "samples",
-            cwd.parent_path().parent_path() / "tests" / "validation" / "samples"
+            cwd.parent_path().parent_path() / "tests" / "validation" / "samples",
+            cwd.parent_path().parent_path().parent_path() / "samples",
+            cwd.parent_path().parent_path().parent_path() / "tests" / "validation" / "samples",
+            cwd.parent_path().parent_path().parent_path().parent_path() / "samples",
+            cwd.parent_path().parent_path().parent_path().parent_path() / "tests" / "validation" / "samples"
         };
         for (const auto& cand : candidates) {
-            if (std::filesystem::exists(cand)) {
+            if (std::filesystem::exists(cand) && std::filesystem::is_directory(cand)) {
                 samplesDirectoryPath = cand.string();
                 break;
             }
@@ -1494,4 +1498,53 @@ TEST(edge_cases_2, Test_parse_notify_empty_header_value)
     EXPECT_TRUE(sipm.headers().contains("X-rss-id")) << sipm.dump(2);
     EXPECT_EQ("", sipm.getHeader<std::string>("X-rss-id")) << "X-rss-id should have empty value";
     EXPECT_FALSE(sipm.headers().contains("X-active-talker")) << sipm.dump(2);
+}
+
+// NOLINTNEXTLINE
+TEST(validation, Test_RandomStream_Recv_File_1_counts)
+{
+    auto buffer = loadSampleFile("RandomStream_Recv_File_1");
+    ASSERT_FALSE(buffer.empty());
+
+    uint32_t messageCount = 0;
+    uint32_t xDomainCount = 0;
+    uint32_t xSeamlessCount = 0;
+    uint32_t xCallInstanceIdCount = 0;
+    uint32_t sdpCallOwnerAliasCount = 0;
+
+    auto remaining = siddiqsoft::sip2json::parseAsync(
+            buffer,
+            [&](siddiqsoft::sipmessage&& sipm) {
+                messageCount++;
+                if (sipm.headers().contains("X-domain")) {
+                    xDomainCount++;
+                }
+                if (sipm.headers().contains("X-Seamless")) {
+                    xSeamlessCount++;
+                }
+                if (sipm.headers().contains("X-Call-Instance-ID")) {
+                    xCallInstanceIdCount++;
+                }
+                if (sipm.hasBody() && sipm.body().contains("sdp") && sipm.body()["sdp"].is_array()) {
+                    for (const auto& sdpBlock : sipm.body()["sdp"]) {
+                        if (sdpBlock.contains("a") && sdpBlock["a"].is_object() && sdpBlock["a"].contains("x-ring2-callowner-login_alias")) {
+                            sdpCallOwnerAliasCount++;
+                            break;
+                        }
+                    }
+                }
+            });
+
+    std::clog << "RandomStream_Recv_File_1 summary:" << std::endl;
+    std::clog << "  Total Messages            : " << messageCount << std::endl;
+    std::clog << "  X-domain Header Count     : " << xDomainCount << std::endl;
+    std::clog << "  X-Seamless Header Count   : " << xSeamlessCount << std::endl;
+    std::clog << "  X-Call-Instance-ID Count  : " << xCallInstanceIdCount << std::endl;
+    std::clog << "  SDP CallOwner Alias Count : " << sdpCallOwnerAliasCount << std::endl;
+
+    EXPECT_EQ(459u, messageCount);
+    EXPECT_EQ(459u, xDomainCount);
+    EXPECT_EQ(34u, xSeamlessCount);
+    EXPECT_EQ(344u, xCallInstanceIdCount);
+    EXPECT_EQ(336u, sdpCallOwnerAliasCount);
 }

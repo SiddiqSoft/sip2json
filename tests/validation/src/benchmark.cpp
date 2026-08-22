@@ -27,10 +27,16 @@ int main(int argc, char** argv)
             cwd / "tests" / "validation" / "samples",
             cwd / "samples",
             cwd.parent_path() / "tests" / "validation" / "samples",
-            cwd.parent_path() / "samples"
+            cwd.parent_path() / "samples",
+            cwd.parent_path().parent_path() / "tests" / "validation" / "samples",
+            cwd.parent_path().parent_path() / "samples",
+            cwd.parent_path().parent_path().parent_path() / "tests" / "validation" / "samples",
+            cwd.parent_path().parent_path().parent_path() / "samples",
+            cwd.parent_path().parent_path().parent_path().parent_path() / "tests" / "validation" / "samples",
+            cwd.parent_path().parent_path().parent_path().parent_path() / "samples"
         };
         for (const auto& cand : candidates) {
-            if (fs::exists(cand)) {
+            if (fs::exists(cand) && fs::is_directory(cand)) {
                 samples_dir = cand.string();
                 break;
             }
