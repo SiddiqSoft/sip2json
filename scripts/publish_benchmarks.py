@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
 """
 Publish Benchmarks Script
-Automatically builds the sip2json_benchmarks target in Release mode (if needed),
-executes the benchmark suite, generates JSON, JUnit XML, and interactive HTML reports,
-and prepares the reports for documentation site publication.
+Automatically locates benchmark outputs across CI build matrix runners (Windows x64/arm64, Linux x64/arm64, macOS),
+compiles multi-platform performance reports, generates interactive HTML charts, and updates docs/features/benchmarks.md.
 
 Usage:
-    python3 scripts/publish_benchmarks.py [--root REPO_ROOT] [--skip-build]
+    python3 scripts/publish_benchmarks.py [--root REPO_ROOT] [--skip-build] [--skip-exec]
 """
 
 import argparse
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -26,6 +26,69 @@ def run_cmd(cmd, cwd=None):
         return False
     return True
 
+def parse_platform_from_filename(filename_str: str) -> tuple:
+    """Extract OS, Arch, and Compiler from benchmark JSON filename if available."""
+    # Pattern: benchmark_results_OS_ARCH_COMPILER.json
+    name = Path(filename_str).stem
+    parts = name.replace("benchmark_results_", "").split("_")
+    os_name = parts[0] if len(parts) > 0 else "Host"
+    arch_name = parts[1] if len(parts) > 1 else "native"
+    compiler_name = parts[2] if len(parts) > 2 else "Clang/GCC/MSVC"
+    return os_name, arch_name, compiler_name
+
+def update_benchmarks_doc(repo_root: Path, platform_results: list):
+    """Dynamically update docs/features/benchmarks.md between PIPELINE_BENCHMARKS markers."""
+    doc_path = repo_root / "docs" / "features" / "benchmarks.md"
+    if not doc_path.exists():
+        print(f"[publish_benchmarks] Warning: {doc_path} not found.", flush=True)
+        return
+
+    content = doc_path.read_text(encoding="utf-8")
+    start_marker = "<!-- PIPELINE_BENCHMARKS_START -->"
+    end_marker = "<!-- PIPELINE_BENCHMARKS_END -->"
+
+    if start_marker not in content or end_marker not in content:
+        print(f"[publish_benchmarks] Warning: Pipeline benchmark markers not found in {doc_path}.", flush=True)
+        return
+
+    # Build Markdown table
+    table_lines = [
+        start_marker,
+        "## 1. Multi-Platform & Cross-Architecture Pipeline Benchmark Matrix",
+        "",
+        "*Empirical build pipeline measurements collected across matrix runners:*",
+        "",
+        "| Operating System | Architecture | Compiler | Stream Throughput (`parseAsync`) | Bandwidth | Per-Msg Latency | Single Message (`parseFromBuffer`) | Single Latency |",
+        "| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |"
+    ]
+
+    if platform_results:
+        for res in platform_results:
+            os_name = res.get("os", "Linux")
+            arch = res.get("arch", "x64")
+            compiler = res.get("compiler", "Clang")
+            async_tput = res.get("async_tput", "N/A")
+            bandwidth = res.get("bandwidth", "N/A")
+            async_lat = res.get("async_lat", "N/A")
+            single_tput = res.get("single_tput", "N/A")
+            single_lat = res.get("single_lat", "N/A")
+
+            table_lines.append(
+                f"| **{os_name}** | **{arch}** | {compiler} | **{async_tput}** | **{bandwidth}** | **{async_lat}** | **{single_tput}** | **{single_lat}** |"
+            )
+    else:
+        table_lines.append("| *Awaiting Pipeline Run* | *x64 / arm64* | CI Runners | *Collected on CI* | *Collected on CI* | *Collected on CI* | *Collected on CI* | *Collected on CI* |")
+
+    table_lines.append(end_marker)
+    new_section = "\n".join(table_lines)
+
+    # Replace content between markers
+    pattern = re.compile(f"{re.escape(start_marker)}.*?{re.escape(end_marker)}", re.DOTALL)
+    updated_content = pattern.sub(new_section, content)
+
+    doc_path.write_text(updated_content, encoding="utf-8")
+    print(f"[publish_benchmarks] Updated {doc_path} with pipeline benchmark metrics.", flush=True)
+
 def main():
     parser = argparse.ArgumentParser(description="Publish sip2json benchmark reports")
     parser.add_argument("--root", type=str, help="Repository root path")
@@ -38,78 +101,85 @@ def main():
     docs_assets_dir = repo_root / "docs" / "assets"
     docs_assets_dir.mkdir(parents=True, exist_ok=True)
 
-    # 1. Locate existing benchmark executable or search build tree
-    possible_exe_locations = [
-        repo_root / "build" / "Apple-Release" / "benchmarks" / "sip2json_benchmarks",
-        repo_root / "build" / "Release" / "benchmarks" / "sip2json_benchmarks",
-        repo_root / "build" / "benchmarks" / "sip2json_benchmarks",
-        repo_root / "build" / "benchmarks" / "Release" / "sip2json_benchmarks.exe",
-        repo_root / "build" / "benchmarks" / "sip2json_benchmarks.exe",
+    # 1. Search for benchmark JSON artifacts collected from build matrix jobs
+    json_search_dirs = [
+        benchmarks_dir / "artifacts",
+        benchmarks_dir / "results",
+        repo_root / "build",
+        benchmarks_dir
     ]
 
-    bench_exe = None
-    for loc in possible_exe_locations:
-        if loc.exists() and os.access(loc, os.X_OK):
-            bench_exe = loc
-            break
+    json_files = []
+    for sdir in json_search_dirs:
+        if sdir.exists():
+            for p in sdir.glob("**/*.json"):
+                if "benchmark" in p.name.lower():
+                    json_files.append(p)
 
-    if not bench_exe:
-        build_root = repo_root / "build"
-        if build_root.exists():
-            for exe in build_root.glob("**/sip2json_benchmarks*"):
-                if exe.is_file() and os.access(exe, os.X_OK):
-                    bench_exe = exe
-                    break
+    platform_results = []
+    for jfile in json_files:
+        try:
+            data = json.loads(jfile.read_text(encoding="utf-8"))
+            os_name, arch, compiler = parse_platform_from_filename(jfile.name)
+            
+            # Extract key metrics if present
+            b_list = data.get("benchmarks", [])
+            async_tput = "N/A"
+            bandwidth = "N/A"
+            async_lat = "N/A"
+            single_tput = "N/A"
+            single_lat = "N/A"
 
-    if (not bench_exe and not args.skip_build):
-        build_dir = repo_root / "build" / "Release"
-        print(f"[publish_benchmarks] Configuring CMake in {build_dir}...", flush=True)
-        cfg_cmd = [
-            "cmake", "-B", str(build_dir), "-S", str(repo_root),
-            "-DCMAKE_BUILD_TYPE=Release",
-            "-Dsip2json_BUILD_BENCHMARKS=ON",
-            "-Dsip2json_BUILD_TESTS=OFF"
-        ]
-        if run_cmd(cfg_cmd):
-            print(f"[publish_benchmarks] Building sip2json_benchmarks in Release mode...", flush=True)
-            build_cmd = ["cmake", "--build", str(build_dir), "--config", "Release", "--target", "sip2json_benchmarks"]
-            if run_cmd(build_cmd):
-                new_exe = build_dir / "benchmarks" / "sip2json_benchmarks"
-                if new_exe.exists():
-                    bench_exe = new_exe
+            for b in b_list:
+                bname = b.get("name", "")
+                if "parseAsync" in bname or "Callback" in bname:
+                    items_sec = b.get("items_per_second", 0)
+                    rtime = b.get("real_time", 0)
+                    tunit = b.get("time_unit", "us")
+                    if items_sec > 0:
+                        async_tput = f"{items_sec:,.2f} msg/s"
+                        bandwidth = f"{(items_sec * 2600) / 1024 / 1024:.2f} MB/s"
+                    if rtime > 0:
+                        async_lat = f"{rtime:.2f} {tunit}"
+                elif "parseFromBuffer" in bname or "Single" in bname:
+                    items_sec = b.get("items_per_second", 0)
+                    rtime = b.get("real_time", 0)
+                    tunit = b.get("time_unit", "us")
+                    if items_sec > 0:
+                        single_tput = f"{items_sec:,.2f} msg/s"
+                    if rtime > 0:
+                        single_lat = f"{rtime:.2f} {tunit}"
 
+            platform_results.append({
+                "os": os_name,
+                "arch": arch,
+                "compiler": compiler,
+                "async_tput": async_tput,
+                "bandwidth": bandwidth,
+                "async_lat": async_lat,
+                "single_tput": single_tput,
+                "single_lat": single_lat
+            })
+        except Exception as ex:
+            print(f"[publish_benchmarks] Could not parse JSON file {jfile}: {ex}", flush=True)
+
+    # 2. Update docs/features/benchmarks.md with collected platform results
+    update_benchmarks_doc(repo_root, platform_results)
+
+    # 3. Locate primary benchmark executable or run generator if JSON exists
     json_out_path = benchmarks_dir / "benchmark_results.json"
     generator_script = benchmarks_dir / "benchmark_report_generator.py"
     html_report = benchmarks_dir / "benchmark_report.html"
     published_html = docs_assets_dir / "benchmark_report.html"
 
-    # 2. Execute benchmark executable if available and allowed
-    if bench_exe and bench_exe.exists() and not args.skip_exec:
-        run_bench_cmd = [
-            str(bench_exe),
-            f"--benchmark_out={json_out_path}",
-            "--benchmark_out_format=json"
-        ]
-        print(f"[publish_benchmarks] Executing benchmark suite: {bench_exe}", flush=True)
-        run_cmd(run_bench_cmd)
-    else:
-        print("[publish_benchmarks] Skipping benchmark binary execution (using existing benchmark outputs).", flush=True)
-
-    # 3. Generate XML and HTML reports using benchmark_report_generator.py if JSON exists
     if json_out_path.exists() and generator_script.exists():
         gen_cmd = [sys.executable, str(generator_script), str(json_out_path), str(benchmarks_dir)]
         if run_cmd(gen_cmd):
             print(f"[publish_benchmarks] Generated benchmark reports in {benchmarks_dir}", flush=True)
 
-    # 4. Copy HTML report into docs/assets/ so it is published into the documentation website
     if html_report.exists():
         shutil.copy2(html_report, published_html)
         print(f"[publish_benchmarks] Published interactive HTML report to: {published_html}", flush=True)
-    elif published_html.exists():
-        print(f"[publish_benchmarks] Pre-compiled interactive HTML report present at: {published_html}", flush=True)
-    else:
-        print("[publish_benchmarks] Warning: No benchmark HTML report found to publish.", flush=True)
 
 if __name__ == "__main__":
     main()
-

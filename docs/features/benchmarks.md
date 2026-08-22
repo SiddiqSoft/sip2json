@@ -2,9 +2,19 @@
 
 `sip2json` delivers high-throughput, low-latency SIP stream parsing designed for high-concurrency VoIP edge proxies, media servers, and WebRTC gateways.
 
+<!-- PIPELINE_BENCHMARKS_START -->
+## 1. Multi-Platform & Cross-Architecture Pipeline Benchmark Matrix
+
+*Empirical build pipeline measurements collected across matrix runners:*
+
+| Operating System | Architecture | Compiler | Stream Throughput (`parseAsync`) | Bandwidth | Per-Msg Latency | Single Message (`parseFromBuffer`) | Single Latency |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| *Awaiting Pipeline Run* | *x64 / arm64* | CI Runners | *Collected on CI* | *Collected on CI* | *Collected on CI* | *Collected on CI* | *Collected on CI* |
+<!-- PIPELINE_BENCHMARKS_END -->
+
 ---
 
-## 1. Release Comparison Matrix (`release/2.6.0` vs. `master` vs. `v2.4.2`)
+## 2. Release Comparison Matrix (`release/2.6.0` vs. `master` vs. `v2.4.2`)
 
 *Fresh empirical measurements across 36 real-world SIP message stream fixtures (164,400 stream iterations, 31,000 single message iterations):*
 
