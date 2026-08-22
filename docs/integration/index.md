@@ -63,6 +63,10 @@ When building on Windows, the underlying **CTRE (Compile-Time Regular Expression
 > [!WARNING]
 > **Windows `filename too long` Fix**
 > Enable Windows Extended Long Paths in the System Registry and Git configuration before building on Windows machines.
+> You can automatically configure your machine by running `scripts/prep_windows_machine.ps1` as Administrator:
+> ```powershell
+> powershell -ExecutionPolicy Bypass -File .\scripts\prep_windows_machine.ps1
+> ```
 
 ### 1. Enable Windows Registry Long Paths (`LongPathsEnabled`)
 
