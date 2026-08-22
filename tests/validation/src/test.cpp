@@ -769,7 +769,7 @@ TEST(siphelpers, Test_empty_message)
 TEST(synthetics, Check_invalid_startline_CRLF)
 {
     std::string buffer {
-            "preceeding junk\r\nNOTiFY sip:lab.edial.rc.116.voip@loopup.co;pool=uk-ed-nelson;box=uk-ed-nelson-04.ring2-corp.com "
+            "preceeding junk\r\nNOTiFY sip:lab.edial.rc.116.voip@loopup.co;pool=uk-ed-nelson;box=uk-ed-nelson-04.voice-corp.com "
             "SIP/2.0\r\n"
             "Via: SIP/2.0/TCP "
             "localhost:780;branch=conference.wizard@local.host__eDial_sep__lab.edial.rc.116.voip@loopup.co;received=127.0.0.1:"
@@ -929,7 +929,7 @@ TEST(synthetics, Check_async_invalid_startline_CRLF)
 {
     std::string buffer {
             "\r\npreceeding junk\r\nNOTiFY "
-            "sip:lab.edial.rc.116.voip@loopup.co;pool=uk-ed-nelson;box=uk-ed-nelson-04.ring2-corp.com SIP/2.0\r\n"
+            "sip:lab.edial.rc.116.voip@loopup.co;pool=uk-ed-nelson;box=uk-ed-nelson-04.voice-corp.com SIP/2.0\r\n"
             "Via: SIP/2.0/TCP "
             "localhost:780;branch=conference.wizard@local.host__eDial_sep__lab.edial.rc.116.voip@loopup.co;received=127.0.0.1:"
             "48114:442357920\r\n"
@@ -1066,7 +1066,7 @@ TEST(validation, Test_extension_aras)
                         EXPECT_EQ(1118, sipm.getContentLength());
                         EXPECT_EQ("+14155500001x,0000000001",
                                   sipm.template getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
-                        EXPECT_EQ("1.11", sipm.value("/b/sdp/0/a/x-ring2-coords"_json_pointer, "")) << sipm.dump(2);
+                        EXPECT_EQ("1.11", sipm.value("/b/sdp/0/a/x-voice-coords"_json_pointer, "")) << sipm.dump(2);
                     } break;
                     case 1: {
                         std::cerr << __func__ << " - case " << parseCount << ".." << std::endl;
@@ -1076,10 +1076,10 @@ TEST(validation, Test_extension_aras)
                         EXPECT_EQ(1263, sipm.getContentLength());
                         EXPECT_EQ("+14155500001x,0000000001",
                                   sipm.template getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
-                        EXPECT_TRUE(sipm.contains("/b/sdp/0/a/x-ring2-coords"_json_pointer)) << sipm.dump(2);
-                        EXPECT_EQ(2, sipm["/b/sdp/0/a/x-ring2-coords"_json_pointer].size()) << sipm.dump(2);
-                        EXPECT_EQ("2.11", sipm.value("/b/sdp/0/a/x-ring2-coords/0"_json_pointer, "")) << sipm.dump(2);
-                        EXPECT_EQ("2.22", sipm.value("/b/sdp/0/a/x-ring2-coords/1"_json_pointer, "")) << sipm.dump(2);
+                        EXPECT_TRUE(sipm.contains("/b/sdp/0/a/x-voice-coords"_json_pointer)) << sipm.dump(2);
+                        EXPECT_EQ(2, sipm["/b/sdp/0/a/x-voice-coords"_json_pointer].size()) << sipm.dump(2);
+                        EXPECT_EQ("2.11", sipm.value("/b/sdp/0/a/x-voice-coords/0"_json_pointer, "")) << sipm.dump(2);
+                        EXPECT_EQ("2.22", sipm.value("/b/sdp/0/a/x-voice-coords/1"_json_pointer, "")) << sipm.dump(2);
                     } break;
                     case 2: {
                         std::cerr << __func__ << " - case " << parseCount << ".." << std::endl;
@@ -1089,11 +1089,11 @@ TEST(validation, Test_extension_aras)
                         EXPECT_EQ(1318, sipm.getContentLength());
                         EXPECT_EQ("+14155500001x,0000000001",
                                   sipm.template getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
-                        EXPECT_TRUE(sipm.contains("/b/sdp/0/a/x-ring2-coords"_json_pointer)) << sipm.dump(2);
-                        EXPECT_EQ(3, sipm["/b/sdp/0/a/x-ring2-coords"_json_pointer].size()) << sipm.dump(2);
-                        EXPECT_EQ("3.11", sipm.value("/b/sdp/0/a/x-ring2-coords/0"_json_pointer, "")) << sipm.dump(2);
-                        EXPECT_EQ("3.22", sipm.value("/b/sdp/0/a/x-ring2-coords/1"_json_pointer, "")) << sipm.dump(2);
-                        EXPECT_EQ("3.33", sipm.value("/b/sdp/0/a/x-ring2-coords/2"_json_pointer, "")) << sipm.dump(2);
+                        EXPECT_TRUE(sipm.contains("/b/sdp/0/a/x-voice-coords"_json_pointer)) << sipm.dump(2);
+                        EXPECT_EQ(3, sipm["/b/sdp/0/a/x-voice-coords"_json_pointer].size()) << sipm.dump(2);
+                        EXPECT_EQ("3.11", sipm.value("/b/sdp/0/a/x-voice-coords/0"_json_pointer, "")) << sipm.dump(2);
+                        EXPECT_EQ("3.22", sipm.value("/b/sdp/0/a/x-voice-coords/1"_json_pointer, "")) << sipm.dump(2);
+                        EXPECT_EQ("3.33", sipm.value("/b/sdp/0/a/x-voice-coords/2"_json_pointer, "")) << sipm.dump(2);
                     } break;
                 };
             },
@@ -1220,7 +1220,7 @@ TEST(ImplementationChecks, Test_formatters_1)
 TEST(synthetics, Check_header_array_CRLF)
 {
     std::string buffer {
-            "NOTIFY sip:lab.edial.rc.116.voip@loopup.co;pool=uk-ed-nelson;box=uk-ed-nelson-04.ring2-corp.com SIP/2.0\r\n"
+            "NOTIFY sip:lab.edial.rc.116.voip@loopup.co;pool=uk-ed-nelson;box=uk-ed-nelson-04.voice-corp.com SIP/2.0\r\n"
             "Via: SIP/2.0/TCP "
             "localhost:780;branch=conference.wizard@local.host__eDial_sep__lab.edial.rc.116.voip@loopup.co;received=127.0.0.1:"
             "48114:442357920\r\n"
@@ -1264,7 +1264,7 @@ TEST(synthetics, Check_header_array_CRLF)
 TEST(synthetics, Check_header_array_LF)
 {
     std::string buffer {
-            "NOTIFY sip:lab.edial.rc.116.voip@loopup.co;pool=uk-ed-nelson;box=uk-ed-nelson-04.ring2-corp.com SIP/2.0\n"
+            "NOTIFY sip:lab.edial.rc.116.voip@loopup.co;pool=uk-ed-nelson;box=uk-ed-nelson-04.voice-corp.com SIP/2.0\n"
             "Via: SIP/2.0/TCP "
             "localhost:780;branch=conference.wizard@local.host__eDial_sep__lab.edial.rc.116.voip@loopup.co;received=127.0.0.1:"
             "48114:442357920\n"
@@ -1308,7 +1308,7 @@ TEST(synthetics, Check_startline_precedingjunk_CRLF)
 {
     std::string buffer {
             "2024-11-25T11:11:00.000Z Message\r\nNOTIFY "
-            "sip:lab.edial.rc.116.voip@loopup.co;pool=uk-ed-nelson;box=uk-ed-nelson-04.ring2-corp.com SIP/2.0\r\n"
+            "sip:lab.edial.rc.116.voip@loopup.co;pool=uk-ed-nelson;box=uk-ed-nelson-04.voice-corp.com SIP/2.0\r\n"
             "Via: SIP/2.0/TCP "
             "localhost:780;branch=conference.wizard@local.host__eDial_sep__lab.edial.rc.116.voip@loopup.co;received=127.0.0.1:"
             "48114:442357920\r\n"
@@ -1536,7 +1536,7 @@ TEST(validation, Test_RandomStream_Recv_File_1_counts)
                             totalSdpElements += sdpBlock.size();
                             if (sdpBlock.contains("a") && sdpBlock["a"].is_object()) {
                                 totalSdpElements += (sdpBlock["a"].size() - 1);
-                                if (sdpBlock["a"].contains("x-ring2-callowner-login_alias")) {
+                                if (sdpBlock["a"].contains("x-voice-callowner-login_alias")) {
                                     msgHasAlias = true;
                                     totalSdpCallOwnerAlias++;
                                 }
@@ -1604,7 +1604,7 @@ TEST(validation, Test_Mixed_Stream_1_counts)
                             totalSdpElements += sdpBlock.size();
                             if (sdpBlock.contains("a") && sdpBlock["a"].is_object()) {
                                 totalSdpElements += (sdpBlock["a"].size() - 1);
-                                if (sdpBlock["a"].contains("x-ring2-callowner-login_alias")) {
+                                if (sdpBlock["a"].contains("x-voice-callowner-login_alias")) {
                                     msgHasAlias = true;
                                     totalSdpCallOwnerAlias++;
                                 }
@@ -1672,7 +1672,7 @@ TEST(validation, Test_Mixed_Stream_2_counts)
                             totalSdpElements += sdpBlock.size();
                             if (sdpBlock.contains("a") && sdpBlock["a"].is_object()) {
                                 totalSdpElements += (sdpBlock["a"].size() - 1);
-                                if (sdpBlock["a"].contains("x-ring2-callowner-login_alias")) {
+                                if (sdpBlock["a"].contains("x-voice-callowner-login_alias")) {
                                     msgHasAlias = true;
                                     totalSdpCallOwnerAlias++;
                                 }
@@ -1740,7 +1740,7 @@ TEST(validation, Test_Mixed_Stream_3_counts)
                             totalSdpElements += sdpBlock.size();
                             if (sdpBlock.contains("a") && sdpBlock["a"].is_object()) {
                                 totalSdpElements += (sdpBlock["a"].size() - 1);
-                                if (sdpBlock["a"].contains("x-ring2-callowner-login_alias")) {
+                                if (sdpBlock["a"].contains("x-voice-callowner-login_alias")) {
                                     msgHasAlias = true;
                                     totalSdpCallOwnerAlias++;
                                 }

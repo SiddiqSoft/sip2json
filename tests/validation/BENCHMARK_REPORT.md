@@ -44,7 +44,7 @@ The benchmark suite evaluated each library version using 34 anonymized real-worl
 
 *Detailed header and SDP element inspection across multi-message stream fixtures in v2.6.0:*
 
-| File | Messages Received | Total SDP Elements | Avg SDP Elements/Msg | `X-domain` Headers | `X-Seamless` Headers | `X-Call-Instance-ID` | SDP `a=x-ring2-callowner-login_alias` |
+| File | Messages Received | Total SDP Elements | Avg SDP Elements/Msg | `X-domain` Headers | `X-Seamless` Headers | `X-Call-Instance-ID` | SDP `a=x-voice-callowner-login_alias` |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | **`Mixed_Stream_1.sip`** | 18 | 853 | **47.39** | 18 | 0 | 16 | 22 |
 | **`Mixed_Stream_2.sip`** | 9 | 349 | **38.78** | 9 | 0 | 9 | 9 |

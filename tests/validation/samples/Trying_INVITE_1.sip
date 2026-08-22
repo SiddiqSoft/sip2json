@@ -18,7 +18,7 @@ X-Billing-code-required: false
 X-dialout: allowed
 X-project-code: None
 X-subject: Gaaa Caaaaaa'a Maaaaaa Raaa
-x-ring2-callowner-login_alias: jaaaaaaa@aaaaaaaaaaaaaaaa.com
-x-ring2-callsource: 0
+x-voice-callowner-login_alias: jaaaaaaa@aaaaaaaaaaaaaaaa.com
+x-voice-callsource: 0
 Content-Length: 0
 

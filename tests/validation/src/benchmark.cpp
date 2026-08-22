@@ -202,7 +202,7 @@ int main(int argc, char** argv)
                             total_sdp_elements += sdpBlock.size();
                             if (sdpBlock.contains("a") && sdpBlock["a"].is_object()) {
                                 total_sdp_elements += (sdpBlock["a"].size() - 1);
-                                if (sdpBlock["a"].contains("x-ring2-callowner-login_alias")) {
+                                if (sdpBlock["a"].contains("x-voice-callowner-login_alias")) {
                                     sdp_callowner_alias++;
                                 }
                             }
