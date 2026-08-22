@@ -19,14 +19,29 @@ namespace siddiqsoft
     //-------------------------------------------------------------------------
     TEST(RFC3261_Compliance, RequestLine_StandardMethods)
     {
-        const std::vector<std::string_view> rfcMethods = {
-            "INVITE", "ACK", "OPTIONS", "BYE", "CANCEL", "REGISTER",
-            "SUBSCRIBE", "NOTIFY", "REFER", "PUBLISH", "UPDATE", "PRACK", "INFO", "MESSAGE"
-        };
+        const std::vector<std::string_view> rfcMethods = {"INVITE",
+                                                          "ACK",
+                                                          "OPTIONS",
+                                                          "BYE",
+                                                          "CANCEL",
+                                                          "REGISTER",
+                                                          "SUBSCRIBE",
+                                                          "NOTIFY",
+                                                          "REFER",
+                                                          "PUBLISH",
+                                                          "UPDATE",
+                                                          "PRACK",
+                                                          "INFO",
+                                                          "MESSAGE"};
 
         for (auto method : rfcMethods)
         {
-            std::string rawMsg = std::format("{} sip:user@example.com SIP/2.0\r\nVia: SIP/2.0/UDP 192.0.2.1:5060;branch=z9hG4bK123\r\nFrom: <sip:user@example.com>;tag=1\r\nTo: <sip:user@example.com>\r\nCall-ID: test-callid-123\r\nCSeq: 1 {}\r\nContent-Length: 0\r\n\r\n", method, method);
+            std::string rawMsg =
+                    std::format("{} sip:user@example.com SIP/2.0\r\nVia: SIP/2.0/UDP 192.0.2.1:5060;branch=z9hG4bK123\r\nFrom: "
+                                "<sip:user@example.com>;tag=1\r\nTo: <sip:user@example.com>\r\nCall-ID: test-callid-123\r\nCSeq: 1 "
+                                "{}\r\nContent-Length: 0\r\n\r\n",
+                                method,
+                                method);
             auto bs = rawMsg.begin();
 
             sipmessage sipm = sip2json::parseFromBuffer(bs, rawMsg.end());
@@ -42,7 +57,9 @@ namespace siddiqsoft
 
     TEST(RFC3261_Compliance, RequestLine_InvalidVersion_ThrowsException)
     {
-        std::string rawMsg = "INVITE sip:user@example.com SIP/1.0\r\nVia: SIP/2.0/UDP 192.0.2.1:5060;branch=z9hG4bK123\r\nFrom: <sip:user@example.com>;tag=1\r\nTo: <sip:user@example.com>\r\nCall-ID: test-callid-123\r\nCSeq: 1 INVITE\r\nContent-Length: 0\r\n\r\n";
+        std::string rawMsg = "INVITE sip:user@example.com SIP/1.0\r\nVia: SIP/2.0/UDP 192.0.2.1:5060;branch=z9hG4bK123\r\nFrom: "
+                             "<sip:user@example.com>;tag=1\r\nTo: <sip:user@example.com>\r\nCall-ID: test-callid-123\r\nCSeq: 1 "
+                             "INVITE\r\nContent-Length: 0\r\n\r\n";
         auto bs = rawMsg.begin();
 
         EXPECT_THROW(sip2json::parseFromBuffer(bs, rawMsg.end()), invalid_startline_error);
@@ -53,29 +70,32 @@ namespace siddiqsoft
     //-------------------------------------------------------------------------
     TEST(RFC3261_Compliance, StatusLine_StandardResponseCodes)
     {
-        struct TestStatus {
-            uint32_t code;
+        struct TestStatus
+        {
+            uint32_t    code;
             std::string reason;
         };
 
-        const std::vector<TestStatus> statusCases = {
-            {100, "Trying"},
-            {180, "Ringing"},
-            {200, "OK"},
-            {202, "Accepted"},
-            {302, "Moved Temporarily"},
-            {400, "Bad Request"},
-            {401, "Unauthorized"},
-            {404, "Not Found"},
-            {486, "Busy Here"},
-            {500, "Server Internal Error"},
-            {600, "Busy Everywhere"}
-        };
+        const std::vector<TestStatus> statusCases = {{100, "Trying"},
+                                                     {180, "Ringing"},
+                                                     {200, "OK"},
+                                                     {202, "Accepted"},
+                                                     {302, "Moved Temporarily"},
+                                                     {400, "Bad Request"},
+                                                     {401, "Unauthorized"},
+                                                     {404, "Not Found"},
+                                                     {486, "Busy Here"},
+                                                     {500, "Server Internal Error"},
+                                                     {600, "Busy Everywhere"}};
 
         for (const auto& tc : statusCases)
         {
-            std::string rawMsg = std::format("SIP/2.0 {} {}\r\nVia: SIP/2.0/UDP 192.0.2.1:5060;branch=z9hG4bK123\r\nFrom: <sip:user@example.com>;tag=1\r\nTo: <sip:user@example.com>;tag=2\r\nCall-ID: test-callid-123\r\nCSeq: 1 INVITE\r\nContent-Length: 0\r\n\r\n", tc.code, tc.reason);
-            auto bs = rawMsg.begin();
+            std::string rawMsg = std::format("SIP/2.0 {} {}\r\nVia: SIP/2.0/UDP 192.0.2.1:5060;branch=z9hG4bK123\r\nFrom: "
+                                             "<sip:user@example.com>;tag=1\r\nTo: <sip:user@example.com>;tag=2\r\nCall-ID: "
+                                             "test-callid-123\r\nCSeq: 1 INVITE\r\nContent-Length: 0\r\n\r\n",
+                                             tc.code,
+                                             tc.reason);
+            auto        bs     = rawMsg.begin();
 
             sipmessage sipm = sip2json::parseFromBuffer(bs, rawMsg.end());
             EXPECT_TRUE(sipm.isMessageResponse());
@@ -91,7 +111,9 @@ namespace siddiqsoft
     //-------------------------------------------------------------------------
     TEST(RFC3261_Compliance, HeaderFields_CaseInsensitivity)
     {
-        std::string rawMsg = "REGISTER sip:example.com SIP/2.0\r\nvIa: SIP/2.0/UDP 192.0.2.1:5060;branch=z9hG4bK123\r\nfRoM: <sip:user@example.com>;tag=1\r\ntO: <sip:user@example.com>\r\ncALL-id: test-case-123\r\ncsEQ: 1 REGISTER\r\ncONTENT-tYPE: application/sdp\r\ncONTENT-lENGTH: 0\r\n\r\n";
+        std::string rawMsg = "REGISTER sip:example.com SIP/2.0\r\nvIa: SIP/2.0/UDP 192.0.2.1:5060;branch=z9hG4bK123\r\nfRoM: "
+                             "<sip:user@example.com>;tag=1\r\ntO: <sip:user@example.com>\r\ncALL-id: test-case-123\r\ncsEQ: 1 "
+                             "REGISTER\r\ncONTENT-tYPE: application/sdp\r\ncONTENT-lENGTH: 0\r\n\r\n";
         auto bs = rawMsg.begin();
 
         sipmessage sipm = sip2json::parseFromBuffer(bs, rawMsg.end());
@@ -105,7 +127,9 @@ namespace siddiqsoft
     {
         // RFC 3261 compact form header names:
         // v = Via, f = From, t = To, i = Call-ID, c = Content-Type, l = Content-Length, m = Contact
-        std::string rawMsg = "INVITE sip:user@example.com SIP/2.0\r\nv: SIP/2.0/UDP 192.0.2.1:5060;branch=z9hG4bK123\r\nf: <sip:alice@example.com>;tag=1\r\nt: <sip:bob@example.com>\r\ni: compact-callid-999\r\nCSeq: 1 INVITE\r\nm: <sip:alice@192.0.2.1:5060>\r\nc: application/sdp\r\nl: 0\r\n\r\n";
+        std::string rawMsg = "INVITE sip:user@example.com SIP/2.0\r\nv: SIP/2.0/UDP 192.0.2.1:5060;branch=z9hG4bK123\r\nf: "
+                             "<sip:alice@example.com>;tag=1\r\nt: <sip:bob@example.com>\r\ni: compact-callid-999\r\nCSeq: 1 "
+                             "INVITE\r\nm: <sip:alice@192.0.2.1:5060>\r\nc: application/sdp\r\nl: 0\r\n\r\n";
         auto bs = rawMsg.begin();
 
         sipmessage sipm = sip2json::parseFromBuffer(bs, rawMsg.end());
@@ -124,8 +148,14 @@ namespace siddiqsoft
     //-------------------------------------------------------------------------
     TEST(RFC3261_Compliance, MessageBody_SDP_Parsing)
     {
-        std::string sdpBody = "v=0\r\no=alice 2890844526 2890844526 IN IP4 192.0.2.1\r\ns=SDP Seminar\r\nc=IN IP4 192.0.2.1\r\nt=0 0\r\nm=audio 49170 RTP/AVP 0\r\na=rtpmap:0 PCMU/8000\r\n";
-        std::string rawMsg = std::format("INVITE sip:bob@example.com SIP/2.0\r\nVia: SIP/2.0/UDP 192.0.2.1:5060;branch=z9hG4bK123\r\nFrom: <sip:alice@example.com>;tag=1\r\nTo: <sip:bob@example.com>\r\nCall-ID: sdp-body-test\r\nCSeq: 1 INVITE\r\nContent-Type: application/sdp\r\nContent-Length: {}\r\n\r\n{}", sdpBody.length(), sdpBody);
+        std::string sdpBody = "v=0\r\no=alice 2890844526 2890844526 IN IP4 192.0.2.1\r\ns=SDP Seminar\r\nc=IN IP4 192.0.2.1\r\nt=0 "
+                              "0\r\nm=audio 49170 RTP/AVP 0\r\na=rtpmap:0 PCMU/8000\r\n";
+        std::string rawMsg =
+                std::format("INVITE sip:bob@example.com SIP/2.0\r\nVia: SIP/2.0/UDP 192.0.2.1:5060;branch=z9hG4bK123\r\nFrom: "
+                            "<sip:alice@example.com>;tag=1\r\nTo: <sip:bob@example.com>\r\nCall-ID: sdp-body-test\r\nCSeq: 1 "
+                            "INVITE\r\nContent-Type: application/sdp\r\nContent-Length: {}\r\n\r\n{}",
+                            sdpBody.length(),
+                            sdpBody);
         auto bs = rawMsg.begin();
 
         sipmessage sipm = sip2json::parseFromBuffer(bs, rawMsg.end());
@@ -137,12 +167,14 @@ namespace siddiqsoft
 
     TEST(RFC3261_Compliance, MessageBody_UnixLFLineEndings)
     {
-        std::string rawMsg = "REGISTER sip:example.com SIP/2.0\nVia: SIP/2.0/UDP 192.0.2.1:5060;branch=z9hG4bK123\nFrom: <sip:user@example.com>;tag=1\nTo: <sip:user@example.com>\nCall-ID: lf-line-ending-123\nCSeq: 1 REGISTER\nContent-Length: 0\n\n";
+        std::string rawMsg = "REGISTER sip:example.com SIP/2.0\nVia: SIP/2.0/UDP 192.0.2.1:5060;branch=z9hG4bK123\nFrom: "
+                             "<sip:user@example.com>;tag=1\nTo: <sip:user@example.com>\nCall-ID: lf-line-ending-123\nCSeq: 1 "
+                             "REGISTER\nContent-Length: 0\n\n";
         auto bs = rawMsg.begin();
 
         sipmessage sipm = sip2json::parseFromBuffer(bs, rawMsg.end());
         EXPECT_EQ("lf-line-ending-123", sipm.getCallID());
-        EXPECT_EQ("REGISTER", sipm.getMethod());
+        EXPECT_EQ(siddiqsoft::METHOD_REGISTER, sipm.getMethod());
         EXPECT_EQ(0, sipm.getContentLength());
     }
-}
+} // namespace siddiqsoft

@@ -34,7 +34,7 @@
 
 TEST(siphelpers, Test_createRequest)
 {
-    siddiqsoft::sipmessage registerMessage("REGISTER", "sip:hello@world.com", siddiqsoft::createCallId(), 1);
+    siddiqsoft::sipmessage registerMessage(siddiqsoft::METHOD_REGISTER, "sip:hello@world.com", siddiqsoft::createCallId(), 1);
     auto                   diagContents = registerMessage.flatten().dump(2);
 
     EXPECT_TRUE(registerMessage.size() != 0);
@@ -61,7 +61,7 @@ TEST(siphelpers, Test_createRequest_then_response)
 {
     using namespace nlohmann::json_literals;
 
-    siddiqsoft::sipmessage registerMessage("REGISTER", "sip:hello@world.com", siddiqsoft::createCallId(), 1);
+    siddiqsoft::sipmessage registerMessage(siddiqsoft::METHOD_REGISTER, "sip:hello@world.com", siddiqsoft::createCallId(), 1);
 
     EXPECT_TRUE(!registerMessage.value("/h/Date"_json_pointer, std::string {}).empty());
 
@@ -94,7 +94,7 @@ TEST(siphelpers, Test_serialize)
     auto ll       = __LINE__;
     auto myCallId = siddiqsoft::createCallId();
     ll            = __LINE__;
-    siddiqsoft::sipmessage registerMessage("REGISTER", "sip:hello@world.com", myCallId, 1);
+    siddiqsoft::sipmessage registerMessage(siddiqsoft::METHOD_REGISTER, "sip:hello@world.com", myCallId, 1);
 
     ll = __LINE__;
     registerMessage.setHeader(siddiqsoft::HF_TO, "sip:hello@world.com").setHeader(siddiqsoft::HF_CONTACT, "sip:hello@world.com");
@@ -133,7 +133,7 @@ TEST(siphelpers, Test_serialize)
 // NOLINTNEXTLINE
 TEST(siphelpers, Test_serialize_empty_mb_fail)
 {
-    siddiqsoft::sipmessage registerMessage("REGISTER", "sip:hello@world.com", siddiqsoft::createCallId(), 1);
+    siddiqsoft::sipmessage registerMessage(siddiqsoft::METHOD_REGISTER, "sip:hello@world.com", siddiqsoft::createCallId(), 1);
 
     registerMessage.setHeader(siddiqsoft::HF_TO, "sip:hello@world.com")
             .setHeader(siddiqsoft::HF_CONTACT, "sip:hello@world.com")
@@ -146,7 +146,7 @@ TEST(siphelpers, Test_serialize_empty_mb_fail)
 
 TEST(siphelpers, Test_serialize_empty_mb_fail_2)
 {
-    siddiqsoft::sipmessage registerMessage("REGISTER", "sip:hello@world.com", siddiqsoft::createCallId(), 1);
+    siddiqsoft::sipmessage registerMessage(siddiqsoft::METHOD_REGISTER, "sip:hello@world.com", siddiqsoft::createCallId(), 1);
 
     registerMessage.setHeader(
             {{"To", "sip:hello@world.com"}, {"Contact", "sip:hello@world.com"}, {"Content-Type", "application/dummy"}});
@@ -158,7 +158,7 @@ TEST(siphelpers, Test_serialize_empty_mb_fail_2)
 // NOLINTNEXTLINE
 TEST(siphelpers, Test_serialize_empty_mb_valid)
 {
-    siddiqsoft::sipmessage registerMessage("REGISTER", "sip:hello@world.com", siddiqsoft::createCallId(), 1);
+    siddiqsoft::sipmessage registerMessage(siddiqsoft::METHOD_REGISTER, "sip:hello@world.com", siddiqsoft::createCallId(), 1);
 
     registerMessage.setHeader("To", "sip:hello@world.com")
             .setHeader(siddiqsoft::HF_CONTACT, "sip:hello@world.com")
@@ -171,7 +171,7 @@ TEST(siphelpers, Test_serialize_empty_mb_valid)
 
 TEST(siphelpers, Test_serialize_empty_mb_valid_2)
 {
-    siddiqsoft::sipmessage registerMessage("REGISTER", "sip:hello@world.com", siddiqsoft::createCallId(), 1);
+    siddiqsoft::sipmessage registerMessage(siddiqsoft::METHOD_REGISTER, "sip:hello@world.com", siddiqsoft::createCallId(), 1);
 
     registerMessage.setHeader({{"To", "sip:hello@world.com"},
                                {"Contact", "sip:hello@world.com"},
@@ -225,7 +225,7 @@ TEST(siphelpers, Test_empty_mb)
 {
     using namespace nlohmann::json_literals;
 
-    siddiqsoft::sipmessage sipm("REGISTER", "sip:hello@world.com", siddiqsoft::createCallId(), 1);
+    siddiqsoft::sipmessage sipm(siddiqsoft::METHOD_REGISTER, "sip:hello@world.com", siddiqsoft::createCallId(), 1);
 
     sipm.setHeader(siddiqsoft::HF_TO, "sip:hello@world.com")
             .setHeader(siddiqsoft::HF_CONTACT, "sip:hello@world.com")
@@ -243,7 +243,7 @@ TEST(siphelpers, Test_empty_mb)
     // Set some dummy value..
     sipm.setBody("/sdp/0/v"_json_pointer, 0)
             .setBody("/sdp/0/s"_json_pointer, "subject")
-            .setBody("/sdp/0/a/access_code"_json_pointer, "0277777")
+            .setBody("/sdp/0/a/access_code"_json_pointer, "0200007")
             .setBody("/sdp/0/t"_json_pointer, nlohmann::json {100001, 200002});
 
     // Check again for the body. it should be non-null
@@ -267,7 +267,7 @@ TEST(siphelpers, Test_empty_mb_2)
 {
     using namespace nlohmann::json_literals;
 
-    siddiqsoft::sipmessage sipm("REGISTER", "sip:hello@world.com", siddiqsoft::createCallId(), 1);
+    siddiqsoft::sipmessage sipm(siddiqsoft::METHOD_REGISTER, "sip:hello@world.com", siddiqsoft::createCallId(), 1);
 
     sipm.setHeader({{siddiqsoft::HF_TO, "sip:hello@world.com"},
                     {siddiqsoft::HF_CONTACT, "sip:hello@world.com"},
@@ -287,7 +287,7 @@ TEST(siphelpers, Test_empty_mb_2)
                    {{{"v", 0},
                      {"s", "subject"},
                      {"t", {100001, 200002}},
-                     {"a", {{"server", "media-server"}, {"access_code", "0277777"}}}},
+                     {"a", {{"server", "media-server"}, {"access_code", "0200007"}}}},
 
                     {{"v", 0},
                      {"s", "subject-2"},
@@ -306,7 +306,7 @@ TEST(siphelpers, Test_empty_mb_2)
     EXPECT_EQ(100001, sipm.getBodyElement("/sdp/0/t/0"_json_pointer, 0)) << sipm.body().dump(2);
     EXPECT_EQ(200002, sipm.getBodyElement("/sdp/0/t/1"_json_pointer, 0)) << sipm.body().dump(2);
     EXPECT_EQ("media-server", sipm.getBodyElement<std::string>("/sdp/0/a/server"_json_pointer, "")) << sipm.body().dump(2);
-    EXPECT_EQ("0277777", sipm.getBodyElement<std::string>("/sdp/0/a/access_code"_json_pointer, "")) << sipm.body().dump(2);
+    EXPECT_EQ("0200007", sipm.getBodyElement<std::string>("/sdp/0/a/access_code"_json_pointer, "")) << sipm.body().dump(2);
 
     // Check the second sdp
     EXPECT_EQ(0, sipm.getBodyElement("/sdp/1/v"_json_pointer, 99)) << sipm.body().dump(2);
@@ -328,7 +328,7 @@ TEST(siphelpers, Test_empty_mb_2)
 
 TEST(siphelpers, Test_empty_mb_3)
 {
-    siddiqsoft::sipmessage sipm("REGISTER", "sip:hello@world.com", siddiqsoft::createCallId(), 1);
+    siddiqsoft::sipmessage sipm(siddiqsoft::METHOD_REGISTER, "sip:hello@world.com", siddiqsoft::createCallId(), 1);
 
     sipm.setHeader(siddiqsoft::HF_TO, "sip:hello@world.com")
             .setHeader(siddiqsoft::HF_CONTACT, "sip:hello@world.com")
@@ -366,7 +366,7 @@ TEST(siphelpers, Test_empty_mb_3)
                            {{"v", 0},
                             {"s", "subject"},
                             {"t", {100001, 200002}},
-                            {"a", {{"server", "media-server"}, {"access_code", "0277777"}}}},
+                            {"a", {{"server", "media-server"}, {"access_code", "0200007"}}}},
                    }}});
 
     // Check again for the body. it should be non-null
@@ -381,7 +381,7 @@ TEST(siphelpers, Test_empty_mb_3)
     EXPECT_EQ(100001, sipm.getBodyElement("/sdp/0/t/0"_json_pointer, 0)) << sipm.body().dump(2);
     EXPECT_EQ(200002, sipm.getBodyElement("/sdp/0/t/1"_json_pointer, 0)) << sipm.body().dump(2);
     EXPECT_EQ("media-server", sipm.getBodyElement<std::string>("/sdp/0/a/server"_json_pointer, "")) << sipm.body().dump(2);
-    EXPECT_EQ("0277777", sipm.getBodyElement<std::string>("/sdp/0/a/access_code"_json_pointer, "")) << sipm.body().dump(2);
+    EXPECT_EQ("0200007", sipm.getBodyElement<std::string>("/sdp/0/a/access_code"_json_pointer, "")) << sipm.body().dump(2);
     // The field is removed!
     EXPECT_EQ("", sipm.getBodyElement<std::string>("/sdp/0/a/clir"_json_pointer, "")) << sipm.body().dump(2);
 
@@ -399,7 +399,7 @@ TEST(siphelpers, Test_empty_h)
 {
     auto                   callId = siddiqsoft::createCallId();
     std::string            cSeq {};
-    siddiqsoft::sipmessage sipm("REGISTER", "sip:hello@world.com", callId, 1);
+    siddiqsoft::sipmessage sipm(siddiqsoft::METHOD_REGISTER, "sip:hello@world.com", callId, 1);
 
     sipm.setHeader(siddiqsoft::HF_TO, "sip:hello@world.com")
             .setHeader(siddiqsoft::HF_CONTACT, "sip:hello@world.com")
@@ -456,7 +456,7 @@ TEST(siphelpers, Test_empty_message)
 // NOLINTNEXTLINE
 TEST(siphelpers, Test_check_isMessageTypeRequest)
 {
-    siddiqsoft::sipmessage sipm("INVITE", "sip:hello@world.com", siddiqsoft::createCallId(), 1);
+    siddiqsoft::sipmessage sipm(siddiqsoft::METHOD_INVITE, "sip:hello@world.com", siddiqsoft::createCallId(), 1);
 
     EXPECT_TRUE(sipm.size() != 0);
     EXPECT_TRUE(!sipm.value("/h/Date"_json_pointer, std::string {}).empty());
@@ -480,7 +480,7 @@ TEST(siphelpers, Test_check_isMessageTypeResponse)
 // NOLINTNEXTLINE
 TEST(siphelpers, Test_check_getContentType)
 {
-    siddiqsoft::sipmessage sipm("INVITE", "sip:hello@world.com", siddiqsoft::createCallId(), 1);
+    siddiqsoft::sipmessage sipm(siddiqsoft::METHOD_INVITE, "sip:hello@world.com", siddiqsoft::createCallId(), 1);
 
     EXPECT_TRUE(sipm.size() != 0);
     EXPECT_TRUE(!sipm.value("/h/Date"_json_pointer, std::string {}).empty());
@@ -504,7 +504,7 @@ TEST(siphelpers, Test_check_getContentType)
 // NOLINTNEXTLINE
 TEST(siphelpers, Test_header_method)
 {
-    siddiqsoft::sipmessage sipm("REGISTER", "sip:hello@world.com", siddiqsoft::createCallId(), 1);
+    siddiqsoft::sipmessage sipm(siddiqsoft::METHOD_REGISTER, "sip:hello@world.com", siddiqsoft::createCallId(), 1);
 
     sipm.setHeader(siddiqsoft::HF_TO, "sip:hello@world.com")
             .setHeader(siddiqsoft::HF_CONTACT, "sip:hello@world.com")
@@ -518,7 +518,7 @@ TEST(siphelpers, Test_header_method)
 TEST(siphelpers, Test_body_method)
 {
     std::string            iName {"MY_INAME"};
-    siddiqsoft::sipmessage sipm("INVITE", "sip:hello@world.com", siddiqsoft::createCallId(), 1);
+    siddiqsoft::sipmessage sipm(siddiqsoft::METHOD_INVITE, "sip:hello@world.com", siddiqsoft::createCallId(), 1);
 
     sipm.setHeader(siddiqsoft::HF_CONTENT_TYPE, siddiqsoft::CONTENT_TYPE_APP_SDP);
 
@@ -537,7 +537,7 @@ TEST(siphelpers, Test_body_method)
             .setBody("/sdp/0/i/name"_json_pointer, iName)
             .setBody("/sdp/0/i/type"_json_pointer, "CallByPhone-URL")
             .setBody("/sdp/0/i/dn"_json_pointer, "16668661212")
-            .setBody("/sdp/0/a/access_code"_json_pointer, "0277777")
+            .setBody("/sdp/0/a/access_code"_json_pointer, "0200007")
             .setBody("/sdp/0/t"_json_pointer, nlohmann::json {100001, 200002})
             .setBody("/sdp/0/m"_json_pointer, "audio voice");
 

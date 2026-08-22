@@ -66,7 +66,7 @@ TEST(edge_sdp, Test_parse_sdp_body)
     EXPECT_NO_THROW(sipm = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end()));
 
     EXPECT_TRUE(sipm.isMessageRequest());
-    EXPECT_EQ("INVITE", sipm.getMethod());
+    EXPECT_EQ(siddiqsoft::METHOD_INVITE, sipm.getMethod());
     EXPECT_EQ("application/sdp", sipm.getContentType());
 
     EXPECT_TRUE(sipm.contains("/b/sdp"_json_pointer));
@@ -302,7 +302,7 @@ TEST(edge_parsing, Test_lf_only_line_endings)
     EXPECT_EQ("lfonly@client.com", sipm.getCallID());
 }
 
-        
+
 TEST(edge_parsing, Test_incomplete_buffer_for_parse)
 {
     std::string buffer {"SIP/2.0 200 OK\r\n"};
@@ -351,7 +351,7 @@ TEST(edge_parsing, Test_parse_throws_when_nothing_parsed)
 
 TEST(edge_parsing, Test_serialize_via_array)
 {
-    siddiqsoft::sipmessage sipm("INVITE", "sip:bob@biloxi.com", siddiqsoft::createCallId(), 1);
+    siddiqsoft::sipmessage sipm(siddiqsoft::METHOD_INVITE, "sip:bob@biloxi.com", siddiqsoft::createCallId(), 1);
     sipm["h"]["Via"] = nlohmann::json::array({"SIP/2.0/TCP proxy1.com;branch=z9hG4bK1", "SIP/2.0/TCP proxy2.com;branch=z9hG4bK2"});
 
     auto serialized = siddiqsoft::sip2json::serialize(sipm);
@@ -378,7 +378,7 @@ TEST(edge_mutators, Test_setHeader_json_merge)
 
 TEST(edge_mutators, Test_setBody_json_pointer)
 {
-    siddiqsoft::sipmessage sipm("INVITE", "sip:bob@biloxi.com", siddiqsoft::createCallId(), 1);
+    siddiqsoft::sipmessage sipm(siddiqsoft::METHOD_INVITE, "sip:bob@biloxi.com", siddiqsoft::createCallId(), 1);
 
     sipm.setBody("/custom"_json_pointer, "custom_value");
 
@@ -387,7 +387,7 @@ TEST(edge_mutators, Test_setBody_json_pointer)
 
 TEST(edge_mutators, Test_setBody_json_merge)
 {
-    siddiqsoft::sipmessage sipm("INVITE", "sip:bob@biloxi.com", siddiqsoft::createCallId(), 1);
+    siddiqsoft::sipmessage sipm(siddiqsoft::METHOD_INVITE, "sip:bob@biloxi.com", siddiqsoft::createCallId(), 1);
 
     // The request constructor sets "b" to nullptr.
     // setBody(json) checks if "b" exists: if so, it calls at("b").update(arg).

@@ -93,12 +93,12 @@ TEST(stress, Test_parse_1000_requests)
     for (int i = 0; i < 1000; i++)
     {
         auto        callId = std::format("stress-req-{}", i);
-        std::string buffer = makeRequest("INVITE", callId, i + 1);
+        std::string buffer = makeRequest(siddiqsoft::METHOD_INVITE, callId, i + 1);
         auto        bs     = buffer.begin();
 
         siddiqsoft::sipmessage sipm;
         ASSERT_NO_THROW(sipm = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end())) << "Failed at iteration " << i;
-        ASSERT_EQ("INVITE", sipm.getMethod()) << "Method mismatch at iteration " << i;
+        ASSERT_EQ(siddiqsoft::METHOD_INVITE, sipm.getMethod()) << "Method mismatch at iteration " << i;
         ASSERT_EQ(callId, sipm.getCallID()) << "CallID mismatch at iteration " << i;
     }
 }
@@ -123,8 +123,16 @@ TEST(stress, Test_parse_1000_responses)
 
 TEST(stress, Test_serialize_1000_messages)
 {
-    std::vector<std::string> methods = {
-            "INVITE", "ACK", "OPTIONS", "BYE", "CANCEL", "REGISTER", "SUBSCRIBE", "NOTIFY", "MESSAGE", "INFO"};
+    std::vector<std::string> methods = {siddiqsoft::METHOD_INVITE,
+                                        "ACK",
+                                        "OPTIONS",
+                                        "BYE",
+                                        "CANCEL",
+                                        siddiqsoft::METHOD_REGISTER,
+                                        "SUBSCRIBE",
+                                        "NOTIFY",
+                                        "MESSAGE",
+                                        "INFO"};
 
     for (int i = 0; i < 1000; i++)
     {
@@ -152,7 +160,7 @@ TEST(stress, Test_roundtrip_100_requests)
     for (int i = 0; i < 100; i++)
     {
         auto        callId = std::format("rt-{}", i);
-        std::string buffer = makeRequest("REGISTER", callId, i + 1);
+        std::string buffer = makeRequest(siddiqsoft::METHOD_REGISTER, callId, i + 1);
         auto        bs     = buffer.begin();
 
         // Parse
@@ -199,7 +207,7 @@ TEST(stress, Test_roundtrip_sdp_50_messages)
                                    49170 + i);
 
         auto callId = std::format("sdp-rt-{}", i);
-        auto buffer = makeRequest("INVITE", callId, i + 1, "application/sdp", sdpBody);
+        auto buffer = makeRequest(siddiqsoft::METHOD_INVITE, callId, i + 1, "application/sdp", sdpBody);
         auto bs     = buffer.begin();
 
         // Parse
@@ -254,9 +262,17 @@ TEST(stress, Test_parseAsync_20_concatenated_messages)
 
 TEST(stress, Test_parseAsync_mixed_methods_10)
 {
-    std::vector<std::string> methods = {
-            "INVITE", "ACK", "BYE", "CANCEL", "OPTIONS", "REGISTER", "SUBSCRIBE", "NOTIFY", "MESSAGE", "INFO"};
-    std::string buffer;
+    std::vector<std::string> methods = {siddiqsoft::METHOD_INVITE,
+                                        "ACK",
+                                        "BYE",
+                                        "CANCEL",
+                                        "OPTIONS",
+                                        siddiqsoft::METHOD_REGISTER,
+                                        "SUBSCRIBE",
+                                        "NOTIFY",
+                                        "MESSAGE",
+                                        "INFO"};
+    std::string              buffer;
 
     for (int i = 0; i < 10; i++)
     {

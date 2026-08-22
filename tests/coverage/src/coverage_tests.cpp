@@ -230,7 +230,7 @@ TEST(coverage_parsing, Test_parse_vector_single_message)
 
     EXPECT_EQ(1, msgs.size());
     EXPECT_TRUE(msgs[0].isMessageRequest());
-    EXPECT_EQ("REGISTER", msgs[0].getMethod());
+    EXPECT_EQ(siddiqsoft::METHOD_REGISTER, msgs[0].getMethod());
     EXPECT_EQ(7200, msgs[0].getExpires());
 }
 
@@ -296,7 +296,7 @@ TEST(coverage_parsing, Test_parseAsync_multiple_messages)
 
     EXPECT_EQ(2, parseCount);
     EXPECT_EQ(0, remaining.length());
-    EXPECT_EQ("INVITE", methods[0]);
+    EXPECT_EQ(siddiqsoft::METHOD_INVITE, methods[0]);
     EXPECT_EQ("ACK", methods[1]);
 }
 
@@ -389,8 +389,20 @@ TEST(coverage_parsing, Test_folded_headers_tab)
 
 TEST(coverage_parsing, Test_all_supported_methods)
 {
-    std::vector<std::string> methods = {
-            "INVITE", "ACK", "OPTIONS", "BYE", "CANCEL", "REGISTER", "SUBSCRIBE", "NOTIFY", "MESSAGE", "INFO", "REFER", "PUBLISH", "UPDATE", "PRACK"};
+    std::vector<std::string> methods = {"INVITE",
+                                        "ACK",
+                                        "OPTIONS",
+                                        "BYE",
+                                        "CANCEL",
+                                        siddiqsoft::METHOD_REGISTER,
+                                        "SUBSCRIBE",
+                                        "NOTIFY",
+                                        "MESSAGE",
+                                        "INFO",
+                                        "REFER",
+                                        "PUBLISH",
+                                        "UPDATE",
+                                        "PRACK"};
 
     for (const auto& method : methods)
     {
@@ -422,8 +434,7 @@ TEST(coverage_parsing, Test_all_supported_methods)
 
 TEST(coverage_parsing, Test_custom_method_tokens_rejected)
 {
-    std::vector<std::string> customTokens = {
-            "CUSTOMMETHOD", "FOOBAR", "BENCHMARK", "HEARTBEAT", "GET", "POST", "UNKNOWN"};
+    std::vector<std::string> customTokens = {"CUSTOMMETHOD", "FOOBAR", "BENCHMARK", "HEARTBEAT", "GET", "POST", "UNKNOWN"};
 
     for (const auto& customMethod : customTokens)
     {
@@ -448,8 +459,7 @@ TEST(coverage_parsing, Test_custom_method_tokens_rejected)
 
 TEST(coverage_serialization, Test_custom_method_tokens_serialize_rejected)
 {
-    std::vector<std::string> customTokens = {
-            "CUSTOMMETHOD", "FOOBAR", "BENCHMARK", "HEARTBEAT", "GET", "POST", "UNKNOWN"};
+    std::vector<std::string> customTokens = {"CUSTOMMETHOD", "FOOBAR", "BENCHMARK", "HEARTBEAT", "GET", "POST", "UNKNOWN"};
 
     for (const auto& customMethod : customTokens)
     {
@@ -462,8 +472,8 @@ TEST(coverage_serialization, Test_custom_method_tokens_serialize_rejected)
 
 TEST(coverage_sipmessage, Test_string_view_accessors)
 {
-    siddiqsoft::sipmessage req("INVITE", "sip:alice@example.com", "callid-view-100", 1);
-    EXPECT_EQ("INVITE", req.getMethodView());
+    siddiqsoft::sipmessage req(siddiqsoft::METHOD_INVITE, "sip:alice@example.com", "callid-view-100", 1);
+    EXPECT_EQ(siddiqsoft::METHOD_INVITE, req.getMethodView());
     EXPECT_EQ("sip:alice@example.com", req.getUriView());
     EXPECT_EQ("callid-view-100", req.getCallIDView());
 
@@ -525,7 +535,7 @@ TEST(coverage_errors, Test_parseAsync_unsupported_contenttype_callback)
     bool                       errorCaught = false;
     siddiqsoft::sip2jsonErrors caughtError = siddiqsoft::sip2jsonErrors::ok;
 
-    auto _= siddiqsoft::sip2json::parseAsync(
+    auto _ = siddiqsoft::sip2json::parseAsync(
             buffer,
             [](auto&&) { },
             [&](const siddiqsoft::sip2json_exception& e, std::string::iterator&, const std::string::iterator&)
@@ -569,7 +579,7 @@ TEST(coverage_errors, Test_parseAsync_incomplete_content_callback)
 
 TEST(coverage_errors, Test_missing_required_sdp_element)
 {
-    siddiqsoft::sipmessage sipm("INVITE", "sip:bob@biloxi.com", siddiqsoft::createCallId(), 1);
+    siddiqsoft::sipmessage sipm(siddiqsoft::METHOD_INVITE, "sip:bob@biloxi.com", siddiqsoft::createCallId(), 1);
     sipm.setHeader(siddiqsoft::HF_CONTENT_TYPE, siddiqsoft::CONTENT_TYPE_APP_SDP);
 
     sipm["b"]["sdp"][0]["x"] = "incomplete";
@@ -596,11 +606,11 @@ TEST(coverage_errors, Test_sip2json_exception_from_std_exception)
 TEST(coverage_sipmessage, Test_move_constructor)
 {
     auto                   callId = siddiqsoft::createCallId();
-    siddiqsoft::sipmessage original("INVITE", "sip:bob@biloxi.com", callId, 1);
+    siddiqsoft::sipmessage original(siddiqsoft::METHOD_INVITE, "sip:bob@biloxi.com", callId, 1);
 
     siddiqsoft::sipmessage moved(std::move(original));
 
-    EXPECT_EQ("INVITE", moved.getMethod());
+    EXPECT_EQ(siddiqsoft::METHOD_INVITE, moved.getMethod());
     EXPECT_EQ("sip:bob@biloxi.com", moved.getUri());
     EXPECT_EQ(callId, moved.getCallID());
 }
@@ -676,7 +686,7 @@ TEST(coverage_sipmessage, Test_accessors)
 
 TEST(coverage_sipmessage, Test_getExpires)
 {
-    siddiqsoft::sipmessage sipm("REGISTER", "sip:registrar.com", "reg123", 1);
+    siddiqsoft::sipmessage sipm(siddiqsoft::METHOD_REGISTER, "sip:registrar.com", "reg123", 1);
     sipm.setHeader(siddiqsoft::HF_EXPIRES, 3600);
 
     EXPECT_EQ(3600, sipm.getExpires());
@@ -685,20 +695,20 @@ TEST(coverage_sipmessage, Test_getExpires)
 
 TEST(coverage_sipmessage, Test_flatten)
 {
-    siddiqsoft::sipmessage sipm("INVITE", "sip:bob@biloxi.com", "flatten123", 1);
+    siddiqsoft::sipmessage sipm(siddiqsoft::METHOD_INVITE, "sip:bob@biloxi.com", "flatten123", 1);
     sipm.setHeader(siddiqsoft::HF_TO, "sip:bob@biloxi.com");
 
     auto flattened = sipm.flatten();
 
     EXPECT_TRUE(flattened.contains("/s/method"));
     EXPECT_TRUE(flattened.contains("/h/Call-ID"));
-    EXPECT_EQ("INVITE", flattened["/s/method"].get<std::string>());
+    EXPECT_EQ(siddiqsoft::METHOD_INVITE, flattened["/s/method"].get<std::string>());
 }
 
 
 TEST(coverage_sipmessage, Test_response_from_request)
 {
-    siddiqsoft::sipmessage request("INVITE", "sip:bob@biloxi.com", "invite-callid-123", 1);
+    siddiqsoft::sipmessage request(siddiqsoft::METHOD_INVITE, "sip:bob@biloxi.com", "invite-callid-123", 1);
     request.setHeader(siddiqsoft::HF_TO, "sip:bob@biloxi.com");
     request.setHeader(siddiqsoft::HF_FROM, "sip:alice@atlanta.com");
     request.setHeader(siddiqsoft::HF_VIA, "SIP/2.0/TCP pc33.atlanta.com");
@@ -785,8 +795,16 @@ TEST(coverage_serialize, Test_serialize_response)
 
 TEST(coverage_serialize, Test_serialize_all_methods)
 {
-    std::vector<std::string> methods = {
-            "INVITE", "ACK", "OPTIONS", "BYE", "CANCEL", "REGISTER", "SUBSCRIBE", "NOTIFY", "MESSAGE", "INFO"};
+    std::vector<std::string> methods = {siddiqsoft::METHOD_INVITE,
+                                        "ACK",
+                                        "OPTIONS",
+                                        "BYE",
+                                        "CANCEL",
+                                        siddiqsoft::METHOD_REGISTER,
+                                        "SUBSCRIBE",
+                                        "NOTIFY",
+                                        "MESSAGE",
+                                        "INFO"};
 
     for (const auto& method : methods)
     {

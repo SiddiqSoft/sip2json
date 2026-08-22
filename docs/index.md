@@ -64,7 +64,7 @@
     int main()
     {
         // Construct SIP INVITE request
-        sipmessage msg("INVITE", "sip:user@example.com", "call-8849-xyz", 1);
+        sipmessage msg(siddiqsoft::METHOD_INVITE, "sip:user@example.com", "call-8849-xyz", 1);
         
         msg.setHeader(siddiqsoft::HF_FROM, "sip:caller@example.com")
            .setHeader(siddiqsoft::HF_TO, "sip:user@example.com")

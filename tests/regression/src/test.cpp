@@ -284,7 +284,7 @@ TEST(Issue32_HeaderRefactoring, ModularHeaderIntegrity)
 
     // Test 1: Verify sipmessage creation and status mapping via private response codes header
     sipmessage req(METHOD_INVITE, "sip:alice@atlanta.com", "issue32-call-id", 1);
-    EXPECT_EQ("INVITE", req.getMethod());
+    EXPECT_EQ(siddiqsoft::METHOD_INVITE, req.getMethod());
     EXPECT_EQ("sip:alice@atlanta.com", req.getUri());
     EXPECT_EQ("issue32-call-id", req.getCallID());
 
@@ -337,7 +337,7 @@ TEST(Issue32_HeaderRefactoring, PrivateSDPAndAsyncParserExecution)
             [&parsedCount](sipmessage&& msg)
             {
                 parsedCount++;
-                EXPECT_EQ("INVITE", msg.getMethod());
+                EXPECT_EQ(siddiqsoft::METHOD_INVITE, msg.getMethod());
                 EXPECT_EQ("a84b4c76e66710@pc33.atlanta.com", msg.getCallID());
                 EXPECT_TRUE(msg.contains("b"));
                 EXPECT_TRUE(msg.contains("/b/sdp"_json_pointer));

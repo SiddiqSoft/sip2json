@@ -11,7 +11,7 @@ using namespace siddiqsoft;
 int main()
 {
     // 1. Construct INVITE Request
-    sipmessage msg("INVITE", "sip:bob@example.com", "call-id-99812", 42);
+    sipmessage msg(siddiqsoft::METHOD_INVITE, "sip:bob@example.com", "call-id-99812", 42);
 
     // 2. Set Headers using fluent method chaining
     msg.setHeader(siddiqsoft::HF_FROM, "sip:alice@example.com;tag=a831")

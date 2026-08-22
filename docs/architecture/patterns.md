@@ -9,7 +9,7 @@
 The `sipmessage` class supports method chaining for configuring headers, start lines, and content:
 
 ```cpp
-sipmessage msg("INVITE", "sip:alice@example.com", "call-id-100", 1);
+sipmessage msg(siddiqsoft::METHOD_INVITE, "sip:alice@example.com", "call-id-100", 1);
 
 msg.setHeader(siddiqsoft::HF_FROM, "sip:bob@example.com")
    .setHeader(siddiqsoft::HF_TO, "sip:alice@example.com")
