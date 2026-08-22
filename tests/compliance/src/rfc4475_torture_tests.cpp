@@ -21,34 +21,64 @@ namespace siddiqsoft
 {
     static std::string loadRfc4475File(const std::string& fileName)
     {
+        std::string rawData;
         if (auto env_samples_dir = std::getenv("SAMPLES_DIR"); env_samples_dir != nullptr)
         {
             std::filesystem::path p = std::filesystem::path(env_samples_dir) / "rfc4475" / fileName;
             if (std::filesystem::exists(p))
             {
                 std::ifstream f(p, std::ios::binary);
-                return std::string((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>());
+                rawData = std::string((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>());
             }
         }
 
-        auto cwd = std::filesystem::current_path();
-        std::vector<std::filesystem::path> candidates;
-        for (auto cur = cwd; !cur.empty() && cur != cur.root_path(); cur = cur.parent_path())
+        if (rawData.empty())
         {
-            candidates.push_back(cur / "samples" / "rfc4475" / fileName);
-            candidates.push_back(cur / "tests" / "compliance" / "samples" / "rfc4475" / fileName);
-            candidates.push_back(cur / "tests" / "validation" / "samples" / "rfc4475" / fileName);
-        }
-
-        for (const auto& cand : candidates)
-        {
-            if (std::filesystem::exists(cand))
+            auto cwd = std::filesystem::current_path();
+            std::vector<std::filesystem::path> candidates;
+            for (auto cur = cwd; !cur.empty() && cur != cur.root_path(); cur = cur.parent_path())
             {
-                std::ifstream f(cand, std::ios::binary);
-                return std::string((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>());
+                candidates.push_back(cur / "samples" / "rfc4475" / fileName);
+                candidates.push_back(cur / "tests" / "compliance" / "samples" / "rfc4475" / fileName);
+                candidates.push_back(cur / "tests" / "validation" / "samples" / "rfc4475" / fileName);
+            }
+
+            for (const auto& cand : candidates)
+            {
+                if (std::filesystem::exists(cand))
+                {
+                    std::ifstream f(cand, std::ios::binary);
+                    rawData = std::string((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>());
+                    break;
+                }
             }
         }
-        throw std::runtime_error("Cannot locate RFC 4475 sample file: " + fileName);
+
+        if (rawData.empty())
+        {
+            throw std::runtime_error("Cannot locate RFC 4475 sample file: " + fileName);
+        }
+
+        // Restore bit-exact CRLF line endings if Git normalized \r\n to \n on Unix/Linux checkouts
+        if (rawData.find("\r\n") == std::string::npos && rawData.find('\n') != std::string::npos)
+        {
+            std::string crlfData;
+            crlfData.reserve(rawData.size() + 50);
+            for (size_t i = 0; i < rawData.size(); ++i)
+            {
+                if (rawData[i] == '\n' && (i == 0 || rawData[i - 1] != '\r'))
+                {
+                    crlfData += "\r\n";
+                }
+                else
+                {
+                    crlfData += rawData[i];
+                }
+            }
+            return crlfData;
+        }
+
+        return rawData;
     }
 
     //-------------------------------------------------------------------------
