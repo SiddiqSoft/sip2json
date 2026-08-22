@@ -53,7 +53,7 @@ resources:
 parameters:
   - name: Architectures
     type: stringList
-    default: [ arm64 ]
+    default: [ arm64, x64 ]
     values: [ arm64, x64 ]
     displayName: "Architectures to build (x64, arm64)"
   
