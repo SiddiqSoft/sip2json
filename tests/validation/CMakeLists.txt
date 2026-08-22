@@ -36,13 +36,27 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# ____________________________________
-# Ensure target sip2json::sip2json exists (use parent project target if available, or load parent project if building standalone)
-if(NOT TARGET sip2json::sip2json)
-    if(TARGET sip2json)
-        add_library(sip2json::sip2json ALIAS sip2json)
-    elseif(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../../CMakeLists.txt")
-        add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/../.." "${CMAKE_CURRENT_BINARY_DIR}/sip2json")
+# Option to select sip2json version for testing/benchmarking: 'current' (default) or tag/version like '1.17.1', '2.4.2', '2.5.7', '2.5.8'
+set(SIP2JSON_VERSION "current" CACHE STRING "Version/tag of sip2json to benchmark (e.g. 'current', '1.17.1', '2.4.2', '2.5.7', '2.5.8')")
+
+if(NOT SIP2JSON_VERSION STREQUAL "current" AND NOT SIP2JSON_VERSION STREQUAL "")
+    message(STATUS "tests/validation - Fetching sip2json dependency version '${SIP2JSON_VERSION}' via CPM...")
+    CPMAddPackage(
+        NAME sip2json
+        GITHUB_REPOSITORY SiddiqSoft/sip2json
+        VERSION ${SIP2JSON_VERSION}
+        GIT_TAG ${SIP2JSON_VERSION}
+        OPTIONS "sip2json_BUILD_TESTS OFF" "BUILD_TESTS OFF"
+    )
+else()
+    # ____________________________________
+    # Ensure target sip2json::sip2json exists (use parent project target if available, or load parent project if building standalone)
+    if(NOT TARGET sip2json::sip2json)
+        if(TARGET sip2json)
+            add_library(sip2json::sip2json ALIAS sip2json)
+        elseif(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../../CMakeLists.txt")
+            add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/../.." "${CMAKE_CURRENT_BINARY_DIR}/sip2json")
+        endif()
     endif()
 endif()
 

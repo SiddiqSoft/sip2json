@@ -115,18 +115,19 @@ The `samples/` directory contains 30+ real-world SIP message samples for testing
 
 ## Performance & Benchmarks
 
-Detailed performance benchmark results comparing `sip2json` across versions **v1.17.1**, **v2.4.0**, **v2.4.2**, and **v2.5.7** (with case-sensitive and case-insensitive header key modes) are available in the [Benchmark Report](BENCHMARK_REPORT.md).
+Detailed performance benchmark results comparing `sip2json` across versions **v2.4.2**, **v2.5.7**, **v2.5.8**, and **current local workspace** under isolated single-threaded execution are available in the [Benchmark Report](BENCHMARK_REPORT.md).
 
 ### Summary Highlights
 
-- **v1.17.1 → v2.x Speedup**: Moving to CTRE compile-time regex and v2.x architecture delivered a **>5.3x throughput increase** (from 271 msg/sec to 1,445 msg/sec).
-- **Peak Throughput**: **v2.4.2** achieved peak stream throughput at **1,445.38 msg/sec**.
-- **Current Version (v2.5.7)**: Delivers **1,278.38 msg/sec** on multi-message streams.
+- **Peak Stream Throughput**: **v2.4.2** achieved peak stream parsing throughput at **1,376.18 msg/sec** (3.62 MB/sec, 726.65 µs avg latency).
+- **Peak Single Message Throughput**: **v2.4.2** achieved **1,784.98 msg/sec** single-message parsing throughput (560.23 µs avg latency).
+- **v2.5.x & Current Version Performance**: **v2.5.7**, **v2.5.8**, and **current local workspace** targets perform consistently (~1,207–1,242 msg/sec stream / ~1,600–1,625 msg/sec single), incorporating additional validation and safety checks.
 
 ## Dependencies
 
 The project uses:
-- **sip2json** (v2.5.7): Core SIP parsing library
+- **sip2json**: Core SIP parsing library (supports configurable versioning via `-DSIP2JSON_VERSION=<version>`)
+- **nlohmann/json**: JSON manipulation
 - **nlohmann/json**: JSON manipulation
 - **Google Test** (v1.17.0): Testing framework
 

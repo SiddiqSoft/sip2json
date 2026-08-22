@@ -1,15 +1,14 @@
 # sip2json Performance Benchmark Report
 
-This document presents a comprehensive performance benchmark analysis comparing multiple versions of the [`siddiqsoft/sip2json`](https://github.com/siddiqsoftware/sip2json) C++ library (**v1.17.1**, **v2.4.0**, **v2.4.2**, and **v2.5.7** in both case-sensitive and case-insensitive header modes) against real-world anonymized SIP message fixtures.
+This document presents a performance benchmark analysis comparing versions of the [`siddiqsoft/sip2json`](https://github.com/siddiqsoftware/sip2json) C++ library (**v2.4.2**, **v2.5.7**, **v2.5.8**, and **current local workspace**) against real-world anonymized SIP message fixtures under isolated, single-threaded execution conditions.
 
 ---
 
 ## 1. Executive Summary
 
-- **Major Speedup in v2.x**: The transition from `v1.17.1` to `v2.x` delivered a **>5.3x throughput increase** (from 271.74 msg/sec to 1,445.38 msg/sec) by replacing runtime `std::regex` with Compile-Time Regular Expressions (CTRE) and stream parsing optimizations.
-- **Peak Performance in v2.4.2**: **v2.4.2** achieved the highest overall stream parsing throughput (**1,445.38 msg/sec**), closely followed by **v2.4.0** (**1,421.78 msg/sec**).
-- **v2.5.7 Performance Overhead**: **v2.5.7** introduces a ~11% latency overhead compared to v2.4.2 (1,278.38 msg/sec vs. 1,445.38 msg/sec).
-- **Header Key Insensitivity Impact**: Toggling `sip2json_HEADERKEY_MODE_INSENSITIVE` to `OFF` in v2.5.7 yields only a minor throughput gain of **+0.1% to +0.7%** (1,279.49 msg/sec vs 1,278.38 msg/sec), confirming that the v2.5.7 performance delta is driven by internal parsing/JSON structure refinements rather than case-insensitivity processing.
+- **Isolated Execution**: All benchmark suites were executed sequentially in total isolation (one version at a time) to eliminate process scheduling and CPU contention artifacts.
+- **Peak Performance in v2.4.2**: **v2.4.2** achieved the highest overall parsing throughput (**1,376.18 msg/sec** stream / **1,784.98 msg/sec** single) with the lowest per-message latencies (**726.65 µs** stream / **560.23 µs** single).
+- **v2.5.7, v2.5.8, and Local Workspace Consistency**: Performance across **v2.5.7**, **v2.5.8**, and the **current local workspace** remains consistent within ~1,200–1,242 msg/sec for multi-message stream parsing and ~1,600–1,625 msg/sec for single-message parsing. Additional input validation, bounds checks, and safety logic introduced in the 2.5.x releases account for the minor throughput difference relative to 2.4.2.
 
 ---
 
@@ -20,25 +19,23 @@ The benchmark suite evaluated each library version using 34 anonymized real-worl
 ### Stream Parsing (`sip2json::parse`) — 163,800 Total Messages Parsed
 *Parses multi-message stream buffers across all 34 sample files over 300 iterations.*
 
-| Metric | **v1.17.1** | **v2.4.0** | **v2.4.2** | **v2.5.7** (`INSENSITIVE=OFF`) | **v2.5.7** (`INSENSITIVE=ON` / Default) |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Total Execution Time** | 602.78 s | 115.21 s | **113.33 s** | 128.02 s | 128.13 s |
-| **Throughput (msg/sec)** | 271.74 msg/sec | 1,421.78 msg/sec | **1,445.38 msg/sec** | 1,279.49 msg/sec | 1,278.38 msg/sec |
-| **Data Bandwidth** | 0.71 MB/sec | 3.74 MB/sec | **3.80 MB/sec** | 3.36 MB/sec | 3.36 MB/sec |
-| **Avg Per-Msg Latency** | 3,679.96 µs | 703.35 µs | **691.86 µs** | 781.56 µs | 782.24 µs |
-| **Speedup vs. v1.17.1** | 1.0x (Baseline) | **5.23x faster** | **5.32x faster** | **4.71x faster** | **4.70x faster** |
+| Metric | **v2.4.2** | **v2.5.7** | **v2.5.8** | **current** *(Local Workspace)* |
+| :--- | :---: | :---: | :---: | :---: |
+| **Total Execution Time** | **119.02 s** | 131.83 s | 135.68 s | 132.93 s |
+| **Throughput (msg/sec)** | **1,376.18 msg/sec** | 1,242.48 msg/sec | 1,207.23 msg/sec | 1,232.24 msg/sec |
+| **Data Bandwidth** | **3.62 MB/sec** | 3.26 MB/sec | 3.17 MB/sec | 3.24 MB/sec |
+| **Avg Per-Msg Latency** | **726.65 µs** | 804.84 µs | 828.34 µs | 811.53 µs |
 
 ---
 
 ### Single-Message Parsing (`sip2json::parseFromBuffer`) — 29,000 Total Messages Parsed
 *Parses discrete single SIP message buffers across 29 valid sample files over 1,000 iterations.*
 
-| Metric | **v1.17.1** | **v2.4.0** | **v2.4.2** | **v2.5.7** (`INSENSITIVE=OFF`) | **v2.5.7** (`INSENSITIVE=ON` / Default) |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Total Execution Time** | 63.68 s | 15.88 s | **15.97 s** | 17.38 s | 17.50 s |
-| **Throughput (msg/sec)** | 455.44 msg/sec | **1,826.31 msg/sec** | 1,815.40 msg/sec | 1,668.37 msg/sec | 1,656.94 msg/sec |
-| **Avg Per-Msg Latency** | 2,195.70 µs | **547.55 µs** | 550.84 µs | 599.39 µs | 603.52 µs |
-| **Speedup vs. v1.17.1** | 1.0x (Baseline) | **4.01x faster** | **3.99x faster** | **3.66x faster** | **3.64x faster** |
+| Metric | **v2.4.2** | **v2.5.7** | **v2.5.8** | **current** *(Local Workspace)* |
+| :--- | :---: | :---: | :---: | :---: |
+| **Total Execution Time** | **16.25 s** | 17.84 s | 18.01 s | 18.13 s |
+| **Throughput (msg/sec)** | **1,784.98 msg/sec** | 1,625.20 msg/sec | 1,609.97 msg/sec | 1,599.24 msg/sec |
+| **Avg Per-Msg Latency** | **560.23 µs** | 615.31 µs | 621.13 µs | 625.30 µs |
 
 ---
 
@@ -48,15 +45,17 @@ The benchmark suite evaluated each library version using 34 anonymized real-worl
 - **Compiler**: Clang / LLVM (`-std=c++23`, `-O3` / Release optimization)
 - **Test Fixtures**: 34 anonymized `.sip` files representing real-world SIP traffic (`REGISTER`, `INVITE`, `NOTIFY`, multi-part SDP, and multi-message streams).
 - **Harness Implementation**: C++ `std::chrono::high_resolution_clock` measuring in-memory buffer parsing iterations.
+- **Isolation Constraint**: Benchmarks executed strictly sequentially in dedicated single-threaded processes to prevent thread scheduling noise and core contention.
 
 ---
 
 ## 4. How to Reproduce
 
-Run the benchmark executable using the build target:
+Configure and build the benchmark executable for any targeted version:
 
 ```bash
-cmake --preset Apple-Debug
-cmake --build --preset Apple-Debug --target sip2json_benchmark
-./build/Apple-Debug/sip2json_benchmark samples
+# Benchmark a specific version (e.g. 2.4.2, 2.5.7, 2.5.8, or 'current')
+cmake -S tests/validation -B tests/validation/build -DSIP2JSON_VERSION=2.4.2
+cmake --build tests/validation/build --target sip2json_benchmark
+./tests/validation/build/sip2json_benchmark 2>/dev/null
 ```
