@@ -115,13 +115,13 @@ The `samples/` directory contains 30+ real-world SIP message samples for testing
 
 ## Performance & Benchmarks
 
-Detailed performance benchmark results comparing `sip2json` across versions **v2.4.2**, **v2.5.7**, **v2.5.8**, and **current local workspace** under isolated single-threaded execution are available in the [Benchmark Report](BENCHMARK_REPORT.md).
+Detailed performance benchmark results comparing `sip2json` across versions **v2.4.2**, **v2.5.7**, **v2.5.8**, and **v2.6.0** under isolated single-threaded execution are available in the [Benchmark Report](BENCHMARK_REPORT.md).
 
-### Summary Highlights
+### Summary Highlights (v2.6.0 vs v2.4.2)
 
-- **Peak Stream Throughput**: **v2.4.2** achieved peak stream parsing throughput at **1,376.18 msg/sec** (3.62 MB/sec, 726.65 µs avg latency).
-- **Peak Single Message Throughput**: **v2.4.2** achieved **1,784.98 msg/sec** single-message parsing throughput (560.23 µs avg latency).
-- **v2.5.x & Current Version Performance**: **v2.5.7**, **v2.5.8**, and **current local workspace** targets perform consistently (~1,207–1,242 msg/sec stream / ~1,600–1,625 msg/sec single), incorporating additional validation and safety checks.
+- **Stream Parsing Throughput**: **17,448.26 msg/sec** (45.85 MB/sec, 57.31 µs avg latency) vs v2.4.2 baseline of 1,376.18 msg/sec (**12.7x speedup**).
+- **Single-Message Parsing Throughput**: **19,737.79 msg/sec** (50.66 µs avg latency) vs v2.4.2 baseline of 1,784.98 msg/sec (**11.1x speedup**).
+- **Key Architectural Improvements**: Zero-copy header key canonicalization via `HeaderKeySet`, fast-path line parsing with string views, memory allocation reuse, and `std::format` serialization.
 
 ## Dependencies
 
