@@ -94,6 +94,16 @@ If using CPM package manager on Windows, relocate the cache directory closer to 
 set(CPM_SOURCE_CACHE "C:/cpmcache" CACHE PATH "CPM Cache Directory")
 ```
 
+### 4. MSVC Template Instantiation Depth (`/templateDepth:4096`)
+
+CTRE evaluates regular expression state machines during compilation. To prevent MSVC `error C2999: maximum template instantiation depth of 1000 exceeded`, `sip2json` exports `/templateDepth:4096` on its interface target. If consuming custom builds on MSVC, ensure `/templateDepth:4096` is set in your target compile options:
+
+```cmake
+if(MSVC)
+    target_compile_options(your_target PRIVATE /templateDepth:4096)
+endif()
+```
+
 ---
 
 ## Building & Previewing Documentation Locally
