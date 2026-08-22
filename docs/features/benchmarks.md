@@ -10,12 +10,12 @@
 
 | Metric | **v2.4.2 Release Tag** | **master Branch** | **v2.6.0 Current (`parse`)** | **v2.6.0 Current (`parseAsync`)** | **Speedup vs v2.4.2** |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Stream Throughput** | **21,394.49 msg/s** | **19,043.79 msg/s** | **34,653.48 msg/s** | **35,541.38 msg/s** | **+66.1% FASTER** |
-| Stream Execution Time | 7.68 s | 8.63 s | 4.74 s | **4.63 s** | **-39.7% Time** |
-| Processing Bandwidth | 56.39 MB/s | 50.19 MB/s | 90.78 MB/s | **93.67 MB/s** | **+37.28 MB/s** |
-| Avg Per-Msg Latency | 46.74 µs | 52.51 µs | 28.86 µs | **28.14 µs** | **-18.60 µs/msg** |
-| **Single Message (`parseFromBuffer`)** | **24,770.67 msg/s** | **23,256.49 msg/s** | **41,527.70 msg/s** | **41,527.70 msg/s** | **+67.6% FASTER** |
-| Single-Msg Latency | 40.37 µs | 43.00 µs | **24.08 µs** | **24.08 µs** | **-16.29 µs/msg** |
+| **Stream Throughput** | **21,394.49 msg/s** | **19,043.79 msg/s** | **36,292.77 msg/s** | **37,260.49 msg/s** | **+74.4% FASTER** |
+| Stream Execution Time | 7.68 s | 8.63 s | 4.53 s | **4.41 s** | **-42.6% Time** |
+| Processing Bandwidth | 56.39 MB/s | 50.19 MB/s | 95.08 MB/s | **98.20 MB/s** | **+41.81 MB/s** |
+| Avg Per-Msg Latency | 46.74 µs | 52.51 µs | 27.55 µs | **26.84 µs** | **-19.97 µs/msg** |
+| **Single Message (`parseFromBuffer`)** | **24,770.67 msg/s** | **23,256.49 msg/s** | **43,976.62 msg/s** | **43,976.62 msg/s** | **+77.5% FASTER** |
+| Single-Msg Latency | 40.37 µs | 43.00 µs | **22.74 µs** | **22.74 µs** | **-17.63 µs/msg** |
 
 > [!NOTE]
 > Detailed section-by-section breakdown and SDP element metrics are available in the [**Official Benchmark Report**](https://github.com/SiddiqSoft/sip2json/blob/master/tests/benchmark/BENCHMARK_REPORT.md).
@@ -28,7 +28,7 @@
 
 ```mermaid
 flowchart LR
-    subgraph OptionA ["Option A: parseAsync Single-Thread (Optimal - 35,541 msg/sec)"]
+    subgraph OptionA ["Option A: parseAsync Single-Thread (Optimal - 37,260 msg/sec)"]
         direction LR
         SockA["Network Socket"] --> IOA["I/O Thread"]
         IOA --> PA["parseAsync(buffer)"]
@@ -57,7 +57,7 @@ When receiving a single continuous TCP/TLS stream of SIP messages on a single ne
 
 > [!IMPORTANT]
 > **Zero Thread Synchronization Overhead**
-> Because `sip2json` parses a SIP message in just **~28.1 microseconds**, pushing individual parsed messages onto a synchronized queue for worker threads introduces `std::mutex` locking, condition variable signaling, and CPU cache invalidation overhead that takes **longer than parsing the message itself**.
+> Because `sip2json` parses a SIP message in just **~26.8 microseconds**, pushing individual parsed messages onto a synchronized queue for worker threads introduces `std::mutex` locking, condition variable signaling, and CPU cache invalidation overhead that takes **longer than parsing the message itself**.
 >
 > Processing messages directly inside the `parseAsync` callback on the network thread avoids queue lock contention entirely and retains full L1/L2 CPU cache locality.
 

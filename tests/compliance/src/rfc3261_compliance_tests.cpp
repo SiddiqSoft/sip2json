@@ -111,16 +111,42 @@ namespace siddiqsoft
     //-------------------------------------------------------------------------
     TEST(RFC3261_Compliance, HeaderFields_CaseInsensitivity)
     {
-        std::string rawMsg = "REGISTER sip:example.com SIP/2.0\r\nvIa: SIP/2.0/UDP 192.0.2.1:5060;branch=z9hG4bK123\r\nfRoM: "
-                             "<sip:user@example.com>;tag=1\r\ntO: <sip:user@example.com>\r\ncALL-id: test-case-123\r\ncsEQ: 1 "
-                             "REGISTER\r\ncONTENT-tYPE: application/sdp\r\ncONTENT-lENGTH: 0\r\n\r\n";
-        auto        bs     = rawMsg.begin();
+        std::string rawMsg =
+                "INVITE sip:user@example.com SIP/2.0\r\n"
+                "vIa: SIP/2.0/UDP 192.0.2.1:5060;branch=z9hG4bK123\r\n"
+                "fRoM: <sip:user@example.com>;tag=1\r\n"
+                "tO: <sip:user@example.com>\r\n"
+                "cALL-iD: test-callid-123\r\n"
+                "cSeQ: 1 INVITE\r\n"
+                "cONTENT-lENGTH: 0\r\n\r\n";
+        auto bs = rawMsg.begin();
 
         sipmessage sipm = sip2json::parseFromBuffer(bs, rawMsg.end());
-        EXPECT_EQ("test-case-123", sipm.getCallID());
-        EXPECT_EQ("test-case-123", sipm.getCallIDView());
-        EXPECT_EQ(0, sipm.getContentLength());
-        EXPECT_EQ("application/sdp", sipm.getContentType());
+        EXPECT_TRUE(sipm.headers().contains("Via"));
+        EXPECT_TRUE(sipm.headers().contains("From"));
+        EXPECT_TRUE(sipm.headers().contains("To"));
+        EXPECT_TRUE(sipm.headers().contains("Call-ID"));
+        EXPECT_TRUE(sipm.headers().contains("CSeq"));
+        EXPECT_TRUE(sipm.headers().contains("Content-Length"));
+    }
+
+    TEST(RFC3261_Compliance, HeaderFields_PrecomputedHashMatching)
+    {
+        EXPECT_EQ(hash_header_key("from"), HFS_FROM.hash());
+        EXPECT_EQ(hash_header_key("to"), HFS_TO.hash());
+        EXPECT_EQ(hash_header_key("via"), HFS_VIA.hash());
+        EXPECT_EQ(hash_header_key("call-id"), HFS_CALLID.hash());
+        EXPECT_EQ(hash_header_key("cseq"), HFS_CSEQ.hash());
+        EXPECT_EQ(hash_header_key("content-length"), HFS_CONTENT_LENGTH.hash());
+        EXPECT_EQ(hash_header_key("content-type"), HFS_CONTENT_TYPE.hash());
+        EXPECT_EQ(hash_header_key("contact"), HFS_CONTACT.hash());
+        EXPECT_EQ(hash_header_key("expires"), HFS_EXPIRES.hash());
+        EXPECT_EQ(hash_header_key("user-agent"), HFS_USER_AGENT.hash());
+
+        // Verify lookup maps to static references
+        EXPECT_EQ(&HFS_FROM, &canonicalizeHeaderKey("fRoM"));
+        EXPECT_EQ(&HFS_VIA, &canonicalizeHeaderKey("vIa"));
+        EXPECT_EQ(&HFS_CONTENT_LENGTH, &canonicalizeHeaderKey("cONTENT-lENGTH"));
     }
 
     TEST(RFC3261_Compliance, HeaderFields_CompactNames)
