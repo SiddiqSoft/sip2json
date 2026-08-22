@@ -14,7 +14,7 @@
 #include <numeric>
 
 #include "nlohmann/json.hpp"
-#include "../include/siddiqsoft/sip2json.hpp"
+#include "siddiqsoft/sip2json.hpp"
 #include "gtest/gtest.h"
 #include <thread>
 
