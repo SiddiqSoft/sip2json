@@ -85,7 +85,8 @@ namespace siddiqsoft
             throw empty_message_error {std::format("{}:sipm is empty (except for meta).", __func__)};
 
         // Assert: Header must exist
-        if (!sipm.contains(JSON_KEY_HEADERS)) throw invalid_document_error {std::format("{}:sipm does not contain `h`eaders.", __func__)};
+        if (!sipm.contains(JSON_KEY_HEADERS))
+            throw invalid_document_error {std::format("{}:sipm does not contain `h`eaders.", __func__)};
 
         if (sipm.isMessageRequest())
         {

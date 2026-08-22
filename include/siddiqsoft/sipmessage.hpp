@@ -82,35 +82,44 @@ namespace siddiqsoft
     /// "b" for body, and "meta" for metadata.
     class sipmessage : public nlohmann::json
     {
-        static const inline std::string MetaLibName {"sip2json"};      ///< Library name for metadata
-        static const inline std::string MetaSchemaVersion {"1.0.2"};   ///< Schema version for metadata
-        static const inline std::string MetaParserVersion {"2.4"};    ///< Parser version for metadata
+        static const inline std::string MetaLibName {"sip2json"};    ///< Library name for metadata
+        static const inline std::string MetaSchemaVersion {"1.0.2"}; ///< Schema version for metadata
+        static const inline std::string MetaParserVersion {"2.4"};   ///< Parser version for metadata
 
     public:
         /// @brief Default constructor initializing an empty SIP message with metadata.
         /// @details Creates a new sipmessage with default metadata including version, timestamp, and TTX counter.
-        sipmessage() : nlohmann::json({
-            {JSON_KEY_META, {
-                {JSON_KEY_VERSION, std::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
-                {JSON_KEY_TIME, TimeAsISO8601()},
-                {JSON_KEY_TTX, 0}
-            }}
-        }) {}
+        sipmessage()
+            : nlohmann::json({{JSON_KEY_META,
+                               {{JSON_KEY_VERSION, std::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
+                                {JSON_KEY_TIME, TimeAsISO8601()},
+                                {JSON_KEY_TTX, 0}}}})
+        {
+        }
 
         /// @brief Copy constructor from nlohmann::json object.
         /// @param src The source JSON object to copy from.
-        explicit sipmessage(const nlohmann::json& src) : nlohmann::json(src) {}
+        explicit sipmessage(const nlohmann::json& src)
+            : nlohmann::json(src)
+        {
+        }
 
         /// @brief Move constructor from nlohmann::json object.
         /// @param src The source JSON object to move from.
-        explicit sipmessage(nlohmann::json&& src) noexcept : nlohmann::json(std::move(src)) {}
+        explicit sipmessage(nlohmann::json&& src) noexcept
+            : nlohmann::json(std::move(src))
+        {
+        }
 
         /// @brief Move constructor.
         sipmessage(sipmessage&&) noexcept = default;
 
         /// @brief Copy constructor from another sipmessage.
         /// @param src The source sipmessage to copy from.
-        sipmessage(const sipmessage& src) : nlohmann::json(static_cast<const nlohmann::json&>(src)) {}
+        sipmessage(const sipmessage& src)
+            : nlohmann::json(static_cast<const nlohmann::json&>(src))
+        {
+        }
 
         /// @brief Copy assignment operator from another sipmessage.
         /// @param src The source sipmessage to copy from.
@@ -160,7 +169,11 @@ namespace siddiqsoft
         {
             using namespace std;
 
-            update({{JSON_KEY_STARTLINE, {{JSON_KEY_TYPE, SIPMessageType::request}, {JSON_KEY_METHOD, method}, {JSON_KEY_URI, uri}, {JSON_KEY_VERSION, SIPVER_20}}},
+            update({{JSON_KEY_STARTLINE,
+                     {{JSON_KEY_TYPE, SIPMessageType::request},
+                      {JSON_KEY_METHOD, method},
+                      {JSON_KEY_URI, uri},
+                      {JSON_KEY_VERSION, SIPVER_20}}},
                     {JSON_KEY_BODY, nullptr},
                     {JSON_KEY_META,
                      {{JSON_KEY_VERSION, std::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
@@ -186,15 +199,19 @@ namespace siddiqsoft
             update(src);
 
             // Overwrite the source object's values
-            (*this)[JSON_KEY_META] = {{JSON_KEY_VERSION, std::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
-                                {JSON_KEY_TIME, TimeAsISO8601()},
-                                {JSON_KEY_TTX, 0}};
+            (*this)[JSON_KEY_META] = {
+                    {JSON_KEY_VERSION, std::format("{}/{}/{}", MetaLibName, MetaParserVersion, MetaSchemaVersion)},
+                    {JSON_KEY_TIME, TimeAsISO8601()},
+                    {JSON_KEY_TTX, 0}};
 
             // "status-line" (Status Reason Version)
-            (*this)[JSON_KEY_STARTLINE] = {
-                    {JSON_KEY_TYPE, SIPMessageType::response}, {JSON_KEY_STATUS, statusCode}, {JSON_KEY_REASON, getReasonPhrase(statusCode)}, {JSON_KEY_VERSION, SIPVER_20}};
+            (*this)[JSON_KEY_STARTLINE] = {{JSON_KEY_TYPE, SIPMessageType::response},
+                                           {JSON_KEY_STATUS, statusCode},
+                                           {JSON_KEY_REASON, getReasonPhrase(statusCode)},
+                                           {JSON_KEY_VERSION, SIPVER_20}};
 
-            (*this)[JSON_KEY_HEADERS][HF_USER_AGENT] = std::format("{}/{} (schema:{})", MetaLibName, MetaParserVersion, MetaSchemaVersion);
+            (*this)[JSON_KEY_HEADERS][HF_USER_AGENT] =
+                    std::format("{}/{} (schema:{})", MetaLibName, MetaParserVersion, MetaSchemaVersion);
             setHeader(HF_DATE, TimeAsRFC1123());
         }
 
@@ -241,9 +258,7 @@ namespace siddiqsoft
         /// @param defaultValue Optional default value if the header is not found.
         /// @return The header value or the default value if not found.
         template <class T> auto getHeader(const std::string& key, std::optional<T> defaultValue = {}) const
-        {
-            return (*this)[JSON_KEY_HEADERS].value(key, defaultValue.value_or(T {}));
-        }
+        { return (*this)[JSON_KEY_HEADERS].value(key, defaultValue.value_or(T {})); }
 
         /// @brief Retrieves a header value by key with optional default value.
         /// @tparam T The type of the header value to retrieve.
@@ -251,9 +266,7 @@ namespace siddiqsoft
         /// @param defaultValue Optional default value if the header is not found.
         /// @return The header value or the default value if not found.
         template <class T> auto getHeader(const char* key, std::optional<T> defaultValue = {}) const
-        {
-            return (*this)[JSON_KEY_HEADERS].value(key, defaultValue.value_or(T {}));
-        }
+        { return (*this)[JSON_KEY_HEADERS].value(key, defaultValue.value_or(T {})); }
 
         /// @brief Retrieves a header value by key with optional default value.
         /// @tparam T The type of the header value to retrieve.
@@ -261,9 +274,7 @@ namespace siddiqsoft
         /// @param defaultValue Optional default value if the header is not found.
         /// @return The header value or the default value if not found.
         template <class T> auto getHeader(std::string_view key, std::optional<T> defaultValue = {}) const
-        {
-            return (*this)[JSON_KEY_HEADERS].value(std::string {key}, defaultValue.value_or(T {}));
-        }
+        { return (*this)[JSON_KEY_HEADERS].value(std::string {key}, defaultValue.value_or(T {})); }
 
         /// @brief Sets or updates the User-Agent header.
         /// @details Automatically formats the User-Agent header with library name, version, and schema information.
@@ -272,7 +283,8 @@ namespace siddiqsoft
         auto& setUserAgent(const std::string& ua = {})
         {
             if (!ua.empty())
-                setHeader(HF_USER_AGENT, std::format("{}/{} (schema:{}) {}", MetaLibName, MetaParserVersion, MetaSchemaVersion, ua));
+                setHeader(HF_USER_AGENT,
+                          std::format("{}/{} (schema:{}) {}", MetaLibName, MetaParserVersion, MetaSchemaVersion, ua));
             else
                 setHeader(HF_USER_AGENT, std::format("{}/{} (schema:{})", MetaLibName, MetaParserVersion, MetaSchemaVersion));
             return *this;
@@ -421,25 +433,19 @@ namespace siddiqsoft
         /// @return The body element value or the default value if not found.
         /// @throws std::out_of_range if the body element does not exist.
         template <typename T> T getBodyElement(const nlohmann::json::json_pointer& jp, const T& defaultValue) const
-        {
-            return this->at(JSON_KEY_BODY).value<T>(jp, defaultValue);
-        }
+        { return this->at(JSON_KEY_BODY).value<T>(jp, defaultValue); }
 
         /// @brief Checks if this message is a SIP request.
         /// @details Examines the message type field to determine if this is a request message.
         /// @return True if the message type is request, false otherwise.
         bool isMessageRequest() const
-        {
-            return (this->value("/s/type"_json_pointer, SIPMessageType::notspecified) == SIPMessageType::request);
-        }
+        { return (this->value("/s/type"_json_pointer, SIPMessageType::notspecified) == SIPMessageType::request); }
 
         /// @brief Checks if this message is a SIP response.
         /// @details Examines the message type field to determine if this is a response message.
         /// @return True if the message type is response, false otherwise.
         bool isMessageResponse() const
-        {
-            return (this->value("/s/type"_json_pointer, SIPMessageType::notspecified) == SIPMessageType::response);
-        }
+        { return (this->value("/s/type"_json_pointer, SIPMessageType::notspecified) == SIPMessageType::response); }
 
         // mutators
     public:
@@ -472,7 +478,7 @@ namespace siddiqsoft
         /// @return Self.
         template <typename T> inline sipmessage& setHeader(std::string_view key, const T& v)
         {
-            (*this)[JSON_KEY_HEADERS][std::string{key}] = v;
+            (*this)[JSON_KEY_HEADERS][std::string {key}] = v;
             return *this;
         };
 
@@ -569,9 +575,7 @@ template <> struct std::formatter<siddiqsoft::SIPMessageType> : std::formatter<s
 template <> struct std::formatter<siddiqsoft::sipmessage> : std::formatter<std::string>
 {
     auto format(const siddiqsoft::sipmessage& msg, std::format_context& ctx) const
-    {
-        return std::formatter<std::string>::format(msg.dump(), ctx);
-    }
+    { return std::formatter<std::string>::format(msg.dump(), ctx); }
 };
 
 #endif

@@ -60,7 +60,7 @@ namespace siddiqsoft
         std::string rawMsg = "INVITE sip:user@example.com SIP/1.0\r\nVia: SIP/2.0/UDP 192.0.2.1:5060;branch=z9hG4bK123\r\nFrom: "
                              "<sip:user@example.com>;tag=1\r\nTo: <sip:user@example.com>\r\nCall-ID: test-callid-123\r\nCSeq: 1 "
                              "INVITE\r\nContent-Length: 0\r\n\r\n";
-        auto bs = rawMsg.begin();
+        auto        bs     = rawMsg.begin();
 
         EXPECT_THROW(sip2json::parseFromBuffer(bs, rawMsg.end()), invalid_startline_error);
     }
@@ -114,7 +114,7 @@ namespace siddiqsoft
         std::string rawMsg = "REGISTER sip:example.com SIP/2.0\r\nvIa: SIP/2.0/UDP 192.0.2.1:5060;branch=z9hG4bK123\r\nfRoM: "
                              "<sip:user@example.com>;tag=1\r\ntO: <sip:user@example.com>\r\ncALL-id: test-case-123\r\ncsEQ: 1 "
                              "REGISTER\r\ncONTENT-tYPE: application/sdp\r\ncONTENT-lENGTH: 0\r\n\r\n";
-        auto bs = rawMsg.begin();
+        auto        bs     = rawMsg.begin();
 
         sipmessage sipm = sip2json::parseFromBuffer(bs, rawMsg.end());
         EXPECT_EQ("test-case-123", sipm.getCallID());
@@ -130,7 +130,7 @@ namespace siddiqsoft
         std::string rawMsg = "INVITE sip:user@example.com SIP/2.0\r\nv: SIP/2.0/UDP 192.0.2.1:5060;branch=z9hG4bK123\r\nf: "
                              "<sip:alice@example.com>;tag=1\r\nt: <sip:bob@example.com>\r\ni: compact-callid-999\r\nCSeq: 1 "
                              "INVITE\r\nm: <sip:alice@192.0.2.1:5060>\r\nc: application/sdp\r\nl: 0\r\n\r\n";
-        auto bs = rawMsg.begin();
+        auto        bs     = rawMsg.begin();
 
         sipmessage sipm = sip2json::parseFromBuffer(bs, rawMsg.end());
         EXPECT_EQ("compact-callid-999", sipm.getCallID());
@@ -170,7 +170,7 @@ namespace siddiqsoft
         std::string rawMsg = "REGISTER sip:example.com SIP/2.0\nVia: SIP/2.0/UDP 192.0.2.1:5060;branch=z9hG4bK123\nFrom: "
                              "<sip:user@example.com>;tag=1\nTo: <sip:user@example.com>\nCall-ID: lf-line-ending-123\nCSeq: 1 "
                              "REGISTER\nContent-Length: 0\n\n";
-        auto bs = rawMsg.begin();
+        auto        bs     = rawMsg.begin();
 
         sipmessage sipm = sip2json::parseFromBuffer(bs, rawMsg.end());
         EXPECT_EQ("lf-line-ending-123", sipm.getCallID());

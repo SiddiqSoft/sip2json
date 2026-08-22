@@ -99,9 +99,7 @@ namespace siddiqsoft
     public:
         missing_required_element(const std::string& msg)
             : sip2json_exception(msg)
-        {
-            errCode = sip2jsonErrors::missing_required_element;
-        }
+        { errCode = sip2jsonErrors::missing_required_element; }
     };
 
 
@@ -110,9 +108,7 @@ namespace siddiqsoft
     public:
         incomplete_buffer_for_parse_error(const std::string& msg)
             : sip2json_exception(msg)
-        {
-            errCode = sip2jsonErrors::incomplete_buffer_for_parse;
-        }
+        { errCode = sip2jsonErrors::incomplete_buffer_for_parse; }
     };
 
 
@@ -121,9 +117,7 @@ namespace siddiqsoft
     public:
         incomplete_buffer_for_content_error(const std::string& msg)
             : sip2json_exception(msg)
-        {
-            errCode = sip2jsonErrors::incomplete_buffer_for_content;
-        }
+        { errCode = sip2jsonErrors::incomplete_buffer_for_content; }
     };
 
 
@@ -132,9 +126,7 @@ namespace siddiqsoft
     public:
         incomplete_buffer_for_header_error(const std::string& msg)
             : sip2json_exception(msg)
-        {
-            errCode = sip2jsonErrors::incomplete_buffer_for_header;
-        }
+        { errCode = sip2jsonErrors::incomplete_buffer_for_header; }
     };
 
 
@@ -143,9 +135,7 @@ namespace siddiqsoft
     public:
         invalid_startline_error(const std::string& msg)
             : sip2json_exception(msg)
-        {
-            errCode = sip2jsonErrors::invalid_startline;
-        }
+        { errCode = sip2jsonErrors::invalid_startline; }
     };
 
 
@@ -154,9 +144,7 @@ namespace siddiqsoft
     public:
         unsupported_contenttype_error(const std::string& msg)
             : sip2json_exception(msg)
-        {
-            errCode = sip2jsonErrors::unsupported_contenttype;
-        }
+        { errCode = sip2jsonErrors::unsupported_contenttype; }
     };
 
 
@@ -165,9 +153,7 @@ namespace siddiqsoft
     public:
         invalid_document_error(const std::string& msg)
             : sip2json_exception(msg)
-        {
-            errCode = sip2jsonErrors::invalid_document;
-        }
+        { errCode = sip2jsonErrors::invalid_document; }
     };
 
 
@@ -176,9 +162,7 @@ namespace siddiqsoft
     public:
         empty_message_error(const std::string& msg)
             : sip2json_exception(msg)
-        {
-            errCode = sip2jsonErrors::empty_message;
-        }
+        { errCode = sip2jsonErrors::empty_message; }
     };
 } // namespace siddiqsoft
 

@@ -64,11 +64,9 @@ namespace siddiqsoft
         {
         }
 
-        const std::string& canonical() const { return m_canonical; }
-        const std::string& lower() const { return m_lowercase; }
-        const std::string& alt() const { return m_abbreviation; }
-
-
+        [[nodiscard]] inline const std::string& canonical() const { return m_canonical; }
+        [[nodiscard]] inline const std::string& lower() const { return m_lowercase; }
+        [[nodiscard]] inline const std::string& alt() const { return m_abbreviation; }
     };
 
     // Static const std::string definitions for canonical header keys to prevent temporary std::string allocations in nlohmann::json lookups
