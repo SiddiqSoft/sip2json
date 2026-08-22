@@ -1548,3 +1548,150 @@ TEST(validation, Test_RandomStream_Recv_File_1_counts)
     EXPECT_EQ(344u, xCallInstanceIdCount);
     EXPECT_EQ(336u, sdpCallOwnerAliasCount);
 }
+
+// NOLINTNEXTLINE
+TEST(validation, Test_Mixed_Stream_1_counts)
+{
+    auto buffer = loadSampleFile("Mixed_Stream_1");
+    ASSERT_FALSE(buffer.empty());
+
+    uint32_t messageCount = 0;
+    uint32_t xDomainCount = 0;
+    uint32_t xSeamlessCount = 0;
+    uint32_t xCallInstanceIdCount = 0;
+    uint32_t sdpCallOwnerAliasCount = 0;
+
+    auto remaining = siddiqsoft::sip2json::parseAsync(
+            buffer,
+            [&](siddiqsoft::sipmessage&& sipm) {
+                messageCount++;
+                if (sipm.headers().contains("X-domain")) {
+                    xDomainCount++;
+                }
+                if (sipm.headers().contains("X-Seamless")) {
+                    xSeamlessCount++;
+                }
+                if (sipm.headers().contains("X-Call-Instance-ID")) {
+                    xCallInstanceIdCount++;
+                }
+                if (sipm.hasBody() && sipm.body().contains("sdp") && sipm.body()["sdp"].is_array()) {
+                    for (const auto& sdpBlock : sipm.body()["sdp"]) {
+                        if (sdpBlock.contains("a") && sdpBlock["a"].is_object() && sdpBlock["a"].contains("x-ring2-callowner-login_alias")) {
+                            sdpCallOwnerAliasCount++;
+                            break;
+                        }
+                    }
+                }
+            });
+
+    std::clog << "Mixed_Stream_1 summary:" << std::endl;
+    std::clog << "  Total Messages            : " << messageCount << std::endl;
+    std::clog << "  X-domain Header Count     : " << xDomainCount << std::endl;
+    std::clog << "  X-Seamless Header Count   : " << xSeamlessCount << std::endl;
+    std::clog << "  X-Call-Instance-ID Count  : " << xCallInstanceIdCount << std::endl;
+    std::clog << "  SDP CallOwner Alias Count : " << sdpCallOwnerAliasCount << std::endl;
+
+    EXPECT_EQ(18u, messageCount);
+    EXPECT_EQ(18u, xDomainCount);
+    EXPECT_EQ(0u, xSeamlessCount);
+    EXPECT_EQ(16u, xCallInstanceIdCount);
+    EXPECT_EQ(16u, sdpCallOwnerAliasCount);
+}
+
+// NOLINTNEXTLINE
+TEST(validation, Test_Mixed_Stream_2_counts)
+{
+    auto buffer = loadSampleFile("Mixed_Stream_2");
+    ASSERT_FALSE(buffer.empty());
+
+    uint32_t messageCount = 0;
+    uint32_t xDomainCount = 0;
+    uint32_t xSeamlessCount = 0;
+    uint32_t xCallInstanceIdCount = 0;
+    uint32_t sdpCallOwnerAliasCount = 0;
+
+    auto remaining = siddiqsoft::sip2json::parseAsync(
+            buffer,
+            [&](siddiqsoft::sipmessage&& sipm) {
+                messageCount++;
+                if (sipm.headers().contains("X-domain")) {
+                    xDomainCount++;
+                }
+                if (sipm.headers().contains("X-Seamless")) {
+                    xSeamlessCount++;
+                }
+                if (sipm.headers().contains("X-Call-Instance-ID")) {
+                    xCallInstanceIdCount++;
+                }
+                if (sipm.hasBody() && sipm.body().contains("sdp") && sipm.body()["sdp"].is_array()) {
+                    for (const auto& sdpBlock : sipm.body()["sdp"]) {
+                        if (sdpBlock.contains("a") && sdpBlock["a"].is_object() && sdpBlock["a"].contains("x-ring2-callowner-login_alias")) {
+                            sdpCallOwnerAliasCount++;
+                            break;
+                        }
+                    }
+                }
+            });
+
+    std::clog << "Mixed_Stream_2 summary:" << std::endl;
+    std::clog << "  Total Messages            : " << messageCount << std::endl;
+    std::clog << "  X-domain Header Count     : " << xDomainCount << std::endl;
+    std::clog << "  X-Seamless Header Count   : " << xSeamlessCount << std::endl;
+    std::clog << "  X-Call-Instance-ID Count  : " << xCallInstanceIdCount << std::endl;
+    std::clog << "  SDP CallOwner Alias Count : " << sdpCallOwnerAliasCount << std::endl;
+
+    EXPECT_EQ(9u, messageCount);
+    EXPECT_EQ(9u, xDomainCount);
+    EXPECT_EQ(0u, xSeamlessCount);
+    EXPECT_EQ(9u, xCallInstanceIdCount);
+    EXPECT_EQ(8u, sdpCallOwnerAliasCount);
+}
+
+// NOLINTNEXTLINE
+TEST(validation, Test_Mixed_Stream_3_counts)
+{
+    auto buffer = loadSampleFile("Mixed_Stream_3");
+    ASSERT_FALSE(buffer.empty());
+
+    uint32_t messageCount = 0;
+    uint32_t xDomainCount = 0;
+    uint32_t xSeamlessCount = 0;
+    uint32_t xCallInstanceIdCount = 0;
+    uint32_t sdpCallOwnerAliasCount = 0;
+
+    auto remaining = siddiqsoft::sip2json::parseAsync(
+            buffer,
+            [&](siddiqsoft::sipmessage&& sipm) {
+                messageCount++;
+                if (sipm.headers().contains("X-domain")) {
+                    xDomainCount++;
+                }
+                if (sipm.headers().contains("X-Seamless")) {
+                    xSeamlessCount++;
+                }
+                if (sipm.headers().contains("X-Call-Instance-ID")) {
+                    xCallInstanceIdCount++;
+                }
+                if (sipm.hasBody() && sipm.body().contains("sdp") && sipm.body()["sdp"].is_array()) {
+                    for (const auto& sdpBlock : sipm.body()["sdp"]) {
+                        if (sdpBlock.contains("a") && sdpBlock["a"].is_object() && sdpBlock["a"].contains("x-ring2-callowner-login_alias")) {
+                            sdpCallOwnerAliasCount++;
+                            break;
+                        }
+                    }
+                }
+            });
+
+    std::clog << "Mixed_Stream_3 summary:" << std::endl;
+    std::clog << "  Total Messages            : " << messageCount << std::endl;
+    std::clog << "  X-domain Header Count     : " << xDomainCount << std::endl;
+    std::clog << "  X-Seamless Header Count   : " << xSeamlessCount << std::endl;
+    std::clog << "  X-Call-Instance-ID Count  : " << xCallInstanceIdCount << std::endl;
+    std::clog << "  SDP CallOwner Alias Count : " << sdpCallOwnerAliasCount << std::endl;
+
+    EXPECT_EQ(21u, messageCount);
+    EXPECT_EQ(21u, xDomainCount);
+    EXPECT_EQ(0u, xSeamlessCount);
+    EXPECT_EQ(21u, xCallInstanceIdCount);
+    EXPECT_EQ(8u, sdpCallOwnerAliasCount);
+}
