@@ -89,6 +89,7 @@ nav:
       - Overview: features/index.md
       - Async Stream Parsing: features/async.md
       - Performance & Benchmarks: features/benchmarks.md
+      - Optimization Choices: features/optimization_choices.md
       - JSON Metaphor & Schema: features/json_schema.md
       - SDP Support: features/sdp.md
       - Standards Compliance: features/compliance.md

@@ -189,6 +189,9 @@ namespace siddiqsoft
         operator const HeaderKeySet&() const { return isCanonical ? canonicalKeySet : customKeySet; }
     };
 
+    /// @brief Packs up to 4 characters into a 64-bit integer tag with inline case-folding.
+    /// @details For architectural design details on why 64-bit packed switch matching outperforms SSO string comparisons,
+    /// see docs/features/optimization_choices.md (https://siddiqsoft.github.io/sip2json/features/optimization_choices/).
     constexpr uint64_t pack_key_4(const char* s, size_t len) noexcept
     {
         uint64_t val = 0;
