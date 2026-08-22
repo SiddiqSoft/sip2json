@@ -195,6 +195,9 @@ namespace siddiqsoft
         lowerKey.reserve(keyFromPayload.size());
         std::transform(keyFromPayload.begin(), keyFromPayload.end(), std::back_inserter(lowerKey), ::tolower);
 
+        // If we have a custom header as per standard return immediately.
+        if( lowerKey.starts_with("x-") ) return CanonicalHeaderKeyResult {keyFromPayload};
+        
         // compare the lowerKey against the known header key sets and return the canonical form if found
         // match against the lowercase version of the key or the abbreviation (if present) in the HeaderKeySet
 
