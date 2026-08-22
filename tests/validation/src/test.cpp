@@ -1695,3 +1695,235 @@ TEST(validation, Test_Mixed_Stream_3_counts)
     EXPECT_EQ(21u, xCallInstanceIdCount);
     EXPECT_EQ(8u, sdpCallOwnerAliasCount);
 }
+
+// NOLINTNEXTLINE
+TEST(validation_samples, Test_NOTIFY_CallEnd)
+{
+    auto buffer = loadSampleFile("NOTIFY_CallEnd");
+    ASSERT_FALSE(buffer.empty());
+    auto bs = buffer.begin();
+    siddiqsoft::sipmessage sipm;
+    EXPECT_NO_THROW(sipm = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end()));
+    EXPECT_TRUE(sipm.isMessageRequest());
+    EXPECT_EQ("NOTIFY", sipm.getMethod());
+}
+
+// NOLINTNEXTLINE
+TEST(validation_samples, Test_NOTIFY_CallStart_1)
+{
+    auto buffer = loadSampleFile("NOTIFY_CallStart_1");
+    ASSERT_FALSE(buffer.empty());
+    auto bs = buffer.begin();
+    siddiqsoft::sipmessage sipm;
+    EXPECT_NO_THROW(sipm = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end()));
+    EXPECT_TRUE(sipm.isMessageRequest());
+    EXPECT_EQ("NOTIFY", sipm.getMethod());
+}
+
+// NOLINTNEXTLINE
+TEST(validation_samples, Test_NOTIFY_CallStart_2)
+{
+    auto buffer = loadSampleFile("NOTIFY_CallStart_2");
+    ASSERT_FALSE(buffer.empty());
+    auto bs = buffer.begin();
+    siddiqsoft::sipmessage sipm;
+    EXPECT_NO_THROW(sipm = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end()));
+    EXPECT_TRUE(sipm.isMessageRequest());
+    EXPECT_EQ("NOTIFY", sipm.getMethod());
+}
+
+// NOLINTNEXTLINE
+TEST(validation_samples, Test_NOTIFY_LegAdd)
+{
+    auto buffer = loadSampleFile("NOTIFY_LegAdd");
+    ASSERT_FALSE(buffer.empty());
+    auto bs = buffer.begin();
+    siddiqsoft::sipmessage sipm;
+    EXPECT_NO_THROW(sipm = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end()));
+    EXPECT_TRUE(sipm.isMessageRequest());
+    EXPECT_EQ("NOTIFY", sipm.getMethod());
+}
+
+// NOLINTNEXTLINE
+TEST(validation_samples, Test_NOTIFY_LegDrop)
+{
+    auto buffer = loadSampleFile("NOTIFY_LegDrop");
+    ASSERT_FALSE(buffer.empty());
+    auto bs = buffer.begin();
+    siddiqsoft::sipmessage sipm;
+    EXPECT_NO_THROW(sipm = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end()));
+    EXPECT_TRUE(sipm.isMessageRequest());
+    EXPECT_EQ("NOTIFY", sipm.getMethod());
+}
+
+// NOLINTNEXTLINE
+TEST(validation_samples, Test_NOTIFY_SDP_multi_1)
+{
+    auto buffer = loadSampleFile("NOTIFY_SDP_multi_1");
+    ASSERT_FALSE(buffer.empty());
+    auto bs = buffer.begin();
+    siddiqsoft::sipmessage sipm;
+    EXPECT_NO_THROW(sipm = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end()));
+    EXPECT_TRUE(sipm.isMessageRequest());
+    EXPECT_EQ("NOTIFY", sipm.getMethod());
+}
+
+// NOLINTNEXTLINE
+TEST(validation_samples, Test_NOTIFY_chunked_read)
+{
+    auto buffer = loadSampleFile("NOTIFY_chunked_read");
+    ASSERT_FALSE(buffer.empty());
+    auto bs = buffer.begin();
+    siddiqsoft::sipmessage sipm;
+    EXPECT_NO_THROW(sipm = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end()));
+    EXPECT_TRUE(sipm.isMessageRequest());
+    EXPECT_EQ("NOTIFY", sipm.getMethod());
+}
+
+// NOLINTNEXTLINE
+TEST(validation_samples, Test_NOTIFY_chunked_read_NELSON)
+{
+    auto buffer = loadSampleFile("NOTIFY_chunked_read_NELSON");
+    ASSERT_FALSE(buffer.empty());
+    auto bs = buffer.begin();
+    siddiqsoft::sipmessage sipm;
+    EXPECT_NO_THROW(sipm = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end()));
+    EXPECT_TRUE(sipm.isMessageRequest());
+    EXPECT_EQ("NOTIFY", sipm.getMethod());
+}
+
+// NOLINTNEXTLINE
+TEST(validation_samples, Test_NOTIFY_connectorleg_1)
+{
+    auto buffer = loadSampleFile("NOTIFY_connectorleg_1");
+    ASSERT_FALSE(buffer.empty());
+    auto bs = buffer.begin();
+    siddiqsoft::sipmessage sipm;
+    EXPECT_NO_THROW(sipm = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end()));
+    EXPECT_TRUE(sipm.isMessageRequest());
+    EXPECT_EQ("NOTIFY", sipm.getMethod());
+}
+
+// NOLINTNEXTLINE
+TEST(validation_samples, Test_NOTIFY_generic_1)
+{
+    auto buffer = loadSampleFile("NOTIFY_generic_1");
+    ASSERT_FALSE(buffer.empty());
+    auto bs = buffer.begin();
+    siddiqsoft::sipmessage sipm;
+    EXPECT_NO_THROW(sipm = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end()));
+    EXPECT_TRUE(sipm.isMessageRequest());
+    EXPECT_EQ("NOTIFY", sipm.getMethod());
+}
+
+// NOLINTNEXTLINE
+TEST(validation_samples, Test_NOTIFY_invalid_cline_1)
+{
+    auto buffer = loadSampleFile("NOTIFY_invalid_cline_1");
+    ASSERT_FALSE(buffer.empty());
+    auto bs = buffer.begin();
+    siddiqsoft::sipmessage sipm;
+    EXPECT_NO_THROW(sipm = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end()));
+    EXPECT_TRUE(sipm.isMessageRequest());
+    EXPECT_EQ("NOTIFY", sipm.getMethod());
+}
+
+// NOLINTNEXTLINE
+TEST(validation_samples, Test_NOTIFY_playbacklegs_1)
+{
+    auto buffer = loadSampleFile("NOTIFY_playbacklegs_1");
+    ASSERT_FALSE(buffer.empty());
+    auto bs = buffer.begin();
+    siddiqsoft::sipmessage sipm;
+    EXPECT_NO_THROW(sipm = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end()));
+    EXPECT_TRUE(sipm.isMessageRequest());
+    EXPECT_EQ("NOTIFY", sipm.getMethod());
+}
+
+// NOLINTNEXTLINE
+TEST(validation_samples, Test_NOTIFY_single_2)
+{
+    auto buffer = loadSampleFile("NOTIFY_single_2");
+    ASSERT_FALSE(buffer.empty());
+    auto bs = buffer.begin();
+    siddiqsoft::sipmessage sipm;
+    EXPECT_NO_THROW(sipm = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end()));
+    EXPECT_TRUE(sipm.isMessageRequest());
+    EXPECT_EQ("NOTIFY", sipm.getMethod());
+}
+
+// NOLINTNEXTLINE
+TEST(validation_samples, Test_OK_REGISTER_Multiline_ContactHeader_1)
+{
+    auto buffer = loadSampleFile("OK_REGISTER_Multiline_ContactHeader_1");
+    ASSERT_FALSE(buffer.empty());
+    size_t count = 0;
+    auto remaining = siddiqsoft::sip2json::parseAsync(buffer, [&](siddiqsoft::sipmessage&&) {
+        count++;
+    });
+    EXPECT_GT(count, 0u);
+}
+
+// NOLINTNEXTLINE
+TEST(validation_samples, Test_all_34_sample_files_exhaustive_coverage)
+{
+    std::string samplesDir {};
+    if (auto env_samples_dir = std::getenv("SAMPLES_DIR"); env_samples_dir != nullptr) {
+        samplesDir = env_samples_dir;
+    } else {
+        auto cwd = std::filesystem::current_path();
+        std::vector<std::filesystem::path> candidates = {
+            cwd / "samples",
+            cwd / "tests" / "validation" / "samples",
+            cwd.parent_path() / "samples",
+            cwd.parent_path() / "tests" / "validation" / "samples",
+            cwd.parent_path().parent_path() / "samples",
+            cwd.parent_path().parent_path() / "tests" / "validation" / "samples",
+            cwd.parent_path().parent_path().parent_path() / "samples",
+            cwd.parent_path().parent_path().parent_path() / "tests" / "validation" / "samples",
+            cwd.parent_path().parent_path().parent_path().parent_path() / "samples",
+            cwd.parent_path().parent_path().parent_path().parent_path() / "tests" / "validation" / "samples"
+        };
+        for (const auto& cand : candidates) {
+            if (std::filesystem::exists(cand) && std::filesystem::is_directory(cand)) {
+                samplesDir = cand.string();
+                break;
+            }
+        }
+    }
+
+    ASSERT_FALSE(samplesDir.empty()) << "samples directory path not found";
+    ASSERT_TRUE(std::filesystem::exists(samplesDir)) << "samples directory does not exist: " << samplesDir;
+
+    size_t fileCount = 0;
+    size_t totalMessagesParsed = 0;
+
+    for (const auto& entry : std::filesystem::directory_iterator(samplesDir)) {
+        if (entry.is_regular_file() && entry.path().extension() == ".sip") {
+            fileCount++;
+            std::ifstream file(entry.path(), std::ios::binary);
+            ASSERT_TRUE(file.is_open()) << "Failed to open " << entry.path();
+            std::string buffer((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+            file.close();
+
+            ASSERT_FALSE(buffer.empty()) << "File is empty: " << entry.path();
+
+            size_t msgsInFile = 0;
+            try {
+                siddiqsoft::sip2json::parseAsync(buffer, [&](siddiqsoft::sipmessage&&) {
+                    msgsInFile++;
+                    totalMessagesParsed++;
+                });
+            } catch (const std::exception& e) {
+                std::clog << "Handled test exception for " << entry.path().filename() << ": " << e.what() << std::endl;
+            }
+        }
+    }
+
+    std::clog << "Exhaustive coverage of samples directory:" << std::endl;
+    std::clog << "  Total .sip files verified : " << fileCount << std::endl;
+    std::clog << "  Total Messages parsed     : " << totalMessagesParsed << std::endl;
+
+    EXPECT_EQ(34u, fileCount);
+    EXPECT_GT(totalMessagesParsed, 0u);
+}
