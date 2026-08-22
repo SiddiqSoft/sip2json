@@ -57,4 +57,4 @@ target_link_libraries(your_target PRIVATE sip2json::sip2json)
 ---
 
 > [!TIP]
-> **Windows Integration Note**: Ensure Windows Long Paths are enabled in the registry (`LongPathsEnabled = 1`) and Git (`git config --global core.longpaths true`) to prevent CTRE template expansion `filename too long` errors on Windows. See the [Integration Guide Overview](index.md#windows-prerequisites-long-paths-ctre-support) for full details.
+> **Windows Environment Setup Note**: To prevent CTRE template expansion `filename too long` errors on Windows, run [`scripts/prep_windows_machine.ps1`](https://github.com/SiddiqSoft/sip2json/blob/master/scripts/prep_windows_machine.ps1) as Administrator to enable Registry `LongPathsEnabled = 1` and Git `core.longpaths = true`. See the [Integration Guide Overview](index.md#windows-prerequisites-long-paths-ctre-support) for full details.

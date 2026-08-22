@@ -61,9 +61,10 @@ Include the primary header in your application source files:
 When building on Windows, the underlying **CTRE (Compile-Time Regular Expressions)** library and CMake package caches generate deeply nested header and template expansion paths that can exceed the legacy 260-character Windows path limit (`MAX_PATH`). This can trigger `filename too long` warnings or C1083 compilation errors during Git checkout or MSVC build steps.
 
 > [!WARNING]
-> **Windows `filename too long` Fix**
-> Enable Windows Extended Long Paths in the System Registry and Git configuration before building on Windows machines.
-> You can automatically configure your machine by running `scripts/prep_windows_machine.ps1` as Administrator:
+> **Windows `filename too long` & MSVC CTRE Fix**
+> Enable Windows Extended Long Paths in the System Registry (`LongPathsEnabled = 1`) and Git configuration (`git config --global core.longpaths true`) before building on Windows.
+>
+> You can automatically configure your Windows machine by running the provided PowerShell script [`scripts/prep_windows_machine.ps1`](https://github.com/SiddiqSoft/sip2json/blob/master/scripts/prep_windows_machine.ps1) as Administrator:
 > ```powershell
 > powershell -ExecutionPolicy Bypass -File .\scripts\prep_windows_machine.ps1
 > ```
