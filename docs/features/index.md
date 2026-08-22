@@ -52,9 +52,19 @@ Full Session Description Protocol (`application/sdp`) parsing and formatting int
 
 ### Standards Compliance & Certification
 
-Automated 226-test suite validating RFC 3261, RFC 4475 (SIP Torture), RFC 4566/8866 (SDP), RFC 3264, and extension RFCs.
+Automated compliance suite validating RFC 3261, RFC 4475 (SIP Torture 50 files), RFC 4566/8866 (SDP), RFC 3264, and WebRTC SDP specifications.
 
 [Learn more :octicons-arrow-right-24:](compliance.md)
+
+</div>
+
+<div class="card" markdown="1">
+
+### Test Suite Sources & IETF Links
+
+Comprehensive mapping of all test suites, test runner files, sample fixtures, and direct links to official IETF RFC specifications.
+
+[Learn more :octicons-arrow-right-24:](test_suite_sources.md)
 
 </div>
 

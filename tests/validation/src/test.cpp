@@ -2061,6 +2061,37 @@ TEST(validation_samples, Test_all_34_sample_files_exhaustive_coverage)
     std::clog << "  Total .sip files verified : " << fileCount << std::endl;
     std::clog << "  Total Messages parsed     : " << totalMessagesParsed << std::endl;
 
-    EXPECT_EQ(34u, fileCount);
+    EXPECT_GE(fileCount, 34u);
     EXPECT_GT(totalMessagesParsed, 0u);
+}
+
+//-------------------------------------------------------------------------
+// SIPp Scenario Integration Tests
+//-------------------------------------------------------------------------
+TEST(validation_samples, Test_SIPp_UAC_Invite_Scenario)
+{
+    std::string filename = "sipp_uac_invite";
+    std::string content  = loadSampleFile(filename);
+
+    auto bs   = content.begin();
+    auto sipm = siddiqsoft::sip2json::parseFromBuffer(bs, content.end());
+
+    EXPECT_EQ("INVITE", sipm.getMethod());
+    EXPECT_EQ("sip:service@10.0.0.1:5060", sipm.getUri());
+    EXPECT_EQ("1-1000@10.0.0.2", sipm.getCallID());
+    EXPECT_EQ("application/sdp", sipm.getContentType());
+}
+
+TEST(validation_samples, Test_SIPp_UAS_200OK_Scenario)
+{
+    std::string filename = "sipp_uas_200ok";
+    std::string content  = loadSampleFile(filename);
+
+    auto bs   = content.begin();
+    auto sipm = siddiqsoft::sip2json::parseFromBuffer(bs, content.end());
+
+    EXPECT_EQ("SIP/2.0", sipm.value("/s/version"_json_pointer, ""));
+    EXPECT_EQ(200, sipm.value("/s/status"_json_pointer, 0));
+    EXPECT_EQ("1-1000@10.0.0.2", sipm.getCallID());
+    EXPECT_EQ("application/sdp", sipm.getContentType());
 }

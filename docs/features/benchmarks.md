@@ -40,20 +40,19 @@ Every benchmark iteration validates the output JSON by extracting the `Call-ID` 
 
 ---
 
-### Master Performance Matrix: Refactored v2.5+ vs Tag Release v2.4.2
+### Master Performance Matrix: Current Build vs Tag Release v2.4.2 & Master Branch
 
-*Compares the current refactored version (Case-Insensitive `ON` and Case-Sensitive `OFF`) against the official `v2.4.2` tag release baseline.*
+*Compares the current optimized build across `parse`, `parseAsync`, and single-message parsing against the official `v2.4.2` release tag and `master` branch code.*
 
-| Benchmark Metric | v2.4.2 Tag Baseline | Case-Insensitive Mode (`ON` Default) | Case-Sensitive Mode (`OFF`) | Impact vs v2.4.2 |
-| :--- | :--- | :--- | :--- | :--- |
-| **`BM_ParseMinimalResponse`** | 137.47 µs | **3.81 µs** | **3.81 µs** | **36.1x FASTER** |
-| **`BM_ParseRegisterRequest`** | 158.07 µs | **4.27 µs** | **4.27 µs** | **37.0x FASTER** |
-| **`BM_ParseInviteWithSDP`** | 418.50 µs | **9.44 µs** | **9.44 µs** | **44.3x FASTER** |
-| **`BM_ParseInviteComplexSDP`** | 642.92 µs | **14.00 µs** | **13.59 µs** | **45.9x FASTER** |
-| **`BM_SerializeRegister`** | 60.14 µs | **1.44 µs** | **1.43 µs** | **41.7x FASTER** |
-| **`BM_GetHeader_LibraryConstant`** | 2,218 ns | **53.8 ns** | **53.6 ns** | **41.2x FASTER** |
-| **`BM_SetHeader_LibraryConstant`** | 1,844 ns | **43.5 ns** | **42.8 ns** | **42.4x FASTER** |
-| **`BM_VariableSizeStressTest/500`** | 813.99 ms | **16.08 ms** | **16.02 ms** | **50.6x FASTER** |
+| Metric | **v2.4.2 Tag** (`v2.4.2`) | **master Branch** (`master`) | **Current Build (`parse`)** | **Current Build (`parseAsync`)** | **`parseAsync` vs v2.4.2** | **`parseAsync` vs master** |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Stream Parsing Throughput** | **21,394.49 msg/s** | **19,043.79 msg/s** | **32,365.12 msg/s** | **33,104.58 msg/s** | **+54.8% FASTER** | **+73.8% FASTER** |
+| Execution Time (164.4k msgs) | 7.68 s | 8.63 s | 5.08 s | **4.97 s** | **-2.71 s (-35.3%)** | **-3.66 s (-42.4%)** |
+| Data Bandwidth | 56.39 MB/s | 50.19 MB/s | 84.79 MB/s | **87.25 MB/s** | **+30.86 MB/s** | **+37.06 MB/s** |
+| Avg Per-Msg Latency | 46.74 µs | 52.51 µs | 30.90 µs | **30.21 µs** | **-16.53 µs (-35.3%)** | **-22.30 µs (-42.4%)** |
+| **Single-Msg Parsing (`parseFromBuffer`)** | **24,770.67 msg/s** | **23,256.49 msg/s** | **38,485.07 msg/s** | **38,485.07 msg/s** | **+55.4% FASTER** | **+65.5% FASTER** |
+| Execution Time (31k msgs) | 1,251.48 ms | 1,332.96 ms | **805.51 ms** | **805.51 ms** | **-445.97 ms (-35.6%)** | **-527.45 ms (-39.6%)** |
+| Avg Per-Msg Latency | 40.37 µs | 43.00 µs | **25.98 µs** | **25.98 µs** | **-14.39 µs (-35.6%)** | **-17.02 µs (-39.6%)** |
 
 > [!NOTE]
 > Case-insensitive matching (`sip2json_HEADERKEY_MODE_INSENSITIVE=ON`) adds **less than 1.6% (0.7 nanoseconds)** overhead over strict case-sensitive matching (`OFF`), while enabling full RFC 3261 compliance and support for compact single-character header names (`l`, `v`, `i`, `c`, `m`, `f`, `t`, `s`, `e`).
@@ -72,12 +71,12 @@ When receiving a single continuous TCP/TLS stream of SIP messages on a single ne
 
 ### Empirical Single Stream Comparison Results
 
-| Architectural Strategy | Execution Time (1,000 Msgs) | Stream Throughput | Bandwidth | Performance Comparison |
+| Architectural Strategy | Execution Time (300 Iters / 163.8k Msgs) | Stream Throughput | Bandwidth | Performance Comparison |
 | :--- | :--- | :--- | :--- | :--- |
-| **`parseAsync` (Single Thread Inline)** | **4.19 ms** | **238,708 msg/sec** | **70.12 MiB/s** | **BEST overall (Optimal)** |
-| **`parse` (Single Thread Vector)** | **4.17 ms** | **239,927 msg/sec** | **70.47 MiB/s** | Virtually identical (~0.5%), extra vector alloc |
-| **`parseAsync` + Thread Pool Queue** | **5.40 ms** | **188,490 msg/sec** | **55.37 MiB/s** | **21% SLOWER** |
-| **`parse` + Thread Pool Handoff** | **6.41 ms** | **229,228 msg/sec** | **67.33 MiB/s** | **17% SLOWER (6.41ms Total)** |
+| **`parseAsync` (Single Thread Inline)** | **4.92 s** | **33,260.49 msg/sec** | **87.93 MB/s** | **BEST overall (Optimal - zero vector alloc)** |
+| **`parse` (Single Thread Vector)** | **5.00 s** | **32,733.85 msg/sec** | **86.02 MB/s** | Extremely close (~1.6%), requires vector alloc |
+| **`parseAsync` + Thread Pool Queue** | **5.40 ms** | **188,490 msg/sec** | **55.37 MiB/s** | **21% SLOWER** due to mutex lock contention |
+| **`parse` + Thread Pool Handoff** | **6.41 ms** | **229,228 msg/sec** | **67.33 MiB/s** | **17% SLOWER** |
 
 ### Why Single-Thread `parseAsync` Wins for Single Streams
 

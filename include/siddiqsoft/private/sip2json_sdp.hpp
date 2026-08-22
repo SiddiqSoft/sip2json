@@ -119,6 +119,8 @@ namespace siddiqsoft
             {
                 if (blockIndex < 0) throw invalid_document_error {std::format("{}:SDP block must start with v=0", __func__)};
 
+                auto& sdpBlock = sipm["b"s]["sdp"s][blockIndex];
+
                 if (key == "a"s)
                 {
                     // attribute lines: https://en.wikipedia.org/wiki/Session_Description_Protocol#Attributes
@@ -129,61 +131,51 @@ namespace siddiqsoft
                         auto akey = string(alineMatcher.get<1>().to_view());
                         auto aval = string(alineMatcher.get<2>().to_view());
 
-                        // This is the form where a=attribute:value
-                        nlohmann::json::json_pointer pkey(
-                                std::format("/b/sdp/{}/{}/{}", blockIndex, key, escapeJsonPointerToken(akey)));
-
-                        // We may get multiple items for the same "key" such as `a=rtpmap:x` and `a=rtpmap:y`
-                        // In this case we should start an array
-                        if (sipm.contains(pkey) && !sipm[pkey].is_array())
+                        auto& aObj = sdpBlock["a"s];
+                        if (aObj.contains(akey) && !aObj[akey].is_array())
                         {
-                            auto previousValue = sipm[pkey]; // make a copy!
-                            sipm[pkey]         = {previousValue, aval};
+                            auto previousValue = aObj[akey]; // make a copy!
+                            aObj[akey]         = {previousValue, aval};
                         }
-                        else if (sipm[pkey].is_array())
-                            sipm[pkey].push_back(aval);
+                        else if (aObj[akey].is_array())
+                            aObj[akey].push_back(aval);
                         else if (!aval.empty())
-                            sipm[pkey] = aval;
+                            aObj[akey] = aval;
                         else
-                            sipm[pkey] = nullptr;
+                            aObj[akey] = nullptr;
                     }
                     else if (!value.empty())
                     {
                         // This is the form where a=flag
-                        // We matched a=key without the `:` or the "value" so we should store the value with nullptr
-                        nlohmann::json::json_pointer pkey(
-                                std::format("/b/sdp/{}/{}/{}", blockIndex, key, escapeJsonPointerToken(value)));
-                        sipm[pkey] = true;
+                        sdpBlock["a"s][value] = true;
                     }
                 }
                 else
                 {
-                    nlohmann::json::json_pointer pkey(std::format("/b/sdp/{}/{}", blockIndex, escapeJsonPointerToken(key)));
-
                     if (key == "c"s)
                     {
                         auto clineMatcher = ctre::search<SIP_PATTERN_BODY_CLINE_RE>(value);
                         if (clineMatcher)
                         {
-                            sipm[pkey] = nlohmann::json {{"type"s, string(clineMatcher.get<1>().to_view())},
+                            sdpBlock[key] = nlohmann::json {{"type"s, string(clineMatcher.get<1>().to_view())},
                                                          {"subtype"s, string(clineMatcher.get<2>().to_view())},
                                                          {"dn"s, string(clineMatcher.get<3>().to_view())}};
                         }
-                        else if (!value.empty()) { sipm[pkey] = value; }
+                        else if (!value.empty()) { sdpBlock[key] = value; }
                     }
                     else if (key == "o"s)
                     {
                         auto olineMatcher = ctre::search<SIP_PATTERN_BODY_OLINE_RE>(value);
                         if (olineMatcher)
                         {
-                            sipm[pkey] = nlohmann::json {{"user"s, string(olineMatcher.get<1>().to_view())},
+                            sdpBlock[key] = nlohmann::json {{"user"s, string(olineMatcher.get<1>().to_view())},
                                                          {"t1"s, string(olineMatcher.get<2>().to_view())},
                                                          {"t2"s, string(olineMatcher.get<3>().to_view())},
                                                          {"type"s, string(olineMatcher.get<4>().to_view())},
                                                          {"subtype"s, string(olineMatcher.get<5>().to_view())},
                                                          {"host"s, string(olineMatcher.get<6>().to_view())}};
                         }
-                        else if (!value.empty()) { sipm[pkey] = value; }
+                        else if (!value.empty()) { sdpBlock[key] = value; }
                     }
                     else if (key.compare("i") == 0)
                     {
@@ -193,15 +185,15 @@ namespace siddiqsoft
                         {
                             auto iName = string(ilineMatcher.get<1>().to_view());
                             // Set the name but check to ensure that if we have a " in the name that we strip it..
-                            sipm[pkey] = nlohmann::json {
+                            sdpBlock[key] = nlohmann::json {
                                     {"name"s, iName.starts_with("\""s) ? iName.substr(1, iName.length() - 2) : iName},
                                     {"dn"s, string(ilineMatcher.get<2>().to_view())},
                                     {"type"s, string(ilineMatcher.get<3>().to_view())}};
                         }
-                        else if (!value.empty()) { sipm[pkey] = value; }
+                        else if (!value.empty()) { sdpBlock[key] = value; }
                         else
                         {
-                            sipm[pkey] = "";
+                            sdpBlock[key] = "";
                         }
                     }
                     else if (key.compare("t"s) == 0)
@@ -216,8 +208,8 @@ namespace siddiqsoft
 #endif
                         if (parsed == 2)
                         {
-                            sipm[pkey].push_back(ts);
-                            sipm[pkey].push_back(te);
+                            sdpBlock[key].push_back(ts);
+                            sdpBlock[key].push_back(te);
                         }
                         else if (parsed > 0)
                         {
@@ -225,8 +217,8 @@ namespace siddiqsoft
                                     std::format("{}:Timing element must have exactly 2 values, got {}", __func__, parsed)};
                         }
                     }
-                    else if (!key.empty() && value.empty()) { sipm[pkey] = ""; }
-                    else if (!key.empty()) { sipm[pkey] = value; }
+                    else if (!key.empty() && value.empty()) { sdpBlock[key] = ""; }
+                    else if (!key.empty()) { sdpBlock[key] = value; }
                 }
             }
 

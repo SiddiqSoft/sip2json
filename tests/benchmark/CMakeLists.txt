@@ -1,5 +1,5 @@
-#   SiddiqSoft CMakeLists 
-#   Copyright 2024 Abdulkareem Siddiq. All rights reserved.
+#   SiddiqSoft CMakeLists - Benchmark Suite
+#   Copyright 2024-2026 Abdulkareem Siddiq. All rights reserved.
 #   See LICENSE file
 #
 cmake_minimum_required(VERSION 3.31)
@@ -20,27 +20,32 @@ endif()
 set(CPM_SOURCE_CACHE ${CPM_SOURCE_CACHE} CACHE PATH "CPM source cache")
 
 if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/CPM.cmake)
-    file(DOWNLOAD https://github.com/cpm-cmake/CPM.cmake/releases/download/v0.42.1/CPM.cmake ${CMAKE_CURRENT_SOURCE_DIR}/CPM.cmake)
+    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../validation/CPM.cmake")
+        configure_file("${CMAKE_CURRENT_SOURCE_DIR}/../validation/CPM.cmake" "${CMAKE_CURRENT_SOURCE_DIR}/CPM.cmake" COPYONLY)
+    else()
+        file(DOWNLOAD https://github.com/cpm-cmake/CPM.cmake/releases/download/v0.42.1/CPM.cmake ${CMAKE_CURRENT_SOURCE_DIR}/CPM.cmake)
+    endif()
 endif()
 include(${CMAKE_CURRENT_SOURCE_DIR}/CPM.cmake)
 
 # ______________________
 # Project Metadata block
-project(sip2json_client_test
+project(sip2json_benchmark
         VERSION         "${CURRENT_PROJECT_VERSION}"
         LANGUAGES       CXX
-        HOMEPAGE_URL    "%%myurl%%"
-        DESCRIPTION     "Sample client sub-project that uses the sip2json library")
+        DESCRIPTION     "Performance Benchmark Suite for sip2json")
 
-set(CMAKE_CXX_STANDARD 23)
+if(NOT CMAKE_CXX_STANDARD OR CMAKE_CXX_STANDARD STREQUAL "")
+    set(CMAKE_CXX_STANDARD 23)
+endif()
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# Option to select sip2json version for testing/benchmarking: 'current' (default) or tag/version like '1.17.1', '2.4.2', '2.5.7', '2.5.8'
-set(SIP2JSON_VERSION "current" CACHE STRING "Version/tag of sip2json to benchmark (e.g. 'current', '1.17.1', '2.4.2', '2.5.7', '2.5.8')")
+# Option to select sip2json version for benchmark: 'current' (default) or tag/version like 'master', 'v2.4.2'
+set(SIP2JSON_VERSION "current" CACHE STRING "Version/tag of sip2json to benchmark (e.g. 'current', 'master', 'v2.4.2')")
 
 if(NOT SIP2JSON_VERSION STREQUAL "current" AND NOT SIP2JSON_VERSION STREQUAL "")
-    message(STATUS "tests/validation - Fetching sip2json dependency version '${SIP2JSON_VERSION}' via CPM...")
+    message(STATUS "tests/benchmark - Fetching sip2json dependency version '${SIP2JSON_VERSION}' via CPM...")
     CPMAddPackage(
         NAME sip2json
         GITHUB_REPOSITORY SiddiqSoft/sip2json
@@ -50,7 +55,7 @@ if(NOT SIP2JSON_VERSION STREQUAL "current" AND NOT SIP2JSON_VERSION STREQUAL "")
     )
 else()
     # ____________________________________
-    # Ensure target sip2json::sip2json exists (use parent project target if available, or load parent project if building standalone)
+    # Ensure target sip2json::sip2json exists
     if(NOT TARGET sip2json::sip2json)
         if(TARGET sip2json)
             add_library(sip2json::sip2json ALIAS sip2json)
@@ -60,16 +65,7 @@ else()
     endif()
 endif()
 
-# Executable targets
-add_executable(${PROJECT_NAME})
-target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_${CMAKE_CXX_STANDARD})
-target_sources(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/test.cpp)
-
-# ____________________________________
 # Dependencies
-if(NOT TARGET GTest::gtest_main)
-    CPMAddPackage("gh:google/googletest#v1.17.0")
-endif()
 if(NOT TARGET nlohmann_json::nlohmann_json)
     CPMAddPackage("gh:nlohmann/json#v3.12.0")
 endif()
@@ -77,9 +73,6 @@ if(NOT TARGET ctre::ctre)
     CPMAddPackage("gh:hanickadot/compile-time-regular-expressions#v3.11.0")
 endif()
 
-target_link_libraries(${PROJECT_NAME} PRIVATE GTest::gtest_main
-                                                sip2json::sip2json)
-
-include(GoogleTest)
-gtest_discover_tests(${PROJECT_NAME} TEST_PREFIX "${PROJECT_NAME}."
-                    PROPERTIES ENVIRONMENT "SAMPLES_DIR=${CMAKE_CURRENT_SOURCE_DIR}/samples")
+add_executable(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/src/benchmark.cpp)
+target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_${CMAKE_CXX_STANDARD})
+target_link_libraries(${PROJECT_NAME} PRIVATE sip2json::sip2json)

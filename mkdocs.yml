@@ -91,6 +91,8 @@ nav:
       - Performance & Benchmarks: features/benchmarks.md
       - JSON Metaphor & Schema: features/json_schema.md
       - SDP Support: features/sdp.md
+      - Standards Compliance: features/compliance.md
+      - Test Suite Sources & IETF Links: features/test_suite_sources.md
   - Integration:
       - Quick Start: integration/index.md
       - CMake & Submodules: integration/cmake.md

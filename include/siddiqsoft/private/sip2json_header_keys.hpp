@@ -188,70 +188,176 @@ namespace siddiqsoft
         operator const HeaderKeySet&() const { return isCanonical ? canonicalKeySet : customKeySet; }
     };
 
+    constexpr uint64_t pack_key_4(const char* s, size_t len) noexcept
+    {
+        uint64_t val = 0;
+        size_t count = len < 4 ? len : 4;
+        for (size_t i = 0; i < count; ++i)
+        {
+            char c = s[i];
+            if (c >= 'A' && c <= 'Z') c = static_cast<char>(c + 32);
+            val |= (static_cast<uint64_t>(static_cast<unsigned char>(c)) << (i * 8));
+        }
+        return val;
+    }
+
+    constexpr uint64_t make_tag4(const char* s) noexcept
+    {
+        uint64_t val = 0;
+        size_t i = 0;
+        while (s[i] != '\0' && i < 4)
+        {
+            char c = s[i];
+            if (c >= 'A' && c <= 'Z') c = static_cast<char>(c + 32);
+            val |= (static_cast<uint64_t>(static_cast<unsigned char>(c)) << (i * 8));
+            i++;
+        }
+        return val;
+    }
+
     inline CanonicalHeaderKeyResult canonicalizeHeaderKey(const std::string& keyFromPayload)
     {
-        // Convert the key to lowercase for comparison against canonical header sets
+        if (keyFromPayload.empty()) return CanonicalHeaderKeyResult {keyFromPayload};
+
+        uint64_t tag = pack_key_4(keyFromPayload.data(), keyFromPayload.size());
+
+        // Fast-path: Custom headers starting with X- / x- / X_ / x_
+        if ((tag & 0xFFFF) == make_tag4("x-") || (tag & 0xFFFF) == make_tag4("x_"))
+            return CanonicalHeaderKeyResult {keyFromPayload};
+
+        // Convert the key to lowercase for matching full strings inside the switch branch
         std::string lowerKey;
         lowerKey.reserve(keyFromPayload.size());
         std::transform(keyFromPayload.begin(), keyFromPayload.end(), std::back_inserter(lowerKey), ::tolower);
 
-        // If we have a custom header as per standard return immediately.
-        if( lowerKey.starts_with("x-") ) return CanonicalHeaderKeyResult {keyFromPayload};
-        
-        // compare the lowerKey against the known header key sets and return the canonical form if found
-        // match against the lowercase version of the key or the abbreviation (if present) in the HeaderKeySet
-
-        // WARNING! The Authorization header has a special case where some implementations send "uthorization" instead of "Authorization".
-        // The abbreviation for "Authorization" is "uthorization" (without the leading "A") to support those implementations.
-        // This is a known bug in those implementations, but we must support it for interoperability.
-        if (HFS_AUTHORIZATION.lower() == lowerKey || HFS_AUTHORIZATION.alt() == lowerKey) return {true, false, HFS_AUTHORIZATION};
-
-        if (HFS_FROM.lower() == lowerKey || HFS_FROM.alt() == lowerKey) return {true, false, HFS_FROM};
-        if (HFS_TO.lower() == lowerKey || HFS_TO.alt() == lowerKey) return {true, false, HFS_TO};
-        if (HFS_PRIORITY.lower() == lowerKey || HFS_PRIORITY.alt() == lowerKey) return {true, false, HFS_PRIORITY};
-        if (HFS_CONTENT_ENCODING.lower() == lowerKey || HFS_CONTENT_ENCODING.alt() == lowerKey)
+        switch (tag)
+        {
+        case make_tag4("auth"):
+        case make_tag4("utho"):
+            if (lowerKey == HFS_AUTHORIZATION.lower() || lowerKey == HFS_AUTHORIZATION.alt())
+                return {true, false, HFS_AUTHORIZATION};
+            break;
+        case make_tag4("from"):
+            if (lowerKey == HFS_FROM.lower()) return {true, false, HFS_FROM};
+            break;
+        case make_tag4("f"):
+            return {true, false, HFS_FROM};
+        case make_tag4("to"):
+            if (lowerKey == HFS_TO.lower()) return {true, false, HFS_TO};
+            break;
+        case make_tag4("t"):
+            return {true, false, HFS_TO};
+        case make_tag4("prio"):
+            if (lowerKey == HFS_PRIORITY.lower()) return {true, false, HFS_PRIORITY};
+            break;
+        case make_tag4("cont"):
+            if (lowerKey == HFS_CONTENT_ENCODING.lower()) return {true, false, HFS_CONTENT_ENCODING};
+            if (lowerKey == HFS_CONTENT_LENGTH.lower()) return {true, false, HFS_CONTENT_LENGTH};
+            if (lowerKey == HFS_CONTENT_TYPE.lower()) return {true, false, HFS_CONTENT_TYPE};
+            if (lowerKey == HFS_CONTACT.lower()) return {true, false, HFS_CONTACT};
+            break;
+        case make_tag4("e"):
             return {true, false, HFS_CONTENT_ENCODING};
-        if (HFS_CONTENT_LENGTH.lower() == lowerKey || HFS_CONTENT_LENGTH.alt() == lowerKey)
+        case make_tag4("l"):
             return {true, false, HFS_CONTENT_LENGTH};
-        if (HFS_CONTENT_TYPE.lower() == lowerKey || HFS_CONTENT_TYPE.alt() == lowerKey) return {true, false, HFS_CONTENT_TYPE};
-        if (HFS_CALLID.lower() == lowerKey || HFS_CALLID.alt() == lowerKey) return {true, false, HFS_CALLID};
-        if (HFS_CSEQ.lower() == lowerKey || HFS_CSEQ.alt() == lowerKey) return {true, false, HFS_CSEQ};
-        if (HFS_VIA.lower() == lowerKey || HFS_VIA.alt() == lowerKey) return {true, true, HFS_VIA};
-        if (HFS_ENCRYPTION.lower() == lowerKey || HFS_ENCRYPTION.alt() == lowerKey) return {true, false, HFS_ENCRYPTION};
-        if (HFS_SUBJECT.lower() == lowerKey || HFS_SUBJECT.alt() == lowerKey) return {true, false, HFS_SUBJECT};
-        if (HFS_LOCATION.lower() == lowerKey || HFS_LOCATION.alt() == lowerKey) return {true, false, HFS_LOCATION};
-        if (HFS_EXPIRES.lower() == lowerKey || HFS_EXPIRES.alt() == lowerKey) return {true, false, HFS_EXPIRES};
-        if (HFS_CONTACT.lower() == lowerKey || HFS_CONTACT.alt() == lowerKey) return {true, false, HFS_CONTACT};
-        if (HFS_ACCEPT.lower() == lowerKey || HFS_ACCEPT.alt() == lowerKey) return {true, true, HFS_ACCEPT};
-        if (HFS_ACCEPT_ENCODING.lower() == lowerKey || HFS_ACCEPT_ENCODING.alt() == lowerKey)
-            return {true, false, HFS_ACCEPT_ENCODING};
-        if (HFS_ACCEPT_LANGUAGE.lower() == lowerKey || HFS_ACCEPT_LANGUAGE.alt() == lowerKey)
-            return {true, false, HFS_ACCEPT_LANGUAGE};
-        if (HFS_DATE.lower() == lowerKey || HFS_DATE.alt() == lowerKey) return {true, false, HFS_DATE};
-        if (HFS_RECORD_ROUTE.lower() == lowerKey || HFS_RECORD_ROUTE.alt() == lowerKey) return {true, true, HFS_RECORD_ROUTE};
-        if (HFS_TIMESTAMP.lower() == lowerKey || HFS_TIMESTAMP.alt() == lowerKey) return {true, false, HFS_TIMESTAMP};
-        if (HFS_HIDE.lower() == lowerKey || HFS_HIDE.alt() == lowerKey) return {true, false, HFS_HIDE};
-        if (HFS_MAX_FORWARDS.lower() == lowerKey || HFS_MAX_FORWARDS.alt() == lowerKey) return {true, false, HFS_MAX_FORWARDS};
-        if (HFS_ORGANIZATION.lower() == lowerKey || HFS_ORGANIZATION.alt() == lowerKey) return {true, false, HFS_ORGANIZATION};
-        if (HFS_PROXY_AUTHORIZATION.lower() == lowerKey || HFS_PROXY_AUTHORIZATION.alt() == lowerKey)
-            return {true, false, HFS_PROXY_AUTHORIZATION};
-        if (HFS_PROXY_REQUIRE.lower() == lowerKey || HFS_PROXY_REQUIRE.alt() == lowerKey) return {true, false, HFS_PROXY_REQUIRE};
-        if (HFS_ROUTE.lower() == lowerKey || HFS_ROUTE.alt() == lowerKey) return {true, true, HFS_ROUTE};
-        if (HFS_REQUIRE.lower() == lowerKey || HFS_REQUIRE.alt() == lowerKey) return {true, false, HFS_REQUIRE};
-        if (HFS_RESPONSE_KEY.lower() == lowerKey || HFS_RESPONSE_KEY.alt() == lowerKey) return {true, false, HFS_RESPONSE_KEY};
-        if (HFS_USER_AGENT.lower() == lowerKey || HFS_USER_AGENT.alt() == lowerKey) return {true, false, HFS_USER_AGENT};
-        if (HFS_PROXY_AUTHENTICATE.lower() == lowerKey || HFS_PROXY_AUTHENTICATE.alt() == lowerKey)
-            return {true, false, HFS_PROXY_AUTHENTICATE};
-        if (HFS_RETRY_AFTER.lower() == lowerKey || HFS_RETRY_AFTER.alt() == lowerKey) return {true, false, HFS_RETRY_AFTER};
-        if (HFS_SERVER.lower() == lowerKey || HFS_SERVER.alt() == lowerKey) return {true, false, HFS_SERVER};
-        if (HFS_SUPPORTED.lower() == lowerKey || HFS_SUPPORTED.alt() == lowerKey) return {true, true, HFS_SUPPORTED};
-        if (HFS_ALLOW.lower() == lowerKey || HFS_ALLOW.alt() == lowerKey) return {true, false, HFS_ALLOW};
-        if (HFS_UNSUPPORTED.lower() == lowerKey || HFS_UNSUPPORTED.alt() == lowerKey) return {true, false, HFS_UNSUPPORTED};
-        if (HFS_WARNING.lower() == lowerKey || HFS_WARNING.alt() == lowerKey) return {true, true, HFS_WARNING};
-        if (HFS_WWW_AUTHENTICATE.lower() == lowerKey || HFS_WWW_AUTHENTICATE.alt() == lowerKey)
-            return {true, false, HFS_WWW_AUTHENTICATE};
-        if (HFS_SUBSCRIPTION_STATE.lower() == lowerKey || HFS_SUBSCRIPTION_STATE.alt() == lowerKey)
-            return {true, false, HFS_SUBSCRIPTION_STATE};
+        case make_tag4("c"):
+            return {true, false, HFS_CONTENT_TYPE};
+        case make_tag4("call"):
+            if (lowerKey == HFS_CALLID.lower()) return {true, false, HFS_CALLID};
+            break;
+        case make_tag4("i"):
+            return {true, false, HFS_CALLID};
+        case make_tag4("cseq"):
+            if (lowerKey == HFS_CSEQ.lower()) return {true, false, HFS_CSEQ};
+            break;
+        case make_tag4("via"):
+            if (lowerKey == HFS_VIA.lower()) return {true, true, HFS_VIA};
+            break;
+        case make_tag4("v"):
+            return {true, true, HFS_VIA};
+        case make_tag4("encr"):
+            if (lowerKey == HFS_ENCRYPTION.lower()) return {true, false, HFS_ENCRYPTION};
+            break;
+        case make_tag4("subj"):
+            if (lowerKey == HFS_SUBJECT.lower()) return {true, false, HFS_SUBJECT};
+            break;
+        case make_tag4("s"):
+            return {true, false, HFS_SUBJECT};
+        case make_tag4("loca"):
+            if (lowerKey == HFS_LOCATION.lower()) return {true, false, HFS_LOCATION};
+            break;
+        case make_tag4("expi"):
+            if (lowerKey == HFS_EXPIRES.lower()) return {true, false, HFS_EXPIRES};
+            break;
+        case make_tag4("m"):
+            return {true, false, HFS_CONTACT};
+        case make_tag4("acce"):
+            if (lowerKey == HFS_ACCEPT.lower()) return {true, true, HFS_ACCEPT};
+            if (lowerKey == HFS_ACCEPT_ENCODING.lower()) return {true, false, HFS_ACCEPT_ENCODING};
+            if (lowerKey == HFS_ACCEPT_LANGUAGE.lower()) return {true, false, HFS_ACCEPT_LANGUAGE};
+            break;
+        case make_tag4("date"):
+            if (lowerKey == HFS_DATE.lower()) return {true, false, HFS_DATE};
+            break;
+        case make_tag4("reco"):
+            if (lowerKey == HFS_RECORD_ROUTE.lower()) return {true, true, HFS_RECORD_ROUTE};
+            break;
+        case make_tag4("time"):
+            if (lowerKey == HFS_TIMESTAMP.lower()) return {true, false, HFS_TIMESTAMP};
+            break;
+        case make_tag4("hide"):
+            if (lowerKey == HFS_HIDE.lower()) return {true, false, HFS_HIDE};
+            break;
+        case make_tag4("max-"):
+            if (lowerKey == HFS_MAX_FORWARDS.lower()) return {true, false, HFS_MAX_FORWARDS};
+            break;
+        case make_tag4("orga"):
+            if (lowerKey == HFS_ORGANIZATION.lower()) return {true, false, HFS_ORGANIZATION};
+            break;
+        case make_tag4("prox"):
+            if (lowerKey == HFS_PROXY_AUTHORIZATION.lower()) return {true, false, HFS_PROXY_AUTHORIZATION};
+            if (lowerKey == HFS_PROXY_REQUIRE.lower()) return {true, false, HFS_PROXY_REQUIRE};
+            if (lowerKey == HFS_PROXY_AUTHENTICATE.lower()) return {true, false, HFS_PROXY_AUTHENTICATE};
+            break;
+        case make_tag4("rout"):
+            if (lowerKey == HFS_ROUTE.lower()) return {true, true, HFS_ROUTE};
+            break;
+        case make_tag4("requ"):
+            if (lowerKey == HFS_REQUIRE.lower()) return {true, false, HFS_REQUIRE};
+            break;
+        case make_tag4("resp"):
+            if (lowerKey == HFS_RESPONSE_KEY.lower()) return {true, false, HFS_RESPONSE_KEY};
+            break;
+        case make_tag4("user"):
+            if (lowerKey == HFS_USER_AGENT.lower()) return {true, false, HFS_USER_AGENT};
+            break;
+        case make_tag4("retr"):
+            if (lowerKey == HFS_RETRY_AFTER.lower()) return {true, false, HFS_RETRY_AFTER};
+            break;
+        case make_tag4("serv"):
+            if (lowerKey == HFS_SERVER.lower()) return {true, false, HFS_SERVER};
+            break;
+        case make_tag4("supp"):
+            if (lowerKey == HFS_SUPPORTED.lower()) return {true, true, HFS_SUPPORTED};
+            break;
+        case make_tag4("k"):
+            return {true, true, HFS_SUPPORTED};
+        case make_tag4("allo"):
+            if (lowerKey == HFS_ALLOW.lower()) return {true, false, HFS_ALLOW};
+            break;
+        case make_tag4("unsu"):
+            if (lowerKey == HFS_UNSUPPORTED.lower()) return {true, false, HFS_UNSUPPORTED};
+            break;
+        case make_tag4("warn"):
+            if (lowerKey == HFS_WARNING.lower()) return {true, true, HFS_WARNING};
+            break;
+        case make_tag4("www-"):
+            if (lowerKey == HFS_WWW_AUTHENTICATE.lower()) return {true, false, HFS_WWW_AUTHENTICATE};
+            break;
+        case make_tag4("subs"):
+            if (lowerKey == HFS_SUBSCRIPTION_STATE.lower()) return {true, false, HFS_SUBSCRIPTION_STATE};
+            break;
+        }
 
         // Return original keyFromPayload if no match found for custom headers
         return CanonicalHeaderKeyResult {keyFromPayload};
