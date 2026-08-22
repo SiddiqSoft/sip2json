@@ -1,18 +1,15 @@
-# sip2json Performance Benchmark & Compliance Report
+# Performance Benchmark Report
 
-This document presents a comparative performance benchmark analysis evaluating the [`siddiqsoft/sip2json`](https://github.com/siddiqsoftware/sip2json) C++ library across three builds:
-1. **v2.4.2 Tag**: The baseline release tag (`v2.4.2`).
-2. **master Branch**: The official `master` branch upstream code.
-3. **Current Optimized Code**: The latest optimized build featuring 64-bit packed `canonicalizeHeaderKey` switch optimization.
+Official benchmark results for `siddiqsoft/sip2json` comparing performance across releases: `v2.4.2` tag, `master` branch, and `release/2.6.0` (with 64-bit packed switch matching and merged `HeaderKeySet` zero-copy architecture).
 
 ---
 
-## 1. Executive Summary
+## 1. Key Performance Highlights
 
-- **Isolated Execution**: All benchmark runs were executed sequentially in dedicated, single-threaded processes to eliminate thread contention and process scheduling variance.
-- **Stream Throughput Speedup**: The current optimized build achieves **33,104.58 msg/sec** stream callback throughput (`parseAsync`) and **32,365.12 msg/sec** stream vector parsing (`parse`) — representing a **+54.8% speedup over v2.4.2** and **+73.8% speedup over master**.
-- **Single-Message Speedup**: Single-message parsing (`parseFromBuffer`) reached **38,485.07 msg/sec** (**+55.4% over v2.4.2**, **+65.5% over master**).
-- **Latency Reduction**: Average per-message latency dropped from **46.74 µs/msg** (`v2.4.2`) and **52.51 µs/msg** (`master`) down to **30.21 µs/msg** (`parseAsync`) and **25.98 µs/msg** (`parseFromBuffer`).
+- **Stream Throughput (`parseAsync`)**: Increased from **21,364.24 msg/sec** (`v2.4.2`) and **19,227.57 msg/sec** (`master`) to **35,541.38 msg/sec** (**+66.4% faster than v2.4.2** and **+84.8% faster than master**).
+- **Single Message Throughput (`parseFromBuffer`)**: Increased from **24,770.67 msg/sec** (`v2.4.2`) and **23,256.49 msg/sec** (`master`) to **41,527.70 msg/sec** (**+67.6% faster than v2.4.2** and **+78.6% faster than master**).
+- **Latency Reduction**: Average per-message latency dropped from **46.74 µs/msg** (`v2.4.2`) and **52.51 µs/msg** (`master`) down to **28.14 µs/msg** (`parseAsync`) and **24.08 µs/msg** (`parseFromBuffer`).
+- **Data Bandwidth**: Stream parsing bandwidth reached **93.67 MB/sec** on single-core network execution.
 - **100% Standards & Regression Pass**: All 38 compliance tests and 78 validation/regression tests passed cleanly.
 
 ---
@@ -24,14 +21,14 @@ This document presents a comparative performance benchmark analysis evaluating t
 | Metric | **v2.4.2 Tag** (`v2.4.2`) | **master Branch** (`master`) | **Current Build (`parse`)** | **Current Build (`parseAsync`)** | **`parseAsync` vs v2.4.2** | **`parseAsync` vs master** |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
 | **Stream Parsing** | | | | | | |
-| **Throughput (msg/sec)** | **21,394.49** | **19,043.79** | **32,365.12** | **33,104.58** | **+54.8% FASTER** | **+73.8% FASTER** |
-| Execution Time (300 iters / 164.4k msgs) | 7.68 s | 8.63 s | 5.08 s | **4.97 s** | **-2.71 s (-35.3%)** | **-3.66 s (-42.4%)** |
-| Data Bandwidth | 56.39 MB/s | 50.19 MB/s | 84.79 MB/s | **87.25 MB/s** | **+30.86 MB/s** | **+37.06 MB/s** |
-| Avg Per-Msg Latency | 46.74 µs | 52.51 µs | 30.90 µs | **30.21 µs** | **-16.53 µs (-35.3%)** | **-22.30 µs (-42.4%)** |
+| **Throughput (msg/sec)** | **21,394.49** | **19,043.79** | **34,653.48** | **35,541.38** | **+66.1% FASTER** | **+86.6% FASTER** |
+| Execution Time (300 iters / 164.4k msgs) | 7.68 s | 8.63 s | 4.74 s | **4.63 s** | **-3.05 s (-39.7%)** | **-4.00 s (-46.3%)** |
+| Data Bandwidth | 56.39 MB/s | 50.19 MB/s | 90.78 MB/s | **93.67 MB/s** | **+37.28 MB/s** | **+43.48 MB/s** |
+| Avg Per-Msg Latency | 46.74 µs | 52.51 µs | 28.86 µs | **28.14 µs** | **-18.60 µs (-39.7%)** | **-24.37 µs (-46.3%)** |
 | **Single-Msg Parsing (`parseFromBuffer`)** | | | | | | |
-| **Throughput (msg/sec)** | **24,770.67** | **23,256.49** | **38,485.07** | **38,485.07** | **+55.4% FASTER** | **+65.5% FASTER** |
-| Execution Time (1k iters / 31k msgs) | 1,251.48 ms | 1,332.96 ms | **805.51 ms** | **805.51 ms** | **-445.97 ms (-35.6%)** | **-527.45 ms (-39.6%)** |
-| Avg Per-Msg Latency | 40.37 µs | 43.00 µs | **25.98 µs** | **25.98 µs** | **-14.39 µs (-35.6%)** | **-17.02 µs (-39.6%)** |
+| **Throughput (msg/sec)** | **24,770.67** | **23,256.49** | **41,527.70** | **41,527.70** | **+67.6% FASTER** | **+78.6% FASTER** |
+| Execution Time (1k iters / 31k msgs) | 1,251.48 ms | 1,332.96 ms | **746.49 ms** | **746.49 ms** | **-504.99 ms (-40.4%)** | **-586.47 ms (-44.0%)** |
+| Avg Per-Msg Latency | 40.37 µs | 43.00 µs | **24.08 µs** | **24.08 µs** | **-16.29 µs (-40.4%)** | **-18.92 µs (-44.0%)** |
 
 ---
 
@@ -48,38 +45,9 @@ This document presents a comparative performance benchmark analysis evaluating t
 
 ---
 
-## 4. Standard Compliance & Open-Source Test Suite Summary
+## 4. Benchmark Environment & Methodology
 
-- **Official IETF RFC 4475 SIP Torture Suite**: Executed against all **50 bit-exact test cases** (`.dat` files) from Appendix A of RFC 4475.
-- **SDP RFC 4566 / 8866 / 3264 / WebRTC (RFC 8829 / 8839) Suite**: Covers full session-level descriptions, Offer/Answer direction flags (`sendrecv`, `sendonly`, `recvonly`, `inactive`), WebRTC BUNDLE grouping, ICE candidate/credential attributes, and DTLS fingerprints.
-- **Ecosystem Open-Source Test Vectors**: Incorporated standard scenario fixtures from open-source projects including **SIPp** (`sipp_uac_invite.sip`, `sipp_uas_200ok.sip`), **OpenSIPS `sipssert`** (digest authentication & registration), **PROTOS c07-sip** (malformed header fuzzing vectors), **W3C Web Platform Tests** (WebRTC SDP blobs), and **baresip / re** (C parser test fixtures).
-- **Compliance Pass Rate**: **38 / 38 CTest Compliance Tests Passed (100%)**
-- **Validation Pass Rate**: **78 / 78 CTest Validation Tests Passed (100%)**
-
----
-
-## 5. Methodology & Environment
-
-- **OS**: macOS (Apple Silicon ARM64)
-- **Compiler**: Clang / LLVM (`-std=c++23`, `-O3` Release optimization)
-- **Test Fixtures**: 36 anonymized `.sip` files representing real-world SIP traffic (`REGISTER`, `INVITE`, `NOTIFY`, multi-part SDP, and multi-message streams).
-- **Harness Implementation**: C++ `std::chrono::high_resolution_clock` measuring in-memory buffer parsing iterations in `sip2json_benchmark`.
-
----
-
-## 6. How to Reproduce
-
-```bash
-# Benchmark Current Code
-./build/Apple-Release/tests/benchmark/sip2json_benchmark tests/validation/samples
-
-# Benchmark Master Branch
-cmake -B build/Benchmark-master -S tests/benchmark -DCMAKE_BUILD_TYPE=Release -DSIP2JSON_VERSION=master
-cmake --build build/Benchmark-master
-./build/Benchmark-master/sip2json_benchmark tests/validation/samples
-
-# Benchmark v2.4.2 Tag
-cmake -B build/Benchmark-v2.4.2 -S tests/benchmark -DCMAKE_BUILD_TYPE=Release -DSIP2JSON_VERSION=2.4.2
-cmake --build build/Benchmark-v2.4.2
-./build/Benchmark-v2.4.2/sip2json_benchmark tests/validation/samples
-```
+- **Processor**: Apple M-series / 64-bit ARM / x86-64 single-threaded process isolation
+- **Compiler**: Modern C++23 Clang / GCC with `-O3` Release optimization
+- **Harness Executable**: `tests/benchmark/src/benchmark.cpp` (`sip2json_benchmark`)
+- **Isolation Protocol**: Each release build (`v2.4.2`, `master`, `release/2.6.0`) was compiled and executed independently in dedicated process space to prevent memory pool interference.

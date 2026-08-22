@@ -181,19 +181,18 @@ namespace siddiqsoft
     /// @return Returns true if the store was successful.
     inline bool sip2json::storeHeaderValue(sipmessage& sipm, const std::string& key, const std::string& value) noexcept(false)
     {
-        auto                targetKey = canonicalizeHeaderKey(key);
-        const HeaderKeySet& keySet    = targetKey;
-        const std::string&  keyStr    = keySet.canonical();
+        const HeaderKeySet& keySet = canonicalizeHeaderKey(key);
+        const std::string&  keyStr = keySet.canonical();
 
-        if (sipm[JSON_KEY_HEADERS].contains(keyStr) || targetKey.isMultiLine)
+        if (sipm[JSON_KEY_HEADERS].contains(keyStr) || keySet.isMultiLine)
         {
             storeMultiLineHeader(sipm[JSON_KEY_HEADERS], keyStr, value);
         }
-        else if (targetKey.isCanonical && &targetKey.canonicalKeySet == &HFS_CONTENT_LENGTH)
+        else if (&keySet == &HFS_CONTENT_LENGTH)
         {
             sipm[JSON_KEY_HEADERS][keyStr] = parseContentLengthValue(value);
         }
-        else if (targetKey.isCanonical && &targetKey.canonicalKeySet == &HFS_EXPIRES)
+        else if (&keySet == &HFS_EXPIRES)
         {
             sipm[JSON_KEY_HEADERS][keyStr] = parseExpiresValue(value);
         }
