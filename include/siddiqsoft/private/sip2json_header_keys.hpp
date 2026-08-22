@@ -46,57 +46,39 @@
 
 namespace siddiqsoft
 {
-    // We're defining header key set as an array that contains the canonical header key
-    // and any other variations of the header key that we want to support.
-    // The second element is the canonical header key, and the first element is the lowercase version of the canonical header key.
-    // The last item (if present) is the single character abbreviation for the header key.
-    using HeaderKeySet = std::array<std::string_view, 3>; // {lowercase, canonical, abbreviation}
 
-    // This allows us to compare incoming header keys against a set of known variations, making the parser more robust and flexible.
-    static constexpr HeaderKeySet HFS_FROM {"from", "From", "f"};
-    static constexpr HeaderKeySet HFS_TO {"to", "To", "t"};
-    static constexpr HeaderKeySet HFS_PRIORITY {"priority", "Priority", {}};
-    static constexpr HeaderKeySet HFS_CONTENT_ENCODING {"content-encoding", "Content-Encoding", "e"};
-    static constexpr HeaderKeySet HFS_CONTENT_LENGTH {"content-length", "Content-Length", "l"};
-    static constexpr HeaderKeySet HFS_CONTENT_TYPE {"content-type", "Content-Type", "c"};
-    static constexpr HeaderKeySet HFS_CALLID {"call-id", "Call-ID", "i"};
-    static constexpr HeaderKeySet HFS_CSEQ {"cseq", "CSeq", {}};
-    static constexpr HeaderKeySet HFS_VIA {"via", "Via", "v"};
-    static constexpr HeaderKeySet HFS_ENCRYPTION {"encryption", "Encryption", {}};
-    static constexpr HeaderKeySet HFS_SUBJECT {"subject", "Subject", "s"};
-    static constexpr HeaderKeySet HFS_LOCATION {"location", "Location", {}};
-    static constexpr HeaderKeySet HFS_EXPIRES {"expires", "Expires", {}};
-    static constexpr HeaderKeySet HFS_CONTACT {"contact", "Contact", "m"};
-    static constexpr HeaderKeySet HFS_ACCEPT {"accept", "Accept", {}};
-    static constexpr HeaderKeySet HFS_ACCEPT_ENCODING {"accept-encoding", "Accept-Encoding", {}};
-    static constexpr HeaderKeySet HFS_ACCEPT_LANGUAGE {"accept-language", "Accept-Language", {}};
-    static constexpr HeaderKeySet HFS_DATE {"date", "Date", {}};
-    static constexpr HeaderKeySet HFS_RECORD_ROUTE {"record-route", "Record-Route", {}};
-    static constexpr HeaderKeySet HFS_TIMESTAMP {"timestamp", "Timestamp", {}};
-    static constexpr HeaderKeySet HFS_HIDE {"hide", "Hide", {}};
-    static constexpr HeaderKeySet HFS_MAX_FORWARDS {"max-forwards", "Max-Forwards", {}};
-    static constexpr HeaderKeySet HFS_ORGANIZATION {"organization", "Organization", {}};
-    static constexpr HeaderKeySet HFS_PROXY_AUTHORIZATION {"proxy-authorization", "Proxy-Authorization", {}};
-    static constexpr HeaderKeySet HFS_PROXY_REQUIRE {"proxy-require", "Proxy-Require", {}};
-    static constexpr HeaderKeySet HFS_ROUTE {"route", "Route", {}};
-    static constexpr HeaderKeySet HFS_REQUIRE {"require", "Require", {}};
-    static constexpr HeaderKeySet HFS_RESPONSE_KEY {"response-key", "Response-Key", {}};
-    static constexpr HeaderKeySet HFS_USER_AGENT {"user-agent", "User-Agent", {}};
-    static constexpr HeaderKeySet HFS_PROXY_AUTHENTICATE {"proxy-authenticate", "Proxy-Authenticate", {}};
-    static constexpr HeaderKeySet HFS_RETRY_AFTER {"retry-after", "Retry-After", {}};
-    static constexpr HeaderKeySet HFS_SERVER {"server", "Server", {}};
-    static constexpr HeaderKeySet HFS_SUPPORTED {"supported", "Supported", "k"};
-    static constexpr HeaderKeySet HFS_ALLOW {"allow", "Allow", {}};
-    static constexpr HeaderKeySet HFS_UNSUPPORTED {"unsupported", "Unsupported", {}};
-    static constexpr HeaderKeySet HFS_WARNING {"warning", "Warning", {}};
-    static constexpr HeaderKeySet HFS_WWW_AUTHENTICATE {"www-authenticate", "WWW-Authenticate", {}};
+    /// @brief The HeaderKeySet class expresses a set of defaults for the SIP headers.
+    /// It also allows for custom headers to be defined and used in the parser.
+    class HeaderKeySet
+    {
+    private:
+        std::string m_lowercase {};
+        std::string m_canonical {};
+        std::string m_abbreviation {};
 
-    // DO NOT CHANGE THIS! There are some some implementations that send "uthorization" instead of "Authorization"; yes--without the leading "A".
-    // This is a bug in those implementations, but we must support it for interoperability.
-    static constexpr HeaderKeySet HFS_AUTHORIZATION {"authorization", "Authorization", "uthorization"};
+    public:
+        HeaderKeySet(const std::string& lower, const std::string& canon, const std::string& abbrev = {})
+            : m_lowercase(lower)
+            , m_canonical(canon)
+            , m_abbreviation(abbrev)
+        {
+        }
 
-    // Subscribe/Notify header fields
-    static constexpr HeaderKeySet HFS_SUBSCRIPTION_STATE {"subscription-state", "Subscription-State", {}};
+        const std::string& canonical() const { return m_canonical; }
+        const std::string& lower() const { return m_lowercase; }
+        const std::string& alt() const { return m_abbreviation; }
+
+        auto operator[](size_t index) const
+        {
+            switch (index)
+            {
+            case 0: return m_lowercase;
+            case 1: return m_canonical;
+            case 2: return m_abbreviation;
+            default: throw std::out_of_range("HeaderKeySet index out of range");
+            }
+        }
+    };
 
     // Static const std::string definitions for canonical header keys to prevent temporary std::string allocations in nlohmann::json lookups
     static inline const std::string HF_FROM {"From"};
@@ -139,17 +121,82 @@ namespace siddiqsoft
     static inline const std::string HF_AUTHORIZATION {"Authorization"};
     static inline const std::string HF_SUBSCRIPTION_STATE {"Subscription-State"};
 
-    struct CanonicalHeaderKeyResult
-    {
-        bool               isCanonical {false};
-        bool               isMultiLine {false};
-        std::string_view   canonicalKey {};
-        const std::string* canonicalStringPtr {nullptr};
+    // This allows us to compare incoming header keys against a set of known variations, making the parser more robust and flexible.
+    static const HeaderKeySet HFS_FROM {"from", HF_FROM, "f"};
+    static const HeaderKeySet HFS_TO {"to", HF_TO, "t"};
+    static const HeaderKeySet HFS_PRIORITY {"priority", HF_PRIORITY, {}};
+    static const HeaderKeySet HFS_CONTENT_ENCODING {"content-encoding", HF_CONTENT_ENCODING, "e"};
+    static const HeaderKeySet HFS_CONTENT_LENGTH {"content-length", HF_CONTENT_LENGTH, "l"};
+    static const HeaderKeySet HFS_CONTENT_TYPE {"content-type", HF_CONTENT_TYPE, "c"};
+    static const HeaderKeySet HFS_CALLID {"call-id", HF_CALLID, "i"};
+    static const HeaderKeySet HFS_CSEQ {"cseq", HF_CSEQ, {}};
+    static const HeaderKeySet HFS_VIA {"via", HF_VIA, "v"};
+    static const HeaderKeySet HFS_ENCRYPTION {"encryption", HF_ENCRYPTION, {}};
+    static const HeaderKeySet HFS_SUBJECT {"subject", HF_SUBJECT, "s"};
+    static const HeaderKeySet HFS_LOCATION {"location", HF_LOCATION, {}};
+    static const HeaderKeySet HFS_EXPIRES {"expires", HF_EXPIRES, {}};
+    static const HeaderKeySet HFS_CONTACT {"contact", HF_CONTACT, "m"};
+    static const HeaderKeySet HFS_ACCEPT {"accept", HF_ACCEPT, {}};
+    static const HeaderKeySet HFS_ACCEPT_ENCODING {"accept-encoding", HF_ACCEPT_ENCODING, {}};
+    static const HeaderKeySet HFS_ACCEPT_LANGUAGE {"accept-language", HF_ACCEPT_LANGUAGE, {}};
+    static const HeaderKeySet HFS_DATE {"date", HF_DATE, {}};
+    static const HeaderKeySet HFS_RECORD_ROUTE {"record-route", HF_RECORD_ROUTE, {}};
+    static const HeaderKeySet HFS_TIMESTAMP {"timestamp", HF_TIMESTAMP, {}};
+    static const HeaderKeySet HFS_HIDE {"hide", HF_HIDE, {}};
+    static const HeaderKeySet HFS_MAX_FORWARDS {"max-forwards", HF_MAX_FORWARDS, {}};
+    static const HeaderKeySet HFS_ORGANIZATION {"organization", HF_ORGANIZATION, {}};
+    static const HeaderKeySet HFS_PROXY_AUTHORIZATION {"proxy-authorization", HF_PROXY_AUTHORIZATION, {}};
+    static const HeaderKeySet HFS_PROXY_REQUIRE {"proxy-require", HF_PROXY_REQUIRE, {}};
+    static const HeaderKeySet HFS_ROUTE {"route", HF_ROUTE, {}};
+    static const HeaderKeySet HFS_REQUIRE {"require", HF_REQUIRE, {}};
+    static const HeaderKeySet HFS_RESPONSE_KEY {"response-key", HF_RESPONSE_KEY, {}};
+    static const HeaderKeySet HFS_USER_AGENT {"user-agent", HF_USER_AGENT, {}};
+    static const HeaderKeySet HFS_PROXY_AUTHENTICATE {"proxy-authenticate", HF_PROXY_AUTHENTICATE, {}};
+    static const HeaderKeySet HFS_RETRY_AFTER {"retry-after", HF_RETRY_AFTER, {}};
+    static const HeaderKeySet HFS_SERVER {"server", HF_SERVER, {}};
+    static const HeaderKeySet HFS_SUPPORTED {"supported", HF_SUPPORTED, "k"};
+    static const HeaderKeySet HFS_ALLOW {"allow", HF_ALLOW, {}};
+    static const HeaderKeySet HFS_UNSUPPORTED {"unsupported", HF_UNSUPPORTED, {}};
+    static const HeaderKeySet HFS_WARNING {"warning", HF_WARNING, {}};
+    static const HeaderKeySet HFS_WWW_AUTHENTICATE {"www-authenticate", HF_WWW_AUTHENTICATE, {}};
 
-        operator std::string() const
+    // DO NOT CHANGE THIS! There are some some implementations that send "uthorization" instead of "Authorization"; yes--without the leading "A".
+    // This is a bug in those implementations, but we must support it for interoperability.
+    static const HeaderKeySet HFS_AUTHORIZATION {"authorization", HF_AUTHORIZATION, "uthorization"};
+
+    // Subscribe/Notify header fields
+    static const HeaderKeySet HFS_SUBSCRIPTION_STATE {"subscription-state", HF_SUBSCRIPTION_STATE, {}};
+
+    // This HFS_CUSTOM is used to hint at non-canonical header.
+    static const HeaderKeySet HFS_EMPTY {"", "", {}};
+
+    class CanonicalHeaderKeyResult
+    {
+    public:
+        bool                isCanonical {false};
+        bool                isMultiLine {false};
+        bool                isCustom {false};
+        const HeaderKeySet& canonicalKeySet = HFS_EMPTY;
+        HeaderKeySet        customKeySet;
+
+        CanonicalHeaderKeyResult(bool isCanon, bool isMulti, const HeaderKeySet& keySet)
+            : isCanonical(isCanon)
+            , isMultiLine(isMulti)
+            , canonicalKeySet(keySet)
+            , isCustom(false)
+            , customKeySet(HFS_EMPTY)
         {
-            return canonicalStringPtr ? *canonicalStringPtr : std::string {canonicalKey};
         }
+
+        CanonicalHeaderKeyResult(const std::string& customKey)
+            : isCanonical(false)
+            , isMultiLine(false)
+            , isCustom(true)
+            , canonicalKeySet(HFS_EMPTY)
+            , customKeySet(customKey, customKey)
+        {
+        }
+        operator const HeaderKeySet&() const { return isCanonical ? canonicalKeySet : customKeySet; }
     };
 
     inline CanonicalHeaderKeyResult canonicalizeHeaderKey(const std::string& keyFromPayload)
@@ -165,55 +212,57 @@ namespace siddiqsoft
         // WARNING! The Authorization header has a special case where some implementations send "uthorization" instead of "Authorization".
         // The abbreviation for "Authorization" is "uthorization" (without the leading "A") to support those implementations.
         // This is a known bug in those implementations, but we must support it for interoperability.
-        if (HFS_AUTHORIZATION[0] == lowerKey || HFS_AUTHORIZATION[2] == lowerKey)
-            return {true, false, HFS_AUTHORIZATION[1], &HF_AUTHORIZATION};
+        if (HFS_AUTHORIZATION.lower() == lowerKey || HFS_AUTHORIZATION.alt() == lowerKey) return {true, false, HFS_AUTHORIZATION};
 
-        if (HFS_FROM[0] == lowerKey || HFS_FROM[2] == lowerKey) return {true, false, HFS_FROM[1], &HF_FROM};
-        if (HFS_TO[0] == lowerKey || HFS_TO[2] == lowerKey) return {true, false, HFS_TO[1], &HF_TO};
-        if (HFS_PRIORITY[0] == lowerKey || HFS_PRIORITY[2] == lowerKey) return {true, false, HFS_PRIORITY[1], &HF_PRIORITY};
-        if (HFS_CONTENT_ENCODING[0] == lowerKey || HFS_CONTENT_ENCODING[2] == lowerKey)
-            return {true, false, HFS_CONTENT_ENCODING[1], &HF_CONTENT_ENCODING};
-        if (HFS_CONTENT_LENGTH[0] == lowerKey || HFS_CONTENT_LENGTH[2] == lowerKey) return {true, false, HFS_CONTENT_LENGTH[1], &HF_CONTENT_LENGTH};
-        if (HFS_CONTENT_TYPE[0] == lowerKey || HFS_CONTENT_TYPE[2] == lowerKey) return {true, false, HFS_CONTENT_TYPE[1], &HF_CONTENT_TYPE};
-        if (HFS_CALLID[0] == lowerKey || HFS_CALLID[2] == lowerKey) return {true, false, HFS_CALLID[1], &HF_CALLID};
-        if (HFS_CSEQ[0] == lowerKey || HFS_CSEQ[2] == lowerKey) return {true, false, HFS_CSEQ[1], &HF_CSEQ};
-        if (HFS_VIA[0] == lowerKey || HFS_VIA[2] == lowerKey) return {true, true, HFS_VIA[1], &HF_VIA};
-        if (HFS_ENCRYPTION[0] == lowerKey || HFS_ENCRYPTION[2] == lowerKey) return {true, false, HFS_ENCRYPTION[1], &HF_ENCRYPTION};
-        if (HFS_SUBJECT[0] == lowerKey || HFS_SUBJECT[2] == lowerKey) return {true, false, HFS_SUBJECT[1], &HF_SUBJECT};
-        if (HFS_LOCATION[0] == lowerKey || HFS_LOCATION[2] == lowerKey) return {true, false, HFS_LOCATION[1], &HF_LOCATION};
-        if (HFS_EXPIRES[0] == lowerKey || HFS_EXPIRES[2] == lowerKey) return {true, false, HFS_EXPIRES[1], &HF_EXPIRES};
-        if (HFS_CONTACT[0] == lowerKey || HFS_CONTACT[2] == lowerKey) return {true, false, HFS_CONTACT[1], &HF_CONTACT};
-        if (HFS_ACCEPT[0] == lowerKey || HFS_ACCEPT[2] == lowerKey) return {true, true, HFS_ACCEPT[1], &HF_ACCEPT};
-        if (HFS_ACCEPT_ENCODING[0] == lowerKey || HFS_ACCEPT_ENCODING[2] == lowerKey) return {true, false, HFS_ACCEPT_ENCODING[1], &HF_ACCEPT_ENCODING};
-        if (HFS_ACCEPT_LANGUAGE[0] == lowerKey || HFS_ACCEPT_LANGUAGE[2] == lowerKey) return {true, false, HFS_ACCEPT_LANGUAGE[1], &HF_ACCEPT_LANGUAGE};
-        if (HFS_DATE[0] == lowerKey || HFS_DATE[2] == lowerKey) return {true, false, HFS_DATE[1], &HF_DATE};
-        if (HFS_RECORD_ROUTE[0] == lowerKey || HFS_RECORD_ROUTE[2] == lowerKey) return {true, true, HFS_RECORD_ROUTE[1], &HF_RECORD_ROUTE};
-        if (HFS_TIMESTAMP[0] == lowerKey || HFS_TIMESTAMP[2] == lowerKey) return {true, false, HFS_TIMESTAMP[1], &HF_TIMESTAMP};
-        if (HFS_HIDE[0] == lowerKey || HFS_HIDE[2] == lowerKey) return {true, false, HFS_HIDE[1], &HF_HIDE};
-        if (HFS_MAX_FORWARDS[0] == lowerKey || HFS_MAX_FORWARDS[2] == lowerKey) return {true, false, HFS_MAX_FORWARDS[1], &HF_MAX_FORWARDS};
-        if (HFS_ORGANIZATION[0] == lowerKey || HFS_ORGANIZATION[2] == lowerKey) return {true, false, HFS_ORGANIZATION[1], &HF_ORGANIZATION};
-        if (HFS_PROXY_AUTHORIZATION[0] == lowerKey || HFS_PROXY_AUTHORIZATION[2] == lowerKey)
-            return {true, false, HFS_PROXY_AUTHORIZATION[1], &HF_PROXY_AUTHORIZATION};
-        if (HFS_PROXY_REQUIRE[0] == lowerKey || HFS_PROXY_REQUIRE[2] == lowerKey) return {true, false, HFS_PROXY_REQUIRE[1], &HF_PROXY_REQUIRE};
-        if (HFS_ROUTE[0] == lowerKey || HFS_ROUTE[2] == lowerKey) return {true, true, HFS_ROUTE[1], &HF_ROUTE};
-        if (HFS_REQUIRE[0] == lowerKey || HFS_REQUIRE[2] == lowerKey) return {true, false, HFS_REQUIRE[1], &HF_REQUIRE};
-        if (HFS_RESPONSE_KEY[0] == lowerKey || HFS_RESPONSE_KEY[2] == lowerKey) return {true, false, HFS_RESPONSE_KEY[1], &HF_RESPONSE_KEY};
-        if (HFS_USER_AGENT[0] == lowerKey || HFS_USER_AGENT[2] == lowerKey) return {true, false, HFS_USER_AGENT[1], &HF_USER_AGENT};
-        if (HFS_PROXY_AUTHENTICATE[0] == lowerKey || HFS_PROXY_AUTHENTICATE[2] == lowerKey)
-            return {true, false, HFS_PROXY_AUTHENTICATE[1], &HF_PROXY_AUTHENTICATE};
-        if (HFS_RETRY_AFTER[0] == lowerKey || HFS_RETRY_AFTER[2] == lowerKey) return {true, false, HFS_RETRY_AFTER[1], &HF_RETRY_AFTER};
-        if (HFS_SERVER[0] == lowerKey || HFS_SERVER[2] == lowerKey) return {true, false, HFS_SERVER[1], &HF_SERVER};
-        if (HFS_SUPPORTED[0] == lowerKey || HFS_SUPPORTED[2] == lowerKey) return {true, true, HFS_SUPPORTED[1], &HF_SUPPORTED};
-        if (HFS_ALLOW[0] == lowerKey || HFS_ALLOW[2] == lowerKey) return {true, false, HFS_ALLOW[1], &HF_ALLOW};
-        if (HFS_UNSUPPORTED[0] == lowerKey || HFS_UNSUPPORTED[2] == lowerKey) return {true, false, HFS_UNSUPPORTED[1], &HF_UNSUPPORTED};
-        if (HFS_WARNING[0] == lowerKey || HFS_WARNING[2] == lowerKey) return {true, true, HFS_WARNING[1], &HF_WARNING};
-        if (HFS_WWW_AUTHENTICATE[0] == lowerKey || HFS_WWW_AUTHENTICATE[2] == lowerKey)
-            return {true, false, HFS_WWW_AUTHENTICATE[1], &HF_WWW_AUTHENTICATE};
-        if (HFS_SUBSCRIPTION_STATE[0] == lowerKey || HFS_SUBSCRIPTION_STATE[2] == lowerKey)
-            return {true, false, HFS_SUBSCRIPTION_STATE[1], &HF_SUBSCRIPTION_STATE};
+        if (HFS_FROM.lower() == lowerKey || HFS_FROM.alt() == lowerKey) return {true, false, HFS_FROM};
+        if (HFS_TO.lower() == lowerKey || HFS_TO.alt() == lowerKey) return {true, false, HFS_TO};
+        if (HFS_PRIORITY.lower() == lowerKey || HFS_PRIORITY.alt() == lowerKey) return {true, false, HFS_PRIORITY};
+        if (HFS_CONTENT_ENCODING.lower() == lowerKey || HFS_CONTENT_ENCODING.alt() == lowerKey)
+            return {true, false, HFS_CONTENT_ENCODING};
+        if (HFS_CONTENT_LENGTH.lower() == lowerKey || HFS_CONTENT_LENGTH.alt() == lowerKey)
+            return {true, false, HFS_CONTENT_LENGTH};
+        if (HFS_CONTENT_TYPE.lower() == lowerKey || HFS_CONTENT_TYPE.alt() == lowerKey) return {true, false, HFS_CONTENT_TYPE};
+        if (HFS_CALLID.lower() == lowerKey || HFS_CALLID.alt() == lowerKey) return {true, false, HFS_CALLID};
+        if (HFS_CSEQ.lower() == lowerKey || HFS_CSEQ.alt() == lowerKey) return {true, false, HFS_CSEQ};
+        if (HFS_VIA.lower() == lowerKey || HFS_VIA.alt() == lowerKey) return {true, true, HFS_VIA};
+        if (HFS_ENCRYPTION.lower() == lowerKey || HFS_ENCRYPTION.alt() == lowerKey) return {true, false, HFS_ENCRYPTION};
+        if (HFS_SUBJECT.lower() == lowerKey || HFS_SUBJECT.alt() == lowerKey) return {true, false, HFS_SUBJECT};
+        if (HFS_LOCATION.lower() == lowerKey || HFS_LOCATION.alt() == lowerKey) return {true, false, HFS_LOCATION};
+        if (HFS_EXPIRES.lower() == lowerKey || HFS_EXPIRES.alt() == lowerKey) return {true, false, HFS_EXPIRES};
+        if (HFS_CONTACT.lower() == lowerKey || HFS_CONTACT.alt() == lowerKey) return {true, false, HFS_CONTACT};
+        if (HFS_ACCEPT.lower() == lowerKey || HFS_ACCEPT.alt() == lowerKey) return {true, true, HFS_ACCEPT};
+        if (HFS_ACCEPT_ENCODING.lower() == lowerKey || HFS_ACCEPT_ENCODING.alt() == lowerKey)
+            return {true, false, HFS_ACCEPT_ENCODING};
+        if (HFS_ACCEPT_LANGUAGE.lower() == lowerKey || HFS_ACCEPT_LANGUAGE.alt() == lowerKey)
+            return {true, false, HFS_ACCEPT_LANGUAGE};
+        if (HFS_DATE.lower() == lowerKey || HFS_DATE.alt() == lowerKey) return {true, false, HFS_DATE};
+        if (HFS_RECORD_ROUTE.lower() == lowerKey || HFS_RECORD_ROUTE.alt() == lowerKey) return {true, true, HFS_RECORD_ROUTE};
+        if (HFS_TIMESTAMP.lower() == lowerKey || HFS_TIMESTAMP.alt() == lowerKey) return {true, false, HFS_TIMESTAMP};
+        if (HFS_HIDE.lower() == lowerKey || HFS_HIDE.alt() == lowerKey) return {true, false, HFS_HIDE};
+        if (HFS_MAX_FORWARDS.lower() == lowerKey || HFS_MAX_FORWARDS.alt() == lowerKey) return {true, false, HFS_MAX_FORWARDS};
+        if (HFS_ORGANIZATION.lower() == lowerKey || HFS_ORGANIZATION.alt() == lowerKey) return {true, false, HFS_ORGANIZATION};
+        if (HFS_PROXY_AUTHORIZATION.lower() == lowerKey || HFS_PROXY_AUTHORIZATION.alt() == lowerKey)
+            return {true, false, HFS_PROXY_AUTHORIZATION};
+        if (HFS_PROXY_REQUIRE.lower() == lowerKey || HFS_PROXY_REQUIRE.alt() == lowerKey) return {true, false, HFS_PROXY_REQUIRE};
+        if (HFS_ROUTE.lower() == lowerKey || HFS_ROUTE.alt() == lowerKey) return {true, true, HFS_ROUTE};
+        if (HFS_REQUIRE.lower() == lowerKey || HFS_REQUIRE.alt() == lowerKey) return {true, false, HFS_REQUIRE};
+        if (HFS_RESPONSE_KEY.lower() == lowerKey || HFS_RESPONSE_KEY.alt() == lowerKey) return {true, false, HFS_RESPONSE_KEY};
+        if (HFS_USER_AGENT.lower() == lowerKey || HFS_USER_AGENT.alt() == lowerKey) return {true, false, HFS_USER_AGENT};
+        if (HFS_PROXY_AUTHENTICATE.lower() == lowerKey || HFS_PROXY_AUTHENTICATE.alt() == lowerKey)
+            return {true, false, HFS_PROXY_AUTHENTICATE};
+        if (HFS_RETRY_AFTER.lower() == lowerKey || HFS_RETRY_AFTER.alt() == lowerKey) return {true, false, HFS_RETRY_AFTER};
+        if (HFS_SERVER.lower() == lowerKey || HFS_SERVER.alt() == lowerKey) return {true, false, HFS_SERVER};
+        if (HFS_SUPPORTED.lower() == lowerKey || HFS_SUPPORTED.alt() == lowerKey) return {true, true, HFS_SUPPORTED};
+        if (HFS_ALLOW.lower() == lowerKey || HFS_ALLOW.alt() == lowerKey) return {true, false, HFS_ALLOW};
+        if (HFS_UNSUPPORTED.lower() == lowerKey || HFS_UNSUPPORTED.alt() == lowerKey) return {true, false, HFS_UNSUPPORTED};
+        if (HFS_WARNING.lower() == lowerKey || HFS_WARNING.alt() == lowerKey) return {true, true, HFS_WARNING};
+        if (HFS_WWW_AUTHENTICATE.lower() == lowerKey || HFS_WWW_AUTHENTICATE.alt() == lowerKey)
+            return {true, false, HFS_WWW_AUTHENTICATE};
+        if (HFS_SUBSCRIPTION_STATE.lower() == lowerKey || HFS_SUBSCRIPTION_STATE.alt() == lowerKey)
+            return {true, false, HFS_SUBSCRIPTION_STATE};
 
         // Return original keyFromPayload if no match found for custom headers
-        return {false, false, keyFromPayload, nullptr};
+        return CanonicalHeaderKeyResult {keyFromPayload};
     }
 } // namespace siddiqsoft
 
