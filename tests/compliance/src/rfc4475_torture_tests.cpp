@@ -32,17 +32,13 @@ namespace siddiqsoft
         }
 
         auto cwd = std::filesystem::current_path();
-        std::vector<std::filesystem::path> candidates = {
-                cwd / "samples" / "rfc4475" / fileName,
-                cwd / "tests" / "compliance" / "samples" / "rfc4475" / fileName,
-                cwd / "tests" / "validation" / "samples" / "rfc4475" / fileName,
-                cwd.parent_path() / "samples" / "rfc4475" / fileName,
-                cwd.parent_path() / "tests" / "compliance" / "samples" / "rfc4475" / fileName,
-                cwd.parent_path() / "tests" / "validation" / "samples" / "rfc4475" / fileName,
-                cwd.parent_path().parent_path() / "tests" / "compliance" / "samples" / "rfc4475" / fileName,
-                cwd.parent_path().parent_path() / "tests" / "validation" / "samples" / "rfc4475" / fileName,
-                cwd.parent_path().parent_path().parent_path() / "tests" / "compliance" / "samples" / "rfc4475" / fileName,
-                cwd.parent_path().parent_path().parent_path() / "tests" / "validation" / "samples" / "rfc4475" / fileName};
+        std::vector<std::filesystem::path> candidates;
+        for (auto cur = cwd; !cur.empty() && cur != cur.root_path(); cur = cur.parent_path())
+        {
+            candidates.push_back(cur / "samples" / "rfc4475" / fileName);
+            candidates.push_back(cur / "tests" / "compliance" / "samples" / "rfc4475" / fileName);
+            candidates.push_back(cur / "tests" / "validation" / "samples" / "rfc4475" / fileName);
+        }
 
         for (const auto& cand : candidates)
         {

@@ -76,4 +76,5 @@ target_sources(${PROJECT_NAME} PRIVATE
 target_link_libraries(${PROJECT_NAME} PRIVATE GTest::gtest_main sip2json::sip2json)
 
 include(GoogleTest)
-gtest_discover_tests(${PROJECT_NAME} TEST_PREFIX "${PROJECT_NAME}.")
+gtest_discover_tests(${PROJECT_NAME} TEST_PREFIX "${PROJECT_NAME}."
+                    PROPERTIES ENVIRONMENT "SAMPLES_DIR=${CMAKE_CURRENT_SOURCE_DIR}/samples")
