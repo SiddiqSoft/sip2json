@@ -56,6 +56,46 @@ Include the primary header in your application source files:
 
 ---
 
+## Windows Prerequisites & Long Paths (CTRE Support)
+
+When building on Windows, the underlying **CTRE (Compile-Time Regular Expressions)** library and CMake package caches generate deeply nested header and template expansion paths that can exceed the legacy 260-character Windows path limit (`MAX_PATH`). This can trigger `filename too long` warnings or C1083 compilation errors during Git checkout or MSVC build steps.
+
+> [!WARNING]
+> **Windows `filename too long` Fix**
+> Enable Windows Extended Long Paths in the System Registry and Git configuration before building on Windows machines.
+
+### 1. Enable Windows Registry Long Paths (`LongPathsEnabled`)
+
+Run PowerShell as Administrator:
+
+```powershell
+New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name "LongPathsEnabled" -Value 1 -PropertyType DWORD -Force
+```
+
+Or via Windows Command Prompt (Admin):
+
+```cmd
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\FileSystem" /v LongPathsEnabled /t REG_DWORD /d 1 /f
+```
+
+### 2. Enable Git Long Paths Support
+
+Configure Git globally to support extended file paths:
+
+```bash
+git config --global core.longpaths true
+```
+
+### 3. CPM Cache Path Optimization (Optional)
+
+If using CPM package manager on Windows, relocate the cache directory closer to the drive root:
+
+```cmake
+set(CPM_SOURCE_CACHE "C:/cpmcache" CACHE PATH "CPM Cache Directory")
+```
+
+---
+
 ## Building & Previewing Documentation Locally
 
 To preview the documentation site locally without deploying to GitHub Pages, you can use the built-in MkDocs local development server or compile static HTML files.

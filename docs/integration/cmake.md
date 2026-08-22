@@ -53,3 +53,8 @@ target_link_libraries(your_target PRIVATE sip2json::sip2json)
 | `sip2json_HEADERKEY_MODE_INSENSITIVE` | `ON` | Enable RFC 3261 case-insensitive header key matching and normalization to canonical Pascal-Kebab-Case keys (`Content-Length`, `Via`, `Call-ID`, etc.) and compact form abbreviations (`l`, `v`, `i`, `c`, `m`, `f`, `t`, `s`, `e`). |
 | `sip2json_BUILD_TESTS` | `OFF` | Build unit tests (requires GoogleTest) |
 | `sip2json_BUILD_BENCHMARKS` | `OFF` | Build performance benchmark suite |
+
+---
+
+> [!TIP]
+> **Windows Integration Note**: Ensure Windows Long Paths are enabled in the registry (`LongPathsEnabled = 1`) and Git (`git config --global core.longpaths true`) to prevent CTRE template expansion `filename too long` errors on Windows. See the [Integration Guide Overview](index.md#windows-prerequisites-long-paths-ctre-support) for full details.
