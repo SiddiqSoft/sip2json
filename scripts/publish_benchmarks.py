@@ -85,33 +85,53 @@ def update_benchmarks_doc(repo_root: Path, platform_results: list, require_all: 
         print(f"[publish_benchmarks] Warning: Pipeline benchmark markers not found in {doc_path}.", flush=True)
         return
 
-    # Build Markdown table
+    # Group results by Operating System platform
+    grouped_results = {}
+    for res in platform_results:
+        os_key = res.get("os", "Linux").capitalize()
+        if os_key not in grouped_results:
+            grouped_results[os_key] = []
+        grouped_results[os_key].append(res)
+
+    os_order = ["Linux", "Windows", "macOS"]
+    sorted_os_keys = sorted(grouped_results.keys(), key=lambda x: os_order.index(x) if x in os_order else 99)
+
     table_lines = [
         start_marker,
         "## 1. Multi-Platform & Cross-Architecture Pipeline Benchmark Matrix",
         "",
-        "*Empirical build pipeline measurements collected across matrix runners:*",
-        "",
-        "| Operating System | Architecture | Compiler | Stream Throughput (`parseAsync`) | Bandwidth | Per-Msg Latency | Single Message (`parseFromBuffer`) | Single Latency |",
-        "| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |"
+        "*Empirical build pipeline measurements collected across matrix runners grouped by operating system platform:*",
+        ""
     ]
 
     if platform_results:
-        for res in platform_results:
-            os_name = res.get("os", "Linux")
-            arch = res.get("arch", "x64")
-            compiler = res.get("compiler", "Clang")
-            async_tput = res.get("async_tput", "N/A")
-            bandwidth = res.get("bandwidth", "N/A")
-            async_lat = res.get("async_lat", "N/A")
-            single_tput = res.get("single_tput", "N/A")
-            single_lat = res.get("single_lat", "N/A")
+        for os_key in sorted_os_keys:
+            res_list = grouped_results[os_key]
+            res_list.sort(key=lambda r: (r.get("arch", ""), r.get("compiler", "")))
 
-            table_lines.append(
-                f"| **{os_name}** | **{arch}** | {compiler} | **{async_tput}** | **{bandwidth}** | **{async_lat}** | **{single_tput}** | **{single_lat}** |"
-            )
+            table_lines.append(f"### {os_key} Platform Benchmarks")
+            table_lines.append("")
+            table_lines.append("| Architecture | Compiler | Stream Throughput (`parseAsync`) | Bandwidth | Per-Msg Latency | Single Message (`parseFromBuffer`) | Single Latency |")
+            table_lines.append("| :---: | :---: | :---: | :---: | :---: | :---: | :---: |")
+
+            for res in res_list:
+                arch = res.get("arch", "x64")
+                compiler = res.get("compiler", "Clang")
+                async_tput = res.get("async_tput", "N/A")
+                bandwidth = res.get("bandwidth", "N/A")
+                async_lat = res.get("async_lat", "N/A")
+                single_tput = res.get("single_tput", "N/A")
+                single_lat = res.get("single_lat", "N/A")
+
+                table_lines.append(
+                    f"| **{arch}** | {compiler} | **{async_tput}** | **{bandwidth}** | **{async_lat}** | **{single_tput}** | **{single_lat}** |"
+                )
+            table_lines.append("")
     else:
+        table_lines.append("| Operating System | Architecture | Compiler | Stream Throughput (`parseAsync`) | Bandwidth | Per-Msg Latency | Single Message (`parseFromBuffer`) | Single Latency |")
+        table_lines.append("| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |")
         table_lines.append("| *Awaiting Pipeline Run* | *x64 / arm64* | CI Runners | *Collected on CI* | *Collected on CI* | *Collected on CI* | *Collected on CI* | *Collected on CI* |")
+        table_lines.append("")
 
     table_lines.append(end_marker)
     new_section = "\n".join(table_lines)

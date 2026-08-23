@@ -5,11 +5,12 @@
 <!-- PIPELINE_BENCHMARKS_START -->
 ## 1. Multi-Platform & Cross-Architecture Pipeline Benchmark Matrix
 
-*Empirical build pipeline measurements collected across matrix runners:*
+*Empirical build pipeline measurements collected across matrix runners grouped by operating system platform:*
 
 | Operating System | Architecture | Compiler | Stream Throughput (`parseAsync`) | Bandwidth | Per-Msg Latency | Single Message (`parseFromBuffer`) | Single Latency |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | *Awaiting Pipeline Run* | *x64 / arm64* | CI Runners | *Collected on CI* | *Collected on CI* | *Collected on CI* | *Collected on CI* | *Collected on CI* |
+
 <!-- PIPELINE_BENCHMARKS_END -->
 
 ---
