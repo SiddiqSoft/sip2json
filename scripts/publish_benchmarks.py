@@ -28,13 +28,14 @@ def run_cmd(cmd, cwd=None):
 
 def parse_platform_from_filename(filename_str: str) -> tuple:
     """Extract OS, Arch, and Compiler from benchmark JSON filename if available."""
-    # Pattern: benchmark_results_OS_ARCH_COMPILER.json
     name = Path(filename_str).stem
-    parts = name.replace("benchmark_results_", "").split("_")
-    os_name = parts[0] if len(parts) > 0 else "Host"
-    arch_name = parts[1] if len(parts) > 1 else "native"
-    compiler_name = parts[2] if len(parts) > 2 else "Clang/GCC/MSVC"
-    return os_name, arch_name, compiler_name
+    if name.startswith("benchmark_results_"):
+        parts = name.replace("benchmark_results_", "").split("_")
+        os_name = parts[0] if len(parts) > 0 else "Linux"
+        arch_name = parts[1] if len(parts) > 1 else "x64"
+        compiler_name = parts[2] if len(parts) > 2 else "Clang/MSVC"
+        return os_name, arch_name, compiler_name
+    return "Linux", "x64", "Clang"
 
 def check_platform_completeness(platform_results: list, required_str: str) -> tuple:
     """Check if all required (OS, Arch) combinations are present in platform_results."""
@@ -136,7 +137,7 @@ def main():
     docs_assets_dir = repo_root / "docs" / "assets"
     docs_assets_dir.mkdir(parents=True, exist_ok=True)
 
-    # 1. Search for benchmark JSON artifacts collected from build matrix jobs
+    # 1. Search for benchmark JSON and TXT artifacts collected from build matrix jobs
     json_search_dirs = [
         benchmarks_dir / "artifacts",
         benchmarks_dir / "results",
@@ -144,59 +145,79 @@ def main():
         benchmarks_dir
     ]
 
-    json_files = []
+    platform_results_map = {}
+
     for sdir in json_search_dirs:
-        if sdir.exists():
-            for p in sdir.glob("**/*.json"):
-                if "benchmark" in p.name.lower():
-                    json_files.append(p)
+        if not sdir.exists():
+            continue
 
-    platform_results = []
-    for jfile in json_files:
-        try:
-            data = json.loads(jfile.read_text(encoding="utf-8"))
-            os_name, arch, compiler = parse_platform_from_filename(jfile.name)
-            
-            # Extract key metrics if present
-            b_list = data.get("benchmarks", [])
-            async_tput = "N/A"
-            bandwidth = "N/A"
-            async_lat = "N/A"
-            single_tput = "N/A"
-            single_lat = "N/A"
+        # Process text summaries (stream_benchmark_summary.txt)
+        for txt_file in sdir.glob("**/stream_benchmark_summary.txt"):
+            try:
+                os_name, arch, compiler = parse_platform_from_filename(txt_file.parent.name)
+                if os_name == "Linux" and "Windows" in str(txt_file): os_name = "Windows"
+                
+                content = txt_file.read_text(encoding="utf-8", errors="ignore")
+                key = (os_name, arch, compiler)
+                res = platform_results_map.get(key, {
+                    "os": os_name, "arch": arch, "compiler": compiler,
+                    "async_tput": "N/A", "bandwidth": "N/A", "async_lat": "N/A",
+                    "single_tput": "N/A", "single_lat": "N/A"
+                })
 
-            for b in b_list:
-                bname = b.get("name", "")
-                if "parseAsync" in bname or "Callback" in bname:
+                stream_match = re.search(r"parseAsync.*?Throughput\s*:\s*([\d,.]+)\s*msg/sec.*?Data Bandwidth\s*:\s*([\d,.]+)\s*MB/sec.*?Avg Latency/Msg\s*:\s*([\d,.]+)\s*(\w+)/msg", content, re.DOTALL)
+                if stream_match:
+                    tput, bw, lat, unit = stream_match.groups()
+                    res["async_tput"] = f"{float(tput.replace(',', '')):,.2f} msg/s"
+                    res["bandwidth"] = f"{float(bw.replace(',', '')):.2f} MB/s"
+                    res["async_lat"] = f"{float(lat.replace(',', '')):.2f} {unit}"
+
+                single_match = re.search(r"parseFromBuffer.*?Throughput\s*:\s*([\d,.]+)\s*msg/sec.*?Avg Latency/Msg\s*:\s*([\d,.]+)\s*(\w+)/msg", content, re.DOTALL)
+                if single_match:
+                    tput, lat, unit = single_match.groups()
+                    res["single_tput"] = f"{float(tput.replace(',', '')):,.2f} msg/s"
+                    res["single_lat"] = f"{float(lat.replace(',', '')):.2f} {unit}"
+
+                platform_results_map[key] = res
+            except Exception as ex:
+                print(f"[publish_benchmarks] Could not parse text summary {txt_file}: {ex}", flush=True)
+
+        # Process Google Benchmark JSON files matching benchmark_results_*.json
+        for jfile in sdir.glob("**/benchmark_results_*.json"):
+            try:
+                data = json.loads(jfile.read_text(encoding="utf-8"))
+                os_name, arch, compiler = parse_platform_from_filename(jfile.name)
+                key = (os_name, arch, compiler)
+                res = platform_results_map.get(key, {
+                    "os": os_name, "arch": arch, "compiler": compiler,
+                    "async_tput": "N/A", "bandwidth": "N/A", "async_lat": "N/A",
+                    "single_tput": "N/A", "single_lat": "N/A"
+                })
+
+                b_list = data.get("benchmarks", [])
+                for b in b_list:
+                    bname = b.get("name", "").lower()
                     items_sec = b.get("items_per_second", 0)
                     rtime = b.get("real_time", 0)
                     tunit = b.get("time_unit", "us")
-                    if items_sec > 0:
-                        async_tput = f"{items_sec:,.2f} msg/s"
-                        bandwidth = f"{(items_sec * 2600) / 1024 / 1024:.2f} MB/s"
-                    if rtime > 0:
-                        async_lat = f"{rtime:.2f} {tunit}"
-                elif "parseFromBuffer" in bname or "Single" in bname:
-                    items_sec = b.get("items_per_second", 0)
-                    rtime = b.get("real_time", 0)
-                    tunit = b.get("time_unit", "us")
-                    if items_sec > 0:
-                        single_tput = f"{items_sec:,.2f} msg/s"
-                    if rtime > 0:
-                        single_lat = f"{rtime:.2f} {tunit}"
 
-            platform_results.append({
-                "os": os_name,
-                "arch": arch,
-                "compiler": compiler,
-                "async_tput": async_tput,
-                "bandwidth": bandwidth,
-                "async_lat": async_lat,
-                "single_tput": single_tput,
-                "single_lat": single_lat
-            })
-        except Exception as ex:
-            print(f"[publish_benchmarks] Could not parse JSON file {jfile}: {ex}", flush=True)
+                    if "async" in bname or "callback" in bname:
+                        if items_sec > 0:
+                            res["async_tput"] = f"{items_sec:,.2f} msg/s"
+                            res["bandwidth"] = f"{(items_sec * 2600) / 1024 / 1024:.2f} MB/s"
+                        if rtime > 0:
+                            res["async_lat"] = f"{rtime:.2f} {tunit}"
+                    elif any(k in bname for k in ["single", "parsefrombuffer", "minimalresponse", "registerrequest", "invitewithsdp"]):
+                        if items_sec > 0:
+                            res["single_tput"] = f"{items_sec:,.2f} msg/s"
+                        if rtime > 0:
+                            res["single_lat"] = f"{rtime:.2f} {tunit}"
+
+                platform_results_map[key] = res
+            except Exception as ex:
+                print(f"[publish_benchmarks] Could not parse JSON file {jfile}: {ex}", flush=True)
+
+    platform_results = list(platform_results_map.values())
 
     # 2. Update docs/features/benchmarks.md with collected platform results
     update_benchmarks_doc(repo_root, platform_results, require_all=args.require_all, required_str=args.required_platforms)
