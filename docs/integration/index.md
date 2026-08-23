@@ -99,14 +99,18 @@ If using CPM package manager on Windows, relocate the cache directory closer to 
 set(CPM_SOURCE_CACHE "C:/cpmcache" CACHE PATH "CPM Cache Directory")
 ```
 
-### 4. MSVC Constexpr Evaluation & Template Depth (`/constexpr:depth4096 /constexpr:steps2000000`)
+### 5. SSH / Remote Command Line MSVC Setup (`init_msvc_env.bat` & `init_msvc_env.ps1`)
 
-CTRE evaluates regular expression state machines at compile time. To prevent MSVC evaluation limits (`error C2999`), `sip2json` exports `/constexpr:depth4096` and `/constexpr:steps2000000` on its interface target. If consuming custom builds on MSVC, ensure these options are set in your target compile options:
+When building over SSH or remote non-interactive terminal sessions on Windows, `cl.exe` and Visual Studio toolchain environment variables are not loaded by default. Use the helper initialization scripts in `scripts/`:
 
-```cmake
-if(MSVC)
-    target_compile_options(your_target PRIVATE /constexpr:depth4096 /constexpr:steps2000000)
-endif()
+**For Windows Command Prompt (CMD over SSH)**:
+```cmd
+scripts\init_msvc_env.bat [x64 | x64_arm64 | arm64]
+```
+
+**For PowerShell (over SSH)**:
+```powershell
+. .\scripts\init_msvc_env.ps1 -Arch x64
 ```
 
 ---
