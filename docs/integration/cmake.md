@@ -17,7 +17,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include(cmake/CPM.cmake)
 
-CPMAddPackage("gh:SiddiqSoft/sip2json#v2.6.0")
+CPMAddPackage("gh:SiddiqSoft/sip2json#{ tag_version }")
 
 add_executable(MySipApp main.cpp)
 target_link_libraries(MySipApp PRIVATE sip2json::sip2json)
@@ -37,7 +37,7 @@ include(FetchContent)
 FetchContent_Declare(
     sip2json
     GIT_REPOSITORY https://github.com/SiddiqSoft/sip2json.git
-    GIT_TAG        v2.6.0
+    GIT_TAG        { tag_version }
 )
 FetchContent_MakeAvailable(sip2json)
 

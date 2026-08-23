@@ -56,11 +56,30 @@ def on_config(config, **kwargs):
 
 def on_page_markdown(markdown, page, config, files):
     """
-    Replaces {{ version }} placeholders in markdown documentation pages with the dynamic build version.
+    Replaces dynamic version placeholders in markdown documentation pages at publication time.
+    Supported placeholders:
+      - {{ version }} / { version }: Full build version (e.g. 2.6.0-47-g6992bc7)
+      - {{ tag_version }} / { tag_version }: Clean semver tag version (e.g. v2.6.0)
     """
     version = config.get("extra", {}).get("version", "0.0.0-dev")
-    if "{{ version }}" in markdown:
-        print(f"[docs/hooks.py] Replacing {{ version }} with {version} in {page.file.src_path}")
-        markdown = markdown.replace("{{ version }}", version)
+    tag_ver = version.split("-")[0] if "-" in version else version
+    if not tag_ver.startswith("v"):
+        tag_ver = f"v{tag_ver}"
+
+    placeholders = {
+        "{{ version }}": version,
+        "{ version }": version,
+        "{{version}}": version,
+        "{version}": version,
+        "{{ tag_version }}": tag_ver,
+        "{ tag_version }": tag_ver,
+        "{{tag_version}}": tag_ver,
+        "{tag_version}": tag_ver,
+    }
+
+    for ph, val in placeholders.items():
+        if ph in markdown:
+            markdown = markdown.replace(ph, val)
+
     return markdown
 

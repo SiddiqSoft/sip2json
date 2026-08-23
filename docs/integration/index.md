@@ -13,7 +13,7 @@ Choose your preferred integration method:
     Recommended for cross-platform C++23 CMake projects.
 
     ```cmake
-    CPMAddPackage("gh:SiddiqSoft/sip2json#v2.6.0")
+    CPMAddPackage("gh:SiddiqSoft/sip2json#{ tag_version }")
     target_link_libraries(your_target PRIVATE sip2json::sip2json)
     ```
 
@@ -34,15 +34,13 @@ Choose your preferred integration method:
 
     [View CMake Integration Guide :octicons-arrow-right-24:](cmake.md)
 
-=== "NuGet Package"
+=== "NuGet Package (Deprecated)"
 
-    Supported for Visual Studio C++ projects on Windows.
+    > [!WARNING]
+    > **NuGet Distribution Deprecated**
+    > Beginning with `v2.5.0+`, `sip2json` relies on [CTRE](https://github.com/ctre-mc/compile-time-regular-expressions) (Compile-Time Regular Expressions), which is not available via NuGet. NuGet package publication is disabled by default. Please use **CPM / CMake** or **FetchContent** integration instead.
 
-    ```powershell
-    Install-Package SiddiqSoft.sip2json
-    ```
-
-    [View NuGet Integration Guide :octicons-arrow-right-24:](nuget.md)
+    [View NuGet Deprecation Notice :octicons-arrow-right-24:](nuget.md)
 
 ---
 
