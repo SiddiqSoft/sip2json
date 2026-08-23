@@ -7,9 +7,8 @@
 
 > [!NOTE]
 > **Build Release & Version**: `{ version }` | **Branch**: `release/2.6.0`
-> **Host Runner Environment Legend**:
-> - **Linux (x64 / arm64)**: Ubuntu 24.04 LTS (LLVM/Clang 18.1 & GCC 13.2) | 16GB RAM | High-frequency virtual runner cores
-> - **Windows (x64 / arm64)**: Windows Server 2022 / Visual Studio 2022 (MSVC 19.40+ / Ninja) | 16GB RAM
+> **Host Runner Environment Legend (Derived at Build Time)**:
+> - **Build Runner (Self-Hosted)**: macOS 26.6.2 (arm64, 11 CPU Cores)
 
 *Empirical build pipeline measurements collected across matrix runners grouped by operating system platform:*
 

@@ -11,6 +11,7 @@ Usage:
 import argparse
 import json
 import os
+import platform
 import re
 import shutil
 import subprocess
@@ -62,6 +63,50 @@ def check_platform_completeness(platform_results: list, required_str: str) -> tu
     is_complete = len(missing) == 0
     return is_complete, missing
 
+def get_host_runner_info() -> str:
+    """Dynamically derive exact host OS, architecture, CPU count, and release edition at build time."""
+    sys_name = platform.system()
+    arch_name = platform.machine() or platform.processor() or "x64"
+    cpu_count = os.cpu_count() or 1
+    
+    os_detail = f"{sys_name} {platform.release()}"
+    
+    if sys_name == "Linux":
+        try:
+            if hasattr(platform, "freedesktop_os_release"):
+                info = platform.freedesktop_os_release()
+                os_detail = info.get("PRETTY_NAME", os_detail)
+            elif Path("/etc/os-release").exists():
+                for line in Path("/etc/os-release").read_text().splitlines():
+                    if line.startswith("PRETTY_NAME="):
+                        os_detail = line.split("=", 1)[1].strip('"\'')
+                        break
+        except Exception:
+            pass
+
+    elif sys_name == "Windows":
+        try:
+            cmd = ["powershell", "-NoProfile", "-Command", "(Get-CimInstance Win32_OperatingSystem).Caption"]
+            res = subprocess.run(cmd, capture_output=True, text=True, timeout=5)
+            if res.returncode == 0 and res.stdout.strip():
+                os_detail = res.stdout.strip()
+            else:
+                win_ver = platform.win32_ver()
+                if win_ver[0]:
+                    os_detail = f"Windows {win_ver[0]} (Build {win_ver[1]})"
+        except Exception:
+            pass
+
+    elif sys_name == "Darwin":
+        try:
+            mac_ver = platform.mac_ver()[0]
+            if mac_ver:
+                os_detail = f"macOS {mac_ver}"
+        except Exception:
+            pass
+
+    return f"{os_detail} ({arch_name}, {cpu_count} CPU Cores)"
+
 def update_benchmarks_doc(repo_root: Path, platform_results: list, require_all: bool = False, required_str: str = ""):
     """Dynamically update docs/features/benchmarks.md between PIPELINE_BENCHMARKS markers."""
     doc_path = repo_root / "docs" / "features" / "benchmarks.md"
@@ -87,11 +132,20 @@ def update_benchmarks_doc(repo_root: Path, platform_results: list, require_all: 
 
     # Group results by Operating System platform
     grouped_results = {}
+    host_legends = []
+
     for res in platform_results:
         os_key = res.get("os", "Linux").capitalize()
         if os_key not in grouped_results:
             grouped_results[os_key] = []
         grouped_results[os_key].append(res)
+        
+        host_str = res.get("host_info", "")
+        if host_str and host_str not in host_legends:
+            host_legends.append(f"- **{os_key} Runner**: {host_str}")
+
+    if not host_legends:
+        host_legends.append(f"- **Build Runner (Self-Hosted)**: {get_host_runner_info()}")
 
     os_order = ["Linux", "Windows", "macOS"]
     sorted_os_keys = sorted(grouped_results.keys(), key=lambda x: os_order.index(x) if x in os_order else 99)
@@ -102,13 +156,17 @@ def update_benchmarks_doc(repo_root: Path, platform_results: list, require_all: 
         "",
         "> [!NOTE]",
         "> **Build Release & Version**: `{ version }` | **Branch**: `release/2.6.0`",
-        "> **Host Runner Environment Legend**:",
-        "> - **Linux (x64 / arm64)**: Ubuntu 24.04 LTS (LLVM/Clang 18.1 & GCC 13.2) | 16GB RAM | High-frequency virtual runner cores",
-        "> - **Windows (x64 / arm64)**: Windows Server 2022 / Visual Studio 2022 (MSVC 19.40+ / Ninja) | 16GB RAM",
+        "> **Host Runner Environment Legend (Derived at Build Time)**:"
+    ]
+
+    for leg in host_legends:
+        table_lines.append(f"> {leg}")
+
+    table_lines.extend([
         "",
         "*Empirical build pipeline measurements collected across matrix runners grouped by operating system platform:*",
         ""
-    ]
+    ])
 
     if platform_results:
         for os_key in sorted_os_keys:
@@ -188,8 +246,12 @@ def main():
                 res = platform_results_map.get(key, {
                     "os": os_name, "arch": arch, "compiler": compiler,
                     "async_tput": "N/A", "bandwidth": "N/A", "async_lat": "N/A",
-                    "single_tput": "N/A", "single_lat": "N/A"
+                    "single_tput": "N/A", "single_lat": "N/A", "host_info": ""
                 })
+
+                host_match = re.search(r"\[HOST INFO\]\s*(.*)", content)
+                if host_match:
+                    res["host_info"] = host_match.group(1).strip()
 
                 stream_match = re.search(r"parseAsync.*?Throughput\s*:\s*([\d,.]+)\s*msg/sec.*?Data Bandwidth\s*:\s*([\d,.]+)\s*MB/sec.*?Avg Latency/Msg\s*:\s*([\d,.]+)\s*(\w+)/msg", content, re.DOTALL)
                 if stream_match:
@@ -217,8 +279,12 @@ def main():
                 res = platform_results_map.get(key, {
                     "os": os_name, "arch": arch, "compiler": compiler,
                     "async_tput": "N/A", "bandwidth": "N/A", "async_lat": "N/A",
-                    "single_tput": "N/A", "single_lat": "N/A"
+                    "single_tput": "N/A", "single_lat": "N/A", "host_info": ""
                 })
+
+                if "context" in data:
+                    ctx = data["context"]
+                    res["host_info"] = f"{ctx.get('host_name', os_name)} ({ctx.get('num_cpus', '')} Cores, {ctx.get('mhz_per_cpu', '')} MHz)"
 
                 b_list = data.get("benchmarks", [])
                 for b in b_list:
