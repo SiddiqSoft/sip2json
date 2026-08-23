@@ -36,11 +36,44 @@ def parse_platform_from_filename(filename_str: str) -> tuple:
     compiler_name = parts[2] if len(parts) > 2 else "Clang/GCC/MSVC"
     return os_name, arch_name, compiler_name
 
-def update_benchmarks_doc(repo_root: Path, platform_results: list):
+def check_platform_completeness(platform_results: list, required_str: str) -> tuple:
+    """Check if all required (OS, Arch) combinations are present in platform_results."""
+    if not required_str:
+        return True, []
+    
+    req_tuples = []
+    for pair in required_str.split(","):
+        pair = pair.strip()
+        if ":" in pair:
+            os_p, arch_p = pair.split(":", 1)
+            req_tuples.append((os_p.strip().lower(), arch_p.strip().lower()))
+
+    found_set = {
+        (res.get("os", "").lower(), res.get("arch", "").lower())
+        for res in platform_results
+    }
+
+    missing = []
+    for req_os, req_arch in req_tuples:
+        if (req_os, req_arch) not in found_set:
+            missing.append(f"{req_os.capitalize()}-{req_arch}")
+
+    is_complete = len(missing) == 0
+    return is_complete, missing
+
+def update_benchmarks_doc(repo_root: Path, platform_results: list, require_all: bool = False, required_str: str = ""):
     """Dynamically update docs/features/benchmarks.md between PIPELINE_BENCHMARKS markers."""
     doc_path = repo_root / "docs" / "features" / "benchmarks.md"
     if not doc_path.exists():
         print(f"[publish_benchmarks] Warning: {doc_path} not found.", flush=True)
+        return
+
+    # Check completeness if require_all is specified
+    is_complete, missing = check_platform_completeness(platform_results, required_str)
+    if require_all and not is_complete:
+        print(f"[publish_benchmarks] Benchmark collection is INCOMPLETE!", flush=True)
+        print(f"[publish_benchmarks] Missing required matrix targets: {', '.join(missing)}.", flush=True)
+        print(f"[publish_benchmarks] SKIPPING update to {doc_path} to avoid publishing incomplete data.", flush=True)
         return
 
     content = doc_path.read_text(encoding="utf-8")
@@ -94,6 +127,8 @@ def main():
     parser.add_argument("--root", type=str, help="Repository root path")
     parser.add_argument("--skip-build", action="store_true", help="Skip building benchmark binary if executable already exists")
     parser.add_argument("--skip-exec", action="store_true", help="Skip running benchmark executable if json output already exists")
+    parser.add_argument("--require-all", action="store_true", help="Skip updating documentation if any required platform matrix target is missing")
+    parser.add_argument("--required-platforms", type=str, default="linux:x64,linux:arm64,windows:x64,windows:arm64", help="Comma-separated list of required OS:ARCH matrix targets")
     args = parser.parse_args()
 
     repo_root = Path(args.root).resolve() if args.root else Path(__file__).resolve().parent.parent
@@ -164,7 +199,7 @@ def main():
             print(f"[publish_benchmarks] Could not parse JSON file {jfile}: {ex}", flush=True)
 
     # 2. Update docs/features/benchmarks.md with collected platform results
-    update_benchmarks_doc(repo_root, platform_results)
+    update_benchmarks_doc(repo_root, platform_results, require_all=args.require_all, required_str=args.required_platforms)
 
     # 3. Locate primary benchmark executable or run generator if JSON exists
     json_out_path = benchmarks_dir / "benchmark_results.json"

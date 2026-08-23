@@ -10,7 +10,7 @@
 | Operating System | Architecture | Compiler | Stream Throughput (`parseAsync`) | Bandwidth | Per-Msg Latency | Single Message (`parseFromBuffer`) | Single Latency |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | **directory-tests.benchmark-Debug-30da37a5b3728487288c** | **native** | Clang/GCC/MSVC | **N/A** | **N/A** | **N/A** | **N/A** | **N/A** |
-| **target-sip2json** | **benchmark-Debug-3e090b6065d3685cd7be** | Clang/GCC/MSVC | **N/A** | **N/A** | **N/A** | **N/A** | **N/A** |
+| **target-sip2json** | **benchmark-Debug-88a7b59e8fdfea3e6bce** | Clang/GCC/MSVC | **N/A** | **N/A** | **N/A** | **N/A** | **N/A** |
 <!-- PIPELINE_BENCHMARKS_END -->
 
 ---
