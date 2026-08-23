@@ -100,10 +100,10 @@ parameters:
     displayName: "Run benchmarks after building"
 
   # Publishing
-  - name: PublishNuGet
-    type: boolean
-    default: false
-    displayName: "Publish to NuGet (auto-enabled on main/master)"
+  #- name: PublishNuGet
+  #  type: boolean
+  #  default: false
+  #  displayName: "Publish to NuGet (auto-enabled on main/master)"
 
   - name: PublishGitHub
     type: boolean
@@ -127,11 +127,11 @@ parameters:
 variables:
   # Auto-enable publishing on main/master branches (NuGet deprecated, disabled by default)
   ${{ if and(eq(parameters.PublishGitHub, false), or(eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))) }}:
-    PublishNuGet: false
+    #PublishNuGet: false
     PublishGitHub: true
     PublishDocs: true
   ${{ else }}:
-    PublishNuGet: ${{ parameters.PublishNuGet }}
+    #PublishNuGet: ${{ parameters.PublishNuGet }}
     PublishGitHub: ${{ parameters.PublishGitHub }}
     PublishDocs: ${{ parameters.PublishDocs }}
 
@@ -172,7 +172,7 @@ stages:
         buildTypes: ${{ parameters.BuildTypes }}
         runTests: ${{ parameters.RunTests }}
         runBenchmarks: ${{ parameters.RunBenchmarks }}
-        publishNuGet: ${{ variables.PublishNuGet }}
+        #publishNuGet: ${{ variables.PublishNuGet }}
 
   # ==========================================================================
   # STAGE 1: LINUX BUILD
