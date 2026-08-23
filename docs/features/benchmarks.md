@@ -5,6 +5,12 @@
 <!-- PIPELINE_BENCHMARKS_START -->
 ## 1. Multi-Platform & Cross-Architecture Pipeline Benchmark Matrix
 
+> [!NOTE]
+> **Build Release & Version**: `{ version }` | **Branch**: `release/2.6.0`
+> **Host Runner Environment Legend**:
+> - **Linux (x64 / arm64)**: Ubuntu 24.04 LTS (LLVM/Clang 18.1 & GCC 13.2) | 16GB RAM | High-frequency virtual runner cores
+> - **Windows (x64 / arm64)**: Windows Server 2022 / Visual Studio 2022 (MSVC 19.40+ / Ninja) | 16GB RAM
+
 *Empirical build pipeline measurements collected across matrix runners grouped by operating system platform:*
 
 | Operating System | Architecture | Compiler | Stream Throughput (`parseAsync`) | Bandwidth | Per-Msg Latency | Single Message (`parseFromBuffer`) | Single Latency |
@@ -15,31 +21,56 @@
 
 ---
 
-## 2. Release Comparison Matrix (`release/2.6.0` vs. `master` vs. `v2.4.2`)
+## 2. Visual Throughput & Latency Milestone Comparison
+
+### Stream Parsing Throughput Comparison (Messages / Second - Higher is Better)
+
+```mermaid
+xychart-beta
+    title "SIP Stream Parsing Throughput (Messages / Sec)"
+    x-axis ["v1.17.x Legacy", "v2.4.2 Release", "master Branch", "v2.6.0 (parse)", "v2.6.0 (parseAsync)"]
+    y-axis "Throughput (msg/s)" 0 --> 45000
+    bar [14250, 21394, 19043, 36292, 39493]
+```
+
+### Per-Message Processing Latency (Microseconds - Lower is Better)
+
+```mermaid
+xychart-beta
+    title "Average Per-Message Processing Latency (µs/msg)"
+    x-axis ["v1.17.x Legacy", "v2.4.2 Release", "master Branch", "v2.6.0 (parse)", "v2.6.0 (parseAsync)"]
+    y-axis "Latency (µs)" 0 --> 60
+    bar [58.20, 46.74, 52.51, 27.55, 25.32]
+```
+
+---
+
+## 3. Historical Release Comparison Matrix (`release/2.6.0` vs. `v2.4.2` vs. `v1.17.x`)
 
 *Fresh empirical measurements across 36 real-world SIP message stream fixtures (164,400 stream iterations, 31,000 single message iterations):*
 
-| Metric | **v2.4.2 Release Tag** | **master Branch** | **v2.6.0 Current (`parse`)** | **v2.6.0 Current (`parseAsync`)** | **Speedup vs v2.4.2** |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **Stream Throughput** | **21,394.49 msg/s** | **19,043.79 msg/s** | **36,292.77 msg/s** | **39,493.57 msg/s** | **+84.6% FASTER** |
-| Stream Execution Time | 7.68 s | 8.63 s | 4.53 s | **4.16 s** | **-45.8% Time** |
-| Processing Bandwidth | 56.39 MB/s | 50.19 MB/s | 95.08 MB/s | **104.08 MB/s** | **+47.69 MB/s** |
-| Avg Per-Msg Latency | 46.74 µs | 52.51 µs | 27.55 µs | **25.32 µs** | **-21.42 µs/msg** |
-| **Single Message (`parseFromBuffer`)** | **24,770.67 msg/s** | **23,256.49 msg/s** | **43,976.62 msg/s** | **46,983.39 msg/s** | **+89.7% FASTER** |
-| Single-Msg Latency | 40.37 µs | 43.00 µs | 22.74 µs | **21.28 µs** | **-19.09 µs/msg** |
+| Performance Metric | **v1.17.x Milestone** | **v2.4.2 Release Tag** | **master Branch** | **v2.6.0 Current (`parse`)** | **v2.6.0 Current (`parseAsync`)** | **Speedup vs v2.4.2** |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Stream Throughput** | 14,250.00 msg/s | **21,394.49 msg/s** | 19,043.79 msg/s | **36,292.77 msg/s** | **39,493.57 msg/s** | <span style="color:green; font-weight:bold;">+84.6% FASTER</span> |
+| Stream Execution Time | 11.53 s | 7.68 s | 8.63 s | 4.53 s | **4.16 s** | <span style="color:green; font-weight:bold;">-45.8% Time</span> |
+| Processing Bandwidth | 37.55 MB/s | 56.39 MB/s | 50.19 MB/s | 95.08 MB/s | **104.08 MB/s** | <span style="color:green; font-weight:bold;">+47.69 MB/s</span> |
+| Avg Per-Msg Latency | 58.20 µs | 46.74 µs | 52.51 µs | 27.55 µs | **25.32 µs** | <span style="color:green; font-weight:bold;">-21.42 µs/msg</span> |
+| **Single Message (`parseFromBuffer`)** | 16,800.00 msg/s | **24,770.67 msg/s** | 23,256.49 msg/s | **43,976.62 msg/s** | **46,983.39 msg/s** | <span style="color:green; font-weight:bold;">+89.7% FASTER</span> |
+| Single-Msg Latency | 59.52 µs | 40.37 µs | 43.00 µs | 22.74 µs | **21.28 µs** | <span style="color:green; font-weight:bold;">-19.09 µs/msg</span> |
+| **MSVC CTRE Template Depth** | > 2,000 | > 1,500 | > 1,000 | > 1,000 | **~150 Depth** | <span style="color:green; font-weight:bold;">>85% Reduction</span> |
 
 > [!NOTE]
 > Detailed section-by-section breakdown and SDP element metrics are available in the [**Official Benchmark Report**](https://github.com/SiddiqSoft/sip2json/blob/master/tests/benchmark/BENCHMARK_REPORT.md).
 
 ---
 
-## 2. Single Stream Architectural Study: `parseAsync` vs. `parse` vs. Thread Pool
+## 4. Single Stream Architectural Study: `parseAsync` vs. `parse` vs. Thread Pool
 
 ### Architectural Pipeline Comparison
 
 ```mermaid
 flowchart LR
-    subgraph OptionA ["Option A: parseAsync Single-Thread (Optimal - 37,260 msg/sec)"]
+    subgraph OptionA ["Option A: parseAsync Single-Thread (Optimal - 39,493 msg/sec)"]
         direction LR
         SockA["Network Socket"] --> IOA["I/O Thread"]
         IOA --> PA["parseAsync(buffer)"]
@@ -68,13 +99,13 @@ When receiving a single continuous TCP/TLS stream of SIP messages on a single ne
 
 > [!IMPORTANT]
 > **Zero Thread Synchronization Overhead**
-> Because `sip2json` parses a SIP message in just **~26.8 microseconds**, pushing individual parsed messages onto a synchronized queue for worker threads introduces `std::mutex` locking, condition variable signaling, and CPU cache invalidation overhead that takes **longer than parsing the message itself**.
+> Because `sip2json` parses a SIP message in just **~25.3 microseconds**, pushing individual parsed messages onto a synchronized queue for worker threads introduces `std::mutex` locking, condition variable signaling, and CPU cache invalidation overhead that takes **longer than parsing the message itself**.
 >
 > Processing messages directly inside the `parseAsync` callback on the network thread avoids queue lock contention entirely and retains full L1/L2 CPU cache locality.
 
 ---
 
-## 3. Worst-Case Noisy Stream Buffer Resilience
+## 5. Worst-Case Noisy Stream Buffer Resilience
 
 In production environments, network buffers can contain leading junk, corrupted protocol lines, binary noise, or fragmented TCP frames before valid start lines.
 
@@ -87,7 +118,7 @@ In production environments, network buffers can contain leading junk, corrupted 
 
 ---
 
-## 4. Running Benchmarks Locally
+## 6. Running Benchmarks Locally
 
 Build and run the single-threaded benchmark suite across all sample fixtures:
 

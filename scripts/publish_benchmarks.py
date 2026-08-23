@@ -100,6 +100,12 @@ def update_benchmarks_doc(repo_root: Path, platform_results: list, require_all: 
         start_marker,
         "## 1. Multi-Platform & Cross-Architecture Pipeline Benchmark Matrix",
         "",
+        "> [!NOTE]",
+        "> **Build Release & Version**: `{ version }` | **Branch**: `release/2.6.0`",
+        "> **Host Runner Environment Legend**:",
+        "> - **Linux (x64 / arm64)**: Ubuntu 24.04 LTS (LLVM/Clang 18.1 & GCC 13.2) | 16GB RAM | High-frequency virtual runner cores",
+        "> - **Windows (x64 / arm64)**: Windows Server 2022 / Visual Studio 2022 (MSVC 19.40+ / Ninja) | 16GB RAM",
+        "",
         "*Empirical build pipeline measurements collected across matrix runners grouped by operating system platform:*",
         ""
     ]
