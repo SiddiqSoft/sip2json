@@ -61,6 +61,12 @@ void onNetworkDataReceived(std::string& tcpReadBuffer)
 
 ## Quick Integration
 
+> **NOTE**
+>
+> On Windows machines, in order to compile this project, please execute the [`prep_windows_machine.ps1`](scripts/prep_windows_machine.ps1) to avoid build errors.
+>
+
+
 ### Using CPM
 
 ```cmake
