@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#nuget-package-integration" class="md-skip">
+        <a href="#nuget-package-integration-deprecated" class="md-skip">
           Skip to content
         </a>
       
@@ -937,24 +937,41 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#installation-via-visual-studio-package-manager" class="md-nav__link">
+  <a href="#recommended-alternatives" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Installation via Visual Studio Package Manager
+        Recommended Alternatives
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Recommended Alternatives">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-cpmcmake-integration-recommended" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. CPM.cmake Integration (Recommended)
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#msbuild-properties" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#2-cmake-fetchcontent" class="md-nav__link">
     <span class="md-ellipsis">
       
-        MSBuild Properties
+        2. CMake FetchContent
       
     </span>
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1519,24 +1536,41 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#installation-via-visual-studio-package-manager" class="md-nav__link">
+  <a href="#recommended-alternatives" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Installation via Visual Studio Package Manager
+        Recommended Alternatives
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Recommended Alternatives">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-cpmcmake-integration-recommended" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. CPM.cmake Integration (Recommended)
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#msbuild-properties" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#2-cmake-fetchcontent" class="md-nav__link">
     <span class="md-ellipsis">
       
-        MSBuild Properties
+        2. CMake FetchContent
       
     </span>
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1608,21 +1642,42 @@
   
 
 
-<h1 id="nuget-package-integration">NuGet Package Integration<a class="headerlink" href="#nuget-package-integration" title="Permanent link">&para;</a></h1>
-<p>For Visual Studio projects on Windows, <code>sip2json</code> is available on NuGet.</p>
+<h1 id="nuget-package-integration-deprecated">NuGet Package Integration (Deprecated)<a class="headerlink" href="#nuget-package-integration-deprecated" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>[!CAUTION]
+<strong>NuGet Integration Deprecated</strong>
+Beginning with <code>v2.5.0+</code>, <code>sip2json</code> relies on <a href="https://github.com/ctre-mc/compile-time-regular-expressions">CTRE</a> (Compile-Time Regular Expressions) for compile-time SIP regex parsing.</p>
+<p><strong>Why NuGet is No Longer Supported</strong>:
+1. CTRE is a third-party C++23 header-only library that is <strong>not distributed or available on nuget.org</strong>.
+2. Static header-only NuGet packages cannot resolve nested modern C++ CMake dependencies or handle C++23 header include paths cleanly across different Visual Studio toolchain versions.
+3. Publication of <code>SiddiqSoft.sip2json</code> to nuget.org is disabled by default for main/master releases.</p>
+</blockquote>
 <hr />
-<h2 id="installation-via-visual-studio-package-manager">Installation via Visual Studio Package Manager<a class="headerlink" href="#installation-via-visual-studio-package-manager" title="Permanent link">&para;</a></h2>
-<p>Run the following command in the <strong>Package Manager Console</strong>:</p>
-<div class="language-powershell highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nb">Install-Package</span> <span class="n">SiddiqSoft</span><span class="p">.</span><span class="n">sip2json</span>
+<h2 id="recommended-alternatives">Recommended Alternatives<a class="headerlink" href="#recommended-alternatives" title="Permanent link">&para;</a></h2>
+<p>Users on Windows and Visual Studio are strongly advised to migrate to modern CMake integration methods:</p>
+<h3 id="1-cpmcmake-integration-recommended">1. CPM.cmake Integration (Recommended)<a class="headerlink" href="#1-cpmcmake-integration-recommended" title="Permanent link">&para;</a></h3>
+<p>Add <a href="https://github.com/cpm-cmake/CPM.cmake">CPM.cmake</a> to your CMake configuration:</p>
+<div class="language-cmake highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nb">include</span><span class="p">(</span><span class="s">cmake/CPM.cmake</span><span class="p">)</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="nb">CPMAddPackage</span><span class="p">(</span><span class="s2">"gh:SiddiqSoft/sip2json#v2.6.0"</span><span class="p">)</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="nb">target_link_libraries</span><span class="p">(</span><span class="s">your_target</span><span class="w"> </span><span class="s">PRIVATE</span><span class="w"> </span><span class="s">sip2json::sip2json</span><span class="p">)</span>
 </span></code></pre></div>
-<p>Or search for <strong><code>SiddiqSoft.sip2json</code></strong> in the NuGet Package Manager UI.</p>
-<hr />
-<h2 id="msbuild-properties">MSBuild Properties<a class="headerlink" href="#msbuild-properties" title="Permanent link">&para;</a></h2>
-<p>Including the <code>SiddiqSoft.sip2json</code> NuGet package automatically injects include paths into your Visual Studio C++ project settings. Ensure your project is set to <code>/std:c++latest</code> or C++23 standard in <strong>Project Properties -&gt; C/C++ -&gt; Language -&gt; C++ Language Standard</strong>.</p>
+<h3 id="2-cmake-fetchcontent">2. CMake FetchContent<a class="headerlink" href="#2-cmake-fetchcontent" title="Permanent link">&para;</a></h3>
+<div class="language-cmake highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">include</span><span class="p">(</span><span class="s">FetchContent</span><span class="p">)</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="nb">FetchContent_Declare</span><span class="p">(</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="s">sip2json</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="s">GIT_REPOSITORY</span><span class="w"> </span><span class="s">https://github.com/SiddiqSoft/sip2json.git</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="s">GIT_TAG</span><span class="w">        </span><span class="s">v2.6.0</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="p">)</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="nb">FetchContent_MakeAvailable</span><span class="p">(</span><span class="s">sip2json</span><span class="p">)</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="nb">target_link_libraries</span><span class="p">(</span><span class="s">your_target</span><span class="w"> </span><span class="s">PRIVATE</span><span class="w"> </span><span class="s">sip2json::sip2json</span><span class="p">)</span>
+</span></code></pre></div>
 <hr />
 <blockquote>
 <p>[!TIP]
-<strong>Windows Setup Note</strong>: To avoid <code>filename too long</code> errors during CTRE header checkout on Windows, run <a href="https://github.com/SiddiqSoft/sip2json/blob/master/scripts/prep_windows_machine.ps1"><code>scripts/prep_windows_machine.ps1</code></a> as Administrator to enable Windows Registry <code>LongPathsEnabled = 1</code> and Git <code>core.longpaths = true</code>.</p>
+<strong>Windows Setup Note</strong>: Run <a href="https://github.com/SiddiqSoft/sip2json/blob/master/scripts/prep_windows_machine.ps1"><code>scripts/prep_windows_machine.ps1</code></a> as Administrator to configure Windows Registry <code>LongPathsEnabled = 1</code> and Git <code>core.longpaths = true</code> for CTRE header resolution.</p>
 </blockquote>
 
 

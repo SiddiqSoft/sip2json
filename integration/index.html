@@ -1835,11 +1835,11 @@
 <hr />
 <h2 id="integration-options">Integration Options<a class="headerlink" href="#integration-options" title="Permanent link">&para;</a></h2>
 <p>Choose your preferred integration method:</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:3"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">CPM / CMake</label><label for="__tabbed_1_2">Git Submodule</label><label for="__tabbed_1_3">NuGet Package</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:3"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">CPM / CMake</label><label for="__tabbed_1_2">Git Submodule</label><label for="__tabbed_1_3">NuGet Package (Deprecated)</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <p>Recommended for cross-platform C++23 CMake projects.</p>
-<div class="language-cmake highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nb">CPMAddPackage</span><span class="p">(</span><span class="s2">"gh:SiddiqSoft/sip2json#v1.17.0"</span><span class="p">)</span>
+<div class="language-cmake highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nb">CPMAddPackage</span><span class="p">(</span><span class="s2">"gh:SiddiqSoft/sip2json#v2.6.0"</span><span class="p">)</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">target_link_libraries</span><span class="p">(</span><span class="s">your_target</span><span class="w"> </span><span class="s">PRIVATE</span><span class="w"> </span><span class="s">sip2json::sip2json</span><span class="p">)</span>
 </span></code></pre></div>
 <p><a href="cmake/">View CMake Integration Guide <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span></a></p>
@@ -1854,17 +1854,19 @@
 <p><a href="cmake/">View CMake Integration Guide <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span></a></p>
 </div>
 <div class="tabbed-block">
-<p>Supported for Visual Studio C++ projects on Windows.</p>
-<div class="language-powershell highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nb">Install-Package</span> <span class="n">SiddiqSoft</span><span class="p">.</span><span class="n">sip2json</span>
-</span></code></pre></div>
-<p><a href="nuget/">View NuGet Integration Guide <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span></a></p>
+<blockquote>
+<p>[!WARNING]
+<strong>NuGet Distribution Deprecated</strong>
+Beginning with <code>v2.5.0+</code>, <code>sip2json</code> relies on <a href="https://github.com/ctre-mc/compile-time-regular-expressions">CTRE</a> (Compile-Time Regular Expressions), which is not available via NuGet. NuGet package publication is disabled by default. Please use <strong>CPM / CMake</strong> or <strong>FetchContent</strong> integration instead.</p>
+</blockquote>
+<p><a href="nuget/">View NuGet Deprecation Notice <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span></a></p>
 </div>
 </div>
 </div>
 <hr />
 <h2 id="primary-header-include">Primary Header Include<a class="headerlink" href="#primary-header-include" title="Permanent link">&para;</a></h2>
 <p>Include the primary header in your application source files:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"siddiqsoft/sip2json.hpp"</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"siddiqsoft/sip2json.hpp"</span>
 </span></code></pre></div>
 <hr />
 <h2 id="windows-prerequisites-long-paths-ctre-support">Windows Prerequisites &amp; Long Paths (CTRE Support)<a class="headerlink" href="#windows-prerequisites-long-paths-ctre-support" title="Permanent link">&para;</a></h2>
@@ -1874,45 +1876,45 @@
 <strong>Windows <code>filename too long</code> &amp; MSVC CTRE Fix</strong>
 Enable Windows Extended Long Paths in the System Registry (<code>LongPathsEnabled = 1</code>) and Git configuration (<code>git config --global core.longpaths true</code>) before building on Windows.</p>
 <p>You can automatically configure your Windows machine by running the provided PowerShell script <a href="https://github.com/SiddiqSoft/sip2json/blob/master/scripts/prep_windows_machine.ps1"><code>scripts/prep_windows_machine.ps1</code></a> as Administrator:
-<div class="language-powershell highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">powershell</span> <span class="n">-ExecutionPolicy</span> <span class="n">Bypass</span> <span class="o">-File</span> <span class="p">.\</span><span class="n">scripts</span><span class="p">\</span><span class="n">prep_windows_machine</span><span class="p">.</span><span class="n">ps1</span>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">powershell</span> <span class="n">-ExecutionPolicy</span> <span class="n">Bypass</span> <span class="o">-File</span> <span class="p">.\</span><span class="n">scripts</span><span class="p">\</span><span class="n">prep_windows_machine</span><span class="p">.</span><span class="n">ps1</span>
 </span></code></pre></div></p>
 </blockquote>
 <h3 id="1-enable-windows-registry-long-paths-longpathsenabled">1. Enable Windows Registry Long Paths (<code>LongPathsEnabled</code>)<a class="headerlink" href="#1-enable-windows-registry-long-paths-longpathsenabled" title="Permanent link">&para;</a></h3>
 <p>Run PowerShell as Administrator:</p>
-<div class="language-powershell highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nb">New-ItemProperty</span> <span class="n">-Path</span> <span class="s2">"HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem"</span> <span class="n">-Name</span> <span class="s2">"LongPathsEnabled"</span> <span class="n">-Value</span> <span class="n">1</span> <span class="n">-PropertyType</span> <span class="n">DWORD</span> <span class="n">-Force</span>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nb">New-ItemProperty</span> <span class="n">-Path</span> <span class="s2">"HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem"</span> <span class="n">-Name</span> <span class="s2">"LongPathsEnabled"</span> <span class="n">-Value</span> <span class="n">1</span> <span class="n">-PropertyType</span> <span class="n">DWORD</span> <span class="n">-Force</span>
 </span></code></pre></div>
 <p>Or via Windows Command Prompt (Admin):</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>reg add "HKLM\SYSTEM\CurrentControlSet\Control\FileSystem" /v LongPathsEnabled /t REG_DWORD /d 1 /f
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>reg add "HKLM\SYSTEM\CurrentControlSet\Control\FileSystem" /v LongPathsEnabled /t REG_DWORD /d 1 /f
 </span></code></pre></div>
 <h3 id="2-enable-git-long-paths-support">2. Enable Git Long Paths Support<a class="headerlink" href="#2-enable-git-long-paths-support" title="Permanent link">&para;</a></h3>
 <p>Configure Git globally to support extended file paths:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>core.longpaths<span class="w"> </span><span class="nb">true</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>core.longpaths<span class="w"> </span><span class="nb">true</span>
 </span></code></pre></div>
 <h3 id="3-cpm-cache-path-optimization-optional">3. CPM Cache Path Optimization (Optional)<a class="headerlink" href="#3-cpm-cache-path-optimization-optional" title="Permanent link">&para;</a></h3>
 <p>If using CPM package manager on Windows, relocate the cache directory closer to the drive root:</p>
-<div class="language-cmake highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nb">set</span><span class="p">(</span><span class="s">CPM_SOURCE_CACHE</span><span class="w"> </span><span class="s2">"C:/cpmcache"</span><span class="w"> </span><span class="s">CACHE</span><span class="w"> </span><span class="s">PATH</span><span class="w"> </span><span class="s2">"CPM Cache Directory"</span><span class="p">)</span>
+<div class="language-cmake highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nb">set</span><span class="p">(</span><span class="s">CPM_SOURCE_CACHE</span><span class="w"> </span><span class="s2">"C:/cpmcache"</span><span class="w"> </span><span class="s">CACHE</span><span class="w"> </span><span class="s">PATH</span><span class="w"> </span><span class="s2">"CPM Cache Directory"</span><span class="p">)</span>
 </span></code></pre></div>
 <h3 id="5-ssh-remote-command-line-msvc-setup-init_msvc_envbat-init_msvc_envps1">5. SSH / Remote Command Line MSVC Setup (<code>init_msvc_env.bat</code> &amp; <code>init_msvc_env.ps1</code>)<a class="headerlink" href="#5-ssh-remote-command-line-msvc-setup-init_msvc_envbat-init_msvc_envps1" title="Permanent link">&para;</a></h3>
 <p>When building over SSH or remote non-interactive terminal sessions on Windows, <code>cl.exe</code> and Visual Studio toolchain environment variables are not loaded by default. Use the helper initialization scripts in <code>scripts/</code>:</p>
 <p><strong>For Windows Command Prompt (CMD over SSH)</strong>:
-<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>scripts\init_msvc_env.bat [x64 | x64_arm64 | arm64]
+<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>scripts\init_msvc_env.bat [x64 | x64_arm64 | arm64]
 </span></code></pre></div></p>
 <p><strong>For PowerShell (over SSH)</strong>:
-<div class="language-powershell highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="p">.</span> <span class="p">.\</span><span class="n">scripts</span><span class="p">\</span><span class="n">init_msvc_env</span><span class="p">.</span><span class="n">ps1</span> <span class="n">-Arch</span> <span class="n">x64</span>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="p">.</span> <span class="p">.\</span><span class="n">scripts</span><span class="p">\</span><span class="n">init_msvc_env</span><span class="p">.</span><span class="n">ps1</span> <span class="n">-Arch</span> <span class="n">x64</span>
 </span></code></pre></div></p>
 <hr />
 <h2 id="building-previewing-documentation-locally">Building &amp; Previewing Documentation Locally<a class="headerlink" href="#building-previewing-documentation-locally" title="Permanent link">&para;</a></h2>
 <p>To preview the documentation site locally without deploying to GitHub Pages, you can use the built-in MkDocs local development server or compile static HTML files.</p>
 <h3 id="method-1-live-reload-local-server-recommended">Method 1: Live-Reload Local Server (Recommended)<a class="headerlink" href="#method-1-live-reload-local-server-recommended" title="Permanent link">&para;</a></h3>
 <p>Start the local development server from the repository root:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1"># 1. Activate the Python virtual environment (or install dependencies)</span>
-</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="nb">source</span><span class="w"> </span>venv/bin/activate
-</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>
-</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="c1"># (Optional: install dependencies if setting up a fresh environment)</span>
-</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="c1"># pip install -r docs/requirements.txt</span>
-</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>
-</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="c1"># 2. Start the local live-reloading server</span>
-</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>mkdocs<span class="w"> </span>serve
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1"># 1. Activate the Python virtual environment (or install dependencies)</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="nb">source</span><span class="w"> </span>venv/bin/activate
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="c1"># (Optional: install dependencies if setting up a fresh environment)</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="c1"># pip install -r docs/requirements.txt</span>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="c1"># 2. Start the local live-reloading server</span>
+</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>mkdocs<span class="w"> </span>serve
 </span></code></pre></div>
 <ul>
 <li><strong>Local URL</strong>: Open <a href="http://127.0.0.1:8000/"><code>http://127.0.0.1:8000/</code></a> or <a href="http://localhost:8000/"><code>http://localhost:8000/</code></a> in your browser.</li>
@@ -1921,16 +1923,16 @@ Enable Windows Extended Long Paths in the System Registry (<code>LongPathsEnable
 <hr />
 <h3 id="method-2-build-static-local-html-site">Method 2: Build Static Local HTML Site<a class="headerlink" href="#method-2-build-static-local-html-site" title="Permanent link">&para;</a></h3>
 <p>To compile static HTML files into the <code>site/</code> directory without serving:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nb">source</span><span class="w"> </span>venv/bin/activate
-</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>mkdocs<span class="w"> </span>build<span class="w"> </span>--strict
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nb">source</span><span class="w"> </span>venv/bin/activate
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>mkdocs<span class="w"> </span>build<span class="w"> </span>--strict
 </span></code></pre></div>
 <p>The output will be placed in the <code>site/</code> directory. Open <code>site/index.html</code> directly in your browser.</p>
 <hr />
 <h3 id="method-3-previewing-local-benchmark-data">Method 3: Previewing Local Benchmark Data<a class="headerlink" href="#method-3-previewing-local-benchmark-data" title="Permanent link">&para;</a></h3>
 <p>To compile local benchmark results and update <code>docs/features/benchmarks.md</code> prior to serving:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nb">source</span><span class="w"> </span>venv/bin/activate
-</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>python3<span class="w"> </span>scripts/publish_benchmarks.py
-</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>mkdocs<span class="w"> </span>serve
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nb">source</span><span class="w"> </span>venv/bin/activate
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>python3<span class="w"> </span>scripts/publish_benchmarks.py
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>mkdocs<span class="w"> </span>serve
 </span></code></pre></div>
 
 
