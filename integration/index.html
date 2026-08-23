@@ -15,7 +15,7 @@
         <link rel="canonical" href="https://siddiqsoft.github.io/sip2json/integration/">
       
       
-        <link rel="prev" href="../features/sdp/">
+        <link rel="prev" href="../features/test_suite_sources/">
       
       
         <link rel="next" href="cmake/">
@@ -589,6 +589,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features/optimization_choices/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Optimization Choices
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features/json_schema/" class="md-nav__link">
         
   
@@ -625,6 +653,62 @@
     
   
     SDP Support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/compliance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Standards Compliance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/test_suite_sources/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Test Suite Sources & IETF Links
   
 
     
@@ -787,6 +871,117 @@
       
     </span>
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#windows-prerequisites-long-paths-ctre-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Windows Prerequisites &amp; Long Paths (CTRE Support)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Windows Prerequisites &amp; Long Paths (CTRE Support)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-enable-windows-registry-long-paths-longpathsenabled" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Enable Windows Registry Long Paths (LongPathsEnabled)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-enable-git-long-paths-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Enable Git Long Paths Support
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-cpm-cache-path-optimization-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. CPM Cache Path Optimization (Optional)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-msvc-constexpr-evaluation-template-depth-constexprdepth4096-constexprsteps2000000" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. MSVC Constexpr Evaluation &amp; Template Depth (/constexpr:depth4096 /constexpr:steps2000000)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#building-previewing-documentation-locally" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Building &amp; Previewing Documentation Locally
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Building &amp; Previewing Documentation Locally">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#method-1-live-reload-local-server-recommended" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Method 1: Live-Reload Local Server (Recommended)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-2-build-static-local-html-site" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Method 2: Build Static Local HTML Site
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-3-previewing-local-benchmark-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Method 3: Previewing Local Benchmark Data
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1456,6 +1651,117 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#windows-prerequisites-long-paths-ctre-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Windows Prerequisites &amp; Long Paths (CTRE Support)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Windows Prerequisites &amp; Long Paths (CTRE Support)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-enable-windows-registry-long-paths-longpathsenabled" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Enable Windows Registry Long Paths (LongPathsEnabled)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-enable-git-long-paths-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Enable Git Long Paths Support
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-cpm-cache-path-optimization-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. CPM Cache Path Optimization (Optional)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-msvc-constexpr-evaluation-template-depth-constexprdepth4096-constexprsteps2000000" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. MSVC Constexpr Evaluation &amp; Template Depth (/constexpr:depth4096 /constexpr:steps2000000)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#building-previewing-documentation-locally" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Building &amp; Previewing Documentation Locally
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Building &amp; Previewing Documentation Locally">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#method-1-live-reload-local-server-recommended" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Method 1: Live-Reload Local Server (Recommended)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-2-build-static-local-html-site" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Method 2: Build Static Local HTML Site
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-3-previewing-local-benchmark-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Method 3: Previewing Local Benchmark Data
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1560,6 +1866,70 @@
 <p>Include the primary header in your application source files:</p>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"siddiqsoft/sip2json.hpp"</span>
 </span></code></pre></div>
+<hr />
+<h2 id="windows-prerequisites-long-paths-ctre-support">Windows Prerequisites &amp; Long Paths (CTRE Support)<a class="headerlink" href="#windows-prerequisites-long-paths-ctre-support" title="Permanent link">&para;</a></h2>
+<p>When building on Windows, the underlying <strong>CTRE (Compile-Time Regular Expressions)</strong> library and CMake package caches generate deeply nested header and template expansion paths that can exceed the legacy 260-character Windows path limit (<code>MAX_PATH</code>). This can trigger <code>filename too long</code> warnings or C1083 compilation errors during Git checkout or MSVC build steps.</p>
+<blockquote>
+<p>[!WARNING]
+<strong>Windows <code>filename too long</code> &amp; MSVC CTRE Fix</strong>
+Enable Windows Extended Long Paths in the System Registry (<code>LongPathsEnabled = 1</code>) and Git configuration (<code>git config --global core.longpaths true</code>) before building on Windows.</p>
+<p>You can automatically configure your Windows machine by running the provided PowerShell script <a href="https://github.com/SiddiqSoft/sip2json/blob/master/scripts/prep_windows_machine.ps1"><code>scripts/prep_windows_machine.ps1</code></a> as Administrator:
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">powershell</span> <span class="n">-ExecutionPolicy</span> <span class="n">Bypass</span> <span class="o">-File</span> <span class="p">.\</span><span class="n">scripts</span><span class="p">\</span><span class="n">prep_windows_machine</span><span class="p">.</span><span class="n">ps1</span>
+</span></code></pre></div></p>
+</blockquote>
+<h3 id="1-enable-windows-registry-long-paths-longpathsenabled">1. Enable Windows Registry Long Paths (<code>LongPathsEnabled</code>)<a class="headerlink" href="#1-enable-windows-registry-long-paths-longpathsenabled" title="Permanent link">&para;</a></h3>
+<p>Run PowerShell as Administrator:</p>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nb">New-ItemProperty</span> <span class="n">-Path</span> <span class="s2">"HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem"</span> <span class="n">-Name</span> <span class="s2">"LongPathsEnabled"</span> <span class="n">-Value</span> <span class="n">1</span> <span class="n">-PropertyType</span> <span class="n">DWORD</span> <span class="n">-Force</span>
+</span></code></pre></div>
+<p>Or via Windows Command Prompt (Admin):</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>reg add "HKLM\SYSTEM\CurrentControlSet\Control\FileSystem" /v LongPathsEnabled /t REG_DWORD /d 1 /f
+</span></code></pre></div>
+<h3 id="2-enable-git-long-paths-support">2. Enable Git Long Paths Support<a class="headerlink" href="#2-enable-git-long-paths-support" title="Permanent link">&para;</a></h3>
+<p>Configure Git globally to support extended file paths:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>core.longpaths<span class="w"> </span><span class="nb">true</span>
+</span></code></pre></div>
+<h3 id="3-cpm-cache-path-optimization-optional">3. CPM Cache Path Optimization (Optional)<a class="headerlink" href="#3-cpm-cache-path-optimization-optional" title="Permanent link">&para;</a></h3>
+<p>If using CPM package manager on Windows, relocate the cache directory closer to the drive root:</p>
+<div class="language-cmake highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nb">set</span><span class="p">(</span><span class="s">CPM_SOURCE_CACHE</span><span class="w"> </span><span class="s2">"C:/cpmcache"</span><span class="w"> </span><span class="s">CACHE</span><span class="w"> </span><span class="s">PATH</span><span class="w"> </span><span class="s2">"CPM Cache Directory"</span><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="4-msvc-constexpr-evaluation-template-depth-constexprdepth4096-constexprsteps2000000">4. MSVC Constexpr Evaluation &amp; Template Depth (<code>/constexpr:depth4096 /constexpr:steps2000000</code>)<a class="headerlink" href="#4-msvc-constexpr-evaluation-template-depth-constexprdepth4096-constexprsteps2000000" title="Permanent link">&para;</a></h3>
+<p>CTRE evaluates regular expression state machines at compile time. To prevent MSVC evaluation limits (<code>error C2999</code>), <code>sip2json</code> exports <code>/constexpr:depth4096</code> and <code>/constexpr:steps2000000</code> on its interface target. If consuming custom builds on MSVC, ensure these options are set in your target compile options:</p>
+<div class="language-cmake highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nb">if</span><span class="p">(</span><span class="s">MSVC</span><span class="p">)</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">    </span><span class="nb">target_compile_options</span><span class="p">(</span><span class="s">your_target</span><span class="w"> </span><span class="s">PRIVATE</span><span class="w"> </span><span class="s">/constexpr:depth4096</span><span class="w"> </span><span class="s">/constexpr:steps2000000</span><span class="p">)</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="nb">endif</span><span class="p">()</span>
+</span></code></pre></div>
+<hr />
+<h2 id="building-previewing-documentation-locally">Building &amp; Previewing Documentation Locally<a class="headerlink" href="#building-previewing-documentation-locally" title="Permanent link">&para;</a></h2>
+<p>To preview the documentation site locally without deploying to GitHub Pages, you can use the built-in MkDocs local development server or compile static HTML files.</p>
+<h3 id="method-1-live-reload-local-server-recommended">Method 1: Live-Reload Local Server (Recommended)<a class="headerlink" href="#method-1-live-reload-local-server-recommended" title="Permanent link">&para;</a></h3>
+<p>Start the local development server from the repository root:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1"># 1. Activate the Python virtual environment (or install dependencies)</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="nb">source</span><span class="w"> </span>venv/bin/activate
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="c1"># (Optional: install dependencies if setting up a fresh environment)</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="c1"># pip install -r docs/requirements.txt</span>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="c1"># 2. Start the local live-reloading server</span>
+</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>mkdocs<span class="w"> </span>serve
+</span></code></pre></div>
+<ul>
+<li><strong>Local URL</strong>: Open <a href="http://127.0.0.1:8000/"><code>http://127.0.0.1:8000/</code></a> or <a href="http://localhost:8000/"><code>http://localhost:8000/</code></a> in your browser.</li>
+<li><strong>Live Reload</strong>: Any edits saved in <code>docs/</code> files will automatically update in your browser in real time.</li>
+</ul>
+<hr />
+<h3 id="method-2-build-static-local-html-site">Method 2: Build Static Local HTML Site<a class="headerlink" href="#method-2-build-static-local-html-site" title="Permanent link">&para;</a></h3>
+<p>To compile static HTML files into the <code>site/</code> directory without serving:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nb">source</span><span class="w"> </span>venv/bin/activate
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>mkdocs<span class="w"> </span>build<span class="w"> </span>--strict
+</span></code></pre></div>
+<p>The output will be placed in the <code>site/</code> directory. Open <code>site/index.html</code> directly in your browser.</p>
+<hr />
+<h3 id="method-3-previewing-local-benchmark-data">Method 3: Previewing Local Benchmark Data<a class="headerlink" href="#method-3-previewing-local-benchmark-data" title="Permanent link">&para;</a></h3>
+<p>To compile local benchmark results and update <code>docs/features/benchmarks.md</code> prior to serving:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nb">source</span><span class="w"> </span>venv/bin/activate
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>python3<span class="w"> </span>scripts/publish_benchmarks.py
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>mkdocs<span class="w"> </span>serve
+</span></code></pre></div>
 
 
 
@@ -1595,7 +1965,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../features/sdp/" class="md-footer__link md-footer__link--prev" aria-label="Previous: SDP Support">
+          <a href="../features/test_suite_sources/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Test Suite Sources &amp; IETF Links">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1605,7 +1975,7 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                SDP Support
+                Test Suite Sources & IETF Links
               </div>
             </div>
           </a>
@@ -1655,7 +2025,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "2.5.8-6"}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "2.6.0-beta.1"}</script>
     
     
       <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>

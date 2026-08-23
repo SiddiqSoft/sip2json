@@ -12,13 +12,13 @@
         <meta name="author" content="Siddiq Software LLC">
       
       
-        <link rel="canonical" href="https://siddiqsoft.github.io/sip2json/architecture/native_vs_json/">
+        <link rel="canonical" href="https://siddiqsoft.github.io/sip2json/features/optimization_choices/">
       
       
-        <link rel="prev" href="../dataflow/">
+        <link rel="prev" href="../benchmarks/">
       
       
-        <link rel="next" href="../../api/">
+        <link rel="next" href="../json_schema/">
       
       
         
@@ -29,7 +29,7 @@
     
     
       
-        <title>Native vs JSON Study - sip2json</title>
+        <title>Optimization Choices - sip2json</title>
       
     
     
@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#architectural-study-native-c-struct-vs-json-subclassed-model" class="md-skip">
+        <a href="#high-performance-optimization-choices" class="md-skip">
           Skip to content
         </a>
       
@@ -121,7 +121,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Native vs JSON Study
+              Optimization Choices
             
           </span>
         </div>
@@ -250,11 +250,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../features/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
           
   
   
@@ -290,13 +292,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../architecture/" class="md-tabs__link">
           
   
   
@@ -448,28 +448,31 @@
       
   
   
+    
   
   
+  
     
     
     
     
+      
+        
+        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
-        
-          
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
             
   
   
@@ -487,7 +490,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -505,7 +508,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/" class="md-nav__link">
+      <a href="../" class="md-nav__link">
         
   
   
@@ -533,7 +536,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/async/" class="md-nav__link">
+      <a href="../async/" class="md-nav__link">
         
   
   
@@ -561,7 +564,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/benchmarks/" class="md-nav__link">
+      <a href="../benchmarks/" class="md-nav__link">
         
   
   
@@ -586,10 +589,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../features/optimization_choices/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Optimization Choices
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -605,6 +635,87 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-header-lookup-execution-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Header Lookup Execution Flow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-64-bit-fnv-1a-hash-matching-vs-sso-string-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 64-Bit FNV-1a Hash Matching vs. SSO String Comparison
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 64-Bit FNV-1a Hash Matching vs. SSO String Comparison">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-architectural-question" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Architectural Question
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-hardware-compiler-factors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Hardware &amp; Compiler Factors
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-optimization-summary-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Optimization Summary Table
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -617,7 +728,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/json_schema/" class="md-nav__link">
+      <a href="../json_schema/" class="md-nav__link">
         
   
   
@@ -645,7 +756,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/sdp/" class="md-nav__link">
+      <a href="../sdp/" class="md-nav__link">
         
   
   
@@ -673,7 +784,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/compliance/" class="md-nav__link">
+      <a href="../compliance/" class="md-nav__link">
         
   
   
@@ -701,7 +812,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/test_suite_sources/" class="md-nav__link">
+      <a href="../test_suite_sources/" class="md-nav__link">
         
   
   
@@ -906,31 +1017,28 @@
       
   
   
-    
   
   
-  
     
     
     
     
-      
-        
-        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
             
   
   
@@ -948,7 +1056,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
@@ -966,7 +1074,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../" class="md-nav__link">
+      <a href="../../architecture/" class="md-nav__link">
         
   
   
@@ -994,7 +1102,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../patterns/" class="md-nav__link">
+      <a href="../../architecture/patterns/" class="md-nav__link">
         
   
   
@@ -1022,7 +1130,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../dataflow/" class="md-nav__link">
+      <a href="../../architecture/dataflow/" class="md-nav__link">
         
   
   
@@ -1047,37 +1155,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Native vs JSON Study
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../architecture/native_vs_json/" class="md-nav__link">
         
   
   
@@ -1093,104 +1174,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#1-architectural-background-what-if-question" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        1. Architectural Background &amp; What-If Question
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#2-empirical-benchmark-matrix" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2. Empirical Benchmark Matrix
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#3-low-level-performance-mechanics" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3. Low-Level Performance Mechanics
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="3. Low-Level Performance Mechanics">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#why-the-native-c-struct-is-88x-faster-9347k-msgsec" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Why the Native C++ Struct is 8.8x Faster (934.7K msg/sec)
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#4-comprehensive-trade-off-matrix-architectural-verdict" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4. Comprehensive Trade-off Matrix &amp; Architectural Verdict
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="4. Comprehensive Trade-off Matrix &amp; Architectural Verdict">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#architectural-verdict-design-choice" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Architectural Verdict &amp; Design Choice
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1575,10 +1558,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#1-architectural-background-what-if-question" class="md-nav__link">
+  <a href="#1-header-lookup-execution-flow" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Architectural Background &amp; What-If Question
+        1. Header Lookup Execution Flow
       
     </span>
   </a>
@@ -1586,33 +1569,33 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-empirical-benchmark-matrix" class="md-nav__link">
+  <a href="#2-64-bit-fnv-1a-hash-matching-vs-sso-string-comparison" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. Empirical Benchmark Matrix
+        2. 64-Bit FNV-1a Hash Matching vs. SSO String Comparison
       
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#3-low-level-performance-mechanics" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3. Low-Level Performance Mechanics
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="3. Low-Level Performance Mechanics">
+    <nav class="md-nav" aria-label="2. 64-Bit FNV-1a Hash Matching vs. SSO String Comparison">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#why-the-native-c-struct-is-88x-faster-9347k-msgsec" class="md-nav__link">
+  <a href="#the-architectural-question" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Why the Native C++ Struct is 8.8x Faster (934.7K msg/sec)
+        The Architectural Question
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-hardware-compiler-factors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Hardware &amp; Compiler Factors
       
     </span>
   </a>
@@ -1625,30 +1608,13 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#4-comprehensive-trade-off-matrix-architectural-verdict" class="md-nav__link">
+  <a href="#3-optimization-summary-table" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4. Comprehensive Trade-off Matrix &amp; Architectural Verdict
+        3. Optimization Summary Table
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="4. Comprehensive Trade-off Matrix &amp; Architectural Verdict">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#architectural-verdict-design-choice" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Architectural Verdict &amp; Design Choice
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -1698,7 +1664,7 @@
         <a href="../" class="md-path__link">
           
   <span class="md-ellipsis">
-    Architecture & Design
+    Features
   </span>
 
         </a>
@@ -1720,133 +1686,104 @@
   
 
 
-<h1 id="architectural-study-native-c-struct-vs-json-subclassed-model">Architectural Study: Native C++ Struct vs. JSON-Subclassed Model<a class="headerlink" href="#architectural-study-native-c-struct-vs-json-subclassed-model" title="Permanent link">&para;</a></h1>
-<p>This document presents an architectural trade-off analysis comparing a <strong>Native C++ Standalone Struct</strong> model (<code>sipmessage_native</code>) against the <strong><code>nlohmann::json</code>-subclassed</strong> model (<code>sipmessage</code>) used by <code>sip2json</code>.</p>
+<h1 id="high-performance-optimization-choices">High-Performance Optimization Choices<a class="headerlink" href="#high-performance-optimization-choices" title="Permanent link">&para;</a></h1>
+<p><code>sip2json</code> incorporates low-level C++23 architectural choices engineered to maximize network throughput and minimize per-message CPU cycles.</p>
 <hr />
-<h2 id="1-architectural-background-what-if-question">1. Architectural Background &amp; What-If Question<a class="headerlink" href="#1-architectural-background-what-if-question" title="Permanent link">&para;</a></h2>
-<p>When designing a modern C++ SIP protocol parser, two primary data modeling approaches emerge:</p>
+<h2 id="1-header-lookup-execution-flow">1. Header Lookup Execution Flow<a class="headerlink" href="#1-header-lookup-execution-flow" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>flowchart TD
+    A["Incoming Header Key (e.g. 'vIa')"] --&gt; B["hash_header_key(key, len)"]
+    B --&gt; C["Compute 64-bit FNV-1a Hash with In-Register Case-Folding"]
+    C --&gt; D{"Fast-Path: Starts with 'X-' or 'X_'?"}
+    D -- "Yes (Custom X-Header)" --&gt; E["Return Custom Header Result (2 cycles)"]
+    D -- "No (Canonical Candidate)" --&gt; F["switch (h) 64-Bit Direct Jump Table (1 cycle)"]
+    F -- "case hash_header_key('via')" --&gt; G["Return static HFS_VIA (hash: 0x68e8f7194eba5d73)"]
+    F -- "case hash_header_key('from')" --&gt; H["Return static HFS_FROM (hash: 0x7f845078d7a5c0b5)"]
+    F -- "case hash_header_key('content-length')" --&gt; I["Return static HFS_CONTENT_LENGTH (hash: 0x2d69a1e6ee916e7d)"]
+    F -- "default (Unrecognized Custom)" --&gt; J["Return Custom KeySet"]</code></pre>
+<hr />
+<h2 id="2-64-bit-fnv-1a-hash-matching-vs-sso-string-comparison">2. 64-Bit FNV-1a Hash Matching vs. SSO String Comparison<a class="headerlink" href="#2-64-bit-fnv-1a-hash-matching-vs-sso-string-comparison" title="Permanent link">&para;</a></h2>
+<h3 id="the-architectural-question">The Architectural Question<a class="headerlink" href="#the-architectural-question" title="Permanent link">&para;</a></h3>
+<p>Why is 64-bit FNV-1a integer hash <code>switch (h)</code> matching <strong>+74.4% to +93.8% faster</strong> than <code>std::string</code> or <code>std::string_view</code> string comparisons, even when Small String Optimization (SSO) avoids heap allocations?</p>
+<h3 id="key-hardware-compiler-factors">Key Hardware &amp; Compiler Factors<a class="headerlink" href="#key-hardware-compiler-factors" title="Permanent link">&para;</a></h3>
 <ol>
-<li><strong>Option A: Subclass <code>nlohmann::json</code> directly (<code>sipmessage</code>)</strong></li>
-<li><strong>Design Goal</strong>: Every parsed SIP message <em>is-a</em> native JSON object (<code>nlohmann::json</code>). It can be passed directly to JSON serializers, web API endpoints, database engines (MongoDB, PostgreSQL <code>jsonb</code>), and log processors with <strong>zero transformation overhead</strong>.</li>
+<li><strong>Zero String Memory Allocations or Copies</strong>:</li>
 <li>
-<p><strong>Trade-off</strong>: Requires constructing a dynamic JSON Abstract Syntax Tree (AST) using heap-allocated <code>std::map&lt;std::string, nlohmann::basic_json&gt;</code> nodes for every field (<code>"s"</code>, <code>"h"</code>, <code>"b"</code>, <code>"meta"</code>).</p>
+<p>Computing the 64-bit FNV-1a hash (<code>hash_header_key</code>) operates directly over raw character pointers with inline ASCII lowercasing (<code>c | 0x20</code>). It eliminates <code>std::string lowerKey</code> allocations, string copying, and <code>std::transform</code> loops entirely.</p>
 </li>
 <li>
-<p><strong>Option B: Standalone Native C++ Struct (<code>sipmessage_native</code>)</strong></p>
+<p><strong><code>constexpr</code> Compile-Time Switch Labels</strong>:</p>
 </li>
-<li><strong>Design Goal</strong>: Store parsed fields in stack-allocated native C++ members (<code>std::string method</code>, <code>std::string uri</code>, <code>std::vector&lt;std::pair&lt;std::string, std::string&gt;&gt; headers</code>).</li>
-<li><strong>Trade-off</strong>: Maximum raw parsing throughput and zero JSON AST allocation overhead, but requires an explicit transformation/serialization step to emit JSON.</li>
+<li>
+<p>The switch statement uses <code>case hash_header_key("from"):</code> compile-time constant expressions evaluated directly by the C++23 compiler. <code>HeaderKeySet</code> static objects remain lightweight and decoupled without storing redundant hash member variables.</p>
+</li>
+<li>
+<p><strong>100% Zero Hash Collisions Across All Canonical Headers</strong>:</p>
+</li>
+<li>
+<p>64-bit FNV-1a produces <strong>50 unique 64-bit hash values</strong> with zero collisions across all standard SIP headers, compact field abbreviations (<code>v</code>, <code>f</code>, <code>t</code>, <code>i</code>, <code>c</code>, <code>l</code>, <code>m</code>, <code>s</code>, <code>k</code>, <code>e</code>), and alternate names (<code>uthorization</code>).</p>
+</li>
+<li>
+<p><strong>Jump Table Generation vs. Mispredicted <code>if-else</code> Chains</strong>:</p>
+</li>
+<li><code>std::string</code> / <code>std::string_view</code> sequential comparisons (<code>if (key == "Via") ... else if ...</code>) force the CPU through up to 30 sequential conditional branches. Each mispredicted branch incurs a <strong>15–20 CPU cycle penalty</strong>.</li>
+<li>
+<p>Integer <code>switch (h)</code> statements are compiled into a <strong>Direct Jump Table</strong> (an $O(1)$ indirect branch array). The CPU computes <code>h</code> and jumps directly to the static <code>HFS_*</code> reference in <strong>1 clock cycle</strong> without full-string <code>memcmp</code> checks.</p>
+</li>
+<li>
+<p><strong>Fast-Path Exit for Custom Headers</strong>:</p>
+</li>
+<li>Custom headers (<code>X-</code>) match <code>keyFromPayload[0] == 'x' &amp;&amp; keyFromPayload[1] == '-'</code> in <strong>2 bitwise instructions</strong>, dropping directly to custom key handling without touching canonical string lookup branches.</li>
 </ol>
 <hr />
-<h2 id="2-empirical-benchmark-matrix">2. Empirical Benchmark Matrix<a class="headerlink" href="#2-empirical-benchmark-matrix" title="Permanent link">&para;</a></h2>
-<p>We benchmarked both models on Apple Silicon (<code>Apple-Release</code> <code>-O3</code>) executing identical parsing, header mutation, and header retrieval loops:</p>
+<h2 id="3-optimization-summary-table">3. Optimization Summary Table<a class="headerlink" href="#3-optimization-summary-table" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th style="text-align: left;">Benchmark Scenario / Metric</th>
-<th style="text-align: left;">Native C++ Struct (<code>sipmessage_native</code>)</th>
-<th style="text-align: left;"><code>nlohmann::json</code> Subclass (<code>sipmessage</code>)</th>
-<th style="text-align: left;">Performance Difference</th>
-<th style="text-align: left;">Operational Advantage</th>
+<th style="text-align: left;">Optimization Technique</th>
+<th style="text-align: left;">Replaced Pattern</th>
+<th style="text-align: left;">Performance Gain</th>
+<th style="text-align: left;">Hardware Mechanism</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><strong><code>sipmessage</code> Instantiation</strong></td>
-<td style="text-align: left;"><strong>989 ns</strong> (1,011,110 msgs/sec)</td>
-<td style="text-align: left;">4,725 ns (211,639 msgs/sec)</td>
-<td style="text-align: left;"><strong>4.78x FASTER</strong></td>
-<td style="text-align: left;"><strong>1.01M</strong> vs 211.6K instantiations/sec</td>
+<td style="text-align: left;"><strong>64-bit FNV-1a Hash <code>switch(h)</code></strong></td>
+<td style="text-align: left;">Sequential <code>std::string</code> <code>if-else</code> chain</td>
+<td style="text-align: left;"><strong>+74.4% throughput</strong></td>
+<td style="text-align: left;">100% collision-free 64-bit FNV-1a hash matching via 1-cycle $O(1)$ jump table</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong><code>setHeader</code> Mutation</strong></td>
-<td style="text-align: left;"><strong>9.46 ns</strong> (105,703,000 ops/sec)</td>
-<td style="text-align: left;">45.0 ns (22,236,500 ops/sec)</td>
-<td style="text-align: left;"><strong>4.76x FASTER</strong></td>
-<td style="text-align: left;"><strong>105.70M</strong> vs 22.24M ops/sec</td>
+<td style="text-align: left;"><strong><code>constexpr</code> Compile-Time Labels</strong></td>
+<td style="text-align: left;">Dynamic runtime string hashing</td>
+<td style="text-align: left;"><strong>0 ns overhead</strong></td>
+<td style="text-align: left;"><code>constexpr</code> compile-time <code>hash_header_key(...)</code> evaluated directly into switch jump table</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong><code>getHeader</code> Lookup</strong></td>
-<td style="text-align: left;"><strong>22.0 ns</strong> (45,513,900 ops/sec)</td>
-<td style="text-align: left;">57.1 ns (17,514,900 ops/sec)</td>
-<td style="text-align: left;"><strong>2.60x FASTER</strong></td>
-<td style="text-align: left;"><strong>45.51M</strong> vs 17.51M lookups/sec</td>
+<td style="text-align: left;"><strong>Bitwise Register Case-Folding</strong></td>
+<td style="text-align: left;"><code>std::transform(::tolower)</code></td>
+<td style="text-align: left;"><strong>-42.6% latency</strong></td>
+<td style="text-align: left;">Converts ASCII case in-register during 64-bit FNV-1a hashing</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>Full INVITE Parsing Rate</strong></td>
-<td style="text-align: left;"><strong>1,070 ns</strong> (<strong>934,691 msgs/sec</strong>)</td>
-<td style="text-align: left;">9,436 ns (105,982 msgs/sec)</td>
-<td style="text-align: left;"><strong>8.82x FASTER</strong></td>
-<td style="text-align: left;"><strong>934,691</strong> vs 105,982 msgs/sec</td>
+<td style="text-align: left;"><strong>Merged <code>HeaderKeySet</code> Architecture</strong></td>
+<td style="text-align: left;"><code>CanonicalHeaderKeyResult</code> wrapper</td>
+<td style="text-align: left;"><strong>+4.8% throughput</strong></td>
+<td style="text-align: left;">Eliminates temporary wrapper objects; enables 1-cycle pointer comparison (<code>&amp;keySet == &amp;HFS_CONTENT_LENGTH</code>)</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>Parsing Bandwidth</strong></td>
-<td style="text-align: left;"><strong>506.31 MiB/sec</strong></td>
-<td style="text-align: left;">57.41 MiB/sec</td>
-<td style="text-align: left;"><strong>8.82x FASTER</strong></td>
-<td style="text-align: left;">Half a Gigabyte/sec per core</td>
+<td style="text-align: left;"><strong>Inline Stream Callback (<code>parseAsync</code>)</strong></td>
+<td style="text-align: left;">Vector accumulation (<code>std::vector&lt;sipmessage&gt;</code>)</td>
+<td style="text-align: left;"><strong>+93.8% vs master</strong></td>
+<td style="text-align: left;">Zero-copy execution directly on network buffer</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>Memory Footprint (<code>sizeof</code>)</strong></td>
-<td style="text-align: left;"><strong>256 Bytes</strong></td>
-<td style="text-align: left;">280 Bytes + <code>std::map</code> heap nodes</td>
-<td style="text-align: left;"><strong>Significantly smaller</strong></td>
-<td style="text-align: left;">Zero dynamic JSON AST node overhead</td>
+<td style="text-align: left;"><strong>Fast-Path <code>X-</code> Header Branch</strong></td>
+<td style="text-align: left;">Sequential canonical check loop</td>
+<td style="text-align: left;"><strong>2 CPU cycles</strong></td>
+<td style="text-align: left;">Immediate bitmask check for custom headers</td>
 </tr>
 </tbody>
 </table>
-<hr />
-<h2 id="3-low-level-performance-mechanics">3. Low-Level Performance Mechanics<a class="headerlink" href="#3-low-level-performance-mechanics" title="Permanent link">&para;</a></h2>
-<h3 id="why-the-native-c-struct-is-88x-faster-9347k-msgsec">Why the Native C++ Struct is 8.8x Faster (934.7K msg/sec)<a class="headerlink" href="#why-the-native-c-struct-is-88x-faster-9347k-msgsec" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>Zero AST Overhead</strong>: Direct member assignments (<code>msg.method = string(g1)</code>, <code>msg.uri = string(g2)</code>) place strings into stack-allocated contiguous struct memory, avoiding <code>std::map</code> node allocations and variant type discriminators.</li>
-<li><strong>Cache Locality</strong>: Accessing struct fields operates within single CPU L1 cache lines, whereas <code>std::map</code> nodes require pointer dereferencing across scattered heap locations.</li>
-</ul>
-<hr />
-<h2 id="4-comprehensive-trade-off-matrix-architectural-verdict">4. Comprehensive Trade-off Matrix &amp; Architectural Verdict<a class="headerlink" href="#4-comprehensive-trade-off-matrix-architectural-verdict" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th style="text-align: left;">Architectural Criterion</th>
-<th style="text-align: left;">Native C++ Struct (<code>sipmessage_native</code>)</th>
-<th style="text-align: left;"><code>nlohmann::json</code> Subclass (<code>sipmessage</code>)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;"><strong>Raw Parsing Throughput</strong></td>
-<td style="text-align: left;"><strong>Ultra-Fast (934,691 msg/sec)</strong></td>
-<td style="text-align: left;">Fast (105,982 msg/sec)</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Memory Allocations</strong></td>
-<td style="text-align: left;"><strong>Minimal (0 JSON AST nodes)</strong></td>
-<td style="text-align: left;">AST nodes per header &amp; section</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>JSON Export Cost</strong></td>
-<td style="text-align: left;">High (Requires custom serializer)</td>
-<td style="text-align: left;"><strong>Zero-cost (IS-A <code>nlohmann::json</code> object)</strong></td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Database &amp; Web API Integration</strong></td>
-<td style="text-align: left;">Requires manual mapping code</td>
-<td style="text-align: left;"><strong>Direct pass-through to MongoDB / PostgreSQL / REST APIs</strong></td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Dynamic Schema Extension</strong></td>
-<td style="text-align: left;">Rigid static struct fields</td>
-<td style="text-align: left;"><strong>Flexible dynamic JSON properties</strong></td>
-</tr>
-</tbody>
-</table>
-<h3 id="architectural-verdict-design-choice">Architectural Verdict &amp; Design Choice<a class="headerlink" href="#architectural-verdict-design-choice" title="Permanent link">&para;</a></h3>
-<blockquote>
-<p>[!NOTE]
-<strong>Why <code>sip2json</code> Chooses <code>nlohmann::json</code> Inheritance</strong>:
-The primary mission of <code>sip2json</code> is to convert raw SIP wire streams into <strong>first-class structured JSON data</strong> for modern cloud APIs, log analytics, and microservices.
-Subclassing <code>nlohmann::json</code> provides <strong>zero-cost JSON serialization, direct schema compatibility, and dynamic property extensibility</strong>. At <strong>&gt; 105,000 messages/sec per core</strong>, the <code>nlohmann::json</code> model easily satisfies high-throughput carrier-grade network requirements while delivering native JSON ergonomics.</p>
-</blockquote>
 
 
 
@@ -1882,7 +1819,7 @@ Subclassing <code>nlohmann::json</code> provides <strong>zero-cost JSON serializ
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../dataflow/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Data Flow &amp; Memory">
+          <a href="../benchmarks/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Performance &amp; Benchmarks">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1892,20 +1829,20 @@ Subclassing <code>nlohmann::json</code> provides <strong>zero-cost JSON serializ
                 Previous
               </span>
               <div class="md-ellipsis">
-                Data Flow & Memory
+                Performance & Benchmarks
               </div>
             </div>
           </a>
         
         
           
-          <a href="../../api/" class="md-footer__link md-footer__link--next" aria-label="Next: Overview">
+          <a href="../json_schema/" class="md-footer__link md-footer__link--next" aria-label="Next: JSON Metaphor &amp; Schema">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Overview
+                JSON Metaphor & Schema
               </div>
             </div>
             <div class="md-footer__button md-icon">

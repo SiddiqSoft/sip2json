@@ -18,7 +18,7 @@
         <link rel="prev" href="../async/">
       
       
-        <link rel="next" href="../json_schema/">
+        <link rel="next" href="../optimization_choices/">
       
       
         
@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#performance-architectural-benchmarks" class="md-skip">
+        <a href="#performance-benchmarks" class="md-skip">
           Skip to content
         </a>
       
@@ -624,52 +624,24 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#1-benchmarking-results-summary" class="md-nav__link">
+  <a href="#1-multi-platform-cross-architecture-pipeline-benchmark-matrix" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Benchmarking Results Summary
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="1. Benchmarking Results Summary">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#single-threaded-parsing-throughput-parse-rate" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Single-Threaded Parsing Throughput (Parse Rate)
+        1. Multi-Platform &amp; Cross-Architecture Pipeline Benchmark Matrix
       
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#optimal-usage-library-constants-vs-ad-hoc-usage-literals-custom-headers" class="md-nav__link">
+      
+        <li class="md-nav__item">
+  <a href="#2-release-comparison-matrix-release260-vs-master-vs-v242" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Optimal Usage (Library Constants) vs Ad-hoc Usage (Literals &amp; Custom Headers)
+        2. Release Comparison Matrix (release/2.6.0 vs. master vs. v2.4.2)
       
     </span>
   </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#master-performance-matrix-refactored-v25-vs-tag-release-v242" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Master Performance Matrix: Refactored v2.5+ vs Tag Release v2.4.2
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -686,10 +658,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#architectural-question" class="md-nav__link">
+  <a href="#architectural-pipeline-comparison" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Architectural Question
+        Architectural Pipeline Comparison
       
     </span>
   </a>
@@ -697,10 +669,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#empirical-single-stream-comparison-results" class="md-nav__link">
+  <a href="#architectural-question" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Empirical Single Stream Comparison Results
+        Architectural Question
       
     </span>
   </a>
@@ -735,49 +707,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#4-multi-threaded-scaling-across-independent-streams" class="md-nav__link">
+  <a href="#4-running-benchmarks-locally" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4. Multi-Threaded Scaling across Independent Streams
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#5-micro-optimization-refactoring-performance-deltas" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        5. Micro-Optimization &amp; Refactoring Performance Deltas
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="5. Micro-Optimization &amp; Refactoring Performance Deltas">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#optimization-delta-summary-baseline-f0b7c97-vs-current-abdulkareem-siddiqissue33" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Optimization Delta Summary (Baseline f0b7c97 vs Current abdulkareem-siddiq/issue33)
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#architectural-recommendations" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Architectural Recommendations
+        4. Running Benchmarks Locally
       
     </span>
   </a>
@@ -788,6 +721,34 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../optimization_choices/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Optimization Choices
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -836,6 +797,62 @@
     
   
     SDP Support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../compliance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Standards Compliance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../test_suite_sources/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Test Suite Sources & IETF Links
   
 
     
@@ -1574,52 +1591,24 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#1-benchmarking-results-summary" class="md-nav__link">
+  <a href="#1-multi-platform-cross-architecture-pipeline-benchmark-matrix" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Benchmarking Results Summary
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="1. Benchmarking Results Summary">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#single-threaded-parsing-throughput-parse-rate" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Single-Threaded Parsing Throughput (Parse Rate)
+        1. Multi-Platform &amp; Cross-Architecture Pipeline Benchmark Matrix
       
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#optimal-usage-library-constants-vs-ad-hoc-usage-literals-custom-headers" class="md-nav__link">
+      
+        <li class="md-nav__item">
+  <a href="#2-release-comparison-matrix-release260-vs-master-vs-v242" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Optimal Usage (Library Constants) vs Ad-hoc Usage (Literals &amp; Custom Headers)
+        2. Release Comparison Matrix (release/2.6.0 vs. master vs. v2.4.2)
       
     </span>
   </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#master-performance-matrix-refactored-v25-vs-tag-release-v242" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Master Performance Matrix: Refactored v2.5+ vs Tag Release v2.4.2
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -1636,10 +1625,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#architectural-question" class="md-nav__link">
+  <a href="#architectural-pipeline-comparison" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Architectural Question
+        Architectural Pipeline Comparison
       
     </span>
   </a>
@@ -1647,10 +1636,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#empirical-single-stream-comparison-results" class="md-nav__link">
+  <a href="#architectural-question" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Empirical Single Stream Comparison Results
+        Architectural Question
       
     </span>
   </a>
@@ -1685,49 +1674,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#4-multi-threaded-scaling-across-independent-streams" class="md-nav__link">
+  <a href="#4-running-benchmarks-locally" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4. Multi-Threaded Scaling across Independent Streams
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#5-micro-optimization-refactoring-performance-deltas" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        5. Micro-Optimization &amp; Refactoring Performance Deltas
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="5. Micro-Optimization &amp; Refactoring Performance Deltas">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#optimization-delta-summary-baseline-f0b7c97-vs-current-abdulkareem-siddiqissue33" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Optimization Delta Summary (Baseline f0b7c97 vs Current abdulkareem-siddiq/issue33)
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#architectural-recommendations" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Architectural Recommendations
+        4. Running Benchmarks Locally
       
     </span>
   </a>
@@ -1802,188 +1752,157 @@
   
 
 
-<h1 id="performance-architectural-benchmarks">Performance &amp; Architectural Benchmarks<a class="headerlink" href="#performance-architectural-benchmarks" title="Permanent link">&para;</a></h1>
-<p><code>sip2json</code> is engineered for ultra-high throughput network stream parsing, combining Compile-Time Regular Expressions (<a href="https://github.com/hanickadot/compile-time-regular-expressions">CTRE</a>) and zero-copy C++23 std::string_view iterators.</p>
-<p>This document presents performance benchmarks, worst-case stream resilience results, and an architectural analysis evaluating single-threaded vs. multi-threaded stream parsing models.</p>
-<blockquote>
-<p>[!TIP]
-<strong>Live Interactive Benchmark Dashboard</strong>: View the full interactive HTML performance report at <a href="../../assets/benchmark_report.html">../assets/benchmark_report.html</a>, dynamically re-generated on every documentation site publication.</p>
-</blockquote>
-<hr />
-<h2 id="1-benchmarking-results-summary">1. Benchmarking Results Summary<a class="headerlink" href="#1-benchmarking-results-summary" title="Permanent link">&para;</a></h2>
-<p><em>Test Environment: Apple M-Series (11 cores @ 24 MHz bus clock), AppleClang 21.0, C++23 <code>-O3</code> Release Build.</em></p>
-<h3 id="single-threaded-parsing-throughput-parse-rate">Single-Threaded Parsing Throughput (Parse Rate)<a class="headerlink" href="#single-threaded-parsing-throughput-parse-rate" title="Permanent link">&para;</a></h3>
-<p>Every benchmark iteration validates the output JSON by extracting the <code>Call-ID</code> header and enumerating all SDP payload items:</p>
+<h1 id="performance-benchmarks">Performance &amp; Benchmarks<a class="headerlink" href="#performance-benchmarks" title="Permanent link">&para;</a></h1>
+<p><code>sip2json</code> delivers high-throughput, low-latency SIP stream parsing designed for high-concurrency VoIP edge proxies, media servers, and WebRTC gateways.</p>
+<!-- PIPELINE_BENCHMARKS_START -->
+<h2 id="1-multi-platform-cross-architecture-pipeline-benchmark-matrix">1. Multi-Platform &amp; Cross-Architecture Pipeline Benchmark Matrix<a class="headerlink" href="#1-multi-platform-cross-architecture-pipeline-benchmark-matrix" title="Permanent link">&para;</a></h2>
+<p><em>Empirical build pipeline measurements collected across matrix runners:</em></p>
 <table>
 <thead>
 <tr>
-<th style="text-align: left;">Benchmark Scenario</th>
-<th style="text-align: left;">Time / Msg</th>
-<th style="text-align: left;">Parse Rate (Messages / Sec)</th>
-<th style="text-align: left;">Bandwidth</th>
-<th style="text-align: left;">JSON Validation</th>
+<th style="text-align: left;">Operating System</th>
+<th style="text-align: center;">Architecture</th>
+<th style="text-align: center;">Compiler</th>
+<th style="text-align: center;">Stream Throughput (<code>parseAsync</code>)</th>
+<th style="text-align: center;">Bandwidth</th>
+<th style="text-align: center;">Per-Msg Latency</th>
+<th style="text-align: center;">Single Message (<code>parseFromBuffer</code>)</th>
+<th style="text-align: center;">Single Latency</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><strong>Minimal SIP Response</strong></td>
-<td style="text-align: left;">3.81 µs</td>
-<td style="text-align: left;"><strong>262,327 msg/sec</strong></td>
-<td style="text-align: left;">66.05 MiB/s</td>
-<td style="text-align: left;">Header extraction (<code>Call-ID</code>)</td>
+<td style="text-align: left;"><strong>Linux</strong></td>
+<td style="text-align: center;"><strong>arm64</strong></td>
+<td style="text-align: center;">Clang</td>
+<td style="text-align: center;"><strong>N/A</strong></td>
+<td style="text-align: center;"><strong>N/A</strong></td>
+<td style="text-align: center;"><strong>N/A</strong></td>
+<td style="text-align: center;"><strong>291,891.09 msg/s</strong></td>
+<td style="text-align: center;"><strong>3446902.10 ns</strong></td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>REGISTER Request</strong></td>
-<td style="text-align: left;">4.27 µs</td>
-<td style="text-align: left;"><strong>234,338 msg/sec</strong></td>
-<td style="text-align: left;">68.83 MiB/s</td>
-<td style="text-align: left;">Header extraction (<code>Call-ID</code>)</td>
+<td style="text-align: left;"><strong>Windows</strong></td>
+<td style="text-align: center;"><strong>arm64</strong></td>
+<td style="text-align: center;">MSVC</td>
+<td style="text-align: center;"><strong>N/A</strong></td>
+<td style="text-align: center;"><strong>N/A</strong></td>
+<td style="text-align: center;"><strong>N/A</strong></td>
+<td style="text-align: center;"><strong>143,360.00 msg/s</strong></td>
+<td style="text-align: center;"><strong>6860728.79 ns</strong></td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>NOTIFY Request (LF Endings)</strong></td>
-<td style="text-align: left;">4.65 µs</td>
-<td style="text-align: left;"><strong>214,949 msg/sec</strong></td>
-<td style="text-align: left;">80.56 MiB/s</td>
-<td style="text-align: left;">Header extraction (<code>Call-ID</code>)</td>
+<td style="text-align: left;"><strong>Linux</strong></td>
+<td style="text-align: center;"><strong>arm64</strong></td>
+<td style="text-align: center;">Clang</td>
+<td style="text-align: center;"><strong>N/A</strong></td>
+<td style="text-align: center;"><strong>N/A</strong></td>
+<td style="text-align: center;"><strong>N/A</strong></td>
+<td style="text-align: center;"><strong>291,891.09 msg/s</strong></td>
+<td style="text-align: center;"><strong>3446902.10 ns</strong></td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>INVITE with SDP Body</strong></td>
-<td style="text-align: left;">9.44 µs</td>
-<td style="text-align: left;"><strong>105,905 msg/sec</strong></td>
-<td style="text-align: left;">57.37 MiB/s</td>
-<td style="text-align: left;"><code>Call-ID</code> + SDP payload item count</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>INVITE with Complex SDP</strong></td>
-<td style="text-align: left;">14.00 µs</td>
-<td style="text-align: left;"><strong>71,410 msg/sec</strong></td>
-<td style="text-align: left;">58.16 MiB/s</td>
-<td style="text-align: left;"><code>Call-ID</code> + Multi-attribute SDP count</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Large Multi-Stream Packet</strong></td>
-<td style="text-align: left;">31.49 µs</td>
-<td style="text-align: left;"><strong>31,753 msg/sec</strong></td>
-<td style="text-align: left;">46.18 MiB/s</td>
-<td style="text-align: left;"><code>Call-ID</code> + Multi-stream SDP count</td>
+<td style="text-align: left;"><strong>Windows</strong></td>
+<td style="text-align: center;"><strong>arm64</strong></td>
+<td style="text-align: center;">MSVC</td>
+<td style="text-align: center;"><strong>N/A</strong></td>
+<td style="text-align: center;"><strong>N/A</strong></td>
+<td style="text-align: center;"><strong>N/A</strong></td>
+<td style="text-align: center;"><strong>143,360.00 msg/s</strong></td>
+<td style="text-align: center;"><strong>6860728.79 ns</strong></td>
 </tr>
 </tbody>
 </table>
+<!-- PIPELINE_BENCHMARKS_END -->
+
 <hr />
-<h3 id="optimal-usage-library-constants-vs-ad-hoc-usage-literals-custom-headers">Optimal Usage (Library Constants) vs Ad-hoc Usage (Literals &amp; Custom Headers)<a class="headerlink" href="#optimal-usage-library-constants-vs-ad-hoc-usage-literals-custom-headers" title="Permanent link">&para;</a></h3>
-<p><em>Demonstrates the performance advantages of using pre-defined library constants (<code>siddiqsoft::METHOD_*</code>, <code>siddiqsoft::HF_*</code>) over raw string literals.</em></p>
+<h2 id="2-release-comparison-matrix-release260-vs-master-vs-v242">2. Release Comparison Matrix (<code>release/2.6.0</code> vs. <code>master</code> vs. <code>v2.4.2</code>)<a class="headerlink" href="#2-release-comparison-matrix-release260-vs-master-vs-v242" title="Permanent link">&para;</a></h2>
+<p><em>Fresh empirical measurements across 36 real-world SIP message stream fixtures (164,400 stream iterations, 31,000 single message iterations):</em></p>
 <table>
 <thead>
 <tr>
-<th style="text-align: left;">Operation</th>
-<th style="text-align: left;">Optimal Usage (Library Constant)</th>
-<th style="text-align: left;">Ad-hoc Usage (String Literal)</th>
-<th style="text-align: left;">Custom Header (<code>X-Custom-Header</code>)</th>
-<th style="text-align: left;">Performance Advantage</th>
+<th style="text-align: left;">Metric</th>
+<th style="text-align: center;"><strong>v2.4.2 Release Tag</strong></th>
+<th style="text-align: center;"><strong>master Branch</strong></th>
+<th style="text-align: center;"><strong>v2.6.0 Current (<code>parse</code>)</strong></th>
+<th style="text-align: center;"><strong>v2.6.0 Current (<code>parseAsync</code>)</strong></th>
+<th style="text-align: center;"><strong>Speedup vs v2.4.2</strong></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><strong><code>setHeader</code></strong></td>
-<td style="text-align: left;"><strong>43.5 ns</strong> (22.99M ops/sec)</td>
-<td style="text-align: left;">50.1 ns (19.95M ops/sec)</td>
-<td style="text-align: left;">61.6 ns (16.24M ops/sec)</td>
-<td style="text-align: left;"><strong>13.2% FASTER</strong></td>
+<td style="text-align: left;"><strong>Stream Throughput</strong></td>
+<td style="text-align: center;"><strong>21,394.49 msg/s</strong></td>
+<td style="text-align: center;"><strong>19,043.79 msg/s</strong></td>
+<td style="text-align: center;"><strong>36,292.77 msg/s</strong></td>
+<td style="text-align: center;"><strong>37,260.49 msg/s</strong></td>
+<td style="text-align: center;"><strong>+74.4% FASTER</strong></td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong><code>getHeader</code></strong></td>
-<td style="text-align: left;"><strong>53.8 ns</strong> (18.58M ops/sec)</td>
-<td style="text-align: left;">56.5 ns (17.70M ops/sec)</td>
-<td style="text-align: left;">N/A</td>
-<td style="text-align: left;"><strong>4.8% FASTER</strong></td>
+<td style="text-align: left;">Stream Execution Time</td>
+<td style="text-align: center;">7.68 s</td>
+<td style="text-align: center;">8.63 s</td>
+<td style="text-align: center;">4.53 s</td>
+<td style="text-align: center;"><strong>4.41 s</strong></td>
+<td style="text-align: center;"><strong>-42.6% Time</strong></td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong><code>sipmessage</code> Request Init</strong></td>
-<td style="text-align: left;"><strong>4,669 ns</strong> (214.16K msg/sec)</td>
-<td style="text-align: left;">4,724 ns (211.70K msg/sec)</td>
-<td style="text-align: left;">N/A</td>
-<td style="text-align: left;"><strong>1.2% FASTER</strong></td>
-</tr>
-</tbody>
-</table>
-<hr />
-<h3 id="master-performance-matrix-refactored-v25-vs-tag-release-v242">Master Performance Matrix: Refactored v2.5+ vs Tag Release v2.4.2<a class="headerlink" href="#master-performance-matrix-refactored-v25-vs-tag-release-v242" title="Permanent link">&para;</a></h3>
-<p><em>Compares the current refactored version (Case-Insensitive <code>ON</code> and Case-Sensitive <code>OFF</code>) against the official <code>v2.4.2</code> tag release baseline.</em></p>
-<table>
-<thead>
-<tr>
-<th style="text-align: left;">Benchmark Metric</th>
-<th style="text-align: left;">v2.4.2 Tag Baseline</th>
-<th style="text-align: left;">Case-Insensitive Mode (<code>ON</code> Default)</th>
-<th style="text-align: left;">Case-Sensitive Mode (<code>OFF</code>)</th>
-<th style="text-align: left;">Impact vs v2.4.2</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;"><strong><code>BM_ParseMinimalResponse</code></strong></td>
-<td style="text-align: left;">137.47 µs</td>
-<td style="text-align: left;"><strong>3.81 µs</strong></td>
-<td style="text-align: left;"><strong>3.81 µs</strong></td>
-<td style="text-align: left;"><strong>36.1x FASTER</strong></td>
+<td style="text-align: left;">Processing Bandwidth</td>
+<td style="text-align: center;">56.39 MB/s</td>
+<td style="text-align: center;">50.19 MB/s</td>
+<td style="text-align: center;">95.08 MB/s</td>
+<td style="text-align: center;"><strong>98.20 MB/s</strong></td>
+<td style="text-align: center;"><strong>+41.81 MB/s</strong></td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong><code>BM_ParseRegisterRequest</code></strong></td>
-<td style="text-align: left;">158.07 µs</td>
-<td style="text-align: left;"><strong>4.27 µs</strong></td>
-<td style="text-align: left;"><strong>4.27 µs</strong></td>
-<td style="text-align: left;"><strong>37.0x FASTER</strong></td>
+<td style="text-align: left;">Avg Per-Msg Latency</td>
+<td style="text-align: center;">46.74 µs</td>
+<td style="text-align: center;">52.51 µs</td>
+<td style="text-align: center;">27.55 µs</td>
+<td style="text-align: center;"><strong>26.84 µs</strong></td>
+<td style="text-align: center;"><strong>-19.97 µs/msg</strong></td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong><code>BM_ParseInviteWithSDP</code></strong></td>
-<td style="text-align: left;">418.50 µs</td>
-<td style="text-align: left;"><strong>9.44 µs</strong></td>
-<td style="text-align: left;"><strong>9.44 µs</strong></td>
-<td style="text-align: left;"><strong>44.3x FASTER</strong></td>
+<td style="text-align: left;"><strong>Single Message (<code>parseFromBuffer</code>)</strong></td>
+<td style="text-align: center;"><strong>24,770.67 msg/s</strong></td>
+<td style="text-align: center;"><strong>23,256.49 msg/s</strong></td>
+<td style="text-align: center;"><strong>43,976.62 msg/s</strong></td>
+<td style="text-align: center;"><strong>43,976.62 msg/s</strong></td>
+<td style="text-align: center;"><strong>+77.5% FASTER</strong></td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong><code>BM_ParseInviteComplexSDP</code></strong></td>
-<td style="text-align: left;">642.92 µs</td>
-<td style="text-align: left;"><strong>14.00 µs</strong></td>
-<td style="text-align: left;"><strong>13.59 µs</strong></td>
-<td style="text-align: left;"><strong>45.9x FASTER</strong></td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong><code>BM_SerializeRegister</code></strong></td>
-<td style="text-align: left;">60.14 µs</td>
-<td style="text-align: left;"><strong>1.44 µs</strong></td>
-<td style="text-align: left;"><strong>1.43 µs</strong></td>
-<td style="text-align: left;"><strong>41.7x FASTER</strong></td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong><code>BM_GetHeader_LibraryConstant</code></strong></td>
-<td style="text-align: left;">2,218 ns</td>
-<td style="text-align: left;"><strong>53.8 ns</strong></td>
-<td style="text-align: left;"><strong>53.6 ns</strong></td>
-<td style="text-align: left;"><strong>41.2x FASTER</strong></td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong><code>BM_SetHeader_LibraryConstant</code></strong></td>
-<td style="text-align: left;">1,844 ns</td>
-<td style="text-align: left;"><strong>43.5 ns</strong></td>
-<td style="text-align: left;"><strong>42.8 ns</strong></td>
-<td style="text-align: left;"><strong>42.4x FASTER</strong></td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong><code>BM_VariableSizeStressTest/500</code></strong></td>
-<td style="text-align: left;">813.99 ms</td>
-<td style="text-align: left;"><strong>16.08 ms</strong></td>
-<td style="text-align: left;"><strong>16.02 ms</strong></td>
-<td style="text-align: left;"><strong>50.6x FASTER</strong></td>
+<td style="text-align: left;">Single-Msg Latency</td>
+<td style="text-align: center;">40.37 µs</td>
+<td style="text-align: center;">43.00 µs</td>
+<td style="text-align: center;"><strong>22.74 µs</strong></td>
+<td style="text-align: center;"><strong>22.74 µs</strong></td>
+<td style="text-align: center;"><strong>-17.63 µs/msg</strong></td>
 </tr>
 </tbody>
 </table>
 <blockquote>
 <p>[!NOTE]
-Case-insensitive matching (<code>sip2json_HEADERKEY_MODE_INSENSITIVE=ON</code>) adds <strong>less than 1.6% (0.7 nanoseconds)</strong> overhead over strict case-sensitive matching (<code>OFF</code>), while enabling full RFC 3261 compliance and support for compact single-character header names (<code>l</code>, <code>v</code>, <code>i</code>, <code>c</code>, <code>m</code>, <code>f</code>, <code>t</code>, <code>s</code>, <code>e</code>).</p>
+Detailed section-by-section breakdown and SDP element metrics are available in the <a href="https://github.com/SiddiqSoft/sip2json/blob/master/tests/benchmark/BENCHMARK_REPORT.md"><strong>Official Benchmark Report</strong></a>.</p>
 </blockquote>
 <hr />
 <h2 id="2-single-stream-architectural-study-parseasync-vs-parse-vs-thread-pool">2. Single Stream Architectural Study: <code>parseAsync</code> vs. <code>parse</code> vs. Thread Pool<a class="headerlink" href="#2-single-stream-architectural-study-parseasync-vs-parse-vs-thread-pool" title="Permanent link">&para;</a></h2>
+<h3 id="architectural-pipeline-comparison">Architectural Pipeline Comparison<a class="headerlink" href="#architectural-pipeline-comparison" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>flowchart LR
+    subgraph OptionA ["Option A: parseAsync Single-Thread (Optimal - 37,260 msg/sec)"]
+        direction LR
+        SockA["Network Socket"] --&gt; IOA["I/O Thread"]
+        IOA --&gt; PA["parseAsync(buffer)"]
+        PA --&gt; CBA["Inline Handler Callback"]
+    end
+
+    subgraph OptionC ["Option C: parseAsync + Thread Pool Offload (21% Slower)"]
+        direction LR
+        SockC["Network Socket"] --&gt; IOC["I/O Thread"]
+        IOC --&gt; PC["parseAsync(buffer)"]
+        PC --&gt; Mtx["std::mutex Queue Lock Contention"]
+        Mtx --&gt; W1["Worker Thread 1"]
+        Mtx --&gt; W2["Worker Thread 2"]
+    end</code></pre>
 <h3 id="architectural-question">Architectural Question<a class="headerlink" href="#architectural-question" title="Permanent link">&para;</a></h3>
 <p>When receiving a single continuous TCP/TLS stream of SIP messages on a single network socket, <strong>which approach yields the highest processing throughput?</strong></p>
 <ol>
@@ -1992,53 +1911,11 @@ Case-insensitive matching (<code>sip2json_HEADERKEY_MODE_INSENSITIVE=ON</code>) 
 <li><strong>Option C (<code>parseAsync</code> + Thread Pool Offload)</strong>: Execute <code>parseAsync</code> on the I/O thread and push parsed <code>sipmessage</code> objects into a thread pool queue for 4 worker threads to process.</li>
 <li><strong>Option D (<code>parse</code> + Thread Pool Handoff)</strong>: Execute <code>parse</code> on the I/O thread to build a vector, then push elements to a thread pool queue.</li>
 </ol>
-<h3 id="empirical-single-stream-comparison-results">Empirical Single Stream Comparison Results<a class="headerlink" href="#empirical-single-stream-comparison-results" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th style="text-align: left;">Architectural Strategy</th>
-<th style="text-align: left;">Execution Time (1,000 Msgs)</th>
-<th style="text-align: left;">Stream Throughput</th>
-<th style="text-align: left;">Bandwidth</th>
-<th style="text-align: left;">Performance Comparison</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;"><strong><code>parseAsync</code> (Single Thread Inline)</strong></td>
-<td style="text-align: left;"><strong>4.19 ms</strong></td>
-<td style="text-align: left;"><strong>238,708 msg/sec</strong></td>
-<td style="text-align: left;"><strong>70.12 MiB/s</strong></td>
-<td style="text-align: left;"><strong>BEST overall (Optimal)</strong></td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong><code>parse</code> (Single Thread Vector)</strong></td>
-<td style="text-align: left;"><strong>4.17 ms</strong></td>
-<td style="text-align: left;"><strong>239,927 msg/sec</strong></td>
-<td style="text-align: left;"><strong>70.47 MiB/s</strong></td>
-<td style="text-align: left;">Virtually identical (~0.5%), extra vector alloc</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong><code>parseAsync</code> + Thread Pool Queue</strong></td>
-<td style="text-align: left;"><strong>5.40 ms</strong></td>
-<td style="text-align: left;"><strong>188,490 msg/sec</strong></td>
-<td style="text-align: left;"><strong>55.37 MiB/s</strong></td>
-<td style="text-align: left;"><strong>21% SLOWER</strong></td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong><code>parse</code> + Thread Pool Handoff</strong></td>
-<td style="text-align: left;"><strong>6.41 ms</strong></td>
-<td style="text-align: left;"><strong>229,228 msg/sec</strong></td>
-<td style="text-align: left;"><strong>67.33 MiB/s</strong></td>
-<td style="text-align: left;"><strong>17% SLOWER (6.41ms Total)</strong></td>
-</tr>
-</tbody>
-</table>
 <h3 id="why-single-thread-parseasync-wins-for-single-streams">Why Single-Thread <code>parseAsync</code> Wins for Single Streams<a class="headerlink" href="#why-single-thread-parseasync-wins-for-single-streams" title="Permanent link">&para;</a></h3>
 <blockquote>
 <p>[!IMPORTANT]
 <strong>Zero Thread Synchronization Overhead</strong>
-Because <code>sip2json</code> parses a SIP message in just <strong>~4.1 microseconds</strong>, pushing individual parsed messages onto a synchronized queue for worker threads introduces <code>std::mutex</code> locking, condition variable signaling, and CPU cache invalidation overhead that takes <strong>longer than parsing the message itself</strong>.</p>
+Because <code>sip2json</code> parses a SIP message in just <strong>~26.8 microseconds</strong>, pushing individual parsed messages onto a synchronized queue for worker threads introduces <code>std::mutex</code> locking, condition variable signaling, and CPU cache invalidation overhead that takes <strong>longer than parsing the message itself</strong>.</p>
 <p>Processing messages directly inside the <code>parseAsync</code> callback on the network thread avoids queue lock contention entirely and retains full L1/L2 CPU cache locality.</p>
 </blockquote>
 <hr />
@@ -2067,209 +1944,15 @@ Because <code>sip2json</code> parses a SIP message in just <strong>~4.1 microsec
 <td style="text-align: left;"><strong>2,191,860 msg/sec</strong></td>
 <td style="text-align: left;">1.03 GiB/s</td>
 </tr>
-<tr>
-<td style="text-align: left;"><strong>500 Messages + Noise</strong></td>
-<td style="text-align: left;">40.30 µs</td>
-<td style="text-align: left;"><strong>12,408,600 msg/sec</strong></td>
-<td style="text-align: left;">5.82 GiB/s</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>1,000 Messages + Noise (<code>parse</code>)</strong></td>
-<td style="text-align: left;">36.50 µs</td>
-<td style="text-align: left;"><strong>27,397,200 msg/sec</strong></td>
-<td style="text-align: left;"><strong>12.85 GiB/s</strong></td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>1,000 Messages + Noise (<code>parseAsync</code>)</strong></td>
-<td style="text-align: left;">43.87 µs</td>
-<td style="text-align: left;"><strong>22,794,300 msg/sec</strong></td>
-<td style="text-align: left;"><strong>10.69 GiB/s</strong></td>
-</tr>
 </tbody>
 </table>
 <hr />
-<h2 id="4-multi-threaded-scaling-across-independent-streams">4. Multi-Threaded Scaling across Independent Streams<a class="headerlink" href="#4-multi-threaded-scaling-across-independent-streams" title="Permanent link">&para;</a></h2>
-<p>While offloading single-stream messages to worker threads incurs queue lock overhead, <strong>parallelizing independent network streams across multiple worker threads</strong> scales multi-core CPU throughput linearly:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: left;">Active Worker Threads</th>
-<th style="text-align: left;">Real Time / Batch</th>
-<th style="text-align: left;">Aggregate Throughput</th>
-<th style="text-align: left;">Aggregate Bandwidth</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;"><strong>2 Worker Threads</strong></td>
-<td style="text-align: left;">45.84 µs</td>
-<td style="text-align: left;"><strong>21,813,100 msg/sec</strong></td>
-<td style="text-align: left;">6.26 GiB/s</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>4 Worker Threads</strong></td>
-<td style="text-align: left;">82.21 µs</td>
-<td style="text-align: left;"><strong>24,326,800 msg/sec</strong></td>
-<td style="text-align: left;">6.98 GiB/s</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>8 Worker Threads</strong></td>
-<td style="text-align: left;">157.88 µs</td>
-<td style="text-align: left;"><strong>25,335,100 msg/sec</strong></td>
-<td style="text-align: left;">7.27 GiB/s</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>16 Worker Threads</strong></td>
-<td style="text-align: left;">288.93 µs</td>
-<td style="text-align: left;"><strong>27,688,800 msg/sec</strong></td>
-<td style="text-align: left;"><strong>7.94 GiB/s</strong></td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>16 Threads (Noisy Stream)</strong></td>
-<td style="text-align: left;">339.69 µs</td>
-<td style="text-align: left;"><strong>23,550,900 msg/sec</strong></td>
-<td style="text-align: left;"><strong>11.05 GiB/s</strong></td>
-</tr>
-</tbody>
-</table>
-<hr />
-<h2 id="5-micro-optimization-refactoring-performance-deltas">5. Micro-Optimization &amp; Refactoring Performance Deltas<a class="headerlink" href="#5-micro-optimization-refactoring-performance-deltas" title="Permanent link">&para;</a></h2>
-<p>Recent optimizations—converting global protocol constants and JSON keys to <code>static constexpr std::string_view</code> (<code>JSON_KEY_*</code>, <code>HFS_*</code>), adding zero-copy view accessors (<code>getMethodView()</code>, <code>getCallIDView()</code>), and avoiding redundant optional SDP field serializations per RFC 4566 (Fixes #33)—achieved measured performance gains across <code>Apple-Release</code> (<code>-O3 -g</code>) benchmarks:</p>
-<h3 id="optimization-delta-summary-baseline-f0b7c97-vs-current-abdulkareem-siddiqissue33">Optimization Delta Summary (Baseline <code>f0b7c97</code> vs Current <code>abdulkareem-siddiq/issue33</code>)<a class="headerlink" href="#optimization-delta-summary-baseline-f0b7c97-vs-current-abdulkareem-siddiqissue33" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th style="text-align: left;">Benchmark Category</th>
-<th style="text-align: left;">Benchmark Name</th>
-<th style="text-align: left;">Baseline (<code>f0b7c97</code>)</th>
-<th style="text-align: left;">Current Branch</th>
-<th style="text-align: left;">Speedup / Delta</th>
-<th style="text-align: left;">Operational Rate</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;"><strong>Header Accessors</strong></td>
-<td style="text-align: left;"><code>BM_GetMethod</code></td>
-<td style="text-align: left;">111.77 ns</td>
-<td style="text-align: left;"><strong>97.09 ns</strong></td>
-<td style="text-align: left;"><strong>-13.14% (faster)</strong></td>
-<td style="text-align: left;"><strong>10,373,812 ops/sec</strong></td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Noisy Stream Decoders</strong></td>
-<td style="text-align: left;"><code>BM_WorstCaseNoisyAsyncParsing/1000</code></td>
-<td style="text-align: left;">51.24 µs</td>
-<td style="text-align: left;"><strong>44.78 µs</strong></td>
-<td style="text-align: left;"><strong>-12.61% (faster)</strong></td>
-<td style="text-align: left;"><strong>22,662,064 msg/sec</strong></td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>SIP Message Construction</strong></td>
-<td style="text-align: left;"><code>BM_ConstructRequestSipmessage</code></td>
-<td style="text-align: left;">5.44 µs</td>
-<td style="text-align: left;"><strong>4.80 µs</strong></td>
-<td style="text-align: left;"><strong>-11.86% (faster)</strong></td>
-<td style="text-align: left;">208,604 msg/sec</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Response Instantiation</strong></td>
-<td style="text-align: left;"><code>BM_ConstructResponseFromRequest</code></td>
-<td style="text-align: left;">4.64 µs</td>
-<td style="text-align: left;"><strong>4.16 µs</strong></td>
-<td style="text-align: left;"><strong>-10.29% (faster)</strong></td>
-<td style="text-align: left;">240,493 msg/sec</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Variable Buffer Stress</strong></td>
-<td style="text-align: left;"><code>BM_VariableSizeAsyncStressTest/50</code></td>
-<td style="text-align: left;">1.85 ms</td>
-<td style="text-align: left;"><strong>1.66 ms</strong></td>
-<td style="text-align: left;"><strong>-10.27% (faster)</strong></td>
-<td style="text-align: left;">30,434 msg/sec</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Variable Buffer Stress</strong></td>
-<td style="text-align: left;"><code>BM_VariableSizeAsyncStressTest/10</code></td>
-<td style="text-align: left;">360.71 µs</td>
-<td style="text-align: left;"><strong>327.27 µs</strong></td>
-<td style="text-align: left;"><strong>-9.27% (faster)</strong></td>
-<td style="text-align: left;">30,717 msg/sec</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Variable Buffer Stress</strong></td>
-<td style="text-align: left;"><code>BM_VariableSizeStressTest/500</code></td>
-<td style="text-align: left;">18.59 ms</td>
-<td style="text-align: left;"><strong>16.87 ms</strong></td>
-<td style="text-align: left;"><strong>-9.21% (faster)</strong></td>
-<td style="text-align: left;">29,955 msg/sec</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Noisy Stream Decoders</strong></td>
-<td style="text-align: left;"><code>BM_WorstCaseNoisyAsyncParsing/500</code></td>
-<td style="text-align: left;">40.11 µs</td>
-<td style="text-align: left;"><strong>36.71 µs</strong></td>
-<td style="text-align: left;"><strong>-8.48% (faster)</strong></td>
-<td style="text-align: left;">13,678,243 msg/sec</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Noisy Stream Decoders</strong></td>
-<td style="text-align: left;"><code>BM_WorstCaseNoisyAsyncParsing/100</code></td>
-<td style="text-align: left;">33.18 µs</td>
-<td style="text-align: left;"><strong>30.62 µs</strong></td>
-<td style="text-align: left;"><strong>-7.72% (faster)</strong></td>
-<td style="text-align: left;">3,308,973 msg/sec</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Default Construction</strong></td>
-<td style="text-align: left;"><code>BM_ConstructDefaultSipmessage</code></td>
-<td style="text-align: left;">1.59 µs</td>
-<td style="text-align: left;"><strong>1.49 µs</strong></td>
-<td style="text-align: left;"><strong>-6.04% (faster)</strong></td>
-<td style="text-align: left;">677,473 msg/sec</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Stream Thread Pool Handoff</strong></td>
-<td style="text-align: left;"><code>BM_SimulatedStream_Parse_WithThreadPoolHandoff</code></td>
-<td style="text-align: left;">7.53 ms</td>
-<td style="text-align: left;"><strong>7.08 ms</strong></td>
-<td style="text-align: left;"><strong>-5.94% (faster)</strong></td>
-<td style="text-align: left;">209,221 msg/sec</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Response Construction</strong></td>
-<td style="text-align: left;"><code>BM_ConstructResponseSipmessage</code></td>
-<td style="text-align: left;">4.82 µs</td>
-<td style="text-align: left;"><strong>4.60 µs</strong></td>
-<td style="text-align: left;"><strong>-4.42% (faster)</strong></td>
-<td style="text-align: left;">219,227 msg/sec</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Multi-Thread Scaling</strong></td>
-<td style="text-align: left;"><code>BM_MultiThreadedAsyncParsing/4</code></td>
-<td style="text-align: left;">4.02 ms</td>
-<td style="text-align: left;"><strong>3.89 ms</strong></td>
-<td style="text-align: left;"><strong>-3.06% (faster)</strong></td>
-<td style="text-align: left;"><strong>21,996,876 msg/sec</strong></td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Multi-Thread Scaling</strong></td>
-<td style="text-align: left;"><code>BM_MultiThreadedAsyncParsing/16</code></td>
-<td style="text-align: left;">14.23 ms</td>
-<td style="text-align: left;"><strong>13.81 ms</strong></td>
-<td style="text-align: left;"><strong>-2.94% (faster)</strong></td>
-<td style="text-align: left;"><strong>23,790,194 msg/sec</strong></td>
-</tr>
-</tbody>
-</table>
-<hr />
-<h2 id="architectural-recommendations">Architectural Recommendations<a class="headerlink" href="#architectural-recommendations" title="Permanent link">&para;</a></h2>
-<blockquote>
-<p>[!TIP]
-1. <strong>Single Connection / Socket</strong>: Use <code>sip2json::parseAsync</code> inline on the network thread. Do not push individual messages into a thread pool queue unless downstream business processing (e.g. database IO, disk storage) requires heavy blocking operations.
-2. <strong>Multi-Socket Server</strong>: Assign independent sockets or stream buffers to dedicated worker threads, with each worker executing <code>parseAsync</code> on its assigned socket buffer.
-3. <strong>Memory Optimization</strong>: Prefer <code>parseAsync</code> over <code>parse</code> to avoid allocating intermediate <code>std::vector&lt;sipmessage&gt;</code> containers on the heap.</p>
-</blockquote>
+<h2 id="4-running-benchmarks-locally">4. Running Benchmarks Locally<a class="headerlink" href="#4-running-benchmarks-locally" title="Permanent link">&para;</a></h2>
+<p>Build and run the single-threaded benchmark suite across all sample fixtures:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>cmake<span class="w"> </span>--preset<span class="w"> </span>Apple-Release
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>cmake<span class="w"> </span>--build<span class="w"> </span>--preset<span class="w"> </span>Apple-Release
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>./build/Apple-Release/tests/benchmark/sip2json_benchmark<span class="w"> </span>tests/validation/samples
+</span></code></pre></div>
 
 
 
@@ -2322,13 +2005,13 @@ Because <code>sip2json</code> parses a SIP message in just <strong>~4.1 microsec
         
         
           
-          <a href="../json_schema/" class="md-footer__link md-footer__link--next" aria-label="Next: JSON Metaphor &amp; Schema">
+          <a href="../optimization_choices/" class="md-footer__link md-footer__link--next" aria-label="Next: Optimization Choices">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                JSON Metaphor & Schema
+                Optimization Choices
               </div>
             </div>
             <div class="md-footer__button md-icon">
@@ -2365,7 +2048,7 @@ Because <code>sip2json</code> parses a SIP message in just <strong>~4.1 microsec
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "2.5.8-6"}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "2.6.0-beta.1"}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>

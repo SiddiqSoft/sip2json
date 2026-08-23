@@ -1,0 +1,2245 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="SIP Parser for Modern C++">
+      
+      
+        <meta name="author" content="Siddiq Software LLC">
+      
+      
+        <link rel="canonical" href="https://siddiqsoft.github.io/sip2json/features/test_suite_sources/">
+      
+      
+        <link rel="prev" href="../compliance/">
+      
+      
+        <link rel="next" href="../../integration/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/Siddiq-Software-Avatar.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Test Suite Sources & IETF Links - sip2json</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../css/custom.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#test-suite-sources-standards-reference" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="sip2json" class="md-header__button md-logo" aria-label="sip2json" data-md-component="logo">
+      
+  <img src="../../assets/Siddiq-Software-Avatar.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            sip2json
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Test Suite Sources & IETF Links
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/SiddiqSoft/sip2json" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    SiddiqSoft/sip2json
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  
+  Features
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../integration/" class="md-tabs__link">
+          
+  
+  
+  Integration
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../architecture/" class="md-tabs__link">
+          
+  
+  
+  Architecture & Design
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../api/" class="md-tabs__link">
+          
+  
+  
+  API Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../examples/" class="md-tabs__link">
+          
+  
+  
+  Examples
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../license/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  License
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="sip2json" class="md-nav__button md-logo" aria-label="sip2json" data-md-component="logo">
+      
+  <img src="../../assets/Siddiq-Software-Avatar.png" alt="logo">
+
+    </a>
+    sip2json
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/SiddiqSoft/sip2json" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    SiddiqSoft/sip2json
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Features
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Features
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../async/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Async Stream Parsing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../benchmarks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Performance & Benchmarks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../optimization_choices/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Optimization Choices
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../json_schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    JSON Metaphor & Schema
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SDP Support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../compliance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Standards Compliance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Test Suite Sources & IETF Links
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Test Suite Sources & IETF Links
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-test-suite-architecture-categorization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Test Suite Architecture &amp; Categorization
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-official-standards-specifications-links" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Official Standards Specifications &amp; Links
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-compliance-test-suites-section-by-section-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Compliance Test Suites &amp; Section-by-Section Mapping
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Compliance Test Suites &amp; Section-by-Section Mapping">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-ietf-rfc-4475-sip-torture-test-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A. IETF RFC 4475 SIP Torture Test Matrix
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b-sdp-webrtc-standards-compliance-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B. SDP &amp; WebRTC Standards Compliance Matrix
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-regression-test-suite-testsregression-testsvalidation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Regression Test Suite (tests/regression/ &amp; tests/validation/)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-performance-benchmark-suite-testsbenchmark" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Performance Benchmark Suite (tests/benchmark/)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-ecosystem-open-source-test-suites-test-vectors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Ecosystem Open-Source Test Suites &amp; Test Vectors
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-ctest-test-target-execution-guide" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. CTest Test Target &amp; Execution Guide
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integration
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Integration
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quick Start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integration/cmake/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CMake & Submodules
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integration/dependencies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dependencies Diagram
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integration/nuget/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NuGet Package
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture & Design
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture & Design
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/patterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design Patterns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/dataflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Flow & Memory
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/native_vs_json/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Native vs JSON Study
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/sipmessage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    sipmessage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/sip2json/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    sip2json Functions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/errors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Exceptions & Errors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Examples
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/async_parsing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stream Parsing Callback
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/serialization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Message Serialization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../license/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    License
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-test-suite-architecture-categorization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Test Suite Architecture &amp; Categorization
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-official-standards-specifications-links" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Official Standards Specifications &amp; Links
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-compliance-test-suites-section-by-section-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Compliance Test Suites &amp; Section-by-Section Mapping
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Compliance Test Suites &amp; Section-by-Section Mapping">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-ietf-rfc-4475-sip-torture-test-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A. IETF RFC 4475 SIP Torture Test Matrix
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b-sdp-webrtc-standards-compliance-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B. SDP &amp; WebRTC Standards Compliance Matrix
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-regression-test-suite-testsregression-testsvalidation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Regression Test Suite (tests/regression/ &amp; tests/validation/)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-performance-benchmark-suite-testsbenchmark" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Performance Benchmark Suite (tests/benchmark/)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-ecosystem-open-source-test-suites-test-vectors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Ecosystem Open-Source Test Suites &amp; Test Vectors
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-ctest-test-target-execution-guide" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. CTest Test Target &amp; Execution Guide
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation" >
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Features
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="test-suite-sources-standards-reference">Test Suite Sources &amp; Standards Reference<a class="headerlink" href="#test-suite-sources-standards-reference" title="Permanent link">&para;</a></h1>
+<p>This document provides a section-by-section mapping of all test suites, test runner files, sample fixtures, authoritative standards, and links to official IETF RFC specifications integrated into <a href="https://github.com/siddiqsoftware/sip2json"><code>siddiqsoft/sip2json</code></a>.</p>
+<hr />
+<h2 id="1-test-suite-architecture-categorization">1. Test Suite Architecture &amp; Categorization<a class="headerlink" href="#1-test-suite-architecture-categorization" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>graph TD
+    Root["sip2json Test Suite Hierarchy"]
+
+    subgraph Compliance ["Compliance Category (tests/compliance)"]
+        C1["rfc3261_compliance_tests.cpp (RFC 3261 Core)"]
+        C2["rfc4475_torture_tests.cpp (50 RFC 4475 Torture Cases)"]
+        C3["sdp_compliance_tests.cpp (SDP &amp; WebRTC RFCs)"]
+        C4["sip_certification_suite.cpp (Extension RFCs)"]
+    end
+
+    subgraph Regression ["Regression Category (tests/regression &amp; tests/validation)"]
+        R1["test.cpp (36 Real-World .sip &amp; SIPp Fixtures)"]
+        R2["edge_tests.cpp &amp; synthetics.cpp (State Transitions)"]
+        R3["siphelpers.cpp (In-place Messages &amp; Roundtrip)"]
+    end
+
+    subgraph Benchmark ["Benchmark Category (tests/benchmark)"]
+        B1["benchmark.cpp (parse, parseAsync, parseFromBuffer)"]
+        B2["BENCHMARK_REPORT.md (Throughput &amp; Latency Matrices)"]
+    end
+
+    Root --&gt; Compliance
+    Root --&gt; Regression
+    Root --&gt; Benchmark</code></pre>
+<hr />
+<h2 id="2-official-standards-specifications-links">2. Official Standards Specifications &amp; Links<a class="headerlink" href="#2-official-standards-specifications-links" title="Permanent link">&para;</a></h2>
+<p><code>sip2json</code> is engineered and validated directly against official IETF (Internet Engineering Task Force) RFC standards for Session Initiation Protocol (SIP) and Session Description Protocol (SDP):</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Standard Specification</th>
+<th style="text-align: left;">Document Title</th>
+<th style="text-align: left;">Official IETF Specification URL</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>IETF RFC 3261</strong></td>
+<td style="text-align: left;">SIP: Session Initiation Protocol</td>
+<td style="text-align: left;"><a href="https://datatracker.ietf.org/doc/html/rfc3261">https://datatracker.ietf.org/doc/html/rfc3261</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>IETF RFC 4475</strong></td>
+<td style="text-align: left;">Session Initiation Protocol (SIP) Torture Test Messages</td>
+<td style="text-align: left;"><a href="https://datatracker.ietf.org/doc/html/rfc4475">https://datatracker.ietf.org/doc/html/rfc4475</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>IETF RFC 4566</strong></td>
+<td style="text-align: left;">SDP: Session Description Protocol</td>
+<td style="text-align: left;"><a href="https://datatracker.ietf.org/doc/html/rfc4566">https://datatracker.ietf.org/doc/html/rfc4566</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>IETF RFC 8866</strong></td>
+<td style="text-align: left;">SDP: Session Description Protocol (Obsoletes RFC 4566)</td>
+<td style="text-align: left;"><a href="https://datatracker.ietf.org/doc/html/rfc8866">https://datatracker.ietf.org/doc/html/rfc8866</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>IETF RFC 3264</strong></td>
+<td style="text-align: left;">An Offer/Answer Model with the Session Description Protocol (SDP)</td>
+<td style="text-align: left;"><a href="https://datatracker.ietf.org/doc/html/rfc3264">https://datatracker.ietf.org/doc/html/rfc3264</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>IETF RFC 8829</strong></td>
+<td style="text-align: left;">JavaScript Session Establishment Protocol (JSEP / WebRTC SDP)</td>
+<td style="text-align: left;"><a href="https://datatracker.ietf.org/doc/html/rfc8829">https://datatracker.ietf.org/doc/html/rfc8829</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>IETF RFC 8839</strong></td>
+<td style="text-align: left;">Session Description Protocol (SDP) Offer/Answer Procedures for ICE</td>
+<td style="text-align: left;"><a href="https://datatracker.ietf.org/doc/html/rfc8839">https://datatracker.ietf.org/doc/html/rfc8839</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>IETF RFC 5576</strong></td>
+<td style="text-align: left;">Source-Specific Media Attributes in SDP</td>
+<td style="text-align: left;"><a href="https://datatracker.ietf.org/doc/html/rfc5576">https://datatracker.ietf.org/doc/html/rfc5576</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>IETF RFC 3262</strong></td>
+<td style="text-align: left;">Reliability of Provisional Responses in SIP (<code>PRACK</code>)</td>
+<td style="text-align: left;"><a href="https://datatracker.ietf.org/doc/html/rfc3262">https://datatracker.ietf.org/doc/html/rfc3262</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>IETF RFC 6665</strong></td>
+<td style="text-align: left;">SIP-Specific Event Notification (<code>SUBSCRIBE</code>/<code>NOTIFY</code>)</td>
+<td style="text-align: left;"><a href="https://datatracker.ietf.org/doc/html/rfc6665">https://datatracker.ietf.org/doc/html/rfc6665</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>IETF RFC 3515</strong></td>
+<td style="text-align: left;">The Session Initiation Protocol (SIP) Refer Method (<code>REFER</code>)</td>
+<td style="text-align: left;"><a href="https://datatracker.ietf.org/doc/html/rfc3515">https://datatracker.ietf.org/doc/html/rfc3515</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>IETF RFC 3903</strong></td>
+<td style="text-align: left;">SIP Extension for Event Publication (<code>PUBLISH</code>)</td>
+<td style="text-align: left;"><a href="https://datatracker.ietf.org/doc/html/rfc3903">https://datatracker.ietf.org/doc/html/rfc3903</a></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="3-compliance-test-suites-section-by-section-mapping">3. Compliance Test Suites &amp; Section-by-Section Mapping<a class="headerlink" href="#3-compliance-test-suites-section-by-section-mapping" title="Permanent link">&para;</a></h2>
+<h3 id="a-ietf-rfc-4475-sip-torture-test-matrix">A. IETF RFC 4475 SIP Torture Test Matrix<a class="headerlink" href="#a-ietf-rfc-4475-sip-torture-test-matrix" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Test Runner Source Code</strong>: <a href="https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/rfc4475_torture_tests.cpp"><code>tests/compliance/src/rfc4475_torture_tests.cpp</code></a></li>
+<li><strong>Authoritative Standard</strong>: <a href="https://datatracker.ietf.org/doc/html/rfc4475#appendix-A">IETF RFC 4475 Appendix A (Encoded Reference Messages)</a></li>
+<li><strong>Sample Fixtures Directory</strong>: <a href="https://github.com/SiddiqSoft/sip2json/tree/master/tests/compliance/samples/rfc4475"><code>tests/compliance/samples/rfc4475/</code></a> &amp; <a href="https://github.com/SiddiqSoft/sip2json/tree/master/tests/validation/samples/rfc4475"><code>tests/validation/samples/rfc4475/</code></a></li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">RFC 4475 Section</th>
+<th style="text-align: left;">Specification Title</th>
+<th style="text-align: left;">Sample Fixture File</th>
+<th style="text-align: left;">Test Runner Source Link</th>
+<th style="text-align: left;">Test Name</th>
+<th style="text-align: left;">Assertion / Expected Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>§3.1.1.1</strong></td>
+<td style="text-align: left;">A Short Tortuous INVITE</td>
+<td style="text-align: left;"><a href="https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/samples/rfc4475/wsinv.dat"><code>wsinv.dat</code></a></td>
+<td style="text-align: left;"><a href="https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/rfc4475_torture_tests.cpp#L61"><code>rfc4475_torture_tests.cpp#L61</code></a></td>
+<td style="text-align: left;"><code>Section_3_1_1_1_A_Short_Tortuous_INVITE</code></td>
+<td style="text-align: left;">Parses method <code>INVITE</code>, URI <code>sip:vivekg@...</code>, Call-ID <code>wsinv.ndaksdj@...</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>§3.1.1.2</strong></td>
+<td style="text-align: left;">Wide Range of Valid Characters</td>
+<td style="text-align: left;"><a href="https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/samples/rfc4475/multi01.dat"><code>multi01.dat</code></a></td>
+<td style="text-align: left;"><a href="https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/rfc4475_torture_tests.cpp#L74"><code>rfc4475_torture_tests.cpp#L74</code></a></td>
+<td style="text-align: left;"><code>Section_3_1_1_2_Wide_Range_Valid_Characters</code></td>
+<td style="text-align: left;">Parses method <code>INVITE</code>, URI <code>sip:user@company.com</code>, multi-character headers</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>§3.1.1.3</strong></td>
+<td style="text-align: left;">Valid Use of % Escaping Mechanism</td>
+<td style="text-align: left;"><a href="https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/samples/rfc4475/esc01.dat"><code>esc01.dat</code></a></td>
+<td style="text-align: left;"><a href="https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/rfc4475_torture_tests.cpp#L87"><code>rfc4475_torture_tests.cpp#L87</code></a></td>
+<td style="text-align: left;"><code>Section_3_1_1_3_Valid_Use_Escaping</code></td>
+<td style="text-align: left;">Parses URI with percent escaping <code>sip:sips%3Auser%40example.com@example.net</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>§3.1.1.4</strong></td>
+<td style="text-align: left;">Escaped Nulls in URIs</td>
+<td style="text-align: left;"><a href="https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/samples/rfc4475/escnull.dat"><code>escnull.dat</code></a></td>
+<td style="text-align: left;"><a href="https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/rfc4475_torture_tests.cpp#L99"><code>rfc4475_torture_tests.cpp#L99</code></a></td>
+<td style="text-align: left;"><code>Section_3_1_1_4_Escaped_Nulls_In_URIs</code></td>
+<td style="text-align: left;">Parses method <code>REGISTER</code> with escaped <code>%00</code> null bytes in URI</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>§3.1.1.5</strong></td>
+<td style="text-align: left;">Use of % When It Is Not an Escape</td>
+<td style="text-align: left;"><a href="https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/samples/rfc4475/esc02.dat"><code>esc02.dat</code></a></td>
+<td style="text-align: left;"><a href="https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/rfc4475_torture_tests.cpp#L112"><code>rfc4475_torture_tests.cpp#L112</code></a></td>
+<td style="text-align: left;"><code>Section_3_1_1_5_Escaped_Method_Name_Rejection</code></td>
+<td style="text-align: left;">Throws <code>invalid_startline_error</code> due to escaped method <code>RE%47IST%45R</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>§3.1.1.6</strong></td>
+<td style="text-align: left;">No LWS between Display Name and <code>&lt;</code></td>
+<td style="text-align: left;"><a href="https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/samples/rfc4475/lwsdisp.dat"><code>lwsdisp.dat</code></a></td>
+<td style="text-align: left;"><a href="https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/rfc4475_torture_tests.cpp#L124"><code>rfc4475_torture_tests.cpp#L124</code></a></td>
+<td style="text-align: left;"><code>Section_3_1_1_6_No_LWS_Display_Name</code></td>
+<td style="text-align: left;">Parses <code>OPTIONS</code> request with display name adjacent to <code>&lt;</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>§3.1.1.7</strong></td>
+<td style="text-align: left;">Long Values in Header Fields</td>
+<td style="text-align: left;"><a href="https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/samples/rfc4475/longreq.dat"><code>longreq.dat</code></a></td>
+<td style="text-align: left;"><a href="https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/rfc4475_torture_tests.cpp#L136"><code>rfc4475_torture_tests.cpp#L136</code></a></td>
+<td style="text-align: left;"><code>Section_3_1_1_7_Long_Values_Header_Fields</code></td>
+<td style="text-align: left;">Parses <code>INVITE</code> request containing multi-kilobyte header lines</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>§3.1.1.8</strong></td>
+<td style="text-align: left;">Extra Whitespace in Start Line</td>
+<td style="text-align: left;"><a href="https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/samples/rfc4475/trws.dat"><code>trws.dat</code></a></td>
+<td style="text-align: left;"><a href="https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/rfc4475_torture_tests.cpp#L148"><code>rfc4475_torture_tests.cpp#L148</code></a></td>
+<td style="text-align: left;"><code>Section_3_1_1_8_Extra_Space_In_Startline_Rejection</code></td>
+<td style="text-align: left;">Throws <code>invalid_startline_error</code> on double space <code>SIP/2.0</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>§3.1.1.9</strong></td>
+<td style="text-align: left;">Semicolon Parameters in URI User</td>
+<td style="text-align: left;"><a href="https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/samples/rfc4475/cparam01.dat"><code>cparam01.dat</code></a></td>
+<td style="text-align: left;"><a href="https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/rfc4475_torture_tests.cpp#L160"><code>rfc4475_torture_tests.cpp#L160</code></a></td>
+<td style="text-align: left;"><code>Section_3_1_1_9_Semicolon_Separated_URI_Params</code></td>
+<td style="text-align: left;">Parses <code>REGISTER</code> request with URI user part parameters</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>§3.1.1.10</strong></td>
+<td style="text-align: left;">Varied Transport Types</td>
+<td style="text-align: left;"><a href="https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/samples/rfc4475/transports.dat"><code>transports.dat</code></a></td>
+<td style="text-align: left;"><a href="https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/rfc4475_torture_tests.cpp#L172"><code>rfc4475_torture_tests.cpp#L172</code></a></td>
+<td style="text-align: left;"><code>Section_3_1_1_10_Varied_Transport_Types</code></td>
+<td style="text-align: left;">Parses <code>OPTIONS</code> request with custom transport parameters</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>§3.1.1.11</strong></td>
+<td style="text-align: left;">Multipart MIME Body</td>
+<td style="text-align: left;"><a href="https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/samples/rfc4475/mpart01.dat"><code>mpart01.dat</code></a></td>
+<td style="text-align: left;"><a href="https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/rfc4475_torture_tests.cpp#L184"><code>rfc4475_torture_tests.cpp#L184</code></a></td>
+<td style="text-align: left;"><code>Section_3_1_1_11_Multipart_MIME_Rejection</code></td>
+<td style="text-align: left;">Throws <code>unsupported_contenttype_error</code> for <code>multipart/mixed</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>§3.1.1.12</strong></td>
+<td style="text-align: left;">Non-ASCII Reason Phrase</td>
+<td style="text-align: left;"><a href="https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/samples/rfc4475/unreason.dat"><code>unreason.dat</code></a></td>
+<td style="text-align: left;"><a href="https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/rfc4475_torture_tests.cpp#L196"><code>rfc4475_torture_tests.cpp#L196</code></a></td>
+<td style="text-align: left;"><code>Section_3_1_1_12_Unusual_Reason_Phrase</code></td>
+<td style="text-align: left;">Parses response status 200 OK with non-ASCII reason phrase</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>§3.1.1.13</strong></td>
+<td style="text-align: left;">Empty Reason Phrase</td>
+<td style="text-align: left;"><a href="https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/samples/rfc4475/noreason.dat"><code>noreason.dat</code></a></td>
+<td style="text-align: left;"><a href="https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/rfc4475_torture_tests.cpp#L206"><code>rfc4475_torture_tests.cpp#L206</code></a></td>
+<td style="text-align: left;"><code>Section_3_1_1_13_Empty_Reason_Phrase</code></td>
+<td style="text-align: left;">Parses response status 100 with empty reason phrase</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="b-sdp-webrtc-standards-compliance-matrix">B. SDP &amp; WebRTC Standards Compliance Matrix<a class="headerlink" href="#b-sdp-webrtc-standards-compliance-matrix" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Test Runner Source Code</strong>: <a href="https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/sdp_compliance_tests.cpp"><code>tests/compliance/src/sdp_compliance_tests.cpp</code></a></li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Standard Specification</th>
+<th style="text-align: left;">Test Verification Topic</th>
+<th style="text-align: left;">Test Runner Source Link</th>
+<th style="text-align: left;">Test Name</th>
+<th style="text-align: left;">Assertion / Expected Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>RFC 4566 / 8866</strong></td>
+<td style="text-align: left;">Session Level Syntax (<code>o=</code>, <code>c=</code>)</td>
+<td style="text-align: left;"><a href="https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/sdp_compliance_tests.cpp#L21"><code>sdp_compliance_tests.cpp#L21</code></a></td>
+<td style="text-align: left;"><code>CERT_SDP_SessionLevel_OriginAndConnection</code></td>
+<td style="text-align: left;">Parses <code>o=</code> owner string, IP4 connection address</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>RFC 4566 §9</strong></td>
+<td style="text-align: left;">Full Reference SDP Specification</td>
+<td style="text-align: left;"><a href="https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/sdp_compliance_tests.cpp#L69"><code>sdp_compliance_tests.cpp#L69</code></a></td>
+<td style="text-align: left;"><code>CERT_SDP_RFC4566_Section9_FullSpecificationExample</code></td>
+<td style="text-align: left;">Parses Section 9 reference vector into structured JSON</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>RFC 3264</strong></td>
+<td style="text-align: left;">Offer/Answer Direction Attributes</td>
+<td style="text-align: left;"><a href="https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/sdp_compliance_tests.cpp#L109"><code>sdp_compliance_tests.cpp#L109</code></a></td>
+<td style="text-align: left;"><code>CERT_SDP_OfferAnswer_DirectionAttributes</code></td>
+<td style="text-align: left;">Validates <code>sendrecv</code>, <code>sendonly</code>, <code>recvonly</code>, <code>inactive</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>RFC 8829 / 8839</strong></td>
+<td style="text-align: left;">WebRTC BUNDLE, ICE &amp; DTLS Attributes</td>
+<td style="text-align: left;"><a href="https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/sdp_compliance_tests.cpp#L151"><code>sdp_compliance_tests.cpp#L151</code></a></td>
+<td style="text-align: left;"><code>CERT_SDP_WebRTC_BUNDLE_ICE_DTLS_Attributes</code></td>
+<td style="text-align: left;">Validates <code>group:BUNDLE</code>, <code>ice-ufrag</code>, <code>ice-pwd</code>, <code>fingerprint</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>RFC 4566 / 8866</strong></td>
+<td style="text-align: left;">Multi-Session Demarcation (<code>v=0</code>)</td>
+<td style="text-align: left;"><a href="https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/sdp_compliance_tests.cpp#L206"><code>sdp_compliance_tests.cpp#L206</code></a></td>
+<td style="text-align: left;"><code>CERT_SDP_Multiple_Sessions_Demarcation</code></td>
+<td style="text-align: left;">Splits multiple <code>v=0</code> session descriptions</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>RFC 4566</strong></td>
+<td style="text-align: left;">UNIX LF (<code>\n</code>) Line Endings</td>
+<td style="text-align: left;"><a href="https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/sdp_compliance_tests.cpp#L243"><code>sdp_compliance_tests.cpp#L243</code></a></td>
+<td style="text-align: left;"><code>CERT_SDP_UNIX_LF_LineEndings</code></td>
+<td style="text-align: left;">Seamlessly parses SDP payloads formatted with <code>\n</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="4-regression-test-suite-testsregression-testsvalidation">4. Regression Test Suite (<code>tests/regression/</code> &amp; <code>tests/validation/</code>)<a class="headerlink" href="#4-regression-test-suite-testsregression-testsvalidation" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Test Runner Source Code</strong>: <a href="https://github.com/SiddiqSoft/sip2json/blob/master/tests/validation/src/test.cpp"><code>tests/validation/src/test.cpp</code></a> &amp; <a href="https://github.com/SiddiqSoft/sip2json/tree/master/tests/regression/src/"><code>tests/regression/src/</code></a></li>
+<li><strong>Sample Fixtures Directory</strong>: <a href="https://github.com/SiddiqSoft/sip2json/tree/master/tests/validation/samples"><code>tests/validation/samples/</code></a></li>
+<li><strong>Fixture Inventory</strong>: Contains <strong>36 real-world SIP stream fixtures and SIPp scenario vectors</strong> (<code>NOTIFY_CallStart_1.sip</code>, <code>NOTIFY_CallStart_2.sip</code>, <code>NOTIFY_CallEnd.sip</code>, <code>NOTIFY_LegAdd.sip</code>, <code>NOTIFY_LegDrop.sip</code>, <code>NOTIFY_SDP_multi_1.sip</code>, <code>sipp_uac_invite.sip</code>, <code>sipp_uas_200ok.sip</code>, <code>Mixed_Stream_1.sip</code>, <code>Mixed_Stream_2.sip</code>, <code>Mixed_Stream_3.sip</code>, <code>RandomStream_Recv_File_1.sip</code>, <code>OK_REGISTER_Multiline_ContactHeader_1.sip</code>, etc.).</li>
+<li><strong>Coverage</strong>: 78 unit &amp; edge-case tests validating parser state transitions, edge case handling, async parsing callbacks, header accessors, SDP object structures, and serialization round-tripping.</li>
+</ul>
+<hr />
+<h2 id="5-performance-benchmark-suite-testsbenchmark">5. Performance Benchmark Suite (<code>tests/benchmark/</code>)<a class="headerlink" href="#5-performance-benchmark-suite-testsbenchmark" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Test Runner Source Code</strong>: <a href="https://github.com/SiddiqSoft/sip2json/blob/master/tests/benchmark/src/benchmark.cpp"><code>tests/benchmark/src/benchmark.cpp</code></a></li>
+<li><strong>Report Document</strong>: <a href="https://github.com/SiddiqSoft/sip2json/blob/master/tests/benchmark/BENCHMARK_REPORT.md"><code>tests/benchmark/BENCHMARK_REPORT.md</code></a></li>
+<li><strong>Coverage</strong>: Measures multi-message stream vector parsing (<code>parse</code>), zero-copy stream callback parsing (<code>parseAsync</code>), discrete single-message parsing (<code>parseFromBuffer</code>), and SDP element counts across stream fixtures.</li>
+</ul>
+<hr />
+<h2 id="6-ecosystem-open-source-test-suites-test-vectors">6. Ecosystem Open-Source Test Suites &amp; Test Vectors<a class="headerlink" href="#6-ecosystem-open-source-test-suites-test-vectors" title="Permanent link">&para;</a></h2>
+<p>In addition to official IETF standards documents, <code>sip2json</code> incorporates test vectors and scenario templates from leading open-source VoIP &amp; WebRTC test projects:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Open-Source Test Suite</th>
+<th style="text-align: left;">Authoritative Project Repository</th>
+<th style="text-align: left;">License</th>
+<th style="text-align: left;">Incorporated Test Vectors &amp; Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>SIPp (SIP Scenario Generator)</strong></td>
+<td style="text-align: left;"><a href="https://github.com/SIPp/SIPp">https://github.com/SIPp/SIPp</a></td>
+<td style="text-align: left;">GPL-2.0+</td>
+<td style="text-align: left;">Incorporated <a href="https://github.com/SiddiqSoft/sip2json/blob/master/tests/validation/samples/sipp_uac_invite.sip"><code>sipp_uac_invite.sip</code></a> and <a href="https://github.com/SiddiqSoft/sip2json/blob/master/tests/validation/samples/sipp_uas_200ok.sip"><code>sipp_uas_200ok.sip</code></a> scenarios into <code>tests/validation/src/test.cpp</code>.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>OpenSIPS <code>sipssert</code> Conformance Suite</strong></td>
+<td style="text-align: left;"><a href="https://github.com/OpenSIPS/sipssert">https://github.com/OpenSIPS/sipssert</a></td>
+<td style="text-align: left;">GPL-2.0</td>
+<td style="text-align: left;">Conformance test scenarios for SIP registration, digest authentication (<code>401 Unauthorized</code>), and dialog state handling.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>PROTOS Test-Suite c07-sip (Security Fuzzing)</strong></td>
+<td style="text-align: left;"><a href="https://www.ee.oulu.fi/research/ouspg/PROTOS">University of Oulu PROTOS Suite</a></td>
+<td style="text-align: left;">Open / Academic</td>
+<td style="text-align: left;">Protocol crash resilience &amp; malformed header fuzzing test vectors incorporated into <code>tests/compliance/src/rfc4475_torture_tests.cpp</code>.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>W3C Web Platform Tests (WPT) WebRTC SDP</strong></td>
+<td style="text-align: left;"><a href="https://github.com/web-platform-tests/wpt">https://github.com/web-platform-tests/wpt</a></td>
+<td style="text-align: left;">BSD-3-Clause / W3C</td>
+<td style="text-align: left;">WebRTC SDP offer/answer blobs generated by Google Chrome &amp; Mozilla Firefox integrated into <code>tests/compliance/src/sdp_compliance_tests.cpp</code>.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>baresip / re (libre) C SIP Test Fixtures</strong></td>
+<td style="text-align: left;"><a href="https://github.com/baresip/re">https://github.com/baresip/re</a></td>
+<td style="text-align: left;">BSD-3-Clause</td>
+<td style="text-align: left;">C SIP/SDP parser test vectors (compatible with <code>sip2json</code> BSD-3 license).</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="7-ctest-test-target-execution-guide">7. CTest Test Target &amp; Execution Guide<a class="headerlink" href="#7-ctest-test-target-execution-guide" title="Permanent link">&para;</a></h2>
+<p>All compliance, regression, and benchmark test binaries can be built and run using CMake presets:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Configure and build Release preset</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>cmake<span class="w"> </span>--preset<span class="w"> </span>Apple-Release
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>cmake<span class="w"> </span>--build<span class="w"> </span>--preset<span class="w"> </span>Apple-Release
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="c1"># Run Compliance Test Target (38 / 38 Passed)</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>./build/Apple-Release/tests/compliance/sip2json_compliance_tests
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="c1"># Run Regression Test Target (78 / 78 Passed)</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="nv">SAMPLES_DIR</span><span class="o">=</span>tests/validation/samples<span class="w"> </span>./build/Apple-Release/tests/validation/sip2json_client_test
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="c1"># Run Performance Benchmark Harness</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>./build/Apple-Release/tests/benchmark/sip2json_benchmark<span class="w"> </span>tests/validation/samples
+</span></code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../compliance/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Standards Compliance">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Standards Compliance
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../integration/" class="md-footer__link md-footer__link--next" aria-label="Next: Quick Start">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Quick Start
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "2.6.0-beta.1"}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+      
+    
+  </body>
+</html>
