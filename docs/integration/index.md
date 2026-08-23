@@ -13,7 +13,7 @@ Choose your preferred integration method:
     Recommended for cross-platform C++23 CMake projects.
 
     ```cmake
-    CPMAddPackage("gh:SiddiqSoft/sip2json#v1.17.0")
+    CPMAddPackage("gh:SiddiqSoft/sip2json#v2.6.0")
     target_link_libraries(your_target PRIVATE sip2json::sip2json)
     ```
 
