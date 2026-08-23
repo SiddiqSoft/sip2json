@@ -200,31 +200,29 @@ stages:
         runBenchmarks: ${{ parameters.RunBenchmarks }}
 
   # ==========================================================================
-  # STAGE 3: NUGET PUBLICATION
+  # STAGE 3: NUGET PUBLICATION (DEPRECATED - DISABLED & COMMENTED OUT)
   # ==========================================================================
-  - stage: PublishNuGet
-    displayName: "NuGet Release"
-    dependsOn:
-      - Windows
-      - Linux
-    condition: and(eq(${{ variables.PublishNuGet }}, true), succeeded())
-    jobs:
-      - job: ApproveNuGetRelease
-        displayName: "Manual Approval - NuGet Release"
-        pool: server
-        steps:
-          - task: ManualValidation@0
-            timeoutInMinutes: 1440
-            inputs:
-              notifyUsers: ''
-              instructions: 'Please review and approve the publication of the NuGet package.'
-              onTimeout: 'reject'
-
-      - template: .azure/az-publish-nuget.yml
-        parameters:
-          displayName: NuGet Release
-          PublishNuGet: ${{ variables.PublishNuGet }}
-          dependsOn: [ ApproveNuGetRelease ]
+  # - stage: PublishNuGet
+  #   displayName: "NuGet Release"
+  #   dependsOn:
+  #     - Windows
+  #     - Linux
+  #   condition: and(eq(${{ variables.PublishNuGet }}, true), succeeded())
+  #   jobs:
+  #     - job: ApproveNuGetRelease
+  #       displayName: "Manual Approval - NuGet Release"
+  #       pool: server
+  #       steps:
+  #         - task: ManualValidation@0
+  #           timeoutInMinutes: 1440
+  #           instructions: 'Please review and approve the publication of the NuGet package.'
+  #           onTimeout: 'reject'
+  #
+  #     - template: .azure/az-publish-nuget.yml
+  #       parameters:
+  #         displayName: NuGet Release
+  #         PublishNuGet: ${{ variables.PublishNuGet }}
+  #         dependsOn: [ ApproveNuGetRelease ]
 
   # ==========================================================================
   # STAGE 4: GITHUB RELEASE PUBLICATION
