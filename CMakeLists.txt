@@ -65,7 +65,7 @@ install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/SiddiqSoft.sip2json.natvis
 target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_${CMAKE_CXX_STANDARD})
 
 if(MSVC)
-    target_compile_options(${PROJECT_NAME} INTERFACE /templateDepth:4096)
+    target_compile_options(${PROJECT_NAME} INTERFACE /constexpr:depth4096 /constexpr:steps2000000)
 else()
     target_compile_options(${PROJECT_NAME} INTERFACE -ftemplate-depth=4096)
 endif()
