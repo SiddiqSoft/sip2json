@@ -1747,6 +1747,12 @@
 </thead>
 <tbody>
 <tr>
+<td style="text-align: left;"><strong>CTRE Startline Regex Simplification</strong></td>
+<td style="text-align: left;"><code>[\r\n|\n]</code> set-matching character class</td>
+<td style="text-align: left;"><strong>+6.0% to +6.8% throughput</strong></td>
+<td style="text-align: left;">Replaced character class brackets with <code>\r?\n</code>; reduced CTRE compile-time template instantiation depth by <strong>&gt;85%</strong> (~150 vs &gt;1000 depth) resolving MSVC <code>error C2999</code></td>
+</tr>
+<tr>
 <td style="text-align: left;"><strong>64-bit FNV-1a Hash <code>switch(h)</code></strong></td>
 <td style="text-align: left;">Sequential <code>std::string</code> <code>if-else</code> chain</td>
 <td style="text-align: left;"><strong>+74.4% throughput</strong></td>

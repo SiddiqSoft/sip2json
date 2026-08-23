@@ -3,15 +3,37 @@
 :root {
   --md-font-main: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
   --md-font-code: "JetBrains Mono", SFMono-Regular, Consolas, Menlo, monospace;
+  --md-typeset-font-size: 0.85rem;
 }
 
 /* Base typography */
 body, input {
   font-family: var(--md-font-main);
+  font-size: 0.85rem;
+}
+
+.md-typeset {
+  font-size: 0.85rem;
+  line-height: 1.6;
 }
 
 code, kbd, pre {
   font-family: var(--md-font-code);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Responsive Layout Expansion for Desktop & Wide Monitors                   */
+/* -------------------------------------------------------------------------- */
+@media screen and (min-width: 76.25em) {
+  .md-grid {
+    max-width: 90rem; /* Expanded from default 61rem (1440px max width) */
+  }
+}
+
+@media screen and (min-width: 100em) {
+  .md-grid {
+    max-width: 96rem; /* 1536px for ultra-wide desktop monitors */
+  }
 }
 
 /* Badge Container Styling */
@@ -27,8 +49,11 @@ code, kbd, pre {
   margin: 0;
 }
 
-/* Table styling with shadows and subtle borders */
+/* -------------------------------------------------------------------------- */
+/* Table Styling & Overflow Protection                                       */
+/* -------------------------------------------------------------------------- */
 .md-typeset table:not([class]) {
+  font-size: 0.85rem; /* Increased table content font size */
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   border-radius: 6px;
   overflow: hidden;
@@ -43,8 +68,9 @@ code, kbd, pre {
   background-color: var(--md-primary-bg-color, #3f51b5);
   color: var(--md-primary-fg-color, #ffffff);
   font-weight: 600;
-  padding: 0.75rem 1rem;
+  padding: 0.8rem 1.1rem;
   text-align: left;
+  font-size: 0.875rem;
 }
 
 [data-md-color-scheme="slate"] .md-typeset table:not([class]) th {
@@ -53,8 +79,18 @@ code, kbd, pre {
 }
 
 .md-typeset table:not([class]) td {
-  padding: 0.75rem 1rem;
+  padding: 0.8rem 1.1rem;
   border-top: 1px solid var(--md-default-fg-color--lightest, #e0e0e0);
+  vertical-align: top;
+}
+
+/* Prevent unnatural single-character line wraps for inline code in table cells */
+.md-typeset table:not([class]) td code,
+.md-typeset table:not([class]) th code {
+  white-space: nowrap;
+  font-size: 0.875em;
+  padding: 0.15em 0.35em;
+  word-break: keep-all;
 }
 
 .md-typeset table:not([class]) tr:hover td {
@@ -64,7 +100,7 @@ code, kbd, pre {
 /* Enhanced Code Blocks */
 .md-typeset pre > code {
   border-radius: 6px;
-  font-size: 0.875em;
+  font-size: 0.85em;
   line-height: 1.5;
 }
 

@@ -920,10 +920,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#4-msvc-constexpr-evaluation-template-depth-constexprdepth4096-constexprsteps2000000" class="md-nav__link">
+  <a href="#5-ssh-remote-command-line-msvc-setup-init_msvc_envbat-init_msvc_envps1" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4. MSVC Constexpr Evaluation &amp; Template Depth (/constexpr:depth4096 /constexpr:steps2000000)
+        5. SSH / Remote Command Line MSVC Setup (init_msvc_env.bat &amp; init_msvc_env.ps1)
       
     </span>
   </a>
@@ -1697,10 +1697,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#4-msvc-constexpr-evaluation-template-depth-constexprdepth4096-constexprsteps2000000" class="md-nav__link">
+  <a href="#5-ssh-remote-command-line-msvc-setup-init_msvc_envbat-init_msvc_envps1" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4. MSVC Constexpr Evaluation &amp; Template Depth (/constexpr:depth4096 /constexpr:steps2000000)
+        5. SSH / Remote Command Line MSVC Setup (init_msvc_env.bat &amp; init_msvc_env.ps1)
       
     </span>
   </a>
@@ -1892,25 +1892,27 @@ Enable Windows Extended Long Paths in the System Registry (<code>LongPathsEnable
 <p>If using CPM package manager on Windows, relocate the cache directory closer to the drive root:</p>
 <div class="language-cmake highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nb">set</span><span class="p">(</span><span class="s">CPM_SOURCE_CACHE</span><span class="w"> </span><span class="s2">"C:/cpmcache"</span><span class="w"> </span><span class="s">CACHE</span><span class="w"> </span><span class="s">PATH</span><span class="w"> </span><span class="s2">"CPM Cache Directory"</span><span class="p">)</span>
 </span></code></pre></div>
-<h3 id="4-msvc-constexpr-evaluation-template-depth-constexprdepth4096-constexprsteps2000000">4. MSVC Constexpr Evaluation &amp; Template Depth (<code>/constexpr:depth4096 /constexpr:steps2000000</code>)<a class="headerlink" href="#4-msvc-constexpr-evaluation-template-depth-constexprdepth4096-constexprsteps2000000" title="Permanent link">&para;</a></h3>
-<p>CTRE evaluates regular expression state machines at compile time. To prevent MSVC evaluation limits (<code>error C2999</code>), <code>sip2json</code> exports <code>/constexpr:depth4096</code> and <code>/constexpr:steps2000000</code> on its interface target. If consuming custom builds on MSVC, ensure these options are set in your target compile options:</p>
-<div class="language-cmake highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nb">if</span><span class="p">(</span><span class="s">MSVC</span><span class="p">)</span>
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">    </span><span class="nb">target_compile_options</span><span class="p">(</span><span class="s">your_target</span><span class="w"> </span><span class="s">PRIVATE</span><span class="w"> </span><span class="s">/constexpr:depth4096</span><span class="w"> </span><span class="s">/constexpr:steps2000000</span><span class="p">)</span>
-</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="nb">endif</span><span class="p">()</span>
-</span></code></pre></div>
+<h3 id="5-ssh-remote-command-line-msvc-setup-init_msvc_envbat-init_msvc_envps1">5. SSH / Remote Command Line MSVC Setup (<code>init_msvc_env.bat</code> &amp; <code>init_msvc_env.ps1</code>)<a class="headerlink" href="#5-ssh-remote-command-line-msvc-setup-init_msvc_envbat-init_msvc_envps1" title="Permanent link">&para;</a></h3>
+<p>When building over SSH or remote non-interactive terminal sessions on Windows, <code>cl.exe</code> and Visual Studio toolchain environment variables are not loaded by default. Use the helper initialization scripts in <code>scripts/</code>:</p>
+<p><strong>For Windows Command Prompt (CMD over SSH)</strong>:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>scripts\init_msvc_env.bat [x64 | x64_arm64 | arm64]
+</span></code></pre></div></p>
+<p><strong>For PowerShell (over SSH)</strong>:
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="p">.</span> <span class="p">.\</span><span class="n">scripts</span><span class="p">\</span><span class="n">init_msvc_env</span><span class="p">.</span><span class="n">ps1</span> <span class="n">-Arch</span> <span class="n">x64</span>
+</span></code></pre></div></p>
 <hr />
 <h2 id="building-previewing-documentation-locally">Building &amp; Previewing Documentation Locally<a class="headerlink" href="#building-previewing-documentation-locally" title="Permanent link">&para;</a></h2>
 <p>To preview the documentation site locally without deploying to GitHub Pages, you can use the built-in MkDocs local development server or compile static HTML files.</p>
 <h3 id="method-1-live-reload-local-server-recommended">Method 1: Live-Reload Local Server (Recommended)<a class="headerlink" href="#method-1-live-reload-local-server-recommended" title="Permanent link">&para;</a></h3>
 <p>Start the local development server from the repository root:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1"># 1. Activate the Python virtual environment (or install dependencies)</span>
-</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="nb">source</span><span class="w"> </span>venv/bin/activate
-</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>
-</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="c1"># (Optional: install dependencies if setting up a fresh environment)</span>
-</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="c1"># pip install -r docs/requirements.txt</span>
-</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>
-</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="c1"># 2. Start the local live-reloading server</span>
-</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>mkdocs<span class="w"> </span>serve
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1"># 1. Activate the Python virtual environment (or install dependencies)</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="nb">source</span><span class="w"> </span>venv/bin/activate
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="c1"># (Optional: install dependencies if setting up a fresh environment)</span>
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="c1"># pip install -r docs/requirements.txt</span>
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="c1"># 2. Start the local live-reloading server</span>
+</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>mkdocs<span class="w"> </span>serve
 </span></code></pre></div>
 <ul>
 <li><strong>Local URL</strong>: Open <a href="http://127.0.0.1:8000/"><code>http://127.0.0.1:8000/</code></a> or <a href="http://localhost:8000/"><code>http://localhost:8000/</code></a> in your browser.</li>
@@ -1919,16 +1921,16 @@ Enable Windows Extended Long Paths in the System Registry (<code>LongPathsEnable
 <hr />
 <h3 id="method-2-build-static-local-html-site">Method 2: Build Static Local HTML Site<a class="headerlink" href="#method-2-build-static-local-html-site" title="Permanent link">&para;</a></h3>
 <p>To compile static HTML files into the <code>site/</code> directory without serving:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nb">source</span><span class="w"> </span>venv/bin/activate
-</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>mkdocs<span class="w"> </span>build<span class="w"> </span>--strict
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nb">source</span><span class="w"> </span>venv/bin/activate
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>mkdocs<span class="w"> </span>build<span class="w"> </span>--strict
 </span></code></pre></div>
 <p>The output will be placed in the <code>site/</code> directory. Open <code>site/index.html</code> directly in your browser.</p>
 <hr />
 <h3 id="method-3-previewing-local-benchmark-data">Method 3: Previewing Local Benchmark Data<a class="headerlink" href="#method-3-previewing-local-benchmark-data" title="Permanent link">&para;</a></h3>
 <p>To compile local benchmark results and update <code>docs/features/benchmarks.md</code> prior to serving:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nb">source</span><span class="w"> </span>venv/bin/activate
-</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>python3<span class="w"> </span>scripts/publish_benchmarks.py
-</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>mkdocs<span class="w"> </span>serve
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nb">source</span><span class="w"> </span>venv/bin/activate
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>python3<span class="w"> </span>scripts/publish_benchmarks.py
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>mkdocs<span class="w"> </span>serve
 </span></code></pre></div>
 
 
