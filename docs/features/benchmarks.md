@@ -21,12 +21,12 @@
 
 | Metric | **v2.4.2 Release Tag** | **master Branch** | **v2.6.0 Current (`parse`)** | **v2.6.0 Current (`parseAsync`)** | **Speedup vs v2.4.2** |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Stream Throughput** | **21,394.49 msg/s** | **19,043.79 msg/s** | **36,292.77 msg/s** | **37,260.49 msg/s** | **+74.4% FASTER** |
-| Stream Execution Time | 7.68 s | 8.63 s | 4.53 s | **4.41 s** | **-42.6% Time** |
-| Processing Bandwidth | 56.39 MB/s | 50.19 MB/s | 95.08 MB/s | **98.20 MB/s** | **+41.81 MB/s** |
-| Avg Per-Msg Latency | 46.74 µs | 52.51 µs | 27.55 µs | **26.84 µs** | **-19.97 µs/msg** |
-| **Single Message (`parseFromBuffer`)** | **24,770.67 msg/s** | **23,256.49 msg/s** | **43,976.62 msg/s** | **43,976.62 msg/s** | **+77.5% FASTER** |
-| Single-Msg Latency | 40.37 µs | 43.00 µs | **22.74 µs** | **22.74 µs** | **-17.63 µs/msg** |
+| **Stream Throughput** | **21,394.49 msg/s** | **19,043.79 msg/s** | **36,292.77 msg/s** | **39,493.57 msg/s** | **+84.6% FASTER** |
+| Stream Execution Time | 7.68 s | 8.63 s | 4.53 s | **4.16 s** | **-45.8% Time** |
+| Processing Bandwidth | 56.39 MB/s | 50.19 MB/s | 95.08 MB/s | **104.08 MB/s** | **+47.69 MB/s** |
+| Avg Per-Msg Latency | 46.74 µs | 52.51 µs | 27.55 µs | **25.32 µs** | **-21.42 µs/msg** |
+| **Single Message (`parseFromBuffer`)** | **24,770.67 msg/s** | **23,256.49 msg/s** | **43,976.62 msg/s** | **46,983.39 msg/s** | **+89.7% FASTER** |
+| Single-Msg Latency | 40.37 µs | 43.00 µs | 22.74 µs | **21.28 µs** | **-19.09 µs/msg** |
 
 > [!NOTE]
 > Detailed section-by-section breakdown and SDP element metrics are available in the [**Official Benchmark Report**](https://github.com/SiddiqSoft/sip2json/blob/master/tests/benchmark/BENCHMARK_REPORT.md).
