@@ -8,48 +8,18 @@ Welcome to the **`sip2json` Maintainer & Developer Handbook**. This guide is des
 
 `sip2json` is a header-only Modern C++23 SIP protocol parser and serializer library designed with `nlohmann::json` as a first-class API metaphor.
 
-```
-sip2json/
-├── include/                     # Public and private header-only library implementation
-│   └── siddiqsoft/
-│       ├── sip2json.hpp         # Primary public header (parse, parseAsync, parseFromBuffer, serialize)
-│       ├── sipmessage.hpp       # sipmessage class (subclasses nlohmann::json)
-│       └── private/             # Zero-allocation internal helpers, serializers & CTRE regexes
-│           ├── sip2json_header_keys.hpp      # 64-bit FNV-1a constexpr hash matching & jump table
-│           ├── sip2json_parser.hpp           # Start-line & header parsing engine
-│           ├── sip2json_serializer.hpp       # Wire format serialization engine
-│           ├── sip2json_sdp.hpp              # SDP payload AST parser and serializer
-│           ├── sip2json_exception.hpp        # Hierarchy of parser exceptions
-│           ├── sip2json_response_codes.hpp   # RFC 3261 response codes & reason phrases
-│           └── sip2json_utils.hpp            # In-register lowercasing, date/time, hex tools
-├── tests/                       # Comprehensive test suites (321 tests, 100% passing)
-│   ├── compliance/              # RFC 3261, RFC 4475 (50 torture cases), SDP RFC 4566/8866 suites
-│   ├── regression/              # Production defect regressions & stream re-assembly tests
-│   ├── coverage/                # Branch & statement coverage tests
-│   ├── security/                # CRLF injection, integer overflow, memory safety tests
-│   ├── vulnerability/           # CVE & fuzzing attack simulation tests
-│   ├── validation/              # Real-world stream fixtures (36 files, ~1.5 MB)
-│   └── benchmark/               # C++ benchmark harnesses (single-thread & Google Benchmark)
-├── docs/                        # MkDocs documentation source (Material theme)
-│   ├── hooks.py                 # MkDocs build hook (version resolution & dynamic doc generation)
-│   └── ...                      # Markdown guides, architecture studies, and API references
-├── scripts/                     # Maintainer automation scripts
-│   ├── prep_windows_machine.ps1 # Administrator setup for Windows (Registry long paths, Git config)
-│   ├── init_msvc_env.bat        # Command-line MSVC developer environment initialization
-│   ├── init_msvc_env.ps1        # PowerShell MSVC environment initialization
-│   ├── publish_benchmarks.py    # Cross-platform CI benchmark aggregator and markdown injector
-│   └── generate_dependencies_md.py # Dynamic CMake dependency diagram generator
-├── .azure/                      # Azure DevOps CI/CD pipeline stage and job templates
-│   ├── az-build-linux.yml       # Linux CI build matrix (GCC & Clang, x64 & arm64)
-│   ├── az-build-windows.yml     # Windows CI build matrix (MSVC, x64 & arm64)
-│   ├── az-publish-docs.yml      # MkDocs documentation builder & GitHub Pages publisher
-│   └── az-publish-github.yml    # GitHub Releases publisher
-├── azure-pipelines.yml          # Main Azure Pipelines orchestration definition
-├── CMakeLists.txt               # Main CMake build definition (CPM package management)
-├── CMakePresets.json            # Cross-platform build and configure presets
-├── GitVersion.yml               # Semantic version calculation configuration
-└── mkdocs.yml                   # MkDocs Material theme configuration and navigation
-```
+| Directory / File | Scope & Type | Purpose & Key Artifacts |
+| :--- | :--- | :--- |
+| **`include/siddiqsoft/`** | Public API Headers | Primary public interface: [`sip2json.hpp`](file:///Users/maas/source/repos/siddiqsoft/sip2json/include/siddiqsoft/sip2json.hpp) (parser & serializer entry points) and [`sipmessage.hpp`](file:///Users/maas/source/repos/siddiqsoft/sip2json/include/siddiqsoft/sipmessage.hpp) (`nlohmann::json` subclass). |
+| **`include/siddiqsoft/private/`** | Internal Engine | High-performance header parsing ([`sip2json_parser.hpp`](file:///Users/maas/source/repos/siddiqsoft/sip2json/include/siddiqsoft/private/sip2json_parser.hpp)), constexpr 64-bit FNV-1a matching ([`sip2json_header_keys.hpp`](file:///Users/maas/source/repos/siddiqsoft/sip2json/include/siddiqsoft/private/sip2json_header_keys.hpp)), SDP parser ([`sip2json_sdp.hpp`](file:///Users/maas/source/repos/siddiqsoft/sip2json/include/siddiqsoft/private/sip2json_sdp.hpp)), wire serializer ([`sip2json_serializer.hpp`](file:///Users/maas/source/repos/siddiqsoft/sip2json/include/siddiqsoft/private/sip2json_serializer.hpp)), exceptions ([`sip2json_exception.hpp`](file:///Users/maas/source/repos/siddiqsoft/sip2json/include/siddiqsoft/private/sip2json_exception.hpp)), and response codes ([`sip2json_response_codes.hpp`](file:///Users/maas/source/repos/siddiqsoft/sip2json/include/siddiqsoft/private/sip2json_response_codes.hpp)). |
+| **`tests/`** | Test Suites (324 Tests) | Categorized testing architecture: `compliance/` (RFC 3261 & RFC 4475), `regression/` (bug fixes & memory safety), `coverage/` (statement & branch coverage), `security/` (CRLF injection & memory safety), `vulnerability/` (fuzzing & overflow resilience), `validation/` (36 sample stream captures), and `benchmark/` (performance harnesses). |
+| **`docs/`** | Documentation Source | MkDocs Material site source, theme overrides, API references, architecture deep-dives, and [`docs/hooks.py`](file:///Users/maas/source/repos/siddiqsoft/sip2json/docs/hooks.py) build lifecycle hooks. |
+| **`scripts/`** | Developer Automation | Cross-platform build helpers: [`publish_benchmarks.py`](file:///Users/maas/source/repos/siddiqsoft/sip2json/scripts/publish_benchmarks.py) (matrix aggregator), [`generate_dependencies_md.py`](file:///Users/maas/source/repos/siddiqsoft/sip2json/scripts/generate_dependencies_md.py), [`prep_windows_machine.ps1`](file:///Users/maas/source/repos/siddiqsoft/sip2json/scripts/prep_windows_machine.ps1), and [`init_msvc_env.ps1`](file:///Users/maas/source/repos/siddiqsoft/sip2json/scripts/init_msvc_env.ps1). |
+| **`.azure/`** | CI/CD Pipelines | Modular Azure DevOps pipeline definitions: [`az-build-linux.yml`](file:///Users/maas/source/repos/siddiqsoft/sip2json/.azure/az-build-linux.yml), [`az-build-windows.yml`](file:///Users/maas/source/repos/siddiqsoft/sip2json/.azure/az-build-windows.yml), [`az-publish-docs.yml`](file:///Users/maas/source/repos/siddiqsoft/sip2json/.azure/az-publish-docs.yml), and [`az-publish-github.yml`](file:///Users/maas/source/repos/siddiqsoft/sip2json/.azure/az-publish-github.yml). |
+| **`CMakeLists.txt`** | Build Definition | CMake 3.31+ interface library target definition with CPM dependency management. |
+| **`CMakePresets.json`** | Build Presets | Cross-platform configure, build, and test presets for macOS (Xcode/LLVM), Linux (GCC/Clang), and Windows (MSVC x64/ARM64). |
+| **`GitVersion.yml`** | Versioning Policy | Semantic version calculation rules based on Git commit history and release branch names. |
+| **`mkdocs.yml`** | Site Configuration | Material for MkDocs navigation hierarchy, theme extensions, search, and integrated Table of Contents (`toc.integrate`). |
 
 ---
 
@@ -57,7 +27,7 @@ sip2json/
 
 Navigate the dedicated maintainer guides:
 
-1. [**Developer Environment Setup**](setup.md): Step-by-step toolchain and prerequisite configuration for macOS (Apple Silicon & Intel), Linux (Ubuntu / Debian / RHEL), and Windows (MSVC 2022 + long paths).
-2. [**Building, Testing & Benchmarking**](building.md): Using CMake Presets, executing the 321-test CTest suite, running performance benchmark harnesses, and diagnosing memory with AddressSanitizer.
+1. [**Developer Environment Setup**](setup.md): Step-by-step toolchain and prerequisite configuration for macOS (Apple Silicon & Intel), Linux (Red Hat 10.2 / Fedora / Debian), and Windows (MSVC 2022 + long paths).
+2. [**Building, Testing & Benchmarking**](building.md): Using CMake Presets, executing the 324-test CTest suite, running performance benchmark harnesses, and diagnosing memory with AddressSanitizer.
 3. [**Documentation & MkDocs**](documentation.md): Local preview server (`mkdocs serve`), strict verification builds, Python virtual environment, and dynamic build hooks (`docs/hooks.py`).
 4. [**Azure Pipelines CI/CD & Secrets**](pipelines.md): Self-hosted agent requirements, multi-platform build matrix, release gates, GitHub Pages deployment, and required Azure DevOps secrets (`GITHUB_TOKEN`, `GITHUB_USER`).

@@ -33,17 +33,68 @@ export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
 
 ---
 
-## 2. Linux Setup (Ubuntu / Debian / RHEL / Fedora)
+## 2. Linux Setup (Red Hat Enterprise Linux 10.2 / Fedora / Debian)
 
-`sip2json` requires a C++23 compliant compiler (`GCC 14+` or `Clang 18+`).
+`sip2json` requires a C++23 compliant compiler (`GCC 14+` or `Clang 18+`), CMake 3.31+, and Ninja.
 
-### Ubuntu 24.04 LTS & Debian 12
+### Red Hat Enterprise Linux 10.2 / Rocky Linux 10 / AlmaLinux 10
+```bash
+# 1. Enable EPEL and CodeReady Linux Builder (CRB) repositories
+sudo dnf install -y epel-release
+sudo dnf config-manager --set-enabled crb || sudo dnf config-manager --set-enabled powertools
+
+# 2. Install Development Tools, GCC 14+, Clang 18+, CMake, Ninja, and Python
+sudo dnf groupinstall -y "Development Tools"
+sudo dnf install -y \
+    gcc-c++ \
+    clang \
+    clang-tools-extra \
+    lld \
+    cmake \
+    ninja-build \
+    git \
+    python3 \
+    python3-pip \
+    tar \
+    curl
+
+# 3. Verify toolchain versions
+g++ --version      # Requires >= GCC 14
+clang++ --version  # Requires >= Clang 18
+cmake --version    # Requires >= 3.29
+ninja --version    # Requires >= 1.11
+```
+
+### Fedora (40+)
+```bash
+# 1. Update package index and install toolchain
+sudo dnf update -y
+sudo dnf install -y \
+    gcc-c++ \
+    clang \
+    clang-tools-extra \
+    lld \
+    cmake \
+    ninja-build \
+    git \
+    python3 \
+    python3-pip \
+    python3-devel \
+    tar \
+    curl
+
+# 2. Verify toolchain versions
+g++ --version
+clang++ --version
+cmake --version
+```
+
+### Debian 12 (Bookworm) & Debian 13 (Trixie)
 ```bash
 # 1. Update package lists and install base utilities
 sudo apt-get update
 sudo apt-get install -y \
     build-essential \
-    software-properties-common \
     cmake \
     ninja-build \
     git \
@@ -53,20 +104,13 @@ sudo apt-get install -y \
     curl \
     tar
 
-# 2. Install GCC 14 (if not default)
-sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-sudo apt-get update
-sudo apt-get install -y gcc-14 g++-14
-
-# 3. Install Clang 18+ via official LLVM installer script
+# 2. Install Clang 18+ via official LLVM installer script
 wget https://apt.llvm.org/llvm.sh
 chmod +x llvm.sh
 sudo ./llvm.sh 18
 sudo apt-get install -y clang-18 clang-tools-18 lld-18
 
-# 4. Set default compiler alternatives (Optional)
-sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 100 \
-                        --slave /usr/bin/g++ g++ /usr/bin/g++-14
+# 3. Set default compiler alternatives (Optional)
 sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-18 100 \
                         --slave /usr/bin/clang++ clang++ /usr/bin/clang++-18
 ```

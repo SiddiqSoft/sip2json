@@ -38,11 +38,11 @@ cmake --preset Apple-Release
 # 2. Build library, test suites, and benchmarks
 cmake --build --preset Apple-Release -j $(sysctl -n hw.ncpu)
 
-# 3. Run all unit tests (321/321 passing)
+# 3. Run all unit tests (324/324 passing)
 ctest --preset Apple-Release --output-on-failure
 ```
 
-### Linux (Ubuntu / Debian / RHEL)
+### Linux (Red Hat 10.2 / Fedora / Debian)
 ```bash
 # 1. Configure with GCC or Clang
 cmake --preset Linux-GCC-Release

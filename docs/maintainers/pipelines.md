@@ -51,8 +51,8 @@ flowchart TD
 
 | Stage | Trigger Condition | Tasks Performed | Template |
 | :--- | :--- | :--- | :--- |
-| **`Windows`** | PR or Branch Push | Build matrix (x64 / ARM64, MSVC), executes 321 CTests, runs stream benchmarks, publishes benchmark artifacts. | `.azure/az-build-windows.yml` |
-| **`Linux`** | PR or Branch Push | Build matrix (x64 / ARM64, GCC / Clang), executes 321 CTests, runs stream benchmarks, publishes benchmark artifacts. | `.azure/az-build-linux.yml` |
+| **`Windows`** | PR or Branch Push | Build matrix (x64 / ARM64, MSVC), executes 324 CTests, runs stream benchmarks, publishes benchmark artifacts. | `.azure/az-build-windows.yml` |
+| **`Linux`** | PR or Branch Push | Build matrix (x64 / ARM64, GCC / Clang), executes 324 CTests, runs stream benchmarks, publishes benchmark artifacts. | `.azure/az-build-linux.yml` |
 | **`PublishGitHub`** | Main/Master branch (Manual Approval) | Creates GitHub release tag, attaches release notes and build artifacts. | `.azure/az-publish-github.yml` |
 | **`PublishDocs`** | Main/Master branch (Manual Approval) | Downloads benchmark artifacts from all matrix jobs, runs `publish_benchmarks.py`, builds strict MkDocs, and deploys to `gh-pages` branch. | `.azure/az-publish-docs.yml` |
 
@@ -63,7 +63,7 @@ flowchart TD
 The pipeline uses the self-hosted **`Default`** agent pool (`pool: name: Default`) and targets specific OS demands:
 
 ### Linux Agent Demands (`Agent.OS -equals Linux`)
-- **OS**: Ubuntu 22.04 / 24.04 LTS (x64 and arm64).
+- **OS**: Red Hat Enterprise Linux 10.2 / Fedora / Debian (x64 and arm64).
 - **Tools**: GCC 14+, Clang 18+, CMake 3.29+, Ninja 1.11+, Python 3.10+, Git 2.40+.
 - **User Permissions**: Agent process must have read/write access to `$(Agent.HomeDirectory)/.cpmcache`.
 
