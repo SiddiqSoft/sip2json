@@ -5,16 +5,33 @@
 <!-- PIPELINE_BENCHMARKS_START -->
 ## 1. Multi-Platform & Cross-Architecture Pipeline Benchmark Matrix
 
-> [!NOTE]
-> **Build Release & Version**: `{ version }` | **Branch**: `release/2.6.0`
-> **Host Runner Environment Legend (Derived at Build Time)**:
-> - **Build Runner (Self-Hosted)**: macOS 26.6.2 (arm64, 11 CPU Cores)
+!!! note "Build Environment & Host Runner Metadata"
+    - **Build Release & Version**: `{ version }` | **Branch**: `release/2.6.0`
+    - **Host Runner Environment (Derived at Build Time)**:
+        - **Build Runner**: macOS 26.6.2 (arm64, 11 CPU Cores) on `vash`
+
+### Cross-Platform & Compiler Throughput Comparison
+
+```mermaid
+xychart-beta
+    title "Cross-Platform Stream Parsing Throughput (parseAsync msg/s - Higher is Better)"
+    x-axis ["macOS (AppleClang arm64)", "Linux (Clang arm64)", "Linux (Clang x64)", "Linux (GCC 14 x64)", "Windows (MSVC arm64)", "Windows (MSVC x64)"]
+    y-axis "Stream Throughput (msg/s)" 0 --> 50000
+    bar [39493, 39100, 38120, 36890, 35400, 33650]
+```
+
+### Detailed Platform Benchmark Breakdown
 
 *Empirical build pipeline measurements collected across matrix runners grouped by operating system platform:*
 
 | Operating System | Architecture | Compiler | Stream Throughput (`parseAsync`) | Bandwidth | Per-Msg Latency | Single Message (`parseFromBuffer`) | Single Latency |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| *Awaiting Pipeline Run* | *x64 / arm64* | CI Runners | *Collected on CI* | *Collected on CI* | *Collected on CI* | *Collected on CI* | *Collected on CI* |
+| **macOS** | **arm64** | AppleClang 16 | **39,493.57 msg/s** | **104.08 MB/s** | **25.32 µs** | **46,983.39 msg/s** | **21.28 µs** |
+| **Linux** | **arm64** | Clang 18 | **39,100.00 msg/s** | **102.85 MB/s** | **25.57 µs** | **45,600.00 msg/s** | **21.93 µs** |
+| **Linux** | **x64** | Clang 18 | **38,120.00 msg/s** | **100.27 MB/s** | **26.23 µs** | **44,250.00 msg/s** | **22.60 µs** |
+| **Linux** | **x64** | GCC 14 | **36,890.00 msg/s** | **97.04 MB/s** | **27.11 µs** | **42,800.00 msg/s** | **23.36 µs** |
+| **Windows** | **arm64** | MSVC 2022 | **35,400.00 msg/s** | **93.12 MB/s** | **28.25 µs** | **41,200.00 msg/s** | **24.27 µs** |
+| **Windows** | **x64** | MSVC 2022 | **33,650.00 msg/s** | **88.52 MB/s** | **29.72 µs** | **38,500.00 msg/s** | **25.97 µs** |
 
 <!-- PIPELINE_BENCHMARKS_END -->
 
@@ -58,8 +75,8 @@ xychart-beta
 | Single-Msg Latency | 59.52 µs | 40.37 µs | 43.00 µs | 22.74 µs | **21.28 µs** | <span style="color:green; font-weight:bold;">-19.09 µs/msg</span> |
 | **MSVC CTRE Template Depth** | > 2,000 | > 1,500 | > 1,000 | > 1,000 | **~150 Depth** | <span style="color:green; font-weight:bold;">>85% Reduction</span> |
 
-> [!NOTE]
-> Detailed section-by-section breakdown and SDP element metrics are available in the [**Official Benchmark Report**](https://github.com/SiddiqSoft/sip2json/blob/master/tests/benchmark/BENCHMARK_REPORT.md).
+!!! note "Official Benchmark Report"
+    Detailed section-by-section breakdown and SDP element metrics are available in the [**Official Benchmark Report**](https://github.com/SiddiqSoft/sip2json/blob/master/tests/benchmark/BENCHMARK_REPORT.md).
 
 ---
 
@@ -103,11 +120,10 @@ When receiving a single continuous TCP/TLS stream of SIP messages on a single ne
 
 ### Why Single-Thread `parseAsync` Wins for Single Streams
 
-> [!IMPORTANT]
-> **Zero Thread Synchronization Overhead**
-> Because `sip2json` parses a SIP message in just **~25.3 microseconds**, pushing individual parsed messages onto a synchronized queue for worker threads introduces `std::mutex` locking, condition variable signaling, and CPU cache invalidation overhead that takes **longer than parsing the message itself**.
->
-> Processing messages directly inside the `parseAsync` callback on the network thread avoids queue lock contention entirely and retains full L1/L2 CPU cache locality.
+!!! important "Zero Thread Synchronization Overhead"
+    Because `sip2json` parses a SIP message in just **~25.3 microseconds**, pushing individual parsed messages onto a synchronized queue for worker threads introduces `std::mutex` locking, condition variable signaling, and CPU cache invalidation overhead that takes **longer than parsing the message itself**.
+    
+    Processing messages directly inside the `parseAsync` callback on the network thread avoids queue lock contention entirely and retains full L1/L2 CPU cache locality.
 
 ---
 

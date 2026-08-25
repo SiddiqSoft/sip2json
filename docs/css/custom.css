@@ -155,9 +155,9 @@ code, kbd, pre {
 /* -------------------------------------------------------------------------- */
 .mermaid {
   text-align: center;
-  margin: 2rem auto;
+  margin: 1.75rem auto;
   overflow-x: auto;
-  padding: 1.25rem 1rem;
+  padding: 1rem 0.75rem;
   background-color: var(--md-default-bg-color);
   border-radius: 8px;
   border: 1px solid var(--md-default-fg-color--lightest);
@@ -167,21 +167,35 @@ code, kbd, pre {
 .mermaid svg {
   max-width: 100% !important;
   height: auto !important;
-  min-height: 240px;
+  min-height: 220px;
   font-family: var(--md-font-main) !important;
 }
 
-/* Make text inside Mermaid diagrams larger and sharper */
+/* Crisp, compact typography for dense multi-platform charts and flowcharts */
 .mermaid .node text,
 .mermaid .nodeLabel,
 .mermaid .label,
 .mermaid .edgeLabel {
-  font-size: 14px !important;
-  letter-spacing: 0.2px;
+  font-size: 13px !important;
+  letter-spacing: 0.15px;
 }
 
 .mermaid .cluster-label text {
-  font-size: 15px !important;
+  font-size: 14px !important;
   font-weight: 700 !important;
 }
+
+/* XYChart Axis & Bar Label Styling */
+.mermaid svg text.titleText {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+}
+
+.mermaid svg text.xAxisLabel,
+.mermaid svg text.yAxisLabel,
+.mermaid svg text.axisValue {
+  font-size: 11.5px !important;
+  fill: var(--md-default-fg-color--light) !important;
+}
+
 

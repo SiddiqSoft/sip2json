@@ -75,12 +75,11 @@ target_link_libraries(your_target PRIVATE sip2json::sip2json)
 
 When building on Windows, the underlying **CTRE (Compile-Time Regular Expressions)** library and CMake package caches generate deeply nested header and template expansion paths that can exceed the legacy 260-character Windows path limit (`MAX_PATH`).
 
-> [!TIP]
-> **Automated Windows Machine Configuration**
-> Run [`scripts/prep_windows_machine.ps1`](https://github.com/SiddiqSoft/sip2json/blob/master/scripts/prep_windows_machine.ps1) in an Administrator PowerShell session to enable Registry `LongPathsEnabled = 1` and Git `core.longpaths = true`:
-> ```powershell
-> powershell -ExecutionPolicy Bypass -File .\scripts\prep_windows_machine.ps1
-> ```
+!!! tip "Automated Windows Machine Configuration"
+    Run [`scripts/prep_windows_machine.ps1`](https://github.com/SiddiqSoft/sip2json/blob/master/scripts/prep_windows_machine.ps1) in an Administrator PowerShell session to enable Registry `LongPathsEnabled = 1` and Git `core.longpaths = true`:
+    ```powershell
+    powershell -ExecutionPolicy Bypass -File .\scripts\prep_windows_machine.ps1
+    ```
 
 ### Manual Windows Configuration Steps
 
