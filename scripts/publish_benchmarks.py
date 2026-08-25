@@ -2,10 +2,10 @@
 """
 Publish Benchmarks Script
 Automatically locates benchmark outputs across CI build matrix runners (Windows x64/arm64, Linux x64/arm64, macOS),
-compiles multi-platform performance reports, generates interactive HTML charts, and updates docs/features/benchmarks.md.
+compiles multi-platform performance reports, and dynamically updates docs/features/benchmarks.md.
 
 Usage:
-    python3 scripts/publish_benchmarks.py [--root REPO_ROOT] [--skip-build] [--skip-exec]
+    python3 scripts/publish_benchmarks.py [--root REPO_ROOT] [--skip-build] [--skip-exec] [--require-all]
 """
 
 import argparse
@@ -27,54 +27,51 @@ def run_cmd(cmd, cwd=None):
         return False
     return True
 
-def parse_platform_from_filename(filename_str: str) -> tuple:
-    """Extract OS, Arch, and Compiler from benchmark JSON filename if available."""
-    name = Path(filename_str).stem
-    if name.startswith("benchmark_results_"):
-        parts = name.replace("benchmark_results_", "").split("_")
-        os_name = parts[0] if len(parts) > 0 else "Linux"
-        arch_name = parts[1] if len(parts) > 1 else "x64"
-        compiler_name = parts[2] if len(parts) > 2 else "Clang/MSVC"
-        return os_name, arch_name, compiler_name
-    return "Linux", "x64", "Clang"
-
-def check_platform_completeness(platform_results: list, required_str: str) -> tuple:
-    """Check if all required (OS, Arch) combinations are present in platform_results."""
-    if not required_str:
-        return True, []
-    
-    req_tuples = []
-    for pair in required_str.split(","):
-        pair = pair.strip()
-        if ":" in pair:
-            os_p, arch_p = pair.split(":", 1)
-            req_tuples.append((os_p.strip().lower(), arch_p.strip().lower()))
-
-    found_set = {
-        (res.get("os", "").lower(), res.get("arch", "").lower())
-        for res in platform_results
-    }
-
-    missing = []
-    for req_os, req_arch in req_tuples:
-        if (req_os, req_arch) not in found_set:
-            missing.append(f"{req_os.capitalize()}-{req_arch}")
-
-    is_complete = len(missing) == 0
-    return is_complete, missing
-
-def get_clean_hostname() -> str:
-    """Get the machine hostname without any domain name or FQDN suffix."""
-    import socket
-    raw = platform.node() or socket.gethostname() or "builder"
-    return raw.split('.')[0].strip()
+def get_system_ram_gb() -> str:
+    """Derive total system memory in GB uniformly across OS platforms."""
+    try:
+        if hasattr(os, "sysconf") and "SC_PAGE_SIZE" in os.sysconf_names and "SC_PHYS_PAGES" in os.sysconf_names:
+            bytes_ram = os.sysconf("SC_PAGE_SIZE") * os.sysconf("SC_PHYS_PAGES")
+            gb = round(bytes_ram / (1024**3))
+            return f"{gb} GB RAM"
+    except Exception:
+        pass
+    if platform.system() == "Linux":
+        try:
+            mem_bytes = os.sysconf('SC_PAGE_SIZE') * os.sysconf('SC_PHYS_PAGES')
+            return f"{round(mem_bytes / (1024**3))} GB RAM"
+        except Exception:
+            pass
+    elif platform.system() == "Windows":
+        try:
+            import ctypes
+            class MEMORYSTATUSEX(ctypes.Structure):
+                _fields_ = [
+                    ("dwLength", ctypes.c_ulong),
+                    ("dwMemoryLoad", ctypes.c_ulong),
+                    ("ullTotalPhys", ctypes.c_ulonglong),
+                    ("ullAvailPhys", ctypes.c_ulonglong),
+                    ("ullTotalPageFile", ctypes.c_ulonglong),
+                    ("ullAvailPageFile", ctypes.c_ulonglong),
+                    ("ullTotalVirtual", ctypes.c_ulonglong),
+                    ("ullAvailVirtual", ctypes.c_ulonglong),
+                    ("sullAvailExtendedVirtual", ctypes.c_ulonglong),
+                ]
+            stat = MEMORYSTATUSEX()
+            stat.dwLength = ctypes.sizeof(MEMORYSTATUSEX)
+            if ctypes.windll.kernel32.GlobalMemoryStatusEx(ctypes.byref(stat)):
+                gb = round(stat.ullTotalPhys / (1024**3))
+                return f"{gb} GB RAM"
+        except Exception:
+            pass
+    return ""
 
 def get_host_runner_info() -> str:
-    """Dynamically derive exact host OS, architecture, CPU count, and release edition at build time (hostname only, no domain names)."""
+    """Dynamically derive platform OS, architecture, CPU count, and RAM (strictly NO domain names or hostnames)."""
     sys_name = platform.system()
     arch_name = platform.machine() or platform.processor() or "x64"
     cpu_count = os.cpu_count() or 1
-    host_name = get_clean_hostname()
+    ram_str = get_system_ram_gb()
     
     os_detail = f"{sys_name} {platform.release()}"
     
@@ -112,10 +109,102 @@ def get_host_runner_info() -> str:
         except Exception:
             pass
 
-    return f"{os_detail} ({arch_name}, {cpu_count} CPU Cores) on `{host_name}`"
+    specs = [arch_name]
+    if cpu_count:
+        specs.append(f"{cpu_count} CPU Cores" if cpu_count > 1 else "1 CPU Core")
+    if ram_str:
+        specs.append(ram_str)
+
+    return f"{os_detail} ({', '.join(specs)})"
+
+def sanitize_host_info(raw_info: str) -> str:
+    """Strip any hostname, domain name, or FQDN from host runner descriptions, keeping only platform and CPU/memory."""
+    if not raw_info:
+        return ""
+    # Remove 'on `hostname`' or 'on hostname'
+    cleaned = re.sub(r"\s+on\s+`?[^`\s]+`?", "", raw_info).strip()
+    # Remove FQDN / domain names
+    cleaned = re.sub(r"[a-zA-Z0-9_-]+\.[a-zA-Z0-9_.-]+", "", cleaned).strip()
+    return cleaned
+
+def format_latency(val_float: float, unit: str = "us") -> str:
+    """Convert latency into human-readable microseconds or milliseconds uniformly (never nanoseconds)."""
+    unit_lower = unit.lower().strip()
+    # Normalize to microseconds
+    if unit_lower in ("ns", "nanoseconds", "nanosecond"):
+        us = val_float / 1000.0
+    elif unit_lower in ("ms", "milliseconds", "millisecond"):
+        us = val_float * 1000.0
+    elif unit_lower in ("s", "sec", "seconds", "second"):
+        us = val_float * 1000000.0
+    else:  # us / µs
+        us = val_float
+
+    if us < 1000.0:
+        return f"{us:.2f} µs"
+    elif us < 1000000.0:
+        return f"{us / 1000.0:.2f} ms"
+    else:
+        return f"{us / 1000000.0:.2f} s"
+
+def parse_platform_from_filename(filename_str: str) -> tuple:
+    """Extract OS, Arch, and Compiler from benchmark JSON/TXT artifact filename if available."""
+    name = Path(filename_str).stem
+    if name.startswith("benchmark_results_"):
+        parts = name.replace("benchmark_results_", "").split("_")
+        os_name = parts[0] if len(parts) > 0 else "Linux"
+        arch_name = parts[1] if len(parts) > 1 else "x64"
+        compiler_name = parts[2] if len(parts) > 2 else "Clang/MSVC"
+        return os_name, arch_name, compiler_name
+    elif "Linux" in filename_str:
+        arch = "arm64" if "arm64" in filename_str else "x64"
+        compiler = "GCC" if "GCC" in filename_str else "Clang"
+        return "Linux", arch, compiler
+    elif "Windows" in filename_str:
+        arch = "arm64" if "arm64" in filename_str else "x64"
+        return "Windows", arch, "MSVC"
+    elif "macOS" in filename_str or "Darwin" in filename_str or "Apple" in filename_str:
+        return "macOS", "arm64", "AppleClang"
+    return "Linux", "x64", "Clang"
+
+def check_platform_completeness(platform_results: list, required_str: str) -> tuple:
+    """Check if all required (OS, Arch) combinations are present in platform_results."""
+    if not required_str:
+        return True, []
+    
+    req_tuples = []
+    for pair in required_str.split(","):
+        pair = pair.strip()
+        if ":" in pair:
+            os_p, arch_p = pair.split(":", 1)
+            req_tuples.append((os_p.strip().lower(), arch_p.strip().lower()))
+
+    found_set = {
+        (res.get("os", "").lower(), res.get("arch", "").lower())
+        for res in platform_results
+    }
+
+    missing = []
+    for req_os, req_arch in req_tuples:
+        if (req_os, req_arch) not in found_set:
+            missing.append(f"{req_os.capitalize()}-{req_arch}")
+
+    is_complete = len(missing) == 0
+    return is_complete, missing
+
+def format_os_name(os_name: str) -> str:
+    """Format OS names with proper capitalization."""
+    low = os_name.lower().strip()
+    if low in ("macos", "darwin", "apple", "osx"):
+        return "macOS"
+    elif low == "windows":
+        return "Windows"
+    elif low == "linux":
+        return "Linux"
+    return os_name.capitalize()
 
 def update_benchmarks_doc(repo_root: Path, platform_results: list, require_all: bool = False, required_str: str = ""):
-    """Dynamically update docs/features/benchmarks.md between PIPELINE_BENCHMARKS markers."""
+    """Dynamically update docs/features/benchmarks.md between PIPELINE_BENCHMARKS markers without splitting by OS or faking data."""
     doc_path = repo_root / "docs" / "features" / "benchmarks.md"
     if not doc_path.exists():
         print(f"[publish_benchmarks] Warning: {doc_path} not found.", flush=True)
@@ -137,25 +226,17 @@ def update_benchmarks_doc(repo_root: Path, platform_results: list, require_all: 
         print(f"[publish_benchmarks] Warning: Pipeline benchmark markers not found in {doc_path}.", flush=True)
         return
 
-    # Group results by Operating System platform
-    grouped_results = {}
     host_legends = []
-
     for res in platform_results:
-        os_key = res.get("os", "Linux").capitalize()
-        if os_key not in grouped_results:
-            grouped_results[os_key] = []
-        grouped_results[os_key].append(res)
-        
-        host_str = res.get("host_info", "")
-        if host_str and host_str not in host_legends:
-            host_legends.append(f"- **{os_key} Runner**: {host_str}")
+        os_key = format_os_name(res.get("os", "Linux"))
+        host_str = sanitize_host_info(res.get("host_info", ""))
+        if host_str:
+            entry = f"- **{os_key} Matrix Runner**: {host_str}"
+            if entry not in host_legends:
+                host_legends.append(entry)
 
     if not host_legends:
         host_legends.append(f"- **Build Runner**: {get_host_runner_info()}")
-
-    os_order = ["Linux", "Windows", "macOS"]
-    sorted_os_keys = sorted(grouped_results.keys(), key=lambda x: os_order.index(x) if x in os_order else 99)
 
     table_lines = [
         start_marker,
@@ -171,54 +252,45 @@ def update_benchmarks_doc(repo_root: Path, platform_results: list, require_all: 
 
     table_lines.extend([
         "",
-        "### Cross-Platform & Compiler Throughput Comparison",
+        "### Cross-Platform & Compiler Benchmark Matrix",
         "",
-        "```mermaid",
-        "xychart-beta",
-        '    title "Cross-Platform Stream Parsing Throughput (parseAsync msg/s - Higher is Better)"',
-        '    x-axis ["macOS (AppleClang arm64)", "Linux (Clang arm64)", "Linux (Clang x64)", "Linux (GCC 14 x64)", "Windows (MSVC arm64)", "Windows (MSVC x64)"]',
-        '    y-axis "Stream Throughput (msg/s)" 0 --> 50000',
-        "    bar [39493, 39100, 38120, 36890, 35400, 33650]",
-        "```",
-        "",
-        "### Detailed Platform Benchmark Breakdown",
-        "",
-        "*Empirical build pipeline measurements collected across matrix runners grouped by operating system platform:*",
+        "*Empirical build pipeline measurements collected across matrix runners:*",
         ""
     ])
 
     if platform_results:
-        for os_key in sorted_os_keys:
-            res_list = grouped_results[os_key]
-            res_list.sort(key=lambda r: (r.get("arch", ""), r.get("compiler", "")))
+        # Sort results: Linux, Windows, macOS, then Arch, then Compiler
+        os_order = ["Linux", "Windows", "macOS"]
+        sorted_results = sorted(
+            platform_results,
+            key=lambda r: (
+                os_order.index(format_os_name(r.get("os", "Linux"))) if format_os_name(r.get("os", "Linux")) in os_order else 99,
+                r.get("arch", ""),
+                r.get("compiler", "")
+            )
+        )
 
-            table_lines.append(f"#### {os_key} Platform Benchmarks")
-            table_lines.append("")
-            table_lines.append("| Architecture | Compiler | Stream Throughput (`parseAsync`) | Bandwidth | Per-Msg Latency | Single Message (`parseFromBuffer`) | Single Latency |")
-            table_lines.append("| :---: | :---: | :---: | :---: | :---: | :---: | :---: |")
-
-            for res in res_list:
-                arch = res.get("arch", "x64")
-                compiler = res.get("compiler", "Clang")
-                async_tput = res.get("async_tput", "N/A")
-                bandwidth = res.get("bandwidth", "N/A")
-                async_lat = res.get("async_lat", "N/A")
-                single_tput = res.get("single_tput", "N/A")
-                single_lat = res.get("single_lat", "N/A")
-
-                table_lines.append(
-                    f"| **{arch}** | {compiler} | **{async_tput}** | **{bandwidth}** | **{async_lat}** | **{single_tput}** | **{single_lat}** |"
-                )
-            table_lines.append("")
-    else:
         table_lines.append("| Operating System | Architecture | Compiler | Stream Throughput (`parseAsync`) | Bandwidth | Per-Msg Latency | Single Message (`parseFromBuffer`) | Single Latency |")
         table_lines.append("| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |")
-        table_lines.append("| **macOS** | **arm64** | AppleClang 16 | **39,493.57 msg/s** | **104.08 MB/s** | **25.32 µs** | **46,983.39 msg/s** | **21.28 µs** |")
-        table_lines.append("| **Linux** | **arm64** | Clang 18 | **39,100.00 msg/s** | **102.85 MB/s** | **25.57 µs** | **45,600.00 msg/s** | **21.93 µs** |")
-        table_lines.append("| **Linux** | **x64** | Clang 18 | **38,120.00 msg/s** | **100.27 MB/s** | **26.23 µs** | **44,250.00 msg/s** | **22.60 µs** |")
-        table_lines.append("| **Linux** | **x64** | GCC 14 | **36,890.00 msg/s** | **97.04 MB/s** | **27.11 µs** | **42,800.00 msg/s** | **23.36 µs** |")
-        table_lines.append("| **Windows** | **arm64** | MSVC 2022 | **35,400.00 msg/s** | **93.12 MB/s** | **28.25 µs** | **41,200.00 msg/s** | **24.27 µs** |")
-        table_lines.append("| **Windows** | **x64** | MSVC 2022 | **33,650.00 msg/s** | **88.52 MB/s** | **29.72 µs** | **38,500.00 msg/s** | **25.97 µs** |")
+
+        for res in sorted_results:
+            os_name = format_os_name(res.get("os", "Linux"))
+            arch = res.get("arch", "x64")
+            compiler = res.get("compiler", "Clang")
+            async_tput = res.get("async_tput", "N/A")
+            bandwidth = res.get("bandwidth", "N/A")
+            async_lat = res.get("async_lat", "N/A")
+            single_tput = res.get("single_tput", "N/A")
+            single_lat = res.get("single_lat", "N/A")
+
+            table_lines.append(
+                f"| **{os_name}** | **{arch}** | {compiler} | **{async_tput}** | **{bandwidth}** | **{async_lat}** | **{single_tput}** | **{single_lat}** |"
+            )
+        table_lines.append("")
+    else:
+        # Strictly DO NOT fake missing platforms or architectures!
+        table_lines.append('!!! info "Dynamic CI Matrix Benchmarks"')
+        table_lines.append("    Empirical multi-platform benchmarks are collected automatically during CI build pipeline execution across Linux (x64/arm64, Clang/GCC) and Windows (x64/arm64, MSVC).")
         table_lines.append("")
 
     table_lines.append(end_marker)
@@ -262,8 +334,7 @@ def main():
         # Process text summaries (stream_benchmark_summary.txt)
         for txt_file in sdir.glob("**/stream_benchmark_summary.txt"):
             try:
-                os_name, arch, compiler = parse_platform_from_filename(txt_file.parent.name)
-                if os_name == "Linux" and "Windows" in str(txt_file): os_name = "Windows"
+                os_name, arch, compiler = parse_platform_from_filename(str(txt_file.parent.name) + " " + str(txt_file))
                 
                 content = txt_file.read_text(encoding="utf-8", errors="ignore")
                 key = (os_name, arch, compiler)
@@ -275,20 +346,25 @@ def main():
 
                 host_match = re.search(r"\[HOST INFO\]\s*(.*)", content)
                 if host_match:
-                    res["host_info"] = host_match.group(1).strip()
+                    res["host_info"] = sanitize_host_info(host_match.group(1).strip())
 
                 stream_match = re.search(r"parseAsync.*?Throughput\s*:\s*([\d,.]+)\s*msg/sec.*?Data Bandwidth\s*:\s*([\d,.]+)\s*MB/sec.*?Avg Latency/Msg\s*:\s*([\d,.]+)\s*(\w+)/msg", content, re.DOTALL)
                 if stream_match:
-                    tput, bw, lat, unit = stream_match.groups()
-                    res["async_tput"] = f"{float(tput.replace(',', '')):,.2f} msg/s"
-                    res["bandwidth"] = f"{float(bw.replace(',', '')):.2f} MB/s"
-                    res["async_lat"] = f"{float(lat.replace(',', '')):.2f} {unit}"
+                    tput_s, bw_s, lat_s, unit = stream_match.groups()
+                    tput = float(tput_s.replace(',', ''))
+                    bw = float(bw_s.replace(',', ''))
+                    lat = float(lat_s.replace(',', ''))
+                    res["async_tput"] = f"{tput:,.2f} msg/s"
+                    res["bandwidth"] = f"{bw:,.2f} MB/s"
+                    res["async_lat"] = format_latency(lat, unit)
 
                 single_match = re.search(r"parseFromBuffer.*?Throughput\s*:\s*([\d,.]+)\s*msg/sec.*?Avg Latency/Msg\s*:\s*([\d,.]+)\s*(\w+)/msg", content, re.DOTALL)
                 if single_match:
-                    tput, lat, unit = single_match.groups()
-                    res["single_tput"] = f"{float(tput.replace(',', '')):,.2f} msg/s"
-                    res["single_lat"] = f"{float(lat.replace(',', '')):.2f} {unit}"
+                    tput_s, lat_s, unit = single_match.groups()
+                    tput = float(tput_s.replace(',', ''))
+                    lat = float(lat_s.replace(',', ''))
+                    res["single_tput"] = f"{tput:,.2f} msg/s"
+                    res["single_lat"] = format_latency(lat, unit)
 
                 platform_results_map[key] = res
             except Exception as ex:
@@ -308,7 +384,14 @@ def main():
 
                 if "context" in data:
                     ctx = data["context"]
-                    res["host_info"] = f"{ctx.get('host_name', os_name)} ({ctx.get('num_cpus', '')} Cores, {ctx.get('mhz_per_cpu', '')} MHz)"
+                    cpu_cnt = ctx.get("num_cpus", "")
+                    mhz = ctx.get("mhz_per_cpu", "")
+                    specs = []
+                    if cpu_cnt: specs.append(f"{cpu_cnt} CPU Cores")
+                    if mhz: specs.append(f"{mhz} MHz")
+                    ram_str = get_system_ram_gb()
+                    if ram_str: specs.append(ram_str)
+                    res["host_info"] = f"{os_name} ({', '.join(specs)})" if specs else os_name
 
                 b_list = data.get("benchmarks", [])
                 for b in b_list:
@@ -322,12 +405,12 @@ def main():
                             res["async_tput"] = f"{items_sec:,.2f} msg/s"
                             res["bandwidth"] = f"{(items_sec * 2600) / 1024 / 1024:.2f} MB/s"
                         if rtime > 0:
-                            res["async_lat"] = f"{rtime:.2f} {tunit}"
+                            res["async_lat"] = format_latency(rtime, tunit)
                     elif any(k in bname for k in ["single", "parsefrombuffer", "minimalresponse", "registerrequest", "invitewithsdp"]):
                         if items_sec > 0:
                             res["single_tput"] = f"{items_sec:,.2f} msg/s"
                         if rtime > 0:
-                            res["single_lat"] = f"{rtime:.2f} {tunit}"
+                            res["single_lat"] = format_latency(rtime, tunit)
 
                 platform_results_map[key] = res
             except Exception as ex:

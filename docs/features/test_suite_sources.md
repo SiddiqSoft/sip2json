@@ -114,7 +114,7 @@ graph TD
 ## 5. Performance Benchmark Suite (`tests/benchmark/`)
 
 - **Test Runner Source Code**: [`tests/benchmark/src/benchmark.cpp`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/benchmark/src/benchmark.cpp)
-- **Report Document**: [`tests/benchmark/BENCHMARK_REPORT.md`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/benchmark/BENCHMARK_REPORT.md)
+- **Benchmark Metrics Documentation**: [Performance & Benchmark Metrics](benchmarks.md)
 - **Coverage**: Measures multi-message stream vector parsing (`parse`), zero-copy stream callback parsing (`parseAsync`), discrete single-message parsing (`parseFromBuffer`), and SDP element counts across stream fixtures.
 
 ---

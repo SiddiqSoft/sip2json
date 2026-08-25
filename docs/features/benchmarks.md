@@ -8,79 +8,34 @@
 !!! note "Build Environment & Host Runner Metadata"
     - **Build Release & Version**: `{ version }` | **Branch**: `release/2.6.0`
     - **Host Runner Environment (Derived at Build Time)**:
-        - **Build Runner**: macOS 26.6.2 (arm64, 11 CPU Cores) on `vash`
+        - **Build Runner**: macOS 26.6.2 (arm64, 11 CPU Cores, 18 GB RAM)
 
-### Cross-Platform & Compiler Throughput Comparison
+### Cross-Platform & Compiler Benchmark Matrix
 
-```mermaid
-xychart-beta
-    title "Cross-Platform Stream Parsing Throughput (parseAsync msg/s - Higher is Better)"
-    x-axis ["macOS (AppleClang arm64)", "Linux (Clang arm64)", "Linux (Clang x64)", "Linux (GCC 14 x64)", "Windows (MSVC arm64)", "Windows (MSVC x64)"]
-    y-axis "Stream Throughput (msg/s)" 0 --> 50000
-    bar [39493, 39100, 38120, 36890, 35400, 33650]
-```
-
-### Detailed Platform Benchmark Breakdown
-
-*Empirical build pipeline measurements collected across matrix runners grouped by operating system platform:*
+*Empirical build pipeline measurements collected across matrix runners:*
 
 | Operating System | Architecture | Compiler | Stream Throughput (`parseAsync`) | Bandwidth | Per-Msg Latency | Single Message (`parseFromBuffer`) | Single Latency |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **macOS** | **arm64** | AppleClang 16 | **39,493.57 msg/s** | **104.08 MB/s** | **25.32 µs** | **46,983.39 msg/s** | **21.28 µs** |
-| **Linux** | **arm64** | Clang 18 | **39,100.00 msg/s** | **102.85 MB/s** | **25.57 µs** | **45,600.00 msg/s** | **21.93 µs** |
-| **Linux** | **x64** | Clang 18 | **38,120.00 msg/s** | **100.27 MB/s** | **26.23 µs** | **44,250.00 msg/s** | **22.60 µs** |
-| **Linux** | **x64** | GCC 14 | **36,890.00 msg/s** | **97.04 MB/s** | **27.11 µs** | **42,800.00 msg/s** | **23.36 µs** |
-| **Windows** | **arm64** | MSVC 2022 | **35,400.00 msg/s** | **93.12 MB/s** | **28.25 µs** | **41,200.00 msg/s** | **24.27 µs** |
-| **Windows** | **x64** | MSVC 2022 | **33,650.00 msg/s** | **88.52 MB/s** | **29.72 µs** | **38,500.00 msg/s** | **25.97 µs** |
+| **macOS** | **arm64** | AppleClang | **30,988.47 msg/s** | **81.67 MB/s** | **32.27 µs** | **33,874.63 msg/s** | **29.52 µs** |
 
 <!-- PIPELINE_BENCHMARKS_END -->
 
 ---
 
-## 2. Visual Throughput & Latency Milestone Comparison
+## 2. Stream Inspection & Per-Message SDP Element Metrics
 
-### Stream Parsing Throughput Comparison (Messages / Second - Higher is Better)
+*Empirical inspection of header presence and SDP element counts across real-world stream fixtures:*
 
-```mermaid
-xychart-beta
-    title "SIP Stream Parsing Throughput (Messages / Sec)"
-    x-axis ["v1.17.x Legacy", "v2.4.2 Release", "master Branch", "v2.6.0 (parse)", "v2.6.0 (parseAsync)"]
-    y-axis "Throughput (msg/s)" 0 --> 45000
-    bar [14250, 21394, 19043, 36292, 39493]
-```
-
-### Per-Message Processing Latency (Microseconds - Lower is Better)
-
-```mermaid
-xychart-beta
-    title "Average Per-Message Processing Latency (µs/msg)"
-    x-axis ["v1.17.x Legacy", "v2.4.2 Release", "master Branch", "v2.6.0 (parse)", "v2.6.0 (parseAsync)"]
-    y-axis "Latency (µs)" 0 --> 60
-    bar [58.20, 46.74, 52.51, 27.55, 25.32]
-```
+| Fixture Stream File | Messages Received | Total SDP Elements | Avg SDP Elements / Msg | `X-domain` Headers | `X-Seamless` Headers | `X-Call-Instance-ID` | SDP `a=x-voice-callowner-login_alias` |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **`Mixed_Stream_1.sip`** | 18 | 853 | **47.39** | 18 | 0 | 16 | 22 |
+| **`Mixed_Stream_2.sip`** | 9 | 349 | **38.78** | 9 | 0 | 9 | 9 |
+| **`Mixed_Stream_3.sip`** | 21 | 739 | **35.19** | 21 | 0 | 21 | 8 |
+| **`RandomStream_Recv_File_1.sip`** | 459 | 21,409 | **46.64** | 459 | 34 | 344 | 549 |
 
 ---
 
-## 3. Historical Release Comparison Matrix (`release/2.6.0` vs. `v2.4.2` vs. `v1.17.x`)
-
-*Fresh empirical measurements across 36 real-world SIP message stream fixtures (164,400 stream iterations, 31,000 single message iterations):*
-
-| Performance Metric | **v1.17.x Milestone** | **v2.4.2 Release Tag** | **master Branch** | **v2.6.0 Current (`parse`)** | **v2.6.0 Current (`parseAsync`)** | **Speedup vs v2.4.2** |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Stream Throughput** | 14,250.00 msg/s | **21,394.49 msg/s** | 19,043.79 msg/s | **36,292.77 msg/s** | **39,493.57 msg/s** | <span style="color:green; font-weight:bold;">+84.6% FASTER</span> |
-| Stream Execution Time | 11.53 s | 7.68 s | 8.63 s | 4.53 s | **4.16 s** | <span style="color:green; font-weight:bold;">-45.8% Time</span> |
-| Processing Bandwidth | 37.55 MB/s | 56.39 MB/s | 50.19 MB/s | 95.08 MB/s | **104.08 MB/s** | <span style="color:green; font-weight:bold;">+47.69 MB/s</span> |
-| Avg Per-Msg Latency | 58.20 µs | 46.74 µs | 52.51 µs | 27.55 µs | **25.32 µs** | <span style="color:green; font-weight:bold;">-21.42 µs/msg</span> |
-| **Single Message (`parseFromBuffer`)** | 16,800.00 msg/s | **24,770.67 msg/s** | 23,256.49 msg/s | **43,976.62 msg/s** | **46,983.39 msg/s** | <span style="color:green; font-weight:bold;">+89.7% FASTER</span> |
-| Single-Msg Latency | 59.52 µs | 40.37 µs | 43.00 µs | 22.74 µs | **21.28 µs** | <span style="color:green; font-weight:bold;">-19.09 µs/msg</span> |
-| **MSVC CTRE Template Depth** | > 2,000 | > 1,500 | > 1,000 | > 1,000 | **~150 Depth** | <span style="color:green; font-weight:bold;">>85% Reduction</span> |
-
-!!! note "Official Benchmark Report"
-    Detailed section-by-section breakdown and SDP element metrics are available in the [**Official Benchmark Report**](https://github.com/SiddiqSoft/sip2json/blob/master/tests/benchmark/BENCHMARK_REPORT.md).
-
----
-
-## 4. Single Stream Architectural Study: `parseAsync` vs. `parse` vs. Thread Pool
+## 3. Single Stream Architectural Study: `parseAsync` vs. `parse` vs. Thread Pool
 
 ### Architectural Pipeline Comparison
 
@@ -127,7 +82,7 @@ When receiving a single continuous TCP/TLS stream of SIP messages on a single ne
 
 ---
 
-## 5. Worst-Case Noisy Stream Buffer Resilience
+## 4. Worst-Case Noisy Stream Buffer Resilience
 
 In production environments, network buffers can contain leading junk, corrupted protocol lines, binary noise, or fragmented TCP frames before valid start lines.
 
@@ -140,7 +95,7 @@ In production environments, network buffers can contain leading junk, corrupted 
 
 ---
 
-## 6. Running Benchmarks Locally
+## 5. Running Benchmarks Locally
 
 Build and run the single-threaded benchmark suite across all sample fixtures:
 
@@ -149,3 +104,4 @@ cmake --preset Apple-Release
 cmake --build --preset Apple-Release
 ./build/Apple-Release/tests/benchmark/sip2json_benchmark tests/validation/samples
 ```
+
