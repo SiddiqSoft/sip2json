@@ -74,6 +74,7 @@ namespace siddiqsoft
                                           const std::string::iterator& bufferEnd) noexcept(false);
         static std::string escapeJsonPointerToken(const std::string& token);
         static bool        storeHeaderValue(sipmessage& sipm, const std::string& key, const std::string& value) noexcept(false);
+        static bool        storeHeaderValue(sipmessage& sipm, std::string_view key, std::string_view value) noexcept(false);
         static bool
         parseHeaders(sipmessage& sipm, std::string::iterator& bufferStart, const std::string::iterator& bufferEnd) noexcept(false);
         static bool

@@ -83,9 +83,13 @@ namespace siddiqsoft
             }
             else if (SIPVER_20 == g1)
             {
+                uint32_t statusCode = 0;
+                auto [ptr, ec] = std::from_chars(g2.data(), g2.data() + g2.size(), statusCode);
+                if (ec != std::errc()) { statusCode = static_cast<uint32_t>(std::stoi(string(g2))); }
+
                 sipm[JSON_KEY_STARTLINE] = {{JSON_KEY_TYPE, SIPMessageType::response},
                                             {JSON_KEY_REASON, string(g3)},
-                                            {JSON_KEY_STATUS, std::stoi(string(g2))},
+                                            {JSON_KEY_STATUS, statusCode},
                                             {JSON_KEY_VERSION, string(g1)}};
             }
             else
@@ -115,63 +119,61 @@ namespace siddiqsoft
     /// @param value The header value to store or append.
     inline void storeMultiLineHeader(nlohmann::json& headersJson, const std::string& targetKey, const std::string& value)
     {
-        if (headersJson.contains(targetKey))
+        auto it = headersJson.find(targetKey);
+        if (it != headersJson.end())
         {
-            if (headersJson[targetKey].is_array())
-                headersJson[targetKey].push_back(value);
+            if (it->is_array())
+                it->push_back(value);
             else
             {
-                auto existing          = headersJson[targetKey];
-                headersJson[targetKey] = nlohmann::json::array({existing, value});
+                auto existing = *it;
+                *it           = nlohmann::json::array({existing, value});
             }
         }
         else
         {
-            headersJson[targetKey] = nlohmann::json::array({value});
+            headersJson.emplace(targetKey, nlohmann::json::array({value}));
         }
     }
 
     /// @brief Validates and parses the Content-Length header value.
     /// @param value The header value string to parse.
     /// @return Returns parsed uint32_t content length.
+    inline uint32_t parseContentLengthValue(std::string_view value) noexcept(false)
+    {
+        while (!value.empty() && (value.front() == ' ' || value.front() == '\t')) value.remove_prefix(1);
+        while (!value.empty() && (value.back() == ' ' || value.back() == '\t')) value.remove_suffix(1);
+
+        uint64_t len = 0;
+        auto [ptr, ec] = std::from_chars(value.data(), value.data() + value.size(), len);
+        if (ec != std::errc() || ptr != (value.data() + value.size()) || len > 100 * 1024 * 1024)
+            throw invalid_document_error {std::format("storeHeaderValue:Invalid Content-Length value '{}'", value)};
+        return static_cast<uint32_t>(len);
+    }
+
     inline uint32_t parseContentLengthValue(const std::string& value) noexcept(false)
     {
-        try
-        {
-            long long len = std::stoll(value);
-            if (len < 0 || len > 100 * 1024 * 1024)
-                throw invalid_document_error {std::format("storeHeaderValue:Invalid Content-Length value '{}'", value)};
-            return static_cast<uint32_t>(len);
-        }
-        catch (const invalid_document_error&)
-        {
-            throw;
-        }
-        catch (const std::exception&)
-        {
-            throw invalid_document_error {std::format("storeHeaderValue:Invalid Content-Length value '{}'", value)};
-        }
+        return parseContentLengthValue(std::string_view(value));
     }
 
     /// @brief Validates and parses the Expires header value.
     /// @param value The header value string to parse.
     /// @return Returns parsed uint32_t expires value.
+    inline uint32_t parseExpiresValue(std::string_view value) noexcept(false)
+    {
+        while (!value.empty() && (value.front() == ' ' || value.front() == '\t')) value.remove_prefix(1);
+        while (!value.empty() && (value.back() == ' ' || value.back() == '\t')) value.remove_suffix(1);
+
+        uint64_t val = 0;
+        auto [ptr, ec] = std::from_chars(value.data(), value.data() + value.size(), val);
+        if (ec != std::errc() || ptr != (value.data() + value.size()) || val > std::numeric_limits<uint32_t>::max())
+            throw invalid_document_error {std::format("storeHeaderValue:Invalid Expires value '{}'", value)};
+        return static_cast<uint32_t>(val);
+    }
+
     inline uint32_t parseExpiresValue(const std::string& value) noexcept(false)
     {
-        try
-        {
-            long long val = std::stoll(value);
-            if (val < 0) throw invalid_document_error {std::format("storeHeaderValue:Invalid Expires value '{}'", value)};
-            return static_cast<uint32_t>(val);
-        }
-        catch (const invalid_document_error&)
-        {
-            throw;
-        }
-        catch (const std::exception&)
-        {
-            throw invalid_document_error {std::format("storeHeaderValue:Invalid Expires value '{}'", value)};
-        }
+        return parseExpiresValue(std::string_view(value));
     }
 
     /// @brief Store the value in the header section. Performs from basic transforms/detection of bool, integer
@@ -179,24 +181,49 @@ namespace siddiqsoft
     /// @param key The key
     /// @param value The value
     /// @return Returns true if the store was successful.
-    inline bool sip2json::storeHeaderValue(sipmessage& sipm, const std::string& key, const std::string& value) noexcept(false)
+    inline bool sip2json::storeHeaderValue(sipmessage& sipm, std::string_view key, std::string_view value) noexcept(false)
     {
+        auto& headersJson = sipm[JSON_KEY_HEADERS];
         const HeaderKeySet& keySet = canonicalizeHeaderKey(key);
         const std::string&  keyStr = keySet.canonical();
 
-        if (sipm[JSON_KEY_HEADERS].contains(keyStr) || keySet.isMultiLine)
+        if (keySet.isMultiLine)
         {
-            storeMultiLineHeader(sipm[JSON_KEY_HEADERS], keyStr, value);
+            storeMultiLineHeader(headersJson, keyStr, std::string(value));
         }
-        else if (&keySet == &HFS_CONTENT_LENGTH) { sipm[JSON_KEY_HEADERS][keyStr] = parseContentLengthValue(value); }
-        else if (&keySet == &HFS_EXPIRES) { sipm[JSON_KEY_HEADERS][keyStr] = parseExpiresValue(value); }
-        else if (value.empty()) { sipm[JSON_KEY_HEADERS][keyStr] = ""; }
+        else if (&keySet == &HFS_CONTENT_LENGTH)
+        {
+            headersJson[keyStr] = parseContentLengthValue(value);
+        }
+        else if (&keySet == &HFS_EXPIRES)
+        {
+            headersJson[keyStr] = parseExpiresValue(value);
+        }
         else
         {
-            sipm[JSON_KEY_HEADERS][keyStr] = value;
+            auto it = headersJson.find(keyStr);
+            if (it != headersJson.end())
+            {
+                if (it->is_array())
+                    it->push_back(std::string(value));
+                else
+                {
+                    auto existing = *it;
+                    *it           = nlohmann::json::array({existing, std::string(value)});
+                }
+            }
+            else
+            {
+                headersJson.emplace(keyStr, std::string(value));
+            }
         }
 
         return true;
+    }
+
+    inline bool sip2json::storeHeaderValue(sipmessage& sipm, const std::string& key, const std::string& value) noexcept(false)
+    {
+        return storeHeaderValue(sipm, std::string_view(key), std::string_view(value));
     }
 
     /// @brief Decode headers within the stream
@@ -213,84 +240,100 @@ namespace siddiqsoft
         bool done {false};
         bool found {false};
 
-        // WARNING
-        // The bufferStart must point to the start of the first sequence (excluding the CRLF) after the startline is processed!
-        // Scan for the location of the header section end within the frame.
-        // If we don't have one, then we should bail out.
-        // Note that for response messages, it is likely that the bufferEnd will also be the headerEnd (no content).
         auto useCRLF             = true;
         auto headerDelimiterSize = ELEM_HEADERSECTIONDELIMITER.size();
         auto lineEndSize         = ELEM_NEWLINE.size();
-        auto headerEnd =
-                std::search(bufferStart, bufferEnd, ELEM_HEADERSECTIONDELIMITER.begin(), ELEM_HEADERSECTIONDELIMITER.end());
-        if (headerEnd == bufferEnd)
+
+        const char* pStart = std::to_address(bufferStart);
+        const char* pEnd   = std::to_address(bufferEnd);
+        size_t totalLen    = static_cast<size_t>(pEnd - pStart);
+        std::string_view bufView(pStart, totalLen);
+
+        auto delimPos = bufView.find("\r\n\r\n");
+        if (delimPos == std::string_view::npos)
         {
             useCRLF             = false;
             lineEndSize         = ELEM_NEWLINE_LF.size();
             headerDelimiterSize = ELEM_HEADERSECTIONDELIMITER_LF.size();
-            // If not found, then search for the header without the CRLF and just the LF pair.
-            headerEnd = std::search(
-                    bufferStart, bufferEnd, ELEM_HEADERSECTIONDELIMITER_LF.begin(), ELEM_HEADERSECTIONDELIMITER_LF.end());
+            delimPos = bufView.find("\n\n");
         }
-        // Assert header end delimiter must exist!
-        auto headerSectionSize = size_t(bufferEnd - headerEnd);
-        if (headerSectionSize < headerDelimiterSize)
+
+        if (delimPos == std::string_view::npos)
             throw incomplete_buffer_for_header_error {std::format("{}:Cannot find header section delimiter.", __func__).c_str()};
 
-        while (!done)
+        auto headerEnd = bufferStart + delimPos;
+
+        while (!done && bufferStart < headerEnd)
         {
             // Scan for the first `:`
-            auto hsep = std::search(bufferStart, headerEnd, ELEM_SEPARATOR.begin(), ELEM_SEPARATOR.end());
+            auto hsep = std::find(bufferStart, headerEnd, ':');
             if (hsep != headerEnd)
             {
                 // Found the separator element.
                 // Key is from bufferStart until the separator
-                if (std::string key(bufferStart, hsep); !key.empty())
+                std::string_view keyView(std::to_address(bufferStart), static_cast<size_t>(hsep - bufferStart));
+                if (!keyView.empty())
                 {
-                    std::string value {};
-                    auto        hval = hsep; // Store the location of the value part of the header element.
+                    std::string foldedValue {};
+                    auto hval = hsep + 1; // Start past ':'
 
-                    // Next, let's look for the end of element
-                    bufferStart = hsep += ELEM_SEPARATOR.size();
-
-                    // Skip over the leading "space" if found.
-                    if (*bufferStart == ' ') bufferStart = ++hsep;
+                    // Skip leading spaces or tabs in value
+                    while (hval < headerEnd && (*hval == ' ' || *hval == '\t'))
+                        ++hval;
 
                     // Process header value, handling folded headers (RFC 2822 header folding)
                     bool headerProcessed = false;
                     while (!headerProcessed)
                     {
-                        auto hend = useCRLF ? search(hsep, headerEnd, ELEM_NEWLINE.begin(), ELEM_NEWLINE.end())
-                                            : search(hsep, headerEnd, ELEM_NEWLINE_LF.begin(), ELEM_NEWLINE_LF.end());
+                        auto hend = std::find(hval, headerEnd, '\n');
                         if (hend != headerEnd)
                         {
-                            // We found the `\r\n`;
-                            // Next, check if this is a folded element
-                            if ((headerEnd != (hend + lineEndSize)) &&
-                                (hend + lineEndSize < headerEnd) && // ensure we don't read past the header end
-                                ((*(hend + lineEndSize) == ' ') ||
-                                 (*(hend + lineEndSize) == '\t'))) // peek ahead to see if we have.. folded indicator
+                            auto lineEnd = hend;
+                            if (lineEnd != hval && *(lineEnd - 1) == '\r')
+                                --lineEnd;
+
+                            // Check if this is a folded element
+                            auto nextPos = hend + 1;
+                            if (nextPos < headerEnd && (*nextPos == ' ' || *nextPos == '\t'))
                             {
-                                // Yes, we have a folded item.
-                                // build up the value..
-                                value.append(hsep, hend);
-                                // Advance to past the fold indicator
-                                hsep = std::min(hend + lineEndSize + 1, headerEnd);
-                                // Continue loop to process next folded line
+                                foldedValue.append(hval, lineEnd);
+                                hval = nextPos + 1;
+                                while (hval < headerEnd && (*hval == ' ' || *hval == '\t'))
+                                    ++hval;
                             }
                             else
                             {
-                                value.append(hsep, hend);
-                                found           = storeHeaderValue(sipm, key, value);
-                                bufferStart     = hend += lineEndSize;
+                                if (!foldedValue.empty())
+                                {
+                                    foldedValue.append(hval, lineEnd);
+                                    found = storeHeaderValue(sipm, keyView, foldedValue);
+                                }
+                                else
+                                {
+                                    std::string_view valView(std::to_address(hval), static_cast<size_t>(lineEnd - hval));
+                                    found = storeHeaderValue(sipm, keyView, valView);
+                                }
+                                bufferStart     = hend + 1;
                                 headerProcessed = true;
                             }
                         }
                         else
                         {
-                            // reached the end; We're done
-                            value.append(hsep, hend);
-                            found           = storeHeaderValue(sipm, key, value);
+                            // reached headerEnd
+                            auto lineEnd = headerEnd;
+                            if (lineEnd != hval && *(lineEnd - 1) == '\r')
+                                --lineEnd;
+
+                            if (!foldedValue.empty())
+                            {
+                                foldedValue.append(hval, lineEnd);
+                                found = storeHeaderValue(sipm, keyView, foldedValue);
+                            }
+                            else
+                            {
+                                std::string_view valView(std::to_address(hval), static_cast<size_t>(lineEnd - hval));
+                                found = storeHeaderValue(sipm, keyView, valView);
+                            }
                             bufferStart     = headerEnd + headerDelimiterSize;
                             done            = true;
                             headerProcessed = true;
@@ -299,16 +342,17 @@ namespace siddiqsoft
                 }
                 else
                 {
-                    // Key is empty; we're done.
                     done = true;
                 }
             }
             else
             {
-                // End of buffer or Could not find separator; we're done.
                 done = true;
             }
         }
+
+        if (bufferStart < headerEnd + headerDelimiterSize)
+            bufferStart = headerEnd + headerDelimiterSize;
 
         return found;
     }
@@ -381,7 +425,12 @@ namespace siddiqsoft
                                                    const std::string::iterator& bufferEnd) noexcept(false)
     {
         std::vector<sipmessage> msgs;
-        size_t                  decodedMessageCount {0};
+        if (bufferEnd > bufferStart)
+        {
+            size_t estCount = std::max<size_t>(1, static_cast<size_t>(bufferEnd - bufferStart) / 1024);
+            msgs.reserve(std::min<size_t>(estCount, 64));
+        }
+        size_t decodedMessageCount {0};
 
         while (bufferStart != bufferEnd)
         {
@@ -417,11 +466,11 @@ namespace siddiqsoft
         sipmessage sipm;
 #if defined(DEBUG) || defined(_DEBUG)
         [[maybe_unused]] InvokeOnDestruct timeTaken {[&](long long delta)
-                                                     {
-                                                         sipm["meta"]["ttx"]  = delta;
-                                                         sipm["meta"]["pre"]  = bufferStart - previousBufferStart;
-                                                         sipm["meta"]["post"] = bufferEnd - bufferStart;
-                                                     }}; // upon destruction, sets the ttx to account for parse time
+                                                      {
+                                                          sipm["meta"]["ttx"]  = delta;
+                                                          sipm["meta"]["pre"]  = bufferStart - previousBufferStart;
+                                                          sipm["meta"]["post"] = bufferEnd - bufferStart;
+                                                      }}; // upon destruction, sets the ttx to account for parse time
 #endif
 
         if (bufferStart != bufferEnd)
@@ -434,7 +483,7 @@ namespace siddiqsoft
                     {
                         if (auto foundHeaders = parseHeaders(sipm, bufferStart, bufferEnd); foundHeaders)
                         {
-                            if (sipm.getContentType() == CONTENT_TYPE_APP_SDP)
+                            if (sipm.getContentTypeView() == CONTENT_TYPE_APP_SDP)
                             {
                                 // It is acceptable in some implementations to declare the Content-Type as application/sdp
                                 // but provide no actual body. We must not fault this case.
@@ -462,7 +511,7 @@ namespace siddiqsoft
                                     }
                                 }
                             }
-                            else if (!sipm.getContentType().empty())
+                            else if (!sipm.getContentTypeView().empty())
                             {
                                 bufferStart = previousBufferStart;
                                 throw unsupported_contenttype_error {

@@ -95,32 +95,37 @@ namespace siddiqsoft
         // This cast is critical since the RFC1123 does not have a fractional portion!
         const auto rawtp = std::chrono::time_point_cast<std::chrono::seconds>(src.value_or(std::chrono::system_clock::now()));
 
-        if constexpr (std::is_same_v<T, std::string>)
-            return std::format("{0:%a, %d %h %Y %T GMT}", rawtp);
-        else if constexpr (std::is_same_v<T, std::wstring>)
+        if constexpr (std::is_same_v<T, std::wstring>)
             return std::format(L"{0:%a, %d %h %Y %T GMT}", rawtp);
+        else if constexpr (std::is_same_v<T, std::string>)
+        {
+            time_t    t = static_cast<time_t>(rawtp.time_since_epoch().count());
+            struct tm tm_buf {};
+#if defined(_WIN32) || defined(_WIN64) || defined(WINDOWS) || defined(WIN32)
+            gmtime_s(&tm_buf, &t);
+#else
+            gmtime_r(&t, &tm_buf);
+#endif
+            static const char* days[]   = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+            static const char* months[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+            char               buf[40];
+            int                len = std::snprintf(buf,
+                                    sizeof(buf),
+                                    "%s, %02d %s %04d %02d:%02d:%02d GMT",
+                                    days[tm_buf.tm_wday % 7],
+                                    tm_buf.tm_mday,
+                                    months[tm_buf.tm_mon % 12],
+                                    tm_buf.tm_year + 1900,
+                                    tm_buf.tm_hour,
+                                    tm_buf.tm_min,
+                                    tm_buf.tm_sec);
+            return std::string(buf, static_cast<size_t>(len));
+        }
         else
             return T {};
     }
 
-    /// @brief Creates a string representaiton of the date time in RFC3339 format with millisecond precision.
-    /// @param tp Optional system_clock::timepoint; uses "now" if not provided
-    /// @return String RFC3339 "2020-06-28T23:29:00.000Z"
-    template <class T = std::string>
-    static T TimeAsRFC3339(std::optional<std::chrono::system_clock::time_point> src = {}) noexcept(false)
-    {
-        // This cast is critical since the RFC3339 only asks for milliseconds!
-        const auto rawtp = std::chrono::time_point_cast<std::chrono::milliseconds>(src.value_or(std::chrono::system_clock::now()));
-
-        if constexpr (std::is_same_v<T, std::string>)
-            return std::format("{0:%Y-%m-%dT%H:%M:%S}Z", rawtp);
-        else if constexpr (std::is_same_v<T, std::wstring>)
-            return std::format(L"{0:%Y-%m-%dT%H:%M:%S}Z", rawtp);
-        else
-            return T {};
-    }
-
-    /// @brief Creates a string representaiton of the date time in ISO8601 format with millisecond precision. Alias for TimeAsRFC3339 method.
+    /// @brief Creates a string representaiton of the date time in ISO8601 format with millisecond precision.
     /// @param tp Optional system_clock::timepoint; uses "now" if not provided
     /// @return String ISO8601 "2020-06-28T23:29:00.000Z"
     template <class T = std::string>
@@ -131,8 +136,43 @@ namespace siddiqsoft
 
         // NOTE: The resolution for %T includes siz-digits of microsecond detail!
         if constexpr (std::is_same_v<T, std::wstring>) { return std::format(L"{:%Y-%m-%dT%T}Z", tp); }
+        else if constexpr (std::is_same_v<T, std::string>)
+        {
+            auto      millis  = tp.time_since_epoch().count();
+            auto      ms_part = millis % 1000;
+            if (ms_part < 0) ms_part += 1000;
+            auto      secs = std::chrono::duration_cast<std::chrono::seconds>(tp.time_since_epoch()).count();
+            time_t    t    = static_cast<time_t>(secs);
+            struct tm tm_buf {};
+#if defined(_WIN32) || defined(_WIN64) || defined(WINDOWS) || defined(WIN32)
+            gmtime_s(&tm_buf, &t);
+#else
+            gmtime_r(&t, &tm_buf);
+#endif
+            char buf[32];
+            int  len = std::snprintf(buf,
+                                    sizeof(buf),
+                                    "%04d-%02d-%02dT%02d:%02d:%02d.%03dZ",
+                                    tm_buf.tm_year + 1900,
+                                    tm_buf.tm_mon + 1,
+                                    tm_buf.tm_mday,
+                                    tm_buf.tm_hour,
+                                    tm_buf.tm_min,
+                                    tm_buf.tm_sec,
+                                    static_cast<int>(ms_part));
+            return std::string(buf, static_cast<size_t>(len));
+        }
+        else
+            return T {};
+    }
 
-        return std::format("{:%Y-%m-%dT%T}Z", tp);
+    /// @brief Creates a string representaiton of the date time in RFC3339 format with millisecond precision. Alias for TimeAsISO8601.
+    /// @param tp Optional system_clock::timepoint; uses "now" if not provided
+    /// @return String RFC3339 "2020-06-28T23:29:00.000Z"
+    template <class T = std::string>
+    static T TimeAsRFC3339(std::optional<std::chrono::system_clock::time_point> src = {}) noexcept(false)
+    {
+        return TimeAsISO8601<T>(src);
     }
 
 #pragma endregion
