@@ -35,8 +35,8 @@ theme:
         icon: material/brightness-4
         name: Switch to light mode
   font:
-    text: Roboto
-    code: JetBrains Mono
+    text: false
+    code: Victor Mono
   features:
     - navigation.tabs
     - navigation.tabs.sticky

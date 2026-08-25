@@ -28,7 +28,11 @@ clang --version    # Apple Clang 15+ or Homebrew LLVM Clang 18+
 ```
 
 ### Environment Variables (Homebrew OpenSSL & libcurl Integration)
-Because Homebrew installs `openssl@3` and `curl` as keg-only formulas to avoid conflicting with built-in macOS system binaries, configure your shell environment:
+
+Homebrew installs `openssl@3` and `curl` as keg-only formulas to avoid conflicting with built-in macOS system binaries.
+
+Configure your shell environment:
+
 
 ```bash
 # Set Homebrew prefix (Apple Silicon: /opt/homebrew, Intel: /usr/local)
@@ -140,15 +144,16 @@ sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-18 100 \
 
 ## 3. Windows Setup (MSVC 2022 & Long Paths)
 
-Windows compilation requires **Visual Studio 2022** (MSVC toolset `v143` or later) with C++23 standard support.
+Windows compilation requires **Visual Studio 2022/2026** (MSVC toolset `v143` or later) with C++23 standard support.
 
-### Step 1: Visual Studio 2022 Components
+### Step 1: Visual Studio 2022/2026 Components
 Install Visual Studio 2022 (Community, Professional, or Enterprise) with the **Desktop development with C++** workload and ensure the following individual components are selected:
-- **MSVC v143 - VS 2022 C++ x64/x86 build tools (Latest)**
-- **MSVC v143 - VS 2022 C++ ARM64/ARM64EC build tools (Latest)** *(required for ARM64 cross-builds)*
-- **C++ CMake tools for Windows**
-- **Windows 11 SDK** (or Windows 10 SDK 10.0.19041+)
-- **Git for Windows**
+
+ *  **MSVC v143 - VS 2022/2026 C++ x64/x86 build tools (Latest)**
+ *  **MSVC v143 - VS 2022/2026 C++ ARM64/ARM64EC build tools (Latest)** *(required for ARM64 cross-builds)*
+ *  **C++ CMake tools for Windows**
+ *  **Windows 11 SDK** (or Windows 10 SDK 10.0.19041+)
+ *  **Git for Windows**
 
 *(Optional)* If installing `libcurl` and `OpenSSL` via Microsoft `vcpkg`:
 ```powershell
@@ -164,6 +169,7 @@ powershell -ExecutionPolicy Bypass -File .\scripts\prep_windows_machine.ps1
 ```
 
 This script automatically executes:
+
 1. `Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name "LongPathsEnabled" -Value 1`
 2. `git config --system core.longpaths true`
 3. `git config --global core.longpaths true`
