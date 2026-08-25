@@ -92,7 +92,7 @@ code, kbd, pre {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Table Styling: Distinct Palette Headers & Proportional Typography          */
+/* Table Styling: Responsive 100% Fit & Proportional Typography               */
 /* -------------------------------------------------------------------------- */
 .md-typeset table:not([class]) {
   font-size: 0.78rem;                          /* Proportional compact font size */
@@ -105,16 +105,18 @@ code, kbd, pre {
   margin-top: 0.8em;
   margin-bottom: 1.2em;
   width: 100%;
+  max-width: 100%;
 }
 
 .md-typeset table:not([class]) th {
-  background-color: #f1f5f9;                   /* Clean Light Slate Neutral (No dark/black) */
+  background-color: #f1f5f9;                   /* Clean Light Slate Neutral */
   color: #0f172a;                              /* Dark readable text */
   font-weight: 600;
-  padding: 0.45rem 0.75rem;                    /* Compact header padding */
+  padding: 0.4rem 0.6rem;                      /* Compact header padding */
   text-align: left;
   font-size: 0.78rem;                          /* Proportional header font size */
   border-bottom: 2px solid #cbd5e1;            /* Clean light divider */
+  overflow-wrap: break-word;
 }
 
 [data-md-color-scheme="slate"] .md-typeset table:not([class]) th {
@@ -124,10 +126,11 @@ code, kbd, pre {
 }
 
 .md-typeset table:not([class]) td {
-  padding: 0.45rem 0.75rem;                    /* Compact cell padding */
+  padding: 0.4rem 0.6rem;                      /* Compact cell padding */
   border-top: 1px solid var(--md-default-fg-color--lightest, #e2e8f0);
   vertical-align: top;
   font-size: 0.78rem;
+  overflow-wrap: break-word;
 }
 
 /* Alternating Odd/Even Row Striping (Contrast) */
@@ -178,14 +181,15 @@ code, kbd, pre {
   box-shadow: none;
 }
 
-/* Prevent unnatural single-character line wraps for inline code in table cells */
+/* Table inline code tags: enable responsive natural wrapping */
 .md-typeset table:not([class]) td code,
 .md-typeset table:not([class]) th code {
-  white-space: nowrap;
+  white-space: normal;                         /* Allow natural wrapping to avoid horizontal scrollbar */
   font-size: 0.84em;
   font-weight: 600;
   padding: 0;
-  word-break: keep-all;
+  overflow-wrap: anywhere;
+  word-break: normal;
   color: inherit;
   background-color: transparent;
   border: none;

@@ -246,7 +246,7 @@ def update_benchmarks_doc(repo_root: Path, platform_results: list, require_all: 
             )
         )
 
-        table_lines.append("| Operating System | Architecture | Compiler | Host Environment (CPU & RAM) | Stream Throughput (`parseAsync`) | Bandwidth | Per-Msg Latency | Single Message (`parseFromBuffer`) | Single Latency |")
+        table_lines.append("| OS | Arch | Compiler | Host Environment | Stream Throughput | Bandwidth | Stream Latency | Single Msg Throughput | Single Latency |")
         table_lines.append("| :--- | :---: | :---: | :--- | :---: | :---: | :---: | :---: | :---: |")
 
         for res in sorted_results:

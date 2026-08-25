@@ -7,7 +7,7 @@
 
 *Empirical build pipeline measurements collected dynamically across live matrix runners (Build Version `{ version }`):*
 
-| Operating System | Architecture | Compiler | Host Environment (CPU & RAM) | Stream Throughput (`parseAsync`) | Bandwidth | Per-Msg Latency | Single Message (`parseFromBuffer`) | Single Latency |
+| OS | Arch | Compiler | Host Environment | Stream Throughput | Bandwidth | Stream Latency | Single Msg Throughput | Single Latency |
 | :--- | :---: | :---: | :--- | :---: | :---: | :---: | :---: | :---: |
 | **macOS** | **arm64** | AppleClang | macOS 26.6.2 (arm64, 11 CPU Cores, 18 GB RAM) | **30,988.47 msg/s** | **81.67 MB/s** | **32.27 µs** | **33,874.63 msg/s** | **29.52 µs** |
 
