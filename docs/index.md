@@ -114,6 +114,6 @@
 ## Navigation & Documentation Sections
 
 - [**Getting Started**](integration/cmake.md): Quick start, CMake CPM integration, [Project Dependencies](integration/dependencies.md), and [Practical Examples](examples/index.md).
+- [**API Reference**](api/sipmessage.md): Complete class reference for [`sipmessage`](api/sipmessage.md), [`sip2json`](api/sip2json.md) parser functions, and [Exceptions & Errors](api/errors.md).
 - [**Core Concepts & Architecture**](features/json_schema.md): JSON schema metaphor, [Stream Data Flow](architecture/dataflow.md), [SDP Media Processing](features/sdp.md), and [Standards Compliance & Torture Tests](features/compliance.md).
 - [**Performance & Benchmarks**](features/benchmarks.md): Multi-platform throughput and latency metrics, [Optimization Choices](features/optimization_choices.md), and [Native Struct vs JSON Study](architecture/native_vs_json.md).
-- [**API Reference**](api/sipmessage.md): Complete class reference for [`sipmessage`](api/sipmessage.md), [`sip2json`](api/sip2json.md) parser functions, and [Exceptions & Errors](api/errors.md).

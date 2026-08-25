@@ -89,6 +89,10 @@ nav:
       - Quick Start & CMake: integration/cmake.md
       - Project Dependencies: integration/dependencies.md
       - Practical Examples: examples/index.md
+  - API Reference:
+      - sipmessage: api/sipmessage.md
+      - sip2json Functions: api/sip2json.md
+      - Exceptions & Error Codes: api/errors.md
   - Core Concepts & Architecture:
       - JSON Metaphor & Schema: features/json_schema.md
       - Stream Architecture & Data Flow: architecture/dataflow.md
@@ -99,8 +103,4 @@ nav:
       - Empirical Benchmarks & Metrics: features/benchmarks.md
       - Optimization Choices & Hardware Study: features/optimization_choices.md
       - Native Struct vs JSON Study: architecture/native_vs_json.md
-  - API Reference:
-      - sipmessage: api/sipmessage.md
-      - sip2json Functions: api/sip2json.md
-      - Exceptions & Error Codes: api/errors.md
   - License: license.md
