@@ -204,7 +204,7 @@ def format_os_name(os_name: str) -> str:
     return os_name.capitalize()
 
 def update_benchmarks_doc(repo_root: Path, platform_results: list, require_all: bool = False, required_str: str = ""):
-    """Dynamically update docs/features/benchmarks.md between PIPELINE_BENCHMARKS markers without splitting by OS or faking data."""
+    """Dynamically update docs/features/benchmarks.md between PIPELINE_BENCHMARKS markers with host info embedded in the table matrix."""
     doc_path = repo_root / "docs" / "features" / "benchmarks.md"
     if not doc_path.exists():
         print(f"[publish_benchmarks] Warning: {doc_path} not found.", flush=True)
@@ -226,37 +226,13 @@ def update_benchmarks_doc(repo_root: Path, platform_results: list, require_all: 
         print(f"[publish_benchmarks] Warning: Pipeline benchmark markers not found in {doc_path}.", flush=True)
         return
 
-    host_legends = []
-    for res in platform_results:
-        os_key = format_os_name(res.get("os", "Linux"))
-        host_str = sanitize_host_info(res.get("host_info", ""))
-        if host_str:
-            entry = f"- **{os_key} Matrix Runner**: {host_str}"
-            if entry not in host_legends:
-                host_legends.append(entry)
-
-    if not host_legends:
-        host_legends.append(f"- **Build Runner**: {get_host_runner_info()}")
-
     table_lines = [
         start_marker,
         "## 1. Multi-Platform & Cross-Architecture Pipeline Benchmark Matrix",
         "",
-        '!!! note "Build Environment & Host Runner Metadata"',
-        "    - **Build Release & Version**: `{ version }` | **Branch**: `release/2.6.0`",
-        "    - **Host Runner Environment (Derived at Build Time)**:"
-    ]
-
-    for leg in host_legends:
-        table_lines.append(f"        {leg}")
-
-    table_lines.extend([
-        "",
-        "### Cross-Platform & Compiler Benchmark Matrix",
-        "",
-        "*Empirical build pipeline measurements collected across matrix runners:*",
+        "*Empirical build pipeline measurements collected dynamically across live matrix runners (Build Version `{ version }`):*",
         ""
-    ])
+    ]
 
     if platform_results:
         # Sort results: Linux, Windows, macOS, then Arch, then Compiler
@@ -270,13 +246,14 @@ def update_benchmarks_doc(repo_root: Path, platform_results: list, require_all: 
             )
         )
 
-        table_lines.append("| Operating System | Architecture | Compiler | Stream Throughput (`parseAsync`) | Bandwidth | Per-Msg Latency | Single Message (`parseFromBuffer`) | Single Latency |")
-        table_lines.append("| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |")
+        table_lines.append("| Operating System | Architecture | Compiler | Host Environment (CPU & RAM) | Stream Throughput (`parseAsync`) | Bandwidth | Per-Msg Latency | Single Message (`parseFromBuffer`) | Single Latency |")
+        table_lines.append("| :--- | :---: | :---: | :--- | :---: | :---: | :---: | :---: | :---: |")
 
         for res in sorted_results:
             os_name = format_os_name(res.get("os", "Linux"))
             arch = res.get("arch", "x64")
             compiler = res.get("compiler", "Clang")
+            host_info = sanitize_host_info(res.get("host_info", "")) or get_host_runner_info()
             async_tput = res.get("async_tput", "N/A")
             bandwidth = res.get("bandwidth", "N/A")
             async_lat = res.get("async_lat", "N/A")
@@ -284,7 +261,7 @@ def update_benchmarks_doc(repo_root: Path, platform_results: list, require_all: 
             single_lat = res.get("single_lat", "N/A")
 
             table_lines.append(
-                f"| **{os_name}** | **{arch}** | {compiler} | **{async_tput}** | **{bandwidth}** | **{async_lat}** | **{single_tput}** | **{single_lat}** |"
+                f"| **{os_name}** | **{arch}** | {compiler} | {host_info} | **{async_tput}** | **{bandwidth}** | **{async_lat}** | **{single_tput}** | **{single_lat}** |"
             )
         table_lines.append("")
     else:

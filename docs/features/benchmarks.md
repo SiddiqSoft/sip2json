@@ -5,18 +5,11 @@
 <!-- PIPELINE_BENCHMARKS_START -->
 ## 1. Multi-Platform & Cross-Architecture Pipeline Benchmark Matrix
 
-!!! note "Build Environment & Host Runner Metadata"
-    - **Build Release & Version**: `{ version }` | **Branch**: `release/2.6.0`
-    - **Host Runner Environment (Derived at Build Time)**:
-        - **Build Runner**: macOS 26.6.2 (arm64, 11 CPU Cores, 18 GB RAM)
+*Empirical build pipeline measurements collected dynamically across live matrix runners (Build Version `{ version }`):*
 
-### Cross-Platform & Compiler Benchmark Matrix
-
-*Empirical build pipeline measurements collected across matrix runners:*
-
-| Operating System | Architecture | Compiler | Stream Throughput (`parseAsync`) | Bandwidth | Per-Msg Latency | Single Message (`parseFromBuffer`) | Single Latency |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **macOS** | **arm64** | AppleClang | **30,988.47 msg/s** | **81.67 MB/s** | **32.27 µs** | **33,874.63 msg/s** | **29.52 µs** |
+| Operating System | Architecture | Compiler | Host Environment (CPU & RAM) | Stream Throughput (`parseAsync`) | Bandwidth | Per-Msg Latency | Single Message (`parseFromBuffer`) | Single Latency |
+| :--- | :---: | :---: | :--- | :---: | :---: | :---: | :---: | :---: |
+| **macOS** | **arm64** | AppleClang | macOS 26.6.2 (arm64, 11 CPU Cores, 18 GB RAM) | **30,988.47 msg/s** | **81.67 MB/s** | **32.27 µs** | **33,874.63 msg/s** | **29.52 µs** |
 
 <!-- PIPELINE_BENCHMARKS_END -->
 
@@ -41,14 +34,14 @@
 
 ```mermaid
 flowchart LR
-    subgraph OptionA ["⚡ Option A: parseAsync Single-Thread (Optimal: ~39,500 msg/s)"]
+    subgraph OptionA ["⚡ Option A: parseAsync Single-Thread (Optimal: Zero Locks)"]
         direction LR
         SockA["🌐 Network Socket"]:::sockClass --> IOA["⚙️ I/O Thread"]:::ioClass
         IOA --> PA["⚡ parseAsync(buffer)"]:::parseClass
         PA --> CBA["🚀 Inline Handler Callback<br/><i>(Zero Thread Switches)</i>"]:::optClass
     end
     
-    subgraph OptionC ["⚠️ Option C: Thread Pool Offload (21% Slower)"]
+    subgraph OptionC ["⚠️ Option C: Thread Pool Offload (Lock Contention)"]
         direction LR
         SockC["🌐 Network Socket"]:::sockClass --> IOC["⚙️ I/O Thread"]:::ioClass
         IOC --> PC["⚡ parseAsync(buffer)"]:::parseClass
@@ -70,32 +63,19 @@ When receiving a single continuous TCP/TLS stream of SIP messages on a single ne
 
 1. **Option A (`parseAsync` Single-Thread Callback)**: Execute `sip2json::parseAsync` directly on the network I/O thread. Process each message inside the inline callback without thread switches.
 2. **Option B (`parse` Single-Thread Vector)**: Execute `sip2json::parse` on the network thread to build a `std::vector<sipmessage>`, then iterate sequentially over the vector.
-3. **Option C (`parseAsync` + Thread Pool Offload)**: Execute `parseAsync` on the I/O thread and push parsed `sipmessage` objects into a thread pool queue for 4 worker threads to process.
+3. **Option C (`parseAsync` + Thread Pool Offload)**: Execute `parseAsync` on the I/O thread and push parsed `sipmessage` objects into a thread pool queue for worker threads to process.
 4. **Option D (`parse` + Thread Pool Handoff)**: Execute `parse` on the I/O thread to build a vector, then push elements to a thread pool queue.
 
 ### Why Single-Thread `parseAsync` Wins for Single Streams
 
 !!! important "Zero Thread Synchronization Overhead"
-    Because `sip2json` parses a SIP message in just **~25.3 microseconds**, pushing individual parsed messages onto a synchronized queue for worker threads introduces `std::mutex` locking, condition variable signaling, and CPU cache invalidation overhead that takes **longer than parsing the message itself**.
+    Because `sip2json` parses a SIP message with microsecond-level latency, pushing individual parsed messages onto a synchronized queue for worker threads introduces `std::mutex` locking, condition variable signaling, and CPU cache invalidation overhead that takes **longer than parsing the message itself**.
     
     Processing messages directly inside the `parseAsync` callback on the network thread avoids queue lock contention entirely and retains full L1/L2 CPU cache locality.
 
 ---
 
-## 4. Worst-Case Noisy Stream Buffer Resilience
-
-In production environments, network buffers can contain leading junk, corrupted protocol lines, binary noise, or fragmented TCP frames before valid start lines.
-
-`sip2json` uses Compile-Time Regular Expression searching to scan forward in the buffer, skip over noise bytes, and recover valid SIP message start lines automatically:
-
-| Stream Buffer Setup | Time / Batch | Effective Parse Rate | Processing Bandwidth |
-| :--- | :--- | :--- | :--- |
-| **10 Messages + Noise** | 29.83 µs | **335,255 msg/sec** | 167.89 MiB/s |
-| **100 Messages + Noise** | 45.62 µs | **2,191,860 msg/sec** | 1.03 GiB/s |
-
----
-
-## 5. Running Benchmarks Locally
+## 4. Running Benchmarks Locally
 
 Build and run the single-threaded benchmark suite across all sample fixtures:
 
@@ -104,4 +84,5 @@ cmake --preset Apple-Release
 cmake --build --preset Apple-Release
 ./build/Apple-Release/tests/benchmark/sip2json_benchmark tests/validation/samples
 ```
+
 
