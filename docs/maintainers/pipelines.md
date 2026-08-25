@@ -79,19 +79,19 @@ The pipeline uses the self-hosted **`Default`** agent pool (`pool: name: Default
 To configure a new Azure DevOps organization or project pipeline for `sip2json`, maintainers must set up the following secrets and service connections:
 
 ### 1. Secret Variables & Variable Groups
-In **Azure DevOps** $\rightarrow$ **Pipelines** $\rightarrow$ **Library** $\rightarrow$ create a Variable Group (e.g., `sip2json-secrets` or Pipeline Variables):
+In **Azure DevOps** &rarr; **Pipelines** &rarr; **Library** &rarr; create a Variable Group (e.g., pipeline secrets or variable group):
 
 | Variable Name | Type | Description & Required Permissions |
 | :--- | :---: | :--- |
 | **`GITHUB_TOKEN`** | **Secret** (Locked 🔒) | GitHub Personal Access Token (PAT) used by `ghp-import` and release publishers. **Required Scopes**: `repo` (Full control of private/public repositories) and `workflow` (Update GitHub Action workflows). |
-| **`GITHUB_USER`** | Plain Text | Email / Name for Azure Pipelines git commit actor (e.g. `azure-pipelines[bot]@siddiqsoft.com` or maintainer email). |
+| **`GITHUB_USER`** | Plain Text | Name or bot identifier for Azure Pipelines git commit actor (e.g. `azure-pipelines[bot]` or maintainer username). |
 | **`System.AccessToken`** | System Secret | Automatically provided by Azure Pipelines; used for downloading build artifacts across jobs (`OAuthToken: $(System.AccessToken)`). |
 
 ### 2. GitHub Service Connection
-In **Project Settings** $\rightarrow$ **Pipelines** $\rightarrow$ **Service connections** $\rightarrow$ **New service connection**:
+In **Project Settings** &rarr; **Pipelines** &rarr; **Service connections** &rarr; **New service connection**:
 1. Select **GitHub**.
 2. Authentication method: **Personal Access Token (PAT)** or **Azure Pipelines GitHub App**.
-3. Service connection name: `SiddiqSoft-GitHub` (or configure default GitHub connection).
+3. Service connection name: `github-service-connection` (or your configured GitHub service connection name).
 4. Grant access permission to all pipelines.
 
 ---
@@ -123,6 +123,6 @@ branches:
 ### Release Procedure for Maintainers:
 1. Create a release branch: `git checkout -b release/2.6.0`
 2. Push commits and open Pull Request to `master`.
-3. Azure Pipelines builds the full Linux & Windows matrix and runs the 321-test suite.
+3. Azure Pipelines builds the full Linux & Windows matrix and runs the 324-test suite.
 4. Once PR is merged to `master`, Azure Pipelines triggers `PublishGitHub` and `PublishDocs`.
 5. Maintainers approve the manual validation gates in the Azure DevOps portal to publish the official GitHub Release and update `gh-pages`.
