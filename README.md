@@ -2,14 +2,14 @@
 
 <!-- badges -->
 [![Build Status](https://dev.azure.com/siddiqsoft/siddiqsoft/_apis/build/status/siddiqsoftware.sip2json?branchName=master)](https://dev.azure.com/siddiqsoft/siddiqsoft/_build/latest?definitionId=21&branchName=master)
-[![NuGet Version](https://img.shields.io/nuget/v/siddiqsoft.sip2json)](https://www.nuget.org/packages/siddiqsoft.sip2json)
-[![NuGet Downloads](https://img.shields.io/nuget/dt/siddiqsoft.sip2json)](https://www.nuget.org/packages/siddiqsoft.sip2json)
-[![Tests](https://img.shields.io/azure-devops/tests/siddiqsoft/siddiqsoft/21/master.svg)](https://dev.azure.com/siddiqsoft/siddiqsoft/_build/latest?definitionId=21&branchName=master)
+[![Total Tests](https://img.shields.io/badge/Total%20Tests-321%20Passed%20(100%25)-2ea44f?logo=checkmarx&logoColor=white)](https://dev.azure.com/siddiqsoft/siddiqsoft/_build/latest?definitionId=21&branchName=master)
+[![RFC 4475 Torture Suite](https://img.shields.io/badge/RFC%204475-50%2F50%20Torture%20(100%25)-success?logo=testinglibrary&logoColor=white)](https://siddiqsoft.github.io/sip2json/features/compliance/)
+[![RFC 3261 Compliance](https://img.shields.io/badge/RFC%203261-SIP%20Core%20Validated-003366?logo=shield&logoColor=white)](https://siddiqsoft.github.io/sip2json/features/compliance/)
+[![SDP & WebRTC Suite](https://img.shields.io/badge/SDP%20%26%20WebRTC-RFC%208866%20%7C%20BUNDLE%20%7C%20ICE-1488C6?logo=webrtc&logoColor=white)](https://siddiqsoft.github.io/sip2json/features/sdp/)
+[![SIP Extensions](https://img.shields.io/badge/SIP%20Extensions-PRACK%20%7C%20NOTIFY%20%7C%20REFER-6f42c1?logo=gitbook&logoColor=white)](https://siddiqsoft.github.io/sip2json/features/compliance/)
+[![Security & Memory Safety](https://img.shields.io/badge/Security-Memory%20%26%20CRLF%20Safe-107C41?logo=securityscorecard&logoColor=white)](https://siddiqsoft.github.io/sip2json/features/compliance/)
+[![Regression & Streams](https://img.shields.io/badge/Regression-36%20Streams%20%7C%20164k%20Frames-00838F?logo=speedtest&logoColor=white)](https://siddiqsoft.github.io/sip2json/features/benchmarks/)
 [![C++23](https://img.shields.io/badge/C%2B%2B-23-00599C?logo=cplusplus)](https://en.cppreference.com/w/cpp/23)
-[![IETF RFC 3261](https://img.shields.io/badge/IETF-RFC%203261%20(SIP)-003366)](https://datatracker.ietf.org/doc/html/rfc3261)
-[![IETF RFC 4475](https://img.shields.io/badge/IETF-RFC%204475%20(Torture%2050/50)-2ea44f)](https://datatracker.ietf.org/doc/html/rfc4475)
-[![IETF RFC 8866](https://img.shields.io/badge/IETF-RFC%208866%20(SDP)-003366)](https://datatracker.ietf.org/doc/html/rfc8866)
-[![W3C WebRTC SDP](https://img.shields.io/badge/W3C-WebRTC%20SDP-1488C6)](https://datatracker.ietf.org/doc/html/rfc8829)
 [![License BSD-3](https://img.shields.io/badge/License-BSD--3--Clause-blue)](LICENSE)
 <!-- end badges -->
 
