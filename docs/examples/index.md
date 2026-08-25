@@ -48,7 +48,7 @@ void onSocketDataReceived(std::string& socketReadBuffer)
 
 ---
 
-## 2. SIP Message Construction & Serialization
+## 2. SIP Message Construction & Serialization (Fluent API)
 
 Constructing SIP requests and responses using method chaining and serializing them into standard RFC 3261 wire format:
 
@@ -92,9 +92,92 @@ int main()
 
 ---
 
-## 3. First-Class JSON Interoperability
+## 3. Direct Construction from JSON (Zero-Setter Metaphor)
 
-Because `sipmessage` inherits directly from `nlohmann::json`, you can seamlessly store, query, and serialize SIP messages to NoSQL databases, message queues (Kafka, RabbitMQ), or REST APIs:
+Because `sipmessage` inherits directly from `nlohmann::json`, you can construct and serialize SIP messages directly from a native JSON structure without calling `.setHeader()` or `.setBody()` methods.
+
+This pattern is ideal for microservices and cloud workers receiving structured JSON payloads from message queues (Kafka, RabbitMQ, Azure Service Bus) or HTTP REST endpoints that need to emit SIP messages directly onto the wire:
+
+```cpp
+#include <iostream>
+#include "siddiqsoft/sip2json.hpp"
+
+using namespace siddiqsoft;
+
+int main()
+{
+    // Define the full SIP message and SDP body directly via JSON structure
+    nlohmann::json rawJson = {
+        {"s", {
+            {"type", "request"},
+            {"method", "INVITE"},
+            {"uri", "sip:bob@example.com"},
+            {"version", "SIP/2.0"}
+        }},
+        {"h", {
+            {"Call-ID", "call-99812-alpha@10.0.0.4"},
+            {"CSeq", "1 INVITE"},
+            {"From", "sip:alice@example.com;tag=a831"},
+            {"To", "sip:bob@example.com"},
+            {"Via", {"SIP/2.0/TCP 10.0.0.4:5060;branch=z9hG4bK776"}},
+            {"Contact", "<sip:alice@10.0.0.4:5060>"},
+            {"Content-Type", "application/sdp"},
+            {"User-Agent", "sip2json/2.6"}
+        }},
+        {"b", {
+            {"sdp", {
+                {
+                    {"v", 0},
+                    {"o", {
+                        {"user", "alice"},
+                        {"t1", "2890844526"},
+                        {"t2", "2890844526"},
+                        {"type", "IN"},
+                        {"subtype", "IP4"},
+                        {"host", "10.0.0.4"}
+                    }},
+                    {"s", "Talk"},
+                    {"c", {
+                        {"type", "IN"},
+                        {"subtype", "IP4"},
+                        {"dn", "10.0.0.4"}
+                    }},
+                    {"t", {0, 0}},
+                    {"m", "audio 49170 RTP/AVP 0 101"},
+                    {"a", {
+                        {"rtpmap", {"0 PCMU/8000", "101 telephone-event/8000"}},
+                        {"fmtp", "101 0-16"},
+                        {"sendrecv", true}
+                    }}
+                }
+            }}
+        }}
+    };
+
+    // 1. Directly initialize sipmessage from the JSON document
+    sipmessage msg(rawJson);
+
+    // 2. Serialize directly to standard RFC 3261 wire format
+    try {
+        std::string rawSipWire = sip2json::serialize(msg);
+        std::cout << "Directly Serialized Wire SIP:\n\n" << rawSipWire << std::endl;
+    } catch (const sip2json_exception& e) {
+        std::cerr << "Serialization error: " << e.what() << std::endl;
+    }
+
+    return 0;
+}
+```
+
+!!! tip "JSON Schema Specifications"
+    - Learn more about the core message schema, status line layout, and header formatting in the [**JSON Schema Specification**](../features/json_schema.md).
+    - Learn more about media lines (`m=`), connection addresses (`c=`), and multi-attribute mapping in the [**SDP Media Schema & Attributes**](../features/sdp.md).
+
+---
+
+## 4. First-Class JSON Interoperability & NoSQL Export
+
+Because `sipmessage` is an `nlohmann::json` object, you can directly query and export parsed SIP messages to NoSQL databases (MongoDB, Azure Cosmos DB, PostgreSQL `jsonb`) or log analytics pipelines with zero translation cost:
 
 ```cpp
 #include <iostream>
