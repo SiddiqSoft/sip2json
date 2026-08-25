@@ -127,6 +127,11 @@ int main()
 
 ## Quick Integration
 
+> [!WARNING]
+> **NuGet Package Deprecated (Starting with v2.0)**
+>
+> `sip2json` previously provided NuGet packages for legacy MSVC environments (`v1.x`). However, modern `sip2json` (v2+) is built on C++23 header-only templates and relies directly on **CTRE (Compile-Time Regular Expressions)**. Because there is **no support for CTRE as a NuGet package**, NuGet distribution has been deprecated starting with `v2.0` in favor of CMake CPM and FetchContent.
+
 > [!NOTE]
 > On Windows machines, execute the [`prep_windows_machine.ps1`](scripts/prep_windows_machine.ps1) setup script to enable long paths and configure MSVC CTRE requirements.
 

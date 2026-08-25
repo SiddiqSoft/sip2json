@@ -55,12 +55,13 @@ Why is 64-bit FNV-1a integer hash `switch (h)` matching **+74.4% to +93.8% faste
 
 ## 3. Optimization Summary Table
 
-| Optimization Technique | Replaced Pattern | Performance Gain | Hardware Mechanism |
-| :--- | :--- | :--- | :--- |
-| **CTRE Startline Regex Simplification** | `[\r\n|\n]` set-matching character class | **+6.0% to +6.8% throughput** | Replaced character class brackets with `\r?\n`; reduced CTRE compile-time template instantiation depth by **>85%** (~150 vs >1000 depth) resolving MSVC `error C2999` |
-| **64-bit FNV-1a Hash `switch(h)`** | Sequential `std::string` `if-else` chain | **+74.4% throughput** | 100% collision-free 64-bit FNV-1a hash matching via 1-cycle $O(1)$ jump table |
-| **`constexpr` Compile-Time Labels** | Dynamic runtime string hashing | **0 ns overhead** | `constexpr` compile-time `hash_header_key(...)` evaluated directly into switch jump table |
-| **Bitwise Register Case-Folding** | `std::transform(::tolower)` | **-42.6% latency** | Converts ASCII case in-register during 64-bit FNV-1a hashing |
-| **Merged `HeaderKeySet` Architecture** | `CanonicalHeaderKeyResult` wrapper | **+4.8% throughput** | Eliminates temporary wrapper objects; enables 1-cycle pointer comparison (`&keySet == &HFS_CONTENT_LENGTH`) |
-| **Inline Stream Callback (`parseAsync`)** | Vector accumulation (`std::vector<sipmessage>`) | **+93.8% vs master** | Zero-copy execution directly on network buffer |
-| **Fast-Path `X-` Header Branch** | Sequential canonical check loop | **2 CPU cycles** | Immediate bitmask check for custom headers |
+| Optimization Technique | Associated Tag | Replaced Pattern | Performance Gain | Hardware Mechanism |
+| :--- | :---: | :--- | :--- | :--- |
+| **CTRE Startline Regex Simplification** | `v2.6.0` | `[\r\n\|\n]` set-matching character class | **+6.0% to +6.8% throughput** | Replaced character class brackets with `\r?\n`; reduced CTRE compile-time template instantiation depth by **>85%** (~150 vs >1000 depth) resolving MSVC `error C2999` |
+| **64-bit FNV-1a Hash `switch(h)`** | `v2.6.0` | Sequential `std::string` `if-else` chain | **+74.4% throughput** | 100% collision-free 64-bit FNV-1a hash matching via 1-cycle $O(1)$ direct jump table |
+| **`constexpr` Compile-Time Labels** | `v2.6.0` | Dynamic runtime string hashing | **0 ns overhead** | `constexpr` compile-time `hash_header_key(...)` evaluated directly into switch jump table |
+| **Bitwise Register Case-Folding** | `v2.6.0` | `std::transform(::tolower)` | **-42.6% latency** | Converts ASCII case in-register during 64-bit FNV-1a hashing |
+| **Merged `HeaderKeySet` Architecture** | `v2.6.0` | `CanonicalHeaderKeyResult` wrapper | **+4.8% throughput** | Eliminates temporary wrapper objects; enables 1-cycle pointer comparison (`&keySet == &HFS_CONTENT_LENGTH`) |
+| **Inline Stream Callback (`parseAsync`)** | `v2.5.0` | Vector accumulation (`std::vector<sipmessage>`) | **+93.8% vs master** | Zero-copy execution directly on network buffer |
+| **Fast-Path `X-` Header Branch** | `v2.6.0` | Sequential canonical check loop | **2 CPU cycles** | Immediate bitmask check for custom headers |
+| **Static String Constants (`HF_` / `HFS_`)** | `v2.5.8` | Dynamic heap-allocated header strings | **Zero allocation overhead** | Compile-time static `std::string_view` and `std::string` header keys preventing dynamic heap allocations |

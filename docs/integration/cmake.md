@@ -2,6 +2,13 @@
 
 `sip2json` provides full CMake target support with exported target `sip2json::sip2json`.
 
+!!! warning "NuGet Package Deprecation (Starting with v2.0)"
+    `sip2json` previously provided NuGet packages for legacy MSVC environments (`v1.x`). However, modern `sip2json` (v2+) is built on C++23 header-only templates and relies directly on **CTRE (Compile-Time Regular Expressions)** for zero-allocation regex evaluation.
+    
+    Because there is **no support for CTRE as a NuGet package** for modern C++23 header-only templates, **NuGet package distribution has been deprecated starting with v2.0**.
+    
+    Please use **CMake CPM** (`CPMAddPackage`) or **FetchContent** as the standard cross-platform integration method for Windows, Linux, and macOS.
+
 ---
 
 ## Modern CMake Integration via CPM

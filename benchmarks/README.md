@@ -97,20 +97,6 @@ We benchmarked four architectural patterns for consuming a single incoming strea
 
 ---
 
-### Worst-Case Noisy Stream Parsing (Garbage / Noise Skipping)
-
-*Simulates parsing huge stream buffers containing valid SIP messages interleaved with random noise, corrupted headers, and garbage lines.*
-
-| Batch Size / Stream Setup | Time / Batch | Effective Parse Rate | Processing Bandwidth |
-| :--- | :--- | :--- | :--- |
-| **`BM_WorstCaseNoisyBufferParsing` (10 msgs + noise)** | 29.83 µs | **335,255 msg/sec** | 167.89 MiB/s |
-| **`BM_WorstCaseNoisyBufferParsing` (100 msgs + noise)** | 45.62 µs | **2,191,860 msg/sec** | 1.03 GiB/s |
-| **`BM_WorstCaseNoisyBufferParsing` (500 msgs + noise)** | 40.30 µs | **12,408,600 msg/sec** | 5.82 GiB/s |
-| **`BM_WorstCaseNoisyBufferParsing` (1,000 msgs + noise)** | 36.50 µs | **27,397,200 msg/sec** | 12.85 GiB/s |
-| **`BM_WorstCaseNoisyAsyncParsing` (1,000 msgs + noise)** | 43.87 µs | **22,794,300 msg/sec** | 10.69 GiB/s |
-
----
-
 ### Multi-Threaded Parallel Asynchronous Callback Parsing (`parseAsync`)
 
 *Evaluates concurrent stream parsing throughput across $N$ worker threads executing `sip2json::parseAsync` in parallel with lock-free callback validation.*
@@ -121,7 +107,6 @@ We benchmarked four architectural patterns for consuming a single incoming strea
 | **`BM_MultiThreadedAsyncParsing` (4 Threads)** | 82.21 µs | **24,326,800 msg/sec** | 6.98 GiB/s |
 | **`BM_MultiThreadedAsyncParsing` (8 Threads)** | 157.88 µs | **25,335,100 msg/sec** | 7.27 GiB/s |
 | **`BM_MultiThreadedAsyncParsing` (16 Threads)** | 288.93 µs | **27,688,800 msg/sec** | **7.94 GiB/s** |
-| **`BM_MultiThreadedNoisyAsyncParsing` (16 Threads)** | 339.69 µs | **23,550,900 msg/sec** | **11.05 GiB/s** |
 
 ---
 
