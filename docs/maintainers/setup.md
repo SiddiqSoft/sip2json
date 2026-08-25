@@ -17,9 +17,9 @@ macOS is the primary local development environment for `sip2json`. Both native A
 # 1. Install Xcode Command Line Tools
 xcode-select --install
 
-# 2. Install package management tools, build generator, LLVM, libcurl, and OpenSSL
+# 2. Install build generators, LLVM, libcurl, OpenSSL dev libraries, and pkg-config
 brew update
-brew install cmake ninja llvm git python3 openssl curl
+brew install cmake ninja llvm git python3 openssl@3 curl pkg-config
 
 # 3. Verify toolchain versions
 cmake --version    # Requires >= 3.29
@@ -27,13 +27,23 @@ ninja --version    # Requires >= 1.11
 clang --version    # Apple Clang 15+ or Homebrew LLVM Clang 18+
 ```
 
-### Environment Variables (Optional for Homebrew LLVM & OpenSSL)
-If you prefer building with Homebrew's upstream LLVM Clang and OpenSSL:
+### Environment Variables (Homebrew OpenSSL & libcurl Integration)
+Because Homebrew installs `openssl@3` and `curl` as keg-only formulas to avoid conflicting with built-in macOS system binaries, configure your shell environment:
+
 ```bash
-export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
-export LDFLAGS="-L/opt/homebrew/opt/llvm/lib -L/opt/homebrew/opt/openssl/lib"
-export CPPFLAGS="-I/opt/homebrew/opt/llvm/include -I/opt/homebrew/opt/openssl/include"
-export PKG_CONFIG_PATH="/opt/homebrew/opt/openssl/lib/pkgconfig:$PKG_CONFIG_PATH"
+# Set Homebrew prefix (Apple Silicon: /opt/homebrew, Intel: /usr/local)
+BREW_PREFIX="$(brew --prefix)"
+
+# Add LLVM, curl, and OpenSSL binaries to PATH
+export PATH="$BREW_PREFIX/opt/llvm/bin:$BREW_PREFIX/opt/curl/bin:$BREW_PREFIX/opt/openssl@3/bin:$PATH"
+
+# Linker & Compiler flags for OpenSSL and libcurl
+export LDFLAGS="-L$BREW_PREFIX/opt/llvm/lib -L$BREW_PREFIX/opt/openssl@3/lib -L$BREW_PREFIX/opt/curl/lib $LDFLAGS"
+export CPPFLAGS="-I$BREW_PREFIX/opt/llvm/include -I$BREW_PREFIX/opt/openssl@3/include -I$BREW_PREFIX/opt/curl/include $CPPFLAGS"
+
+# CMake & pkg-config discovery paths
+export PKG_CONFIG_PATH="$BREW_PREFIX/opt/openssl@3/lib/pkgconfig:$BREW_PREFIX/opt/curl/lib/pkgconfig:$PKG_CONFIG_PATH"
+export CMAKE_PREFIX_PATH="$BREW_PREFIX/opt/openssl@3;$BREW_PREFIX/opt/curl;$CMAKE_PREFIX_PATH"
 ```
 
 ---
