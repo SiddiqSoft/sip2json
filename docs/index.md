@@ -127,3 +127,4 @@
 - [**API Reference**](api/sipmessage.md): Complete class reference for [`sipmessage`](api/sipmessage.md), [`sip2json`](api/sip2json.md) parser functions, and [Exceptions & Errors](api/errors.md).
 - [**Core Concepts & Architecture**](features/json_schema.md): JSON schema metaphor, [Stream Data Flow](architecture/dataflow.md), [SDP Media Processing](features/sdp.md), and [Standards Compliance & Torture Tests](features/compliance.md).
 - [**Performance & Benchmarks**](features/benchmarks.md): Multi-platform throughput and latency metrics, [Optimization Choices](features/optimization_choices.md), and [Native Struct vs JSON Study](architecture/native_vs_json.md).
+- [**Maintainer & Developer Guide**](maintainers/index.md): Multi-platform environment setup (macOS, Linux, Windows), build presets, CTest execution, [Documentation & MkDocs](maintainers/documentation.md), and [Azure Pipelines CI/CD & Secrets](maintainers/pipelines.md).

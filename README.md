@@ -44,6 +44,7 @@ The complete documentation, API reference, architecture guides, performance benc
 * [**Performance & Benchmarks**](https://siddiqsoft.github.io/sip2json/features/benchmarks/)
 * [**Optimization Choices & Hardware Study**](https://siddiqsoft.github.io/sip2json/features/optimization_choices/)
 * [**Standards Compliance & Torture Tests**](https://siddiqsoft.github.io/sip2json/features/compliance/)
+* [**Maintainer & Developer Guide**](https://siddiqsoft.github.io/sip2json/maintainers/)
 * [**API Reference**](https://siddiqsoft.github.io/sip2json/api/sipmessage/)
 
 ---

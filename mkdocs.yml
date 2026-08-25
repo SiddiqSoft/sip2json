@@ -103,4 +103,10 @@ nav:
       - Empirical Benchmarks & Metrics: features/benchmarks.md
       - Optimization Choices & Hardware Study: features/optimization_choices.md
       - Native Struct vs JSON Study: architecture/native_vs_json.md
+  - Maintainer Guide:
+      - Overview & Handbook: maintainers/index.md
+      - Environment Setup: maintainers/setup.md
+      - Building, Testing & Benchmarks: maintainers/building.md
+      - Documentation & MkDocs: maintainers/documentation.md
+      - Azure Pipelines & Secrets: maintainers/pipelines.md
   - License: license.md

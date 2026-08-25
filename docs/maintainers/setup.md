@@ -1,0 +1,130 @@
+# Multi-Platform Developer Environment Setup
+
+This guide details how to configure a pristine development workstation for `sip2json` on **macOS**, **Linux**, and **Windows**.
+
+---
+
+## 1. macOS Setup (Apple Silicon & Intel)
+
+macOS is the primary local development environment for `sip2json`. Both native Apple Clang (Xcode) and Homebrew LLVM Clang toolchains are supported.
+
+### Prerequisites & Homebrew Tools
+```bash
+# 1. Install Xcode Command Line Tools
+xcode-select --install
+
+# 2. Install package management tools, build generator, and LLVM
+brew update
+brew install cmake ninja llvm git python3
+
+# 3. Verify toolchain versions
+cmake --version    # Requires >= 3.29
+ninja --version    # Requires >= 1.11
+clang --version    # Apple Clang 15+ or Homebrew LLVM Clang 18+
+```
+
+### Environment Variables (Optional for Homebrew LLVM)
+If you prefer building with Homebrew's upstream LLVM Clang instead of Xcode's AppleClang:
+```bash
+export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
+export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
+export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
+```
+
+---
+
+## 2. Linux Setup (Ubuntu / Debian / RHEL / Fedora)
+
+`sip2json` requires a C++23 compliant compiler (`GCC 14+` or `Clang 18+`).
+
+### Ubuntu 24.04 LTS & Debian 12
+```bash
+# 1. Update package lists and install base utilities
+sudo apt-get update
+sudo apt-get install -y \
+    build-essential \
+    software-properties-common \
+    cmake \
+    ninja-build \
+    git \
+    python3 \
+    python3-venv \
+    python3-pip \
+    curl \
+    tar
+
+# 2. Install GCC 14 (if not default)
+sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+sudo apt-get update
+sudo apt-get install -y gcc-14 g++-14
+
+# 3. Install Clang 18+ via official LLVM installer script
+wget https://apt.llvm.org/llvm.sh
+chmod +x llvm.sh
+sudo ./llvm.sh 18
+sudo apt-get install -y clang-18 clang-tools-18 lld-18
+
+# 4. Set default compiler alternatives (Optional)
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 100 \
+                        --slave /usr/bin/g++ g++ /usr/bin/g++-14
+sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-18 100 \
+                        --slave /usr/bin/clang++ clang++ /usr/bin/clang++-18
+```
+
+---
+
+## 3. Windows Setup (MSVC 2022 & Long Paths)
+
+Windows compilation requires **Visual Studio 2022** (MSVC toolset `v143` or later) with C++23 standard support.
+
+### Step 1: Visual Studio 2022 Components
+Install Visual Studio 2022 (Community, Professional, or Enterprise) with the **Desktop development with C++** workload and ensure the following individual components are selected:
+- **MSVC v143 - VS 2022 C++ x64/x86 build tools (Latest)**
+- **MSVC v143 - VS 2022 C++ ARM64/ARM64EC build tools (Latest)** *(required for ARM64 cross-builds)*
+- **C++ CMake tools for Windows**
+- **Windows 11 SDK** (or Windows 10 SDK 10.0.19041+)
+- **Git for Windows**
+
+### Step 2: Automated Machine Setup Script (`prep_windows_machine.ps1`)
+Because `sip2json` and **CTRE (Compile-Time Regular Expressions)** generate deeply nested template and cache directories, you **MUST** enable Windows Long Path support to avoid `MAX_PATH` (260 characters) compilation and cache errors.
+
+Open an **Administrator PowerShell** session and run:
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\prep_windows_machine.ps1
+```
+
+This script automatically executes:
+1. `Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name "LongPathsEnabled" -Value 1`
+2. `git config --system core.longpaths true`
+3. `git config --global core.longpaths true`
+4. Creates global CPM cache directory `C:\cpmcache`
+
+### Step 3: Initializing MSVC Developer Environment
+When running from terminal or PowerShell, you must initialize MSVC compiler environment variables (`cl.exe`, `link.exe`, `INCLUDE`, `LIB`):
+
+=== "PowerShell"
+    ```powershell
+    # Automatically locate and source VS 2022 environment (x64 or arm64)
+    .\scripts\init_msvc_env.ps1 -Architecture x64
+    ```
+
+=== "Command Prompt (cmd.exe)"
+    ```cmd
+    :: Initialize x64 developer environment
+    scripts\init_msvc_env.bat x64
+    ```
+
+=== "Visual Studio IDE"
+    Launch Visual Studio 2022, choose **Open a Local Folder**, and select the `sip2json` root directory. Visual Studio will automatically detect `CMakePresets.json` and configure the project.
+
+---
+
+## Compiler Flags & Template Limits for Maintainers
+
+Because `sip2json` leverages compile-time regular expressions via CTRE and 64-bit FNV-1a constexpr hash matching, specific compiler flags are defined in `CMakeLists.txt`:
+
+| Compiler | Optimization & Limit Flags | Rationale |
+| :--- | :--- | :--- |
+| **MSVC** | `/std:c++latest`, `/constexpr:depth4096`, `/constexpr:steps2000000`, `/utf-8`, `/bigobj` | Prevents MSVC `error C2999` and `error C1061` during deeply recursive CTRE template instantiation. |
+| **Clang** | `-std=c++23`, `-fconstexpr-depth=4096`, `-fconstexpr-steps=20000000` | Ensures maximum compile-time constexpr recursion budget. |
+| **GCC** | `-std=c++23`, `-fconstexpr-depth=4096`, `-fconstexpr-loop-limit=20000000` | Ensures constexpr recursion depth parity with Clang/MSVC. |
