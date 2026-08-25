@@ -384,4 +384,33 @@ namespace
         EXPECT_EQ("OPTIONS", msg2.getMethod());
     }
 
+    // NOLINTNEXTLINE
+    TEST(RuleOfFive, InitializerListDirectConstruction)
+    {
+        // Directly construct using temporary JSON initializer
+        siddiqsoft::sipmessage msg(nlohmann::json {
+                {"s", {{"type", "request"}, {"method", "BYE"}, {"uri", "sip:carol@example.com"}, {"version", "SIP/2.0"}}},
+                {"h", {{"Call-ID", "bye-call-id-777"}, {"From", "<sip:alice@example.com>"}, {"To", "<sip:carol@example.com>"}}},
+                {"b", nullptr}});
+
+        EXPECT_TRUE(msg.isMessageRequest());
+        EXPECT_EQ("BYE", msg.getMethod());
+        EXPECT_EQ("BYE", msg.getMethodView());
+        EXPECT_EQ("sip:carol@example.com", msg.getUri());
+        EXPECT_EQ("bye-call-id-777", msg.getCallID());
+        EXPECT_EQ("<sip:alice@example.com>", msg.getHeader<std::string>("From"));
+
+        // Copy assign from json initializer
+        siddiqsoft::sipmessage assigned;
+        assigned = nlohmann::json {
+                {"s", {{"type", "response"}, {"status", 486}, {"reason", "Busy Here"}, {"version", "SIP/2.0"}}},
+                {"h", {{"Call-ID", "busy-call-id-888"}}},
+                {"b", nullptr}};
+
+        EXPECT_TRUE(assigned.isMessageResponse());
+        EXPECT_EQ(486, assigned.getStatusCode());
+        EXPECT_EQ("Busy Here", assigned.value("/s/reason"_json_pointer, ""));
+        EXPECT_EQ("busy-call-id-888", assigned.getCallID());
+    }
+
 } // namespace

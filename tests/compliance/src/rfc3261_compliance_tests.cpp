@@ -200,4 +200,124 @@ namespace siddiqsoft
         EXPECT_EQ(siddiqsoft::METHOD_REGISTER, sipm.getMethod());
         EXPECT_EQ(0, sipm.getContentLength());
     }
+
+    //-------------------------------------------------------------------------
+    // RFC 3261 Construction via JSON Initializer
+    //-------------------------------------------------------------------------
+    TEST(RFC3261_Compliance, DirectJsonInitialization_RequestWithSDP)
+    {
+        // Directly construct a sipmessage using a JSON initializer without calling setHeader() or setBody()
+        siddiqsoft::sipmessage msg(nlohmann::json {
+            {"s", {
+                {"type", "request"},
+                {"method", "INVITE"},
+                {"uri", "sip:alice@example.com"},
+                {"version", "SIP/2.0"}
+            }},
+            {"h", {
+                {"From", "<sip:bob@example.com>;tag=98765"},
+                {"To", "<sip:alice@example.com>"},
+                {"Call-ID", "direct-json-init-callid-12345"},
+                {"CSeq", "1 INVITE"},
+                {"Contact", "<sip:bob@192.0.2.1:5060>"},
+                {"Content-Type", "application/sdp"},
+                {"User-Agent", "sip2json-json-initializer/1.0"}
+            }},
+            {"b", {
+                {"sdp", nlohmann::json::array({
+                    {
+                        {"v", 0},
+                        {"o", {
+                            {"user", "bob"},
+                            {"t1", "2890844526"},
+                            {"t2", "2890844526"},
+                            {"type", "IN"},
+                            {"subtype", "IP4"},
+                            {"host", "192.0.2.1"}
+                        }},
+                        {"s", "SIP Talk"},
+                        {"c", {
+                            {"type", "IN"},
+                            {"subtype", "IP4"},
+                            {"dn", "192.0.2.1"}
+                        }},
+                        {"t", {0, 0}},
+                        {"m", "audio 49170 RTP/AVP 0 8 101"},
+                        {"a", {
+                            {"rtpmap", {"0 PCMU/8000", "8 PCMA/8000", "101 telephone-event/8000"}},
+                            {"sendrecv", true}
+                        }}
+                    }
+                })}
+            }}
+        });
+
+        // Assert message categorization and startline properties
+        EXPECT_TRUE(msg.isMessageRequest());
+        EXPECT_FALSE(msg.isMessageResponse());
+        EXPECT_EQ("INVITE", msg.getMethod());
+        EXPECT_EQ("INVITE", msg.getMethodView());
+        EXPECT_EQ("sip:alice@example.com", msg.getUri());
+        EXPECT_EQ("sip:alice@example.com", msg.getUriView());
+
+        // Assert header lookups & views
+        EXPECT_EQ("direct-json-init-callid-12345", msg.getCallID());
+        EXPECT_EQ("direct-json-init-callid-12345", msg.getCallIDView());
+        EXPECT_EQ("<sip:bob@example.com>;tag=98765", msg.getHeader<std::string>("From"));
+        EXPECT_EQ("<sip:alice@example.com>", msg.getHeader<std::string>("To"));
+        EXPECT_EQ("application/sdp", msg.getContentType());
+        EXPECT_EQ("sip2json-json-initializer/1.0", msg.getUserAgent());
+
+        // Assert SDP body existence and structure
+        EXPECT_TRUE(msg.hasBody());
+        EXPECT_TRUE(msg.contains("b"));
+        EXPECT_EQ(0, msg.value("/b/sdp/0/v"_json_pointer, -1));
+        EXPECT_EQ("bob", msg.value("/b/sdp/0/o/user"_json_pointer, ""));
+        EXPECT_EQ("192.0.2.1", msg.value("/b/sdp/0/c/dn"_json_pointer, ""));
+
+        // Verify direct serialization to RFC 3261 wire format
+        std::string wire = siddiqsoft::sip2json::serialize(msg);
+        EXPECT_FALSE(wire.empty());
+        EXPECT_TRUE(wire.starts_with("INVITE sip:alice@example.com SIP/2.0\r\n"));
+        EXPECT_TRUE(wire.find("Call-ID: direct-json-init-callid-12345\r\n") != std::string::npos);
+        EXPECT_TRUE(wire.find("Content-Type: application/sdp\r\n") != std::string::npos);
+        EXPECT_TRUE(wire.find("v=0\r\n") != std::string::npos);
+        EXPECT_TRUE(wire.find("o=bob 2890844526 2890844526 IN IP4 192.0.2.1\r\n") != std::string::npos);
+        EXPECT_TRUE(wire.find("m=audio 49170 RTP/AVP 0 8 101\r\n") != std::string::npos);
+    }
+
+    TEST(RFC3261_Compliance, DirectJsonInitialization_Response)
+    {
+        // Construct a SIP 200 OK response directly using a JSON initializer
+        siddiqsoft::sipmessage response(nlohmann::json {
+            {"s", {
+                {"type", "response"},
+                {"status", 200},
+                {"reason", "OK"},
+                {"version", "SIP/2.0"}
+            }},
+            {"h", {
+                {"From", "<sip:alice@example.com>;tag=123"},
+                {"To", "<sip:bob@example.com>;tag=456"},
+                {"Call-ID", "json-response-callid-999"},
+                {"CSeq", "1 INVITE"},
+                {"Content-Type", "text/plain"}
+            }},
+            {"b", "Session established successfully"}
+        });
+
+        EXPECT_TRUE(response.isMessageResponse());
+        EXPECT_FALSE(response.isMessageRequest());
+        EXPECT_EQ(200, response.getStatusCode());
+        EXPECT_EQ("OK", response.value("/s/reason"_json_pointer, ""));
+        EXPECT_EQ("json-response-callid-999", response.getCallID());
+        EXPECT_EQ("text/plain", response.getContentType());
+        EXPECT_TRUE(response.hasBody());
+
+        std::string wire = siddiqsoft::sip2json::serialize(response);
+        EXPECT_FALSE(wire.empty());
+        EXPECT_TRUE(wire.starts_with("SIP/2.0 200 OK\r\n"));
+        EXPECT_TRUE(wire.find("Call-ID: json-response-callid-999\r\n") != std::string::npos);
+        EXPECT_TRUE(wire.find("Session established successfully") != std::string::npos);
+    }
 } // namespace siddiqsoft
