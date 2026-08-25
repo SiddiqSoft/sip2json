@@ -108,19 +108,19 @@ code, kbd, pre {
 }
 
 .md-typeset table:not([class]) th {
-  background-color: #1e293b;                   /* Distinct Charcoal Slate (Differs from Navbar) */
+  background-color: #475569;                   /* Medium Cool Slate Gray (Light Mode) */
   color: #ffffff;
   font-weight: 600;
   padding: 0.45rem 0.75rem;                    /* Compact header padding */
   text-align: left;
   font-size: 0.82rem;                          /* Proportional header font size */
-  border-bottom: 2px solid rgba(0, 0, 0, 0.2);
+  border-bottom: 2px solid rgba(0, 0, 0, 0.12);
 }
 
 [data-md-color-scheme="slate"] .md-typeset table:not([class]) th {
-  background-color: #0f172a;                   /* Dark Obsidian header in Dark Mode */
-  color: #f1f5f9;
-  border-bottom: 2px solid #06b6d4;            /* Cyan accent divider */
+  background-color: #334155;                   /* Medium Slate Gray in Dark Mode */
+  color: #f8fafc;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.12);
 }
 
 .md-typeset table:not([class]) td {
