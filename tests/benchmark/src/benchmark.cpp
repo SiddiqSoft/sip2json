@@ -86,6 +86,17 @@ int main(int argc, char** argv)
     std::cout << "  SIP2JSON Benchmark Harness" << std::endl;
     std::cout << "  Loaded " << sample_files.size() << " sample files (" << (total_sample_bytes / 1024.0) << " KB total)"
               << std::endl;
+#if defined(__APPLE__) && defined(__MACH__)
+    std::cout << "  [HOST INFO] macOS (" << (sizeof(void*) == 8 ? "arm64" : "x64") << ", AppleClang)" << std::endl;
+#elif defined(_MSC_VER)
+    std::cout << "  [HOST INFO] Windows (" << (sizeof(void*) == 8 ? "x64" : "x86") << ", MSVC)" << std::endl;
+#elif defined(__linux__)
+    #if defined(__clang__)
+    std::cout << "  [HOST INFO] Linux (" << (sizeof(void*) == 8 ? "x64" : "x86") << ", Clang)" << std::endl;
+    #else
+    std::cout << "  [HOST INFO] Linux (" << (sizeof(void*) == 8 ? "x64" : "x86") << ", GCC)" << std::endl;
+    #endif
+#endif
     std::cout << "================================================================================" << std::endl;
 
     constexpr int ITERATIONS            = 300;

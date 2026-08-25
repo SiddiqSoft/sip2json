@@ -326,7 +326,22 @@ def main():
 
                 host_match = re.search(r"\[HOST INFO\]\s*(.*)", content)
                 if host_match:
-                    res["host_info"] = sanitize_host_info(host_match.group(1).strip())
+                    raw_host = host_match.group(1).strip()
+                    res["host_info"] = sanitize_host_info(raw_host)
+                    if "AppleClang" in raw_host or "macOS" in raw_host or "Apple" in raw_host:
+                        os_name, arch, compiler = "macOS", "arm64", "AppleClang"
+                    elif "MSVC" in raw_host or "Windows" in raw_host:
+                        os_name = "Windows"
+                        arch = "arm64" if "arm64" in raw_host else "x64"
+                        compiler = "MSVC"
+                    elif "Linux" in raw_host:
+                        os_name = "Linux"
+                        arch = "arm64" if "arm64" in raw_host else "x64"
+                        compiler = "GCC" if "GCC" in raw_host else "Clang"
+                    key = (os_name, arch, compiler)
+                    res["os"] = os_name
+                    res["arch"] = arch
+                    res["compiler"] = compiler
 
                 stream_match = re.search(r"parseAsync.*?Throughput\s*:\s*([\d,.]+)\s*msg/sec.*?Data Bandwidth\s*:\s*([\d,.]+)\s*MB/sec.*?Avg Latency/Msg\s*:\s*([\d,.]+)\s*(\w+)/msg", content, re.DOTALL)
                 if stream_match:

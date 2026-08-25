@@ -9,10 +9,12 @@
 
 | OS | Arch | Compiler | Host Environment | Stream Throughput | Bandwidth | Stream Latency | Single Msg Throughput | Single Latency |
 | :--- | :---: | :---: | :--- | :---: | :---: | :---: | :---: | :---: |
-| **macOS** | **arm64** | AppleClang | macOS 26.6.2 (arm64, 11 CPU Cores, 18 GB RAM) | **30,988.47 msg/s** | **81.67 MB/s** | **32.27 µs** | **33,874.63 msg/s** | **29.52 µs** |
+| **macOS** | **arm64** | AppleClang | macOS (arm64, AppleClang) | **31,105.85 msg/s** | **81.98 MB/s** | **32.15 µs** | **36,139.45 msg/s** | **27.67 µs** |
 
 <!-- PIPELINE_BENCHMARKS_END -->
-
+The build machines are VMs on the same host (Mac Mini M4pro) with 4vCPU, 6GB RAM each.
+- GCC and Clang build on the same host!
+- Note that GCC produces code that is significantly faster than Clang whereas MSVC is second.
 ---
 
 ## 2. Benchmark Source Data & Dataset Outline
