@@ -277,6 +277,9 @@ def update_benchmarks_doc(repo_root: Path, platform_results: list, require_all: 
     pattern = re.compile(f"{re.escape(start_marker)}.*?{re.escape(end_marker)}", re.DOTALL)
     updated_content = pattern.sub(new_section, content)
 
+    if updated_content == content:
+        return
+
     doc_path.write_text(updated_content, encoding="utf-8")
     print(f"[publish_benchmarks] Updated {doc_path} with pipeline benchmark metrics.", flush=True)
 

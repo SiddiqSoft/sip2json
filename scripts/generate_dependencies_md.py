@@ -265,8 +265,13 @@ def main():
     for out_path in outputs:
         full_out_path = root_path / out_path if not out_path.is_absolute() else out_path
         full_out_path.parent.mkdir(parents=True, exist_ok=True)
-        with open(full_out_path, "w", encoding="utf-8") as f:
-            f.write(markdown_content)
+        if full_out_path.exists():
+            try:
+                if full_out_path.read_text(encoding="utf-8") == markdown_content:
+                    continue
+            except Exception:
+                pass
+        full_out_path.write_text(markdown_content, encoding="utf-8")
         print(f"[generate_dependencies_md] Wrote dependency documentation to: {full_out_path}")
 
 
