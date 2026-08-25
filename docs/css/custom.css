@@ -85,25 +85,27 @@ code, kbd, pre {
 }
 
 /* -------------------------------------------------------------------------- */
-/* High-Contrast Inline Code Tag Styling                                      */
+/* High-Contrast Seamless Inline Code Tag Styling                             */
 /* -------------------------------------------------------------------------- */
 .md-typeset code {
   font-family: var(--md-font-code);
-  font-size: 0.85em;
+  font-size: 0.90em;                           /* Increased font size */
   font-weight: 600;
-  color: #3730a3;                              /* Deep Indigo in Light Mode */
-  background-color: #eef2ff;                   /* Soft Lavender Pill */
-  border: 1px solid #c7d2fe;                   /* Crisp Border */
-  border-radius: 4px;
-  padding: 0.15em 0.4em;
+  color: #312e81;                              /* Deep Indigo in Light Mode */
+  background-color: #e0e7ff;                   /* Soft Indigo Tint Pill */
+  border: none;                                /* No borders */
+  border-radius: 5px;
+  padding: 0.22em 0.55em;                      /* Increased generous padding */
   box-shadow: none;
   word-break: break-word;
 }
 
 [data-md-color-scheme="slate"] .md-typeset code {
   color: #67e8f9;                              /* Electric Ice Cyan in Dark Mode */
-  background-color: rgba(99, 102, 241, 0.18);  /* Deep Slate/Indigo Tint */
-  border: 1px solid rgba(103, 232, 249, 0.35);  /* Luminous Cyan Border */
+  background-color: rgba(6, 182, 212, 0.16);  /* Deep Slate/Cyan Tint */
+  border: none;                                /* No borders */
+  border-radius: 5px;
+  padding: 0.22em 0.55em;
   box-shadow: none;
 }
 
@@ -111,21 +113,21 @@ code, kbd, pre {
 .md-typeset table:not([class]) td code,
 .md-typeset table:not([class]) th code {
   white-space: nowrap;
-  font-size: 0.85em;
+  font-size: 0.88em;
   font-weight: 600;
-  padding: 0.2em 0.45em;
+  padding: 0.25em 0.6em;                       /* Generous table pill padding */
   word-break: keep-all;
   color: #1e1b4b;
-  background-color: #e0e7ff;
-  border: 1px solid #a5b4fc;
+  background-color: #dbeafe;
+  border: none;
   box-shadow: none;
 }
 
 [data-md-color-scheme="slate"] .md-typeset table:not([class]) td code,
 [data-md-color-scheme="slate"] .md-typeset table:not([class]) th code {
   color: #a5f3fc;
-  background-color: rgba(6, 182, 212, 0.18);
-  border: 1px solid rgba(6, 182, 212, 0.4);
+  background-color: rgba(6, 182, 212, 0.2);
+  border: none;
   box-shadow: none;
 }
 
@@ -134,19 +136,20 @@ code, kbd, pre {
 }
 
 /* -------------------------------------------------------------------------- */
-/* High-Contrast Code Blocks & API Reference Signatures                       */
+/* Borderless, Spacious Code Blocks & API Reference Signatures                */
 /* -------------------------------------------------------------------------- */
 .md-typeset pre {
   border-radius: 8px;
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  border-left: 4px solid #6366f1;              /* Indigo Accent Bar */
+  border: none;                                /* Removed all borders */
   box-shadow: none;
+  padding: 1rem 1.25rem;                       /* Generous inner padding */
+  margin: 1.2rem 0;
 }
 
 [data-md-color-scheme="slate"] .md-typeset pre {
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-left: 4px solid #06b6d4;              /* Luminous Cyan Accent Bar */
+  border: none;                                /* Removed dark mode borders */
   box-shadow: none;
+  padding: 1rem 1.25rem;
 }
 
 .md-typeset pre > code {
@@ -154,14 +157,15 @@ code, kbd, pre {
   background-color: transparent;
   color: inherit;
   font-weight: normal;
-  font-size: 0.85em;
-  line-height: 1.55;
+  font-size: 0.90em;                           /* Increased code block font size */
+  line-height: 1.6;                            /* More breathable line height */
   padding: 0;
   box-shadow: none;
 }
 
 .md-typeset .highlight {
   border-radius: 8px;
+  border: none;
   box-shadow: none;
 }
 
