@@ -69,19 +69,71 @@ namespace siddiqsoft
         static constexpr size_t TYPICAL_SIP_MESSAGE_SIZE = 3 * 1024; ///< Typical SIP message buffer size
         static constexpr size_t METADATA_ONLY_SIZE       = 1;        ///< Size when only metadata is present
 
+        static bool        parseStartLine(sipmessage& sipm, std::string_view& buffer) noexcept(false);
         static bool        parseStartLine(sipmessage&                  sipm,
                                           std::string::iterator&       bufferStart,
                                           const std::string::iterator& bufferEnd) noexcept(false);
         static std::string escapeJsonPointerToken(const std::string& token);
+        static bool        storeHeaderValue(sipmessage& sipm, std::string_view key, std::string_view value) noexcept(false);
         static bool        storeHeaderValue(sipmessage& sipm, const std::string& key, const std::string& value) noexcept(false);
+        static bool        parseHeaders(sipmessage& sipm, std::string_view& buffer) noexcept(false);
         static bool
         parseHeaders(sipmessage& sipm, std::string::iterator& bufferStart, const std::string::iterator& bufferEnd) noexcept(false);
+        static bool        parseBodySDP(sipmessage& sipm, std::string_view& buffer) noexcept(false);
         static bool
         parseBodySDP(sipmessage& sipm, std::string::iterator& bufferStart, const std::string::iterator& bufferEnd) noexcept(false);
         static std::string serializeSDP(sipmessage& sipm) noexcept(false);
         static std::string serializeSDPelement(nlohmann::json& sdpBlock, const std::string& element);
 
     public:
+        // --- String View High-Performance API ---
+
+        /// @brief Given a non-owning buffer view, parses each message and invokes the callback with the decoded sipmessage.
+        /// @param frameBuffer std::string_view reference; upon return, advanced past all successfully parsed messages.
+        /// @param parseCallback Callback which takes a reference to the sipmessage just decoded.
+        /// @param errorCallback Optional callback to handle errors during parsing.
+        /// @return Returns the number of bytes consumed from the buffer.
+        static size_t parseAsync(
+                std::string_view&                 frameBuffer,
+                std::function<void(sipmessage&&)> parseCallback,
+                std::optional<std::function<void(const sip2json_exception&, std::string_view)>> errorCallback = {}) noexcept;
+
+        /// @brief Given a buffer view, parse all complete frames and return the vector of messages. Advances the view in-place.
+        /// @param buffer std::string_view reference; upon return, advanced past all successfully parsed messages.
+        /// @return Vector of sipmessage decoded within the stream.
+        [[nodiscard]] static std::vector<sipmessage> parse(std::string_view& buffer) noexcept(false);
+
+        /// @brief Given a buffer view, parse all complete frames and return the vector of messages.
+        /// @param buffer std::string_view buffer.
+        /// @param bytesConsumed Output parameter populated with total bytes consumed.
+        /// @return Vector of sipmessage decoded within the stream.
+        [[nodiscard]] static std::vector<sipmessage> parse(std::string_view buffer, size_t& bytesConsumed) noexcept(false)
+        {
+            size_t initialSize = buffer.size();
+            auto   result      = parse(buffer);
+            bytesConsumed      = initialSize - buffer.size();
+            return result;
+        }
+
+        /// @brief De-serialize the *first* SIP message from the buffer view and advances the view past the message.
+        /// @param buffer std::string_view reference; upon return, advanced past the consumed message.
+        /// @return A sipmessage object representing the decoded message.
+        [[nodiscard]] static sipmessage parseFromBuffer(std::string_view& buffer) noexcept(false);
+
+        /// @brief De-serialize the *first* SIP message from the buffer view.
+        /// @param buffer std::string_view buffer.
+        /// @param bytesConsumed Output parameter populated with bytes consumed by the message.
+        /// @return A sipmessage object representing the decoded message.
+        [[nodiscard]] static sipmessage parseFromBuffer(std::string_view buffer, size_t& bytesConsumed) noexcept(false)
+        {
+            size_t initialSize = buffer.size();
+            auto   result      = parseFromBuffer(buffer);
+            bytesConsumed      = initialSize - buffer.size();
+            return result;
+        }
+
+        // --- Backward-Compatible API ---
+
         [[nodiscard("Remaining contents of the buffer")]] static std::string& parseAsync(
                 std::string&                      frameBuffer,
                 std::function<void(sipmessage&&)> parseCallback,

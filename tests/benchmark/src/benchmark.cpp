@@ -183,7 +183,7 @@ int main(int argc, char** argv)
     std::cout << "  Data Bandwidth      : " << async_mb_per_sec << " MB/sec" << std::endl;
     std::cout << "  Avg Latency/Msg     : " << async_avg_us << " us/msg" << std::endl;
 
-    // Benchmark Pass 2: Single-Message parseFromBuffer
+    // Benchmark Pass 2: Single-Message parseFromBuffer (Iterator)
     size_t single_messages_parsed = 0;
     size_t single_bytes_processed = 0;
 
@@ -230,13 +230,75 @@ int main(int argc, char** argv)
     double single_msg_per_sec = single_messages_parsed / single_time_sec;
     double single_avg_us      = (single_time_ms * 1000.0) / single_messages_parsed;
 
-    std::cout << "\n[BENCHMARK RESULTS - sip2json::parseFromBuffer (Single)]" << std::endl;
+    std::cout << "\n[BENCHMARK RESULTS - sip2json::parseFromBuffer (Single - Iterator)]" << std::endl;
     std::cout << "  Valid Single Files  : " << valid_single_files.size() << std::endl;
     std::cout << "  Single Iterations   : " << SINGLE_ITERATIONS << std::endl;
     std::cout << "  Total Execution Time: " << single_time_ms << " ms" << std::endl;
     std::cout << "  Total Messages      : " << single_messages_parsed << std::endl;
     std::cout << "  Throughput          : " << single_msg_per_sec << " msg/sec" << std::endl;
     std::cout << "  Avg Latency/Msg     : " << single_avg_us << " us/msg" << std::endl;
+
+    // Benchmark Pass 2B: Single-Message parseFromBuffer (std::string_view zero-copy)
+    size_t sv_single_messages = 0;
+    auto   start_sv_single    = std::chrono::high_resolution_clock::now();
+
+    for (int iter = 0; iter < SINGLE_ITERATIONS; ++iter)
+    {
+        for (const auto& sf : valid_single_files)
+        {
+            try
+            {
+                std::string_view sv(sf.content);
+                auto msg = siddiqsoft::sip2json::parseFromBuffer(sv);
+                (void)msg;
+                sv_single_messages++;
+            }
+            catch (...)
+            {
+            }
+        }
+    }
+
+    auto   end_sv_single         = std::chrono::high_resolution_clock::now();
+    double sv_single_time_ms     = std::chrono::duration<double, std::milli>(end_sv_single - start_sv_single).count();
+    double sv_single_time_sec    = sv_single_time_ms / 1000.0;
+    double sv_single_msg_per_sec = sv_single_messages / sv_single_time_sec;
+    double sv_single_avg_us      = (sv_single_time_ms * 1000.0) / sv_single_messages;
+
+    std::cout << "\n[BENCHMARK RESULTS - sip2json::parseFromBuffer (Single - std::string_view)]" << std::endl;
+    std::cout << "  Throughput          : " << sv_single_msg_per_sec << " msg/sec" << std::endl;
+    std::cout << "  Avg Latency/Msg     : " << sv_single_avg_us << " us/msg" << std::endl;
+
+    // Benchmark Pass 1C: Stream parsing using parseAsync(std::string_view&)
+    size_t sv_async_messages = 0;
+    auto   start_sv_async    = std::chrono::high_resolution_clock::now();
+
+    for (int iter = 0; iter < ITERATIONS; ++iter)
+    {
+        for (const auto& sf : sample_files)
+        {
+            try
+            {
+                std::string_view sv(sf.content);
+                (void)siddiqsoft::sip2json::parseAsync(sv, [&](siddiqsoft::sipmessage&&) {
+                    sv_async_messages++;
+                });
+            }
+            catch (...)
+            {
+            }
+        }
+    }
+
+    auto   end_sv_async         = std::chrono::high_resolution_clock::now();
+    double sv_async_time_ms     = std::chrono::duration<double, std::milli>(end_sv_async - start_sv_async).count();
+    double sv_async_time_sec    = sv_async_time_ms / 1000.0;
+    double sv_async_msg_per_sec = sv_async_messages / sv_async_time_sec;
+    double sv_async_avg_us      = (sv_async_time_ms * 1000.0) / sv_async_messages;
+
+    std::cout << "\n[BENCHMARK RESULTS - sip2json::parseAsync (Stream - std::string_view)]" << std::endl;
+    std::cout << "  Throughput          : " << sv_async_msg_per_sec << " msg/sec" << std::endl;
+    std::cout << "  Avg Latency/Msg     : " << sv_async_avg_us << " us/msg" << std::endl;
 
     // Benchmark Pass 3: Stream Inspection & Per-Message SDP Element Metrics
     std::vector<std::string> stream_files = {

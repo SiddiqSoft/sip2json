@@ -77,82 +77,75 @@ namespace siddiqsoft
     ///
     /// The method increments blockIndex for each new SDP session (v=0 line encountered).
     /// Attributes are stored in the JSON structure at /b/sdp/{blockIndex}/{key}/{subkey}
-    ///
+    /// @brief Decode SDP Body given the buffer view
     /// @param sipm Destination sipmessage object to store parsed SDP data
-    /// @param bufferStart Start of the buffer (modified to point past parsed content)
-    /// @param bufferEnd End of the content area (not the end of the stream)
+    /// @param buffer Buffer view containing SDP body (advanced in-place past parsed content)
     /// @return true if at least one SDP element was parsed, false if no elements found
     /// @throws std::exception if parsing fails
-    ///
-    /// @note bufferStart must point to the location past the very first v=0 as this signals
-    ///       the start of the body. The method starts with blockIndex = -1 and increments
-    ///       it to 0 on the first v=0 match.
-    inline bool sip2json::parseBodySDP(sipmessage&                  sipm,
-                                       std::string::iterator&       bufferStart,
-                                       const std::string::iterator& bufferEnd) noexcept(false)
+    inline bool sip2json::parseBodySDP(sipmessage& sipm, std::string_view& buffer) noexcept(false)
     {
         using namespace std;
 
-        bool found = false;
+        bool            found           = false;
+        int32_t         blockIndex      = -1;
+        nlohmann::json* currentSdpBlock = nullptr;
 
-        // NOTE: bufferStart points to the location past the very first v=0 as this is the signal of the start
-        // of the body. Therefore, we start with blockIndex = 0 and then increment everytime we encounter next v=0
-        int32_t blockIndex = -1;
-
-        while (bufferStart < bufferEnd)
+        while (!buffer.empty())
         {
-            auto matcher = ctre::search<SIP_PATTERN_BODY_RE>(bufferStart, bufferEnd);
-            if (!matcher) break;
+            auto             lfPos       = buffer.find('\n');
+            std::string_view line        = (lfPos != std::string_view::npos) ? buffer.substr(0, lfPos) : buffer;
+            std::string_view lineContent = line;
+            if (!lineContent.empty() && lineContent.back() == '\r') lineContent.remove_suffix(1);
 
-            auto key   = string(matcher.get<1>().to_view());
-            auto value = string(matcher.get<2>().to_view());
-
-            found = true;
-            if (key == "v"s)
+            if (lineContent.size() >= 2 && lineContent[1] == '=')
             {
-                // First element; increment blockIndex.
-                // Add the next element to a new SDP object.
-                blockIndex++; // the first match will increment this to "0"
-                sipm["b"s]["sdp"s][blockIndex][key] = 0;
-            }
-            else
-            {
-                if (blockIndex < 0) throw invalid_document_error {std::format("{}:SDP block must start with v=0", __func__)};
+                char             keyChar = lineContent[0];
+                std::string      key(1, keyChar);
+                std::string_view valueView = lineContent.substr(2);
+                std::string      value(valueView);
 
-                auto& sdpBlock = sipm["b"s]["sdp"s][blockIndex];
-
-                if (key == "a"s)
+                found = true;
+                if (keyChar == 'v')
                 {
-                    // attribute lines: https://en.wikipedia.org/wiki/Session_Description_Protocol#Attributes
-                    auto alineMatcher = ctre::search<SIP_PATTERN_BODY_ALINE_RE>(value);
-
-                    if (alineMatcher)
-                    {
-                        auto akey = string(alineMatcher.get<1>().to_view());
-                        auto aval = string(alineMatcher.get<2>().to_view());
-
-                        auto& aObj = sdpBlock["a"s];
-                        if (aObj.contains(akey) && !aObj[akey].is_array())
-                        {
-                            auto previousValue = aObj[akey]; // make a copy!
-                            aObj[akey]         = {previousValue, aval};
-                        }
-                        else if (aObj[akey].is_array())
-                            aObj[akey].push_back(aval);
-                        else if (!aval.empty())
-                            aObj[akey] = aval;
-                        else
-                            aObj[akey] = nullptr;
-                    }
-                    else if (!value.empty())
-                    {
-                        // This is the form where a=flag
-                        sdpBlock["a"s][value] = true;
-                    }
+                    blockIndex++;
+                    auto& sdpArray = sipm["b"s]["sdp"s];
+                    sdpArray[blockIndex][key] = 0;
+                    currentSdpBlock           = &sdpArray[blockIndex];
                 }
                 else
                 {
-                    if (key == "c"s)
+                    if (blockIndex < 0 || currentSdpBlock == nullptr)
+                        throw invalid_document_error {std::format("{}:SDP block must start with v=0", __func__)};
+
+                    auto& sdpBlock = *currentSdpBlock;
+
+                    if (keyChar == 'a')
+                    {
+                        auto colonPos = valueView.find(':');
+                        if (colonPos != std::string_view::npos)
+                        {
+                            auto akey = std::string(valueView.substr(0, colonPos));
+                            auto aval = std::string(valueView.substr(colonPos + 1));
+
+                            auto& aObj = sdpBlock["a"s];
+                            if (aObj.contains(akey) && !aObj[akey].is_array())
+                            {
+                                auto previousValue = aObj[akey];
+                                aObj[akey]         = {previousValue, aval};
+                            }
+                            else if (aObj[akey].is_array())
+                                aObj[akey].push_back(aval);
+                            else if (!aval.empty())
+                                aObj[akey] = aval;
+                            else
+                                aObj[akey] = nullptr;
+                        }
+                        else if (!value.empty())
+                        {
+                            sdpBlock["a"s][value] = true;
+                        }
+                    }
+                    else if (keyChar == 'c')
                     {
                         auto clineMatcher = ctre::search<SIP_PATTERN_BODY_CLINE_RE>(value);
                         if (clineMatcher)
@@ -163,7 +156,7 @@ namespace siddiqsoft
                         }
                         else if (!value.empty()) { sdpBlock[key] = value; }
                     }
-                    else if (key == "o"s)
+                    else if (keyChar == 'o')
                     {
                         auto olineMatcher = ctre::search<SIP_PATTERN_BODY_OLINE_RE>(value);
                         if (olineMatcher)
@@ -177,14 +170,12 @@ namespace siddiqsoft
                         }
                         else if (!value.empty()) { sdpBlock[key] = value; }
                     }
-                    else if (key.compare("i") == 0)
+                    else if (keyChar == 'i')
                     {
-                        // Identity and number and type of call.
                         auto ilineMatcher = ctre::search<SIP_PATTERN_BODY_ILINE_RE>(value);
                         if (ilineMatcher)
                         {
                             auto iName = string(ilineMatcher.get<1>().to_view());
-                            // Set the name but check to ensure that if we have a " in the name that we strip it..
                             sdpBlock[key] = nlohmann::json {
                                     {"name"s, iName.starts_with("\""s) ? iName.substr(1, iName.length() - 2) : iName},
                                     {"dn"s, string(ilineMatcher.get<2>().to_view())},
@@ -196,9 +187,8 @@ namespace siddiqsoft
                             sdpBlock[key] = "";
                         }
                     }
-                    else if (key.compare("t"s) == 0)
+                    else if (keyChar == 't')
                     {
-                        // timing - FIX: Validate exactly 2 values are parsed
                         uint32_t ts = 0, te = 0;
                         int      parsed = 0;
 #if defined(_WIN32) || defined(_WIN64) || defined(WINDOWS) || defined(WIN32)
@@ -220,16 +210,36 @@ namespace siddiqsoft
                     else if (!key.empty() && value.empty()) { sdpBlock[key] = ""; }
                     else if (!key.empty()) { sdpBlock[key] = value; }
                 }
-            }
 
-            // Offset the start to the point after the match.
-            bufferStart = matcher.get<0>().end();
-            // Skip over trailing line endings
-            while (bufferStart < bufferEnd && (*bufferStart == '\r' || *bufferStart == '\n'))
-                ++bufferStart;
+                if (lfPos != std::string_view::npos)
+                    buffer.remove_prefix(lfPos + 1);
+                else
+                    buffer = {};
+            }
+            else
+            {
+                auto matcher = ctre::search<SIP_PATTERN_BODY_RE>(buffer.data(), buffer.data() + buffer.size());
+                if (!matcher) break;
+                auto matchStartOffset = matcher.get<0>().begin() - buffer.data();
+                buffer.remove_prefix(matchStartOffset);
+            }
         }
 
         return found;
+    }
+
+    inline bool sip2json::parseBodySDP(sipmessage&                  sipm,
+                                       std::string::iterator&       bufferStart,
+                                       const std::string::iterator& bufferEnd) noexcept(false)
+    {
+        if (bufferStart == bufferEnd) return false;
+        const char* pStart = std::to_address(bufferStart);
+        const char* pEnd   = std::to_address(bufferEnd);
+        std::string_view sv(pStart, static_cast<size_t>(pEnd - pStart));
+        bool res = parseBodySDP(sipm, sv);
+        size_t consumed = (pEnd - pStart) - sv.size();
+        bufferStart += consumed;
+        return res;
     }
 
     /// @brief Helper to serialize the SDP element with custom decode
