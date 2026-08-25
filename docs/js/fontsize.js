@@ -18,7 +18,7 @@
 
         var btnReset = document.createElement('button');
         btnReset.className = 'font-size-btn font-size-reset';
-        btnReset.title = 'Reset Font Size';
+        btnReset.title = 'Reset to Starting Default Font Size';
         btnReset.innerText = 'A';
 
         var btnIncrease = document.createElement('button');
@@ -30,14 +30,30 @@
 
         function applyScale(scale) {
             currentSize = Math.min(Math.max(scale, 0.8), 1.35);
-            document.documentElement.style.setProperty('--doc-font-scale', currentSize.toString());
-            document.documentElement.style.fontSize = (currentSize * 100) + '%';
-            localStorage.setItem('sip2json_font_scale', currentSize.toFixed(2));
+            if (Math.abs(currentSize - 1.0) < 0.01) {
+                currentSize = 1.0;
+                document.documentElement.style.removeProperty('--doc-font-scale');
+                document.documentElement.style.removeProperty('font-size');
+                localStorage.removeItem('sip2json_font_scale');
+            } else {
+                document.documentElement.style.setProperty('--doc-font-scale', currentSize.toString());
+                document.documentElement.style.fontSize = (currentSize * 100) + '%';
+                localStorage.setItem('sip2json_font_scale', currentSize.toFixed(2));
+            }
         }
 
-        btnDecrease.onclick = function() { applyScale(currentSize - 0.05); };
-        btnReset.onclick = function() { applyScale(1.0); };
-        btnIncrease.onclick = function() { applyScale(currentSize + 0.05); };
+        btnDecrease.onclick = function(e) {
+            e.preventDefault();
+            applyScale(currentSize - 0.05);
+        };
+        btnReset.onclick = function(e) {
+            e.preventDefault();
+            applyScale(1.0);
+        };
+        btnIncrease.onclick = function(e) {
+            e.preventDefault();
+            applyScale(currentSize + 0.05);
+        };
 
         container.appendChild(btnDecrease);
         container.appendChild(btnReset);

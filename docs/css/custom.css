@@ -3,7 +3,7 @@
 :root {
   --md-font-main: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
   --md-font-code: "JetBrains Mono", SFMono-Regular, Consolas, Menlo, monospace;
-  --md-typeset-font-size: 0.90rem;
+  --md-typeset-font-size: 0.80rem;             /* Reduced, compact starting font size */
 }
 
 /* Base typography: flexible, scalable, and responsive to user sizing */
@@ -13,7 +13,7 @@ body, input {
 
 .md-typeset {
   font-size: var(--md-typeset-font-size);
-  line-height: 1.65;
+  line-height: 1.6;
 }
 
 code, kbd, pre {
@@ -95,7 +95,7 @@ code, kbd, pre {
 /* Table Styling: Distinct Palette Headers & Proportional Typography          */
 /* -------------------------------------------------------------------------- */
 .md-typeset table:not([class]) {
-  font-size: 0.82rem;                          /* Proportional compact font size */
+  font-size: 0.78rem;                          /* Proportional compact font size */
   box-shadow: none;                            /* No drop shadows */
   border-radius: 6px;
   overflow: hidden;
@@ -111,9 +111,9 @@ code, kbd, pre {
   background-color: #f1f5f9;                   /* Clean Light Slate Neutral (No dark/black) */
   color: #0f172a;                              /* Dark readable text */
   font-weight: 600;
-  padding: 0.5rem 0.75rem;                     /* Compact header padding */
+  padding: 0.45rem 0.75rem;                    /* Compact header padding */
   text-align: left;
-  font-size: 0.82rem;                          /* Proportional header font size */
+  font-size: 0.78rem;                          /* Proportional header font size */
   border-bottom: 2px solid #cbd5e1;            /* Clean light divider */
 }
 
@@ -127,7 +127,7 @@ code, kbd, pre {
   padding: 0.45rem 0.75rem;                    /* Compact cell padding */
   border-top: 1px solid var(--md-default-fg-color--lightest, #e2e8f0);
   vertical-align: top;
-  font-size: 0.82rem;
+  font-size: 0.78rem;
 }
 
 /* Alternating Odd/Even Row Striping (Contrast) */
@@ -160,7 +160,7 @@ code, kbd, pre {
 /* -------------------------------------------------------------------------- */
 .md-typeset code {
   font-family: var(--md-font-code);
-  font-size: 0.88em;
+  font-size: 0.86em;
   font-weight: 600;
   color: #1e293b;                              /* Crisp Dark Slate in Light Mode */
   background-color: transparent;               /* No background color */
@@ -182,7 +182,7 @@ code, kbd, pre {
 .md-typeset table:not([class]) td code,
 .md-typeset table:not([class]) th code {
   white-space: nowrap;
-  font-size: 0.85em;
+  font-size: 0.84em;
   font-weight: 600;
   padding: 0;
   word-break: keep-all;
@@ -211,14 +211,14 @@ code, kbd, pre {
   border-radius: 8px;
   border: none;
   box-shadow: none;                            /* No drop shadows */
-  padding: 0.9rem 1.15rem;
-  margin: 1rem 0;
+  padding: 0.85rem 1.1rem;
+  margin: 0.9rem 0;
 }
 
 [data-md-color-scheme="slate"] .md-typeset pre {
   border: none;
   box-shadow: none;
-  padding: 0.9rem 1.15rem;
+  padding: 0.85rem 1.1rem;
 }
 
 .md-typeset pre > code {
@@ -226,7 +226,7 @@ code, kbd, pre {
   background-color: transparent;
   color: inherit;
   font-weight: normal;
-  font-size: 0.88em;
+  font-size: 0.86em;
   line-height: 1.55;
   padding: 0;
   box-shadow: none;
