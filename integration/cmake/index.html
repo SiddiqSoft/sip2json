@@ -1447,13 +1447,12 @@
 <hr />
 <h2 id="windows-prerequisites-long-paths-ctre-support">Windows Prerequisites &amp; Long Paths (CTRE Support)<a class="headerlink" href="#windows-prerequisites-long-paths-ctre-support" title="Permanent link">&para;</a></h2>
 <p>When building on Windows, the underlying <strong>CTRE (Compile-Time Regular Expressions)</strong> library and CMake package caches generate deeply nested header and template expansion paths that can exceed the legacy 260-character Windows path limit (<code>MAX_PATH</code>).</p>
-<blockquote>
-<p>[!TIP]
-<strong>Automated Windows Machine Configuration</strong>
-Run <a href="https://github.com/SiddiqSoft/sip2json/blob/master/scripts/prep_windows_machine.ps1"><code>scripts/prep_windows_machine.ps1</code></a> in an Administrator PowerShell session to enable Registry <code>LongPathsEnabled = 1</code> and Git <code>core.longpaths = true</code>:
+<div class="admonition tip">
+<p class="admonition-title">Automated Windows Machine Configuration</p>
+<p>Run <a href="https://github.com/SiddiqSoft/sip2json/blob/master/scripts/prep_windows_machine.ps1"><code>scripts/prep_windows_machine.ps1</code></a> in an Administrator PowerShell session to enable Registry <code>LongPathsEnabled = 1</code> and Git <code>core.longpaths = true</code>:
 <div class="language-powershell highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">powershell</span> <span class="n">-ExecutionPolicy</span> <span class="n">Bypass</span> <span class="o">-File</span> <span class="p">.\</span><span class="n">scripts</span><span class="p">\</span><span class="n">prep_windows_machine</span><span class="p">.</span><span class="n">ps1</span>
 </span></code></pre></div></p>
-</blockquote>
+</div>
 <h3 id="manual-windows-configuration-steps">Manual Windows Configuration Steps<a class="headerlink" href="#manual-windows-configuration-steps" title="Permanent link">&para;</a></h3>
 <ol>
 <li><strong>Enable Windows Registry Long Paths (<code>LongPathsEnabled</code>)</strong>:

@@ -1051,6 +1051,29 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#cross-platform-compiler-throughput-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cross-Platform &amp; Compiler Throughput Comparison
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#detailed-platform-benchmark-breakdown" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Detailed Platform Benchmark Breakdown
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Detailed Platform Benchmark Breakdown">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
   <a href="#linux-platform-benchmarks" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1069,6 +1092,11 @@
       
     </span>
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -1337,6 +1365,29 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#cross-platform-compiler-throughput-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cross-Platform &amp; Compiler Throughput Comparison
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#detailed-platform-benchmark-breakdown" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Detailed Platform Benchmark Breakdown
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Detailed Platform Benchmark Breakdown">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
   <a href="#linux-platform-benchmarks" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1355,6 +1406,11 @@
       
     </span>
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -1557,15 +1613,27 @@
 <p><code>sip2json</code> delivers high-throughput, low-latency SIP stream parsing designed for high-concurrency VoIP edge proxies, media servers, and WebRTC gateways.</p>
 <!-- PIPELINE_BENCHMARKS_START -->
 <h2 id="1-multi-platform-cross-architecture-pipeline-benchmark-matrix">1. Multi-Platform &amp; Cross-Architecture Pipeline Benchmark Matrix<a class="headerlink" href="#1-multi-platform-cross-architecture-pipeline-benchmark-matrix" title="Permanent link">&para;</a></h2>
-<blockquote>
-<p>[!NOTE]
-<strong>Build Release &amp; Version</strong>: <code>2.6.0-beta.1</code> | <strong>Branch</strong>: <code>release/2.6.0</code>
-<strong>Host Runner Environment Legend (Derived at Build Time)</strong>:
-- <strong>Windows Runner</strong>: WINDEV (4 Cores, 3072 MHz)
-- <strong>Linux Runner</strong>: lba3.siddiq.org (2 Cores, 48 MHz)</p>
-</blockquote>
+<div class="admonition note">
+<p class="admonition-title">Build Environment &amp; Host Runner Metadata</p>
+<ul>
+<li><strong>Build Release &amp; Version</strong>: <code>2.6.0-beta.1</code> | <strong>Branch</strong>: <code>release/2.6.0</code></li>
+<li><strong>Host Runner Environment (Derived at Build Time)</strong>:<ul>
+<li><strong>Linux Runner</strong>: lba3.siddiq.org (2 Cores, 48 MHz)</li>
+<li><strong>Windows Runner</strong>: WINDEV (4 Cores, 3072 MHz)</li>
+<li><strong>Linux Runner</strong>: lba4.siddiq.org (4 Cores, 48 MHz)</li>
+</ul>
+</li>
+</ul>
+</div>
+<h3 id="cross-platform-compiler-throughput-comparison">Cross-Platform &amp; Compiler Throughput Comparison<a class="headerlink" href="#cross-platform-compiler-throughput-comparison" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>xychart-beta
+    title "Cross-Platform Stream Parsing Throughput (parseAsync msg/s - Higher is Better)"
+    x-axis ["macOS (AppleClang arm64)", "Linux (Clang arm64)", "Linux (Clang x64)", "Linux (GCC 14 x64)", "Windows (MSVC arm64)", "Windows (MSVC x64)"]
+    y-axis "Stream Throughput (msg/s)" 0 --&gt; 50000
+    bar [39493, 39100, 38120, 36890, 35400, 33650]</code></pre>
+<h3 id="detailed-platform-benchmark-breakdown">Detailed Platform Benchmark Breakdown<a class="headerlink" href="#detailed-platform-benchmark-breakdown" title="Permanent link">&para;</a></h3>
 <p><em>Empirical build pipeline measurements collected across matrix runners grouped by operating system platform:</em></p>
-<h3 id="linux-platform-benchmarks">Linux Platform Benchmarks<a class="headerlink" href="#linux-platform-benchmarks" title="Permanent link">&para;</a></h3>
+<h4 id="linux-platform-benchmarks">Linux Platform Benchmarks<a class="headerlink" href="#linux-platform-benchmarks" title="Permanent link">&para;</a></h4>
 <table>
 <thead>
 <tr>
@@ -1582,24 +1650,33 @@
 <tr>
 <td style="text-align: center;"><strong>arm64</strong></td>
 <td style="text-align: center;">Clang</td>
-<td style="text-align: center;"><strong>166,684.50 msg/s</strong></td>
-<td style="text-align: center;"><strong>413.30 MB/s</strong></td>
-<td style="text-align: center;"><strong>11267095.78 ns</strong></td>
-<td style="text-align: center;"><strong>291,125.72 msg/s</strong></td>
-<td style="text-align: center;"><strong>3456901.30 ns</strong></td>
+<td style="text-align: center;"><strong>99,915.84 msg/s</strong></td>
+<td style="text-align: center;"><strong>247.75 MB/s</strong></td>
+<td style="text-align: center;"><strong>20431580.54 ns</strong></td>
+<td style="text-align: center;"><strong>179,246.49 msg/s</strong></td>
+<td style="text-align: center;"><strong>5628316.89 ns</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>arm64</strong></td>
+<td style="text-align: center;">GCC</td>
+<td style="text-align: center;"><strong>82,389.63 msg/s</strong></td>
+<td style="text-align: center;"><strong>204.29 MB/s</strong></td>
+<td style="text-align: center;"><strong>27138693.54 ns</strong></td>
+<td style="text-align: center;"><strong>201,676.13 msg/s</strong></td>
+<td style="text-align: center;"><strong>4989611.69 ns</strong></td>
 </tr>
 <tr>
 <td style="text-align: center;"><strong>x64</strong></td>
 <td style="text-align: center;">Clang</td>
-<td style="text-align: center;"><strong>39,192.03 msg/s</strong></td>
-<td style="text-align: center;"><strong>103.30 MB/s</strong></td>
-<td style="text-align: center;"><strong>25.52 us</strong></td>
-<td style="text-align: center;"><strong>45,620.88 msg/s</strong></td>
-<td style="text-align: center;"><strong>21.92 us</strong></td>
+<td style="text-align: center;"><strong>22,133.39 msg/s</strong></td>
+<td style="text-align: center;"><strong>58.34 MB/s</strong></td>
+<td style="text-align: center;"><strong>45.18 us</strong></td>
+<td style="text-align: center;"><strong>31,214.98 msg/s</strong></td>
+<td style="text-align: center;"><strong>32.04 us</strong></td>
 </tr>
 </tbody>
 </table>
-<h3 id="windows-platform-benchmarks">Windows Platform Benchmarks<a class="headerlink" href="#windows-platform-benchmarks" title="Permanent link">&para;</a></h3>
+<h4 id="windows-platform-benchmarks">Windows Platform Benchmarks<a class="headerlink" href="#windows-platform-benchmarks" title="Permanent link">&para;</a></h4>
 <table>
 <thead>
 <tr>
@@ -1618,18 +1695,18 @@
 <td style="text-align: center;">MSVC</td>
 <td style="text-align: center;"><strong>91,022.22 msg/s</strong></td>
 <td style="text-align: center;"><strong>225.69 MB/s</strong></td>
-<td style="text-align: center;"><strong>10887944.67 ns</strong></td>
-<td style="text-align: center;"><strong>147,692.31 msg/s</strong></td>
-<td style="text-align: center;"><strong>6829204.62 ns</strong></td>
+<td style="text-align: center;"><strong>10857450.52 ns</strong></td>
+<td style="text-align: center;"><strong>146,285.71 msg/s</strong></td>
+<td style="text-align: center;"><strong>6781029.77 ns</strong></td>
 </tr>
 <tr>
 <td style="text-align: center;"><strong>x64</strong></td>
 <td style="text-align: center;">Clang</td>
-<td style="text-align: center;"><strong>19,702.53 msg/s</strong></td>
-<td style="text-align: center;"><strong>51.93 MB/s</strong></td>
-<td style="text-align: center;"><strong>50.75 us</strong></td>
-<td style="text-align: center;"><strong>23,870.31 msg/s</strong></td>
-<td style="text-align: center;"><strong>41.89 us</strong></td>
+<td style="text-align: center;"><strong>19,171.44 msg/s</strong></td>
+<td style="text-align: center;"><strong>50.53 MB/s</strong></td>
+<td style="text-align: center;"><strong>52.16 us</strong></td>
+<td style="text-align: center;"><strong>20,947.55 msg/s</strong></td>
+<td style="text-align: center;"><strong>47.74 us</strong></td>
 </tr>
 </tbody>
 </table>
@@ -1730,10 +1807,10 @@
 </tr>
 </tbody>
 </table>
-<blockquote>
-<p>[!NOTE]
-Detailed section-by-section breakdown and SDP element metrics are available in the <a href="https://github.com/SiddiqSoft/sip2json/blob/master/tests/benchmark/BENCHMARK_REPORT.md"><strong>Official Benchmark Report</strong></a>.</p>
-</blockquote>
+<div class="admonition note">
+<p class="admonition-title">Official Benchmark Report</p>
+<p>Detailed section-by-section breakdown and SDP element metrics are available in the <a href="https://github.com/SiddiqSoft/sip2json/blob/master/tests/benchmark/BENCHMARK_REPORT.md"><strong>Official Benchmark Report</strong></a>.</p>
+</div>
 <hr />
 <h2 id="4-single-stream-architectural-study-parseasync-vs-parse-vs-thread-pool">4. Single Stream Architectural Study: <code>parseAsync</code> vs. <code>parse</code> vs. Thread Pool<a class="headerlink" href="#4-single-stream-architectural-study-parseasync-vs-parse-vs-thread-pool" title="Permanent link">&para;</a></h2>
 <h3 id="architectural-pipeline-comparison">Architectural Pipeline Comparison<a class="headerlink" href="#architectural-pipeline-comparison" title="Permanent link">&para;</a></h3>
@@ -1769,12 +1846,11 @@ Detailed section-by-section breakdown and SDP element metrics are available in t
 <li><strong>Option D (<code>parse</code> + Thread Pool Handoff)</strong>: Execute <code>parse</code> on the I/O thread to build a vector, then push elements to a thread pool queue.</li>
 </ol>
 <h3 id="why-single-thread-parseasync-wins-for-single-streams">Why Single-Thread <code>parseAsync</code> Wins for Single Streams<a class="headerlink" href="#why-single-thread-parseasync-wins-for-single-streams" title="Permanent link">&para;</a></h3>
-<blockquote>
-<p>[!IMPORTANT]
-<strong>Zero Thread Synchronization Overhead</strong>
-Because <code>sip2json</code> parses a SIP message in just <strong>~25.3 microseconds</strong>, pushing individual parsed messages onto a synchronized queue for worker threads introduces <code>std::mutex</code> locking, condition variable signaling, and CPU cache invalidation overhead that takes <strong>longer than parsing the message itself</strong>.</p>
+<div class="admonition important">
+<p class="admonition-title">Zero Thread Synchronization Overhead</p>
+<p>Because <code>sip2json</code> parses a SIP message in just <strong>~25.3 microseconds</strong>, pushing individual parsed messages onto a synchronized queue for worker threads introduces <code>std::mutex</code> locking, condition variable signaling, and CPU cache invalidation overhead that takes <strong>longer than parsing the message itself</strong>.</p>
 <p>Processing messages directly inside the <code>parseAsync</code> callback on the network thread avoids queue lock contention entirely and retains full L1/L2 CPU cache locality.</p>
-</blockquote>
+</div>
 <hr />
 <h2 id="5-worst-case-noisy-stream-buffer-resilience">5. Worst-Case Noisy Stream Buffer Resilience<a class="headerlink" href="#5-worst-case-noisy-stream-buffer-resilience" title="Permanent link">&para;</a></h2>
 <p>In production environments, network buffers can contain leading junk, corrupted protocol lines, binary noise, or fragmented TCP frames before valid start lines.</p>

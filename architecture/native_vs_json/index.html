@@ -1508,12 +1508,11 @@
 </tbody>
 </table>
 <h3 id="architectural-verdict-design-choice">Architectural Verdict &amp; Design Choice<a class="headerlink" href="#architectural-verdict-design-choice" title="Permanent link">&para;</a></h3>
-<blockquote>
-<p>[!NOTE]
-<strong>Why <code>sip2json</code> Chooses <code>nlohmann::json</code> Inheritance</strong>:
-The primary mission of <code>sip2json</code> is to convert raw SIP wire streams into <strong>first-class structured JSON data</strong> for modern cloud APIs, log analytics, and microservices.
-Subclassing <code>nlohmann::json</code> provides <strong>zero-cost JSON serialization, direct schema compatibility, and dynamic property extensibility</strong>. At <strong>&gt; 105,000 messages/sec per core</strong>, the <code>nlohmann::json</code> model easily satisfies high-throughput carrier-grade network requirements while delivering native JSON ergonomics.</p>
-</blockquote>
+<div class="admonition note">
+<p class="admonition-title">Why sip2json Chooses nlohmann::json Inheritance</p>
+<p>The primary mission of <code>sip2json</code> is to convert raw SIP wire streams into <strong>first-class structured JSON data</strong> for modern cloud APIs, log analytics, and microservices.</p>
+<p>Subclassing <code>nlohmann::json</code> provides <strong>zero-cost JSON serialization, direct schema compatibility, and dynamic property extensibility</strong>. At <strong>&gt; 105,000 messages/sec per core</strong>, the <code>nlohmann::json</code> model easily satisfies high-throughput carrier-grade network requirements while delivering native JSON ergonomics.</p>
+</div>
 
 
 

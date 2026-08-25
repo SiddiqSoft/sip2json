@@ -1435,12 +1435,11 @@
 <p>The <code>sipmessage</code> class represents a parsed or constructed SIP request or response message, extending <code>nlohmann::json</code>.</p>
 <hr />
 <h2 id="optimal-usage-guidelines">Optimal Usage Guidelines<a class="headerlink" href="#optimal-usage-guidelines" title="Permanent link">&para;</a></h2>
-<blockquote>
-<p>[!TIP]
-<strong>Performance Best Practice</strong>:
-For maximum throughput and zero-allocation key lookups, use the pre-defined library constants (<code>siddiqsoft::METHOD_*</code>, <code>siddiqsoft::HF_*</code>, <code>siddiqsoft::CONTENT_TYPE_*</code>).
+<div class="admonition tip">
+<p class="admonition-title">Performance Best Practice: Zero-Allocation Static Constants</p>
+<p>For maximum throughput and zero-allocation key lookups, use the pre-defined library constants (<code>siddiqsoft::METHOD_*</code>, <code>siddiqsoft::HF_*</code>, <code>siddiqsoft::CONTENT_TYPE_*</code>).
 Passing static string constants yields a <strong>13.2% performance gain for <code>setHeader</code></strong> and a <strong>4.8% gain for <code>getHeader</code></strong> over raw string literals.</p>
-</blockquote>
+</div>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">// OPTIMAL (Zero-Allocation Static Reference Path)</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">siddiqsoft</span><span class="o">::</span><span class="n">sipmessage</span><span class="w"> </span><span class="n">msg</span><span class="p">(</span><span class="n">siddiqsoft</span><span class="o">::</span><span class="n">METHOD_INVITE</span><span class="p">,</span><span class="w"> </span><span class="s">"sip:bob@biloxi.com"</span><span class="p">,</span><span class="w"> </span><span class="n">callId</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">msg</span><span class="p">.</span><span class="n">setHeader</span><span class="p">(</span><span class="n">siddiqsoft</span><span class="o">::</span><span class="n">HF_CONTENT_TYPE</span><span class="p">,</span><span class="w"> </span><span class="n">siddiqsoft</span><span class="o">::</span><span class="n">CONTENT_TYPE_APP_SDP</span><span class="p">);</span>
