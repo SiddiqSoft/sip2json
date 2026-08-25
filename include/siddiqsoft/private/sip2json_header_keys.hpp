@@ -75,9 +75,9 @@ namespace siddiqsoft
         std::string m_abbreviation {};
 
     public:
-        bool     isCanonical {false};
-        bool     isMultiLine {false};
-        bool     isCustom {false};
+        bool isCanonical {false};
+        bool isMultiLine {false};
+        bool isCustom {false};
 
         constexpr HeaderKeySet() = default;
 

@@ -153,11 +153,7 @@ int main(int argc, char** argv)
             try
             {
                 std::string buffer = sf.content;
-                (void)siddiqsoft::sip2json::parseAsync(buffer,
-                                                       [&](siddiqsoft::sipmessage&&)
-                                                       {
-                                                           async_messages_parsed++;
-                                                       });
+                (void)siddiqsoft::sip2json::parseAsync(buffer, [&](siddiqsoft::sipmessage&&) { async_messages_parsed++; });
                 async_bytes_processed += sf.size_bytes;
             }
             catch (...)
@@ -166,7 +162,7 @@ int main(int argc, char** argv)
         }
     }
 
-    auto   end_async       = std::chrono::high_resolution_clock::now();
+    auto   end_async      = std::chrono::high_resolution_clock::now();
     double async_time_ms  = std::chrono::duration<double, std::milli>(end_async - start_async).count();
     double async_time_sec = async_time_ms / 1000.0;
 

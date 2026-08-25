@@ -34,7 +34,7 @@ namespace siddiqsoft
 
         if (rawData.empty())
         {
-            auto cwd = std::filesystem::current_path();
+            auto                               cwd = std::filesystem::current_path();
             std::vector<std::filesystem::path> candidates;
             for (auto cur = cwd; !cur.empty() && cur != cur.root_path(); cur = cur.parent_path())
             {
@@ -54,10 +54,7 @@ namespace siddiqsoft
             }
         }
 
-        if (rawData.empty())
-        {
-            throw std::runtime_error("Cannot locate RFC 4475 sample file: " + fileName);
-        }
+        if (rawData.empty()) { throw std::runtime_error("Cannot locate RFC 4475 sample file: " + fileName); }
 
         // Restore bit-exact CRLF line endings if Git normalized \r\n to \n on Unix/Linux checkouts
         if (rawData.find("\r\n") == std::string::npos && rawData.find('\n') != std::string::npos)
@@ -66,10 +63,7 @@ namespace siddiqsoft
             crlfData.reserve(rawData.size() + 50);
             for (size_t i = 0; i < rawData.size(); ++i)
             {
-                if (rawData[i] == '\n' && (i == 0 || rawData[i - 1] != '\r'))
-                {
-                    crlfData += "\r\n";
-                }
+                if (rawData[i] == '\n' && (i == 0 || rawData[i - 1] != '\r')) { crlfData += "\r\n"; }
                 else
                 {
                     crlfData += rawData[i];
@@ -87,7 +81,7 @@ namespace siddiqsoft
     TEST(RFC4475_Torture, Section_3_1_1_1_A_Short_Tortuous_INVITE)
     {
         std::string rawMsg = loadRfc4475File("wsinv.dat");
-        auto bs = rawMsg.begin();
+        auto        bs     = rawMsg.begin();
 
         sipmessage sipm = sip2json::parseFromBuffer(bs, rawMsg.end());
         EXPECT_EQ("INVITE", sipm.getMethod());
@@ -101,7 +95,7 @@ namespace siddiqsoft
     TEST(RFC4475_Torture, Section_3_1_1_2_Wide_Range_Valid_Characters)
     {
         std::string rawMsg = loadRfc4475File("multi01.dat");
-        auto bs = rawMsg.begin();
+        auto        bs     = rawMsg.begin();
 
         sipmessage sipm = sip2json::parseFromBuffer(bs, rawMsg.end());
         EXPECT_EQ("INVITE", sipm.getMethod());
@@ -115,7 +109,7 @@ namespace siddiqsoft
     TEST(RFC4475_Torture, Section_3_1_1_3_Valid_Use_Escaping)
     {
         std::string rawMsg = loadRfc4475File("esc01.dat");
-        auto bs = rawMsg.begin();
+        auto        bs     = rawMsg.begin();
 
         sipmessage sipm = sip2json::parseFromBuffer(bs, rawMsg.end());
         EXPECT_EQ("INVITE", sipm.getMethod());
@@ -128,7 +122,7 @@ namespace siddiqsoft
     TEST(RFC4475_Torture, Section_3_1_1_4_Escaped_Nulls_In_URIs)
     {
         std::string rawMsg = loadRfc4475File("escnull.dat");
-        auto bs = rawMsg.begin();
+        auto        bs     = rawMsg.begin();
 
         sipmessage sipm = sip2json::parseFromBuffer(bs, rawMsg.end());
         EXPECT_EQ("REGISTER", sipm.getMethod());
@@ -141,7 +135,7 @@ namespace siddiqsoft
     TEST(RFC4475_Torture, Section_3_1_1_5_Escaped_Method_Name_Rejection)
     {
         std::string rawMsg = loadRfc4475File("esc02.dat");
-        auto bs = rawMsg.begin();
+        auto        bs     = rawMsg.begin();
 
         EXPECT_THROW(sip2json::parseFromBuffer(bs, rawMsg.end()), invalid_startline_error);
     }
@@ -152,7 +146,7 @@ namespace siddiqsoft
     TEST(RFC4475_Torture, Section_3_1_1_6_No_LWS_Display_Name)
     {
         std::string rawMsg = loadRfc4475File("lwsdisp.dat");
-        auto bs = rawMsg.begin();
+        auto        bs     = rawMsg.begin();
 
         sipmessage sipm = sip2json::parseFromBuffer(bs, rawMsg.end());
         EXPECT_EQ("OPTIONS", sipm.getMethod());
@@ -164,7 +158,7 @@ namespace siddiqsoft
     TEST(RFC4475_Torture, Section_3_1_1_7_Long_Values_Header_Fields)
     {
         std::string rawMsg = loadRfc4475File("longreq.dat");
-        auto bs = rawMsg.begin();
+        auto        bs     = rawMsg.begin();
 
         sipmessage sipm = sip2json::parseFromBuffer(bs, rawMsg.end());
         EXPECT_EQ("INVITE", sipm.getMethod());
@@ -177,7 +171,7 @@ namespace siddiqsoft
     TEST(RFC4475_Torture, Section_3_1_1_8_Extra_Space_In_Startline_Rejection)
     {
         std::string rawMsg = loadRfc4475File("trws.dat");
-        auto bs = rawMsg.begin();
+        auto        bs     = rawMsg.begin();
 
         EXPECT_THROW(sip2json::parseFromBuffer(bs, rawMsg.end()), invalid_startline_error);
     }
@@ -188,7 +182,7 @@ namespace siddiqsoft
     TEST(RFC4475_Torture, Section_3_1_1_9_Semicolon_Separated_URI_Params)
     {
         std::string rawMsg = loadRfc4475File("cparam01.dat");
-        auto bs = rawMsg.begin();
+        auto        bs     = rawMsg.begin();
 
         sipmessage sipm = sip2json::parseFromBuffer(bs, rawMsg.end());
         EXPECT_EQ("REGISTER", sipm.getMethod());
@@ -200,7 +194,7 @@ namespace siddiqsoft
     TEST(RFC4475_Torture, Section_3_1_1_10_Varied_Transport_Types)
     {
         std::string rawMsg = loadRfc4475File("transports.dat");
-        auto bs = rawMsg.begin();
+        auto        bs     = rawMsg.begin();
 
         sipmessage sipm = sip2json::parseFromBuffer(bs, rawMsg.end());
         EXPECT_EQ("OPTIONS", sipm.getMethod());
@@ -212,7 +206,7 @@ namespace siddiqsoft
     TEST(RFC4475_Torture, Section_3_1_1_11_Multipart_MIME_Rejection)
     {
         std::string rawMsg = loadRfc4475File("mpart01.dat");
-        auto bs = rawMsg.begin();
+        auto        bs     = rawMsg.begin();
 
         EXPECT_THROW(sip2json::parseFromBuffer(bs, rawMsg.end()), unsupported_contenttype_error);
     }
@@ -223,7 +217,7 @@ namespace siddiqsoft
     TEST(RFC4475_Torture, Section_3_1_1_12_Unusual_Reason_Phrase)
     {
         std::string rawMsg = loadRfc4475File("unreason.dat");
-        auto bs = rawMsg.begin();
+        auto        bs     = rawMsg.begin();
 
         sipmessage sipm = sip2json::parseFromBuffer(bs, rawMsg.end());
         EXPECT_EQ("SIP/2.0", sipm.value("/s/version"_json_pointer, ""));
@@ -233,7 +227,7 @@ namespace siddiqsoft
     TEST(RFC4475_Torture, Section_3_1_1_13_Empty_Reason_Phrase)
     {
         std::string rawMsg = loadRfc4475File("noreason.dat");
-        auto bs = rawMsg.begin();
+        auto        bs     = rawMsg.begin();
 
         sipmessage sipm = sip2json::parseFromBuffer(bs, rawMsg.end());
         EXPECT_EQ("SIP/2.0", sipm.value("/s/version"_json_pointer, ""));
@@ -246,7 +240,7 @@ namespace siddiqsoft
     TEST(RFC4475_Torture, Section_3_1_2_Negative_Content_Length_Rejection)
     {
         std::string rawMsg = loadRfc4475File("ncl.dat");
-        auto bs = rawMsg.begin();
+        auto        bs     = rawMsg.begin();
 
         EXPECT_THROW(sip2json::parseFromBuffer(bs, rawMsg.end()), invalid_document_error);
     }
@@ -254,7 +248,7 @@ namespace siddiqsoft
     TEST(RFC4475_Torture, Section_3_1_2_Unknown_Protocol_Version_Rejection)
     {
         std::string rawMsg = loadRfc4475File("badvers.dat");
-        auto bs = rawMsg.begin();
+        auto        bs     = rawMsg.begin();
 
         EXPECT_THROW(sip2json::parseFromBuffer(bs, rawMsg.end()), invalid_startline_error);
     }
@@ -264,26 +258,24 @@ namespace siddiqsoft
     //-------------------------------------------------------------------------
     TEST(RFC4475_Torture, Exhaustive_Corpus_All_50_Official_IETF_Files)
     {
-        std::vector<std::string> allFiles = {
-                "badaspec.dat", "badbranch.dat", "baddate.dat", "baddn.dat", "badinv01.dat",
-                "badvers.dat", "bcast.dat", "bext01.dat", "bigcode.dat", "clerr.dat",
-                "cparam01.dat", "cparam02.dat", "dblreq.dat", "esc01.dat", "esc02.dat",
-                "escnull.dat", "escruri.dat", "insuf.dat", "intmeth.dat", "inv2543.dat",
-                "invut.dat", "longreq.dat", "ltgtruri.dat", "lwsdisp.dat", "lwsruri.dat",
-                "lwsstart.dat", "mcl01.dat", "mismatch01.dat", "mismatch02.dat", "mpart01.dat",
-                "multi01.dat", "ncl.dat", "noreason.dat", "novelsc.dat", "quotbal.dat",
-                "regaut01.dat", "regbadct.dat", "regescrt.dat", "scalar02.dat", "scalarlg.dat",
-                "sdp01.dat", "semiuri.dat", "test.dat", "transports.dat", "trws.dat",
-                "unkscm.dat", "unksm2.dat", "unreason.dat", "wsinv.dat", "zeromf.dat"
-        };
+        std::vector<std::string> allFiles = {"badaspec.dat", "badbranch.dat", "baddate.dat",    "baddn.dat",      "badinv01.dat",
+                                             "badvers.dat",  "bcast.dat",     "bext01.dat",     "bigcode.dat",    "clerr.dat",
+                                             "cparam01.dat", "cparam02.dat",  "dblreq.dat",     "esc01.dat",      "esc02.dat",
+                                             "escnull.dat",  "escruri.dat",   "insuf.dat",      "intmeth.dat",    "inv2543.dat",
+                                             "invut.dat",    "longreq.dat",   "ltgtruri.dat",   "lwsdisp.dat",    "lwsruri.dat",
+                                             "lwsstart.dat", "mcl01.dat",     "mismatch01.dat", "mismatch02.dat", "mpart01.dat",
+                                             "multi01.dat",  "ncl.dat",       "noreason.dat",   "novelsc.dat",    "quotbal.dat",
+                                             "regaut01.dat", "regbadct.dat",  "regescrt.dat",   "scalar02.dat",   "scalarlg.dat",
+                                             "sdp01.dat",    "semiuri.dat",   "test.dat",       "transports.dat", "trws.dat",
+                                             "unkscm.dat",   "unksm2.dat",    "unreason.dat",   "wsinv.dat",      "zeromf.dat"};
 
-        size_t parsedCount = 0;
+        size_t parsedCount   = 0;
         size_t rejectedCount = 0;
 
         for (const auto& file : allFiles)
         {
             std::string rawMsg = loadRfc4475File(file);
-            auto bs = rawMsg.begin();
+            auto        bs     = rawMsg.begin();
 
             try
             {
@@ -300,9 +292,8 @@ namespace siddiqsoft
         EXPECT_EQ(50, parsedCount + rejectedCount);
         EXPECT_GT(parsedCount, 0);
         EXPECT_GT(rejectedCount, 0);
-        std::cout << " -- RFC 4475 Official IETF Torture Suite: "
-                  << parsedCount << " valid messages parsed, "
-                  << rejectedCount << " malformed messages safely rejected without crash (Total: "
-                  << (parsedCount + rejectedCount) << " / 50 files)." << std::endl;
+        std::cout << " -- RFC 4475 Official IETF Torture Suite: " << parsedCount << " valid messages parsed, " << rejectedCount
+                  << " malformed messages safely rejected without crash (Total: " << (parsedCount + rejectedCount)
+                  << " / 50 files)." << std::endl;
     }
 } // namespace siddiqsoft

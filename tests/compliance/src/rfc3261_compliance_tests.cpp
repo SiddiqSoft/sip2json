@@ -111,15 +111,14 @@ namespace siddiqsoft
     //-------------------------------------------------------------------------
     TEST(RFC3261_Compliance, HeaderFields_CaseInsensitivity)
     {
-        std::string rawMsg =
-                "INVITE sip:user@example.com SIP/2.0\r\n"
-                "vIa: SIP/2.0/UDP 192.0.2.1:5060;branch=z9hG4bK123\r\n"
-                "fRoM: <sip:user@example.com>;tag=1\r\n"
-                "tO: <sip:user@example.com>\r\n"
-                "cALL-iD: test-callid-123\r\n"
-                "cSeQ: 1 INVITE\r\n"
-                "cONTENT-lENGTH: 0\r\n\r\n";
-        auto bs = rawMsg.begin();
+        std::string rawMsg = "INVITE sip:user@example.com SIP/2.0\r\n"
+                             "vIa: SIP/2.0/UDP 192.0.2.1:5060;branch=z9hG4bK123\r\n"
+                             "fRoM: <sip:user@example.com>;tag=1\r\n"
+                             "tO: <sip:user@example.com>\r\n"
+                             "cALL-iD: test-callid-123\r\n"
+                             "cSeQ: 1 INVITE\r\n"
+                             "cONTENT-lENGTH: 0\r\n\r\n";
+        auto        bs     = rawMsg.begin();
 
         sipmessage sipm = sip2json::parseFromBuffer(bs, rawMsg.end());
         EXPECT_TRUE(sipm.headers().contains("Via"));

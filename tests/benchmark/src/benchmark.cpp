@@ -1,3 +1,9 @@
+// The objective of this benchmark is to measure the performance of the sip2json library in parsing SIP messages from sample files.
+// It will load a set of sample SIP message files, parse them using the sip2json library,
+// and report the time taken to parse the messages, as well as the number of messages processed per second.
+// These files represent a variety of SIP message types and scenarios, including requests, responses, and multi-message streams.
+// The benchmark will also provide insights into the efficiency of the library in handling different message formats and sizes.
+
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -153,11 +159,7 @@ int main(int argc, char** argv)
             try
             {
                 std::string buffer = sf.content;
-                (void)siddiqsoft::sip2json::parseAsync(buffer,
-                                                       [&](siddiqsoft::sipmessage&&)
-                                                       {
-                                                           async_messages_parsed++;
-                                                       });
+                (void)siddiqsoft::sip2json::parseAsync(buffer, [&](siddiqsoft::sipmessage&&) { async_messages_parsed++; });
                 async_bytes_processed += sf.size_bytes;
             }
             catch (...)
@@ -166,7 +168,7 @@ int main(int argc, char** argv)
         }
     }
 
-    auto   end_async       = std::chrono::high_resolution_clock::now();
+    auto   end_async      = std::chrono::high_resolution_clock::now();
     double async_time_ms  = std::chrono::duration<double, std::milli>(end_async - start_async).count();
     double async_time_sec = async_time_ms / 1000.0;
 

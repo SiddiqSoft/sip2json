@@ -188,14 +188,8 @@ namespace siddiqsoft
         {
             storeMultiLineHeader(sipm[JSON_KEY_HEADERS], keyStr, value);
         }
-        else if (&keySet == &HFS_CONTENT_LENGTH)
-        {
-            sipm[JSON_KEY_HEADERS][keyStr] = parseContentLengthValue(value);
-        }
-        else if (&keySet == &HFS_EXPIRES)
-        {
-            sipm[JSON_KEY_HEADERS][keyStr] = parseExpiresValue(value);
-        }
+        else if (&keySet == &HFS_CONTENT_LENGTH) { sipm[JSON_KEY_HEADERS][keyStr] = parseContentLengthValue(value); }
+        else if (&keySet == &HFS_EXPIRES) { sipm[JSON_KEY_HEADERS][keyStr] = parseExpiresValue(value); }
         else if (value.empty()) { sipm[JSON_KEY_HEADERS][keyStr] = ""; }
         else
         {
