@@ -108,24 +108,24 @@ code, kbd, pre {
 }
 
 .md-typeset table:not([class]) th {
-  background-color: #475569;                   /* Medium Cool Slate Gray (Light Mode) */
-  color: #ffffff;
+  background-color: #f1f5f9;                   /* Clean Light Slate Neutral (No dark/black) */
+  color: #0f172a;                              /* Dark readable text */
   font-weight: 600;
-  padding: 0.45rem 0.75rem;                    /* Compact header padding */
+  padding: 0.5rem 0.75rem;                     /* Compact header padding */
   text-align: left;
   font-size: 0.82rem;                          /* Proportional header font size */
-  border-bottom: 2px solid rgba(0, 0, 0, 0.12);
+  border-bottom: 2px solid #cbd5e1;            /* Clean light divider */
 }
 
 [data-md-color-scheme="slate"] .md-typeset table:not([class]) th {
-  background-color: #334155;                   /* Medium Slate Gray in Dark Mode */
+  background-color: rgba(255, 255, 255, 0.08); /* Soft translucent neutral gray in Dark Mode */
   color: #f8fafc;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.12);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.15);
 }
 
 .md-typeset table:not([class]) td {
   padding: 0.45rem 0.75rem;                    /* Compact cell padding */
-  border-top: 1px solid var(--md-default-fg-color--lightest, #e0e0e0);
+  border-top: 1px solid var(--md-default-fg-color--lightest, #e2e8f0);
   vertical-align: top;
   font-size: 0.82rem;
 }
@@ -136,11 +136,11 @@ code, kbd, pre {
 }
 
 .md-typeset table:not([class]) tbody tr:nth-child(odd) {
-  background-color: #ffffff;                   /* Clean background for odd rows */
+  background-color: #ffffff;                   /* Clean white for odd rows */
 }
 
 [data-md-color-scheme="slate"] .md-typeset table:not([class]) tbody tr:nth-child(even) {
-  background-color: rgba(255, 255, 255, 0.035); /* Subtle dark contrast for even rows */
+  background-color: rgba(255, 255, 255, 0.03); /* Subtle contrast for even rows */
 }
 
 [data-md-color-scheme="slate"] .md-typeset table:not([class]) tbody tr:nth-child(odd) {
@@ -148,11 +148,11 @@ code, kbd, pre {
 }
 
 .md-typeset table:not([class]) tbody tr:hover td {
-  background-color: rgba(63, 81, 181, 0.08);   /* Clear hover contrast */
+  background-color: rgba(0, 0, 0, 0.035);      /* Soft hover highlight */
 }
 
 [data-md-color-scheme="slate"] .md-typeset table:not([class]) tbody tr:hover td {
-  background-color: rgba(56, 189, 248, 0.08);
+  background-color: rgba(255, 255, 255, 0.05);
 }
 
 /* -------------------------------------------------------------------------- */
