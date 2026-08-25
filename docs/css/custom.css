@@ -50,17 +50,18 @@ code, kbd, pre {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Table Styling & Overflow Protection                                       */
+/* Table Styling: Compact, Borderless Shadows & Proportional Typography      */
 /* -------------------------------------------------------------------------- */
 .md-typeset table:not([class]) {
-  font-size: 0.85rem; /* Increased table content font size */
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  font-size: 0.80rem;                          /* Proportional compact font size */
+  box-shadow: none;                            /* No drop shadows */
   border-radius: 6px;
   overflow: hidden;
   border-collapse: separate;
   border-spacing: 0;
-  margin-top: 1em;
-  margin-bottom: 1.5em;
+  border: 1px solid var(--md-default-fg-color--lightest, #e2e8f0);
+  margin-top: 0.8em;
+  margin-bottom: 1.2em;
   width: 100%;
 }
 
@@ -68,9 +69,9 @@ code, kbd, pre {
   background-color: var(--md-primary-bg-color, #3f51b5);
   color: var(--md-primary-fg-color, #ffffff);
   font-weight: 600;
-  padding: 0.8rem 1.1rem;
+  padding: 0.45rem 0.75rem;                    /* Compact header padding */
   text-align: left;
-  font-size: 0.875rem;
+  font-size: 0.80rem;                          /* Proportional header font size */
 }
 
 [data-md-color-scheme="slate"] .md-typeset table:not([class]) th {
@@ -79,9 +80,10 @@ code, kbd, pre {
 }
 
 .md-typeset table:not([class]) td {
-  padding: 0.8rem 1.1rem;
+  padding: 0.45rem 0.75rem;                    /* Compact cell padding */
   border-top: 1px solid var(--md-default-fg-color--lightest, #e0e0e0);
   vertical-align: top;
+  font-size: 0.80rem;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -89,7 +91,7 @@ code, kbd, pre {
 /* -------------------------------------------------------------------------- */
 .md-typeset code {
   font-family: var(--md-font-code);
-  font-size: 0.90em;
+  font-size: 0.88em;
   font-weight: 600;
   color: #1e293b;                              /* Crisp Dark Slate in Light Mode */
   background-color: transparent;               /* No background color */
@@ -111,7 +113,7 @@ code, kbd, pre {
 .md-typeset table:not([class]) td code,
 .md-typeset table:not([class]) th code {
   white-space: nowrap;
-  font-size: 0.88em;
+  font-size: 0.85em;
   font-weight: 600;
   padding: 0;
   word-break: keep-all;
@@ -138,16 +140,16 @@ code, kbd, pre {
 /* -------------------------------------------------------------------------- */
 .md-typeset pre {
   border-radius: 8px;
-  border: none;                                /* Removed all borders */
-  box-shadow: none;
-  padding: 1rem 1.25rem;                       /* Generous inner padding */
-  margin: 1.2rem 0;
+  border: none;
+  box-shadow: none;                            /* No drop shadows */
+  padding: 0.9rem 1.15rem;
+  margin: 1rem 0;
 }
 
 [data-md-color-scheme="slate"] .md-typeset pre {
-  border: none;                                /* Removed dark mode borders */
+  border: none;
   box-shadow: none;
-  padding: 1rem 1.25rem;
+  padding: 0.9rem 1.15rem;
 }
 
 .md-typeset pre > code {
@@ -155,8 +157,8 @@ code, kbd, pre {
   background-color: transparent;
   color: inherit;
   font-weight: normal;
-  font-size: 0.90em;                           /* Increased code block font size */
-  line-height: 1.6;                            /* More breathable line height */
+  font-size: 0.88em;
+  line-height: 1.55;
   padding: 0;
   box-shadow: none;
 }
@@ -164,7 +166,7 @@ code, kbd, pre {
 .md-typeset .highlight {
   border-radius: 8px;
   border: none;
-  box-shadow: none;
+  box-shadow: none;                            /* No drop shadows */
 }
 
 /* Hero & Card Grid enhancements */
@@ -181,13 +183,13 @@ code, kbd, pre {
   border-radius: 8px;
   border: 1px solid var(--md-default-fg-color--lightest);
   background-color: var(--md-default-bg-color);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: none;                            /* No drop shadows */
+  transition: transform 0.2s ease;
 }
 
 .card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: none;                            /* No drop shadows */
 }
 
 .card h3 {
@@ -200,7 +202,7 @@ code, kbd, pre {
 .md-typeset .admonition,
 .md-typeset details {
   border-radius: 6px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: none;                            /* No drop shadows */
 }
 
 /* Permalinks */
@@ -213,13 +215,13 @@ code, kbd, pre {
 /* -------------------------------------------------------------------------- */
 .mermaid {
   text-align: center;
-  margin: 1.75rem auto;
+  margin: 1.5rem auto;
   overflow-x: auto;
-  padding: 1rem 0.75rem;
+  padding: 0.85rem 0.65rem;
   background-color: var(--md-default-bg-color);
   border-radius: 8px;
   border: 1px solid var(--md-default-fg-color--lightest);
-  box-shadow: 0 4px 8px -2px rgba(0, 0, 0, 0.06);
+  box-shadow: none;                            /* No drop shadows */
 }
 
 .mermaid svg {
