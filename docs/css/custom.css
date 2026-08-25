@@ -85,27 +85,25 @@ code, kbd, pre {
 }
 
 /* -------------------------------------------------------------------------- */
-/* High-Contrast Seamless Inline Code Tag Styling                             */
+/* Clean, Background-Free Inline Code Tag Styling                             */
 /* -------------------------------------------------------------------------- */
 .md-typeset code {
   font-family: var(--md-font-code);
-  font-size: 0.90em;                           /* Increased font size */
+  font-size: 0.90em;
   font-weight: 600;
-  color: #312e81;                              /* Deep Indigo in Light Mode */
-  background-color: #e0e7ff;                   /* Soft Indigo Tint Pill */
-  border: none;                                /* No borders */
-  border-radius: 5px;
-  padding: 0.22em 0.55em;                      /* Increased generous padding */
+  color: #1e293b;                              /* Crisp Dark Slate in Light Mode */
+  background-color: transparent;               /* No background color */
+  border: none;
+  border-radius: 0;
+  padding: 0 0.15em;
   box-shadow: none;
   word-break: break-word;
 }
 
 [data-md-color-scheme="slate"] .md-typeset code {
-  color: #67e8f9;                              /* Electric Ice Cyan in Dark Mode */
-  background-color: rgba(6, 182, 212, 0.16);  /* Deep Slate/Cyan Tint */
-  border: none;                                /* No borders */
-  border-radius: 5px;
-  padding: 0.22em 0.55em;
+  color: #38bdf8;                              /* Crisp Sky Blue in Dark Mode */
+  background-color: transparent;               /* No background color */
+  border: none;
   box-shadow: none;
 }
 
@@ -115,18 +113,18 @@ code, kbd, pre {
   white-space: nowrap;
   font-size: 0.88em;
   font-weight: 600;
-  padding: 0.25em 0.6em;                       /* Generous table pill padding */
+  padding: 0;
   word-break: keep-all;
-  color: #1e1b4b;
-  background-color: #dbeafe;
+  color: inherit;
+  background-color: transparent;
   border: none;
   box-shadow: none;
 }
 
 [data-md-color-scheme="slate"] .md-typeset table:not([class]) td code,
 [data-md-color-scheme="slate"] .md-typeset table:not([class]) th code {
-  color: #a5f3fc;
-  background-color: rgba(6, 182, 212, 0.2);
+  color: #38bdf8;
+  background-color: transparent;
   border: none;
   box-shadow: none;
 }
