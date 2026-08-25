@@ -64,4 +64,24 @@
          <loc>https://siddiqsoft.github.io/sip2json/integration/dependencies/</loc>
          <lastmod>2026-08-25</lastmod>
     </url>
+    <url>
+         <loc>https://siddiqsoft.github.io/sip2json/maintainers/</loc>
+         <lastmod>2026-08-25</lastmod>
+    </url>
+    <url>
+         <loc>https://siddiqsoft.github.io/sip2json/maintainers/building/</loc>
+         <lastmod>2026-08-25</lastmod>
+    </url>
+    <url>
+         <loc>https://siddiqsoft.github.io/sip2json/maintainers/documentation/</loc>
+         <lastmod>2026-08-25</lastmod>
+    </url>
+    <url>
+         <loc>https://siddiqsoft.github.io/sip2json/maintainers/pipelines/</loc>
+         <lastmod>2026-08-25</lastmod>
+    </url>
+    <url>
+         <loc>https://siddiqsoft.github.io/sip2json/maintainers/setup/</loc>
+         <lastmod>2026-08-25</lastmod>
+    </url>
 </urlset>

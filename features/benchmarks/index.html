@@ -333,6 +333,26 @@
   
   
   
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../maintainers/" class="md-tabs__link">
+          
+  
+  
+  Maintainer Guide
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
     <li class="md-tabs__item">
       <a href="../../license/" class="md-tabs__link">
         
@@ -1047,14 +1067,25 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="1. Multi-Platform &amp; Cross-Architecture Pipeline Benchmark Matrix">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-benchmark-source-data-dataset-outline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Benchmark Source Data &amp; Dataset Outline
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Benchmark Source Data &amp; Dataset Outline">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#cross-platform-compiler-benchmark-matrix" class="md-nav__link">
+  <a href="#test-dataset-classification" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Cross-Platform &amp; Compiler Benchmark Matrix
+        Test Dataset Classification
       
     </span>
   </a>
@@ -1067,26 +1098,93 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-stream-inspection-per-message-sdp-element-metrics" class="md-nav__link">
+  <a href="#3-how-we-tested" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. Stream Inspection &amp; Per-Message SDP Element Metrics
+        3. How We Tested
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. How We Tested">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#test-execution-methodology-controls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test Execution Methodology &amp; Controls
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#3-single-stream-architectural-study-parseasync-vs-parse-vs-thread-pool" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#benchmark-harness-implementation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3. Single Stream Architectural Study: parseAsync vs. parse vs. Thread Pool
+        Benchmark Harness Implementation
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="3. Single Stream Architectural Study: parseAsync vs. parse vs. Thread Pool">
+    <nav class="md-nav" aria-label="Benchmark Harness Implementation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pass-1-multi-message-asynchronous-stream-parsing-sip2jsonparseasync" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pass 1: Multi-Message Asynchronous Stream Parsing (sip2json::parseAsync)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pass-2-single-message-discrete-parsing-sip2jsonparsefrombuffer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pass 2: Single-Message Discrete Parsing (sip2json::parseFromBuffer)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pass-3-deep-header-sdp-ast-inspection-loop" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pass 3: Deep Header &amp; SDP AST Inspection Loop
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-single-stream-architectural-study-parseasync-vs-parse-vs-thread-pool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Single Stream Architectural Study: parseAsync vs. parse vs. Thread Pool
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Single Stream Architectural Study: parseAsync vs. parse vs. Thread Pool">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1124,17 +1222,6 @@
         
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#4-worst-case-noisy-stream-buffer-resilience" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4. Worst-Case Noisy Stream Buffer Resilience
-      
-    </span>
-  </a>
   
 </li>
       
@@ -1227,6 +1314,207 @@
   
   
   
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Maintainer Guide
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Maintainer Guide
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintainers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview & Handbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintainers/setup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Environment Setup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintainers/building/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Building, Testing & Benchmarks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintainers/documentation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation & MkDocs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintainers/pipelines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Azure Pipelines & Secrets
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
     <li class="md-nav__item">
       <a href="../../license/" class="md-nav__link">
         
@@ -1283,14 +1571,25 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="1. Multi-Platform &amp; Cross-Architecture Pipeline Benchmark Matrix">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-benchmark-source-data-dataset-outline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Benchmark Source Data &amp; Dataset Outline
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Benchmark Source Data &amp; Dataset Outline">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#cross-platform-compiler-benchmark-matrix" class="md-nav__link">
+  <a href="#test-dataset-classification" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Cross-Platform &amp; Compiler Benchmark Matrix
+        Test Dataset Classification
       
     </span>
   </a>
@@ -1303,26 +1602,93 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-stream-inspection-per-message-sdp-element-metrics" class="md-nav__link">
+  <a href="#3-how-we-tested" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. Stream Inspection &amp; Per-Message SDP Element Metrics
+        3. How We Tested
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. How We Tested">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#test-execution-methodology-controls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test Execution Methodology &amp; Controls
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#3-single-stream-architectural-study-parseasync-vs-parse-vs-thread-pool" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#benchmark-harness-implementation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3. Single Stream Architectural Study: parseAsync vs. parse vs. Thread Pool
+        Benchmark Harness Implementation
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="3. Single Stream Architectural Study: parseAsync vs. parse vs. Thread Pool">
+    <nav class="md-nav" aria-label="Benchmark Harness Implementation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pass-1-multi-message-asynchronous-stream-parsing-sip2jsonparseasync" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pass 1: Multi-Message Asynchronous Stream Parsing (sip2json::parseAsync)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pass-2-single-message-discrete-parsing-sip2jsonparsefrombuffer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pass 2: Single-Message Discrete Parsing (sip2json::parseFromBuffer)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pass-3-deep-header-sdp-ast-inspection-loop" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pass 3: Deep Header &amp; SDP AST Inspection Loop
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-single-stream-architectural-study-parseasync-vs-parse-vs-thread-pool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Single Stream Architectural Study: parseAsync vs. parse vs. Thread Pool
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Single Stream Architectural Study: parseAsync vs. parse vs. Thread Pool">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1360,17 +1726,6 @@
         
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#4-worst-case-noisy-stream-buffer-resilience" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4. Worst-Case Noisy Stream Buffer Resilience
-      
-    </span>
-  </a>
   
 </li>
       
@@ -1457,30 +1812,18 @@
 <p><code>sip2json</code> delivers high-throughput, low-latency SIP stream parsing designed for high-concurrency VoIP edge proxies, media servers, and WebRTC gateways.</p>
 <!-- PIPELINE_BENCHMARKS_START -->
 <h2 id="1-multi-platform-cross-architecture-pipeline-benchmark-matrix">1. Multi-Platform &amp; Cross-Architecture Pipeline Benchmark Matrix<a class="headerlink" href="#1-multi-platform-cross-architecture-pipeline-benchmark-matrix" title="Permanent link">&para;</a></h2>
-<div class="admonition note">
-<p class="admonition-title">Build Environment &amp; Host Runner Metadata</p>
-<ul>
-<li><strong>Build Release &amp; Version</strong>: <code>2.6.0-beta.1</code> | <strong>Branch</strong>: <code>release/2.6.0</code></li>
-<li><strong>Host Runner Environment (Derived at Build Time)</strong>:<ul>
-<li><strong>Linux Matrix Runner</strong>: Linux (2 CPU Cores, 48 MHz, 8 GB RAM)</li>
-<li><strong>Windows Matrix Runner</strong>: Windows (4 CPU Cores, 3072 MHz, 8 GB RAM)</li>
-<li><strong>Linux Matrix Runner</strong>: Linux (4 CPU Cores, 48 MHz, 8 GB RAM)</li>
-</ul>
-</li>
-</ul>
-</div>
-<h3 id="cross-platform-compiler-benchmark-matrix">Cross-Platform &amp; Compiler Benchmark Matrix<a class="headerlink" href="#cross-platform-compiler-benchmark-matrix" title="Permanent link">&para;</a></h3>
-<p><em>Empirical build pipeline measurements collected across matrix runners:</em></p>
+<p><em>Empirical build pipeline measurements collected dynamically across live matrix runners (Build Version <code>2.6.0-beta.1</code>):</em></p>
 <table>
 <thead>
 <tr>
-<th style="text-align: left;">Operating System</th>
-<th style="text-align: center;">Architecture</th>
+<th style="text-align: left;">OS</th>
+<th style="text-align: center;">Arch</th>
 <th style="text-align: center;">Compiler</th>
-<th style="text-align: center;">Stream Throughput (<code>parseAsync</code>)</th>
+<th style="text-align: left;">Host Environment</th>
+<th style="text-align: center;">Stream Throughput</th>
 <th style="text-align: center;">Bandwidth</th>
-<th style="text-align: center;">Per-Msg Latency</th>
-<th style="text-align: center;">Single Message (<code>parseFromBuffer</code>)</th>
+<th style="text-align: center;">Stream Latency</th>
+<th style="text-align: center;">Single Msg Throughput</th>
 <th style="text-align: center;">Single Latency</th>
 </tr>
 </thead>
@@ -1489,107 +1832,187 @@
 <td style="text-align: left;"><strong>Linux</strong></td>
 <td style="text-align: center;"><strong>arm64</strong></td>
 <td style="text-align: center;">Clang</td>
-<td style="text-align: center;"><strong>89,287.90 msg/s</strong></td>
-<td style="text-align: center;"><strong>221.39 MB/s</strong></td>
-<td style="text-align: center;"><strong>25.63 ms</strong></td>
-<td style="text-align: center;"><strong>182,081.85 msg/s</strong></td>
-<td style="text-align: center;"><strong>5.53 ms</strong></td>
+<td style="text-align: left;">Linux (4 CPU Cores, 48 MHz, 6 GB RAM)</td>
+<td style="text-align: center;"><strong>94,900.68 msg/s</strong></td>
+<td style="text-align: center;"><strong>235.31 MB/s</strong></td>
+<td style="text-align: center;"><strong>23.65 ms</strong></td>
+<td style="text-align: center;"><strong>295,664.13 msg/s</strong></td>
+<td style="text-align: center;"><strong>3.40 ms</strong></td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>Linux</strong></td>
 <td style="text-align: center;"><strong>arm64</strong></td>
 <td style="text-align: center;">GCC</td>
-<td style="text-align: center;"><strong>144,841.31 msg/s</strong></td>
-<td style="text-align: center;"><strong>359.14 MB/s</strong></td>
-<td style="text-align: center;"><strong>13.20 ms</strong></td>
-<td style="text-align: center;"><strong>241,473.23 msg/s</strong></td>
-<td style="text-align: center;"><strong>4.17 ms</strong></td>
+<td style="text-align: left;">Linux (4 CPU Cores, 48 MHz, 6 GB RAM)</td>
+<td style="text-align: center;"><strong>114,673.46 msg/s</strong></td>
+<td style="text-align: center;"><strong>284.34 MB/s</strong></td>
+<td style="text-align: center;"><strong>17.10 ms</strong></td>
+<td style="text-align: center;"><strong>311,740.27 msg/s</strong></td>
+<td style="text-align: center;"><strong>3.22 ms</strong></td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>Windows</strong></td>
 <td style="text-align: center;"><strong>arm64</strong></td>
 <td style="text-align: center;">MSVC</td>
-<td style="text-align: center;"><strong>93,090.91 msg/s</strong></td>
-<td style="text-align: center;"><strong>230.82 MB/s</strong></td>
-<td style="text-align: center;"><strong>10.70 ms</strong></td>
-<td style="text-align: center;"><strong>146,285.71 msg/s</strong></td>
-<td style="text-align: center;"><strong>6.78 ms</strong></td>
+<td style="text-align: left;">Windows (4 CPU Cores, 3072 MHz, 6 GB RAM)</td>
+<td style="text-align: center;"><strong>96,864.86 msg/s</strong></td>
+<td style="text-align: center;"><strong>240.18 MB/s</strong></td>
+<td style="text-align: center;"><strong>10.77 ms</strong></td>
+<td style="text-align: center;"><strong>149,333.33 msg/s</strong></td>
+<td style="text-align: center;"><strong>6.74 ms</strong></td>
 </tr>
 </tbody>
 </table>
 <!-- PIPELINE_BENCHMARKS_END -->
 
 <hr />
-<h2 id="2-stream-inspection-per-message-sdp-element-metrics">2. Stream Inspection &amp; Per-Message SDP Element Metrics<a class="headerlink" href="#2-stream-inspection-per-message-sdp-element-metrics" title="Permanent link">&para;</a></h2>
-<p><em>Empirical inspection of header presence and SDP element counts across real-world stream fixtures:</em></p>
+<h2 id="2-benchmark-source-data-dataset-outline">2. Benchmark Source Data &amp; Dataset Outline<a class="headerlink" href="#2-benchmark-source-data-dataset-outline" title="Permanent link">&para;</a></h2>
+<p>The benchmark suite tests <code>sip2json</code> against a comprehensive real-world dataset comprising <strong>36 production SIP stream capture files</strong> (~1.5 MB total wire data) located in <code>tests/validation/samples/</code>.</p>
+<h3 id="test-dataset-classification">Test Dataset Classification<a class="headerlink" href="#test-dataset-classification" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
-<th style="text-align: left;">Fixture Stream File</th>
-<th style="text-align: center;">Messages Received</th>
-<th style="text-align: center;">Total SDP Elements</th>
-<th style="text-align: center;">Avg SDP Elements / Msg</th>
-<th style="text-align: center;"><code>X-domain</code> Headers</th>
-<th style="text-align: center;"><code>X-Seamless</code> Headers</th>
-<th style="text-align: center;"><code>X-Call-Instance-ID</code></th>
-<th style="text-align: center;">SDP <code>a=x-voice-callowner-login_alias</code></th>
+<th style="text-align: left;">Dataset Category</th>
+<th style="text-align: left;">Fixture Files</th>
+<th style="text-align: left;">Message &amp; Payload Characteristics</th>
+<th style="text-align: left;">Primary Validation Target</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><strong><code>Mixed_Stream_1.sip</code></strong></td>
-<td style="text-align: center;">18</td>
-<td style="text-align: center;">853</td>
-<td style="text-align: center;"><strong>47.39</strong></td>
-<td style="text-align: center;">18</td>
-<td style="text-align: center;">0</td>
-<td style="text-align: center;">16</td>
-<td style="text-align: center;">22</td>
+<td style="text-align: left;"><strong>Multi-Message TCP Stream Captures</strong></td>
+<td style="text-align: left;"><code>RandomStream_Recv_File_1.sip</code> (1.28 MB), <code>Mixed_Stream_1.sip</code> (52 KB), <code>Mixed_Stream_2.sip</code> (24 KB), <code>Mixed_Stream_3.sip</code> (54 KB)</td>
+<td style="text-align: left;">507 cumulative SIP messages, 23,350 SDP elements, interleaved TCP packet boundaries, variable message lengths (0.5 KB – 8 KB).</td>
+<td style="text-align: left;">High-concurrency asynchronous stream iteration (<code>parseAsync</code>), TCP stream re-assembly, buffer sliding window performance.</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong><code>Mixed_Stream_2.sip</code></strong></td>
-<td style="text-align: center;">9</td>
-<td style="text-align: center;">349</td>
-<td style="text-align: center;"><strong>38.78</strong></td>
-<td style="text-align: center;">9</td>
-<td style="text-align: center;">0</td>
-<td style="text-align: center;">9</td>
-<td style="text-align: center;">9</td>
+<td style="text-align: left;"><strong>Call Event &amp; Media Session Captures</strong></td>
+<td style="text-align: left;"><code>NOTIFY_CallStart_1.sip</code>, <code>NOTIFY_CallStart_2.sip</code>, <code>NOTIFY_CallEnd.sip</code>, <code>NOTIFY_LegAdd.sip</code>, <code>NOTIFY_LegDrop.sip</code>, <code>NOTIFY_connectorleg_1.sip</code>, <code>NOTIFY_playbacklegs_1.sip</code>, <code>NOTIFY_SDP_multi_1.sip</code></td>
+<td style="text-align: left;">Complex multi-session SDP payloads (<code>application/sdp</code>), multi-line folded headers with LWSP (<code>\r\n\t</code>), WebRTC BUNDLE groupings, DTLS fingerprints, ICE candidates.</td>
+<td style="text-align: left;">Deep SDP AST generation, multi-session demarcation (<code>v=0</code>), audio/video codec extraction.</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong><code>Mixed_Stream_3.sip</code></strong></td>
-<td style="text-align: center;">21</td>
-<td style="text-align: center;">739</td>
-<td style="text-align: center;"><strong>35.19</strong></td>
-<td style="text-align: center;">21</td>
-<td style="text-align: center;">0</td>
-<td style="text-align: center;">21</td>
-<td style="text-align: center;">8</td>
+<td style="text-align: left;"><strong>Registration &amp; Standard Dialogs</strong></td>
+<td style="text-align: left;"><code>REGISTER_1.sip</code>, <code>REGISTER_200_OK.sip</code>, <code>REGISTER_401_Unauthorized.sip</code>, <code>OK_REGISTER_Multiline_ContactHeader_1.sip</code>, <code>Trying_INVITE_1.sip</code>, <code>sipp_uac_invite.sip</code>, <code>sipp_uas_200ok.sip</code></td>
+<td style="text-align: left;">Standard RFC 3261 INVITE / 200 OK / REGISTER / 401 Unauthorized transactions generated by production SBCs and SIPp load generators.</td>
+<td style="text-align: left;">Fast start-line parsing, canonical header key lookup, CSeq sequence tracking, authentication digest preservation.</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong><code>RandomStream_Recv_File_1.sip</code></strong></td>
-<td style="text-align: center;">459</td>
-<td style="text-align: center;">21,409</td>
-<td style="text-align: center;"><strong>46.64</strong></td>
-<td style="text-align: center;">459</td>
-<td style="text-align: center;">34</td>
-<td style="text-align: center;">344</td>
-<td style="text-align: center;">549</td>
+<td style="text-align: left;"><strong>Carrier Extension &amp; Edge Frames</strong></td>
+<td style="text-align: left;"><code>Test_extension_aras.sip</code>, <code>Test_extension_nelson.sip</code>, <code>Test_check_Via.sip</code></td>
+<td style="text-align: left;">Custom telephony headers (<code>X-domain</code>, <code>X-Seamless</code>, <code>X-Call-Instance-ID</code>, <code>P-Asserted-Identity</code>, <code>P-Charging-Vector</code>).</td>
+<td style="text-align: left;">Fast-path <code>X-</code> header bypass, preservation of unrecognized vendor headers in JSON without parsing degradation.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Fragmented &amp; Edge Boundary Fixtures</strong></td>
+<td style="text-align: left;"><code>Test_incomplete_buffer_for_content.sip</code>, <code>Test_incomplete_buffer_for_header.sip</code>, <code>Test_incomplete_buffer_for_parse.sip</code>, <code>Test_invalid_document.sip</code>, <code>Test_invalid_startline.sip</code>, <code>Test_unsupported_contenttype.sip</code></td>
+<td style="text-align: left;">Incomplete byte streams, truncated content lengths, malformed start lines, unknown MIME types.</td>
+<td style="text-align: left;">Error callback invocation, recovery without memory leaks or buffer overrun exceptions.</td>
 </tr>
 </tbody>
 </table>
 <hr />
-<h2 id="3-single-stream-architectural-study-parseasync-vs-parse-vs-thread-pool">3. Single Stream Architectural Study: <code>parseAsync</code> vs. <code>parse</code> vs. Thread Pool<a class="headerlink" href="#3-single-stream-architectural-study-parseasync-vs-parse-vs-thread-pool" title="Permanent link">&para;</a></h2>
+<h2 id="3-how-we-tested">3. How We Tested<a class="headerlink" href="#3-how-we-tested" title="Permanent link">&para;</a></h2>
+<p>All benchmark metrics are produced by the dedicated C++23 benchmark harness (<a href="https://github.com/SiddiqSoft/sip2json/blob/master/tests/benchmark/src/benchmark.cpp"><code>tests/benchmark/src/benchmark.cpp</code></a>) using the following rigorous methodology:</p>
+<h3 id="test-execution-methodology-controls">Test Execution Methodology &amp; Controls<a class="headerlink" href="#test-execution-methodology-controls" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Single-Threaded Process Isolation</strong>: Executed in dedicated standalone processes with real-time CPU priority to eliminate thread scheduling jitter, context-switching latency, and core-migration artifacts.</li>
+<li><strong>Instruction Cache Pre-Warming</strong>: A preliminary dry-run pass parses every sample file to fault all memory pages into physical RAM and load parser instructions into CPU L1i/L2 caches before timed loops begin.</li>
+<li><strong>High-Precision Monotonic Timing</strong>: Timed with <code>std::chrono::high_resolution_clock</code> (nanosecond resolution), aggregated over hundreds of iterations, and uniformly converted to microseconds (<code>µs</code>) and milliseconds (<code>ms</code>).</li>
+<li><strong>Compiler Optimization Safeguards</strong>: Builds are compiled in full Release mode with <code>-O3</code> / <code>/O2</code> optimization and C++23 standard. All parsed structures are consumed by counters and sinks to guarantee that dead-code elimination does not bypass parsing logic.</li>
+<li><strong>Continuous Multi-Platform CI Execution</strong>: Automatically executed during every CI pipeline build across real Linux (x64/ARM64, Clang/GCC), Windows (x64/ARM64, MSVC 2022), and macOS runners.</li>
+</ol>
+<h3 id="benchmark-harness-implementation">Benchmark Harness Implementation<a class="headerlink" href="#benchmark-harness-implementation" title="Permanent link">&para;</a></h3>
+<h4 id="pass-1-multi-message-asynchronous-stream-parsing-sip2jsonparseasync">Pass 1: Multi-Message Asynchronous Stream Parsing (<code>sip2json::parseAsync</code>)<a class="headerlink" href="#pass-1-multi-message-asynchronous-stream-parsing-sip2jsonparseasync" title="Permanent link">&para;</a></h4>
+<p>Evaluates iterative scanning across continuous TCP buffers with non-blocking inline callbacks over <strong>300 iterations (164,400 total messages)</strong>:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">ITERATIONS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">300</span><span class="p">;</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kt">size_t</span><span class="w"> </span><span class="n">async_messages_parsed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kt">size_t</span><span class="w"> </span><span class="n">async_bytes_processed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="k">auto</span><span class="w"> </span><span class="n">start_async</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">high_resolution_clock</span><span class="o">::</span><span class="n">now</span><span class="p">();</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">iter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">iter</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">ITERATIONS</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">iter</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sf</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">sample_files</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">buffer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sf</span><span class="p">.</span><span class="n">content</span><span class="p">;</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">        </span><span class="c1">// Zero-copy stream iterator parsing directly on network buffer</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">        </span><span class="n">siddiqsoft</span><span class="o">::</span><span class="n">sip2json</span><span class="o">::</span><span class="n">parseAsync</span><span class="p">(</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">            </span><span class="n">buffer</span><span class="p">,</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">            </span><span class="p">[</span><span class="o">&amp;</span><span class="p">](</span><span class="n">siddiqsoft</span><span class="o">::</span><span class="n">sipmessage</span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">msg</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">                </span><span class="n">async_messages_parsed</span><span class="o">++</span><span class="p">;</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w">            </span><span class="p">}</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="w">        </span><span class="p">);</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="w">        </span><span class="n">async_bytes_processed</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">sf</span><span class="p">.</span><span class="n">size_bytes</span><span class="p">;</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="p">}</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="k">auto</span><span class="w"> </span><span class="n">end_async</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">high_resolution_clock</span><span class="o">::</span><span class="n">now</span><span class="p">();</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="kt">double</span><span class="w"> </span><span class="n">async_time_ms</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">duration</span><span class="o">&lt;</span><span class="kt">double</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">milli</span><span class="o">&gt;</span><span class="p">(</span><span class="n">end_async</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start_async</span><span class="p">).</span><span class="n">count</span><span class="p">();</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="kt">double</span><span class="w"> </span><span class="n">msg_per_sec</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">async_messages_parsed</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">async_time_ms</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">1000.0</span><span class="p">);</span>
+</span></code></pre></div>
+<h4 id="pass-2-single-message-discrete-parsing-sip2jsonparsefrombuffer">Pass 2: Single-Message Discrete Parsing (<code>sip2json::parseFromBuffer</code>)<a class="headerlink" href="#pass-2-single-message-discrete-parsing-sip2jsonparsefrombuffer" title="Permanent link">&para;</a></h4>
+<p>Evaluates discrete message parsing and full JSON Abstract Syntax Tree creation across <strong>1,000 iterations (31,000 discrete message frames)</strong>:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">SINGLE_ITERATIONS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1000</span><span class="p">;</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kt">size_t</span><span class="w"> </span><span class="n">single_messages_parsed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="k">auto</span><span class="w"> </span><span class="n">start_single</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">high_resolution_clock</span><span class="o">::</span><span class="n">now</span><span class="p">();</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">iter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">iter</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">SINGLE_ITERATIONS</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">iter</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sf</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">valid_single_files</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">buffer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sf</span><span class="p">.</span><span class="n">content</span><span class="p">;</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">bs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">buffer</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">        </span><span class="c1">// Parse single SIP message frame from buffer iterator</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">msg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">siddiqsoft</span><span class="o">::</span><span class="n">sip2json</span><span class="o">::</span><span class="n">parseFromBuffer</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span><span class="w"> </span><span class="n">buffer</span><span class="p">.</span><span class="n">end</span><span class="p">());</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">msg</span><span class="p">.</span><span class="n">isMessageRequest</span><span class="p">()</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">msg</span><span class="p">.</span><span class="n">isMessageResponse</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">            </span><span class="n">single_messages_parsed</span><span class="o">++</span><span class="p">;</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="p">}</span>
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>
+</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="k">auto</span><span class="w"> </span><span class="n">end_single</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">high_resolution_clock</span><span class="o">::</span><span class="n">now</span><span class="p">();</span>
+</span></code></pre></div>
+<h4 id="pass-3-deep-header-sdp-ast-inspection-loop">Pass 3: Deep Header &amp; SDP AST Inspection Loop<a class="headerlink" href="#pass-3-deep-header-sdp-ast-inspection-loop" title="Permanent link">&para;</a></h4>
+<p>Inspects and validates all extracted JSON structures, verifying that headers and nested SDP media attributes are correctly populated:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">siddiqsoft</span><span class="o">::</span><span class="n">sip2json</span><span class="o">::</span><span class="n">parseAsync</span><span class="p">(</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="n">buffer</span><span class="p">,</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="p">[</span><span class="o">&amp;</span><span class="p">](</span><span class="n">siddiqsoft</span><span class="o">::</span><span class="n">sipmessage</span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">sipm</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">        </span><span class="n">msg_count</span><span class="o">++</span><span class="p">;</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">        </span><span class="c1">// Verify canonical &amp; custom edge headers</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">sipm</span><span class="p">.</span><span class="n">headers</span><span class="p">().</span><span class="n">contains</span><span class="p">(</span><span class="s">"X-domain"</span><span class="p">))</span><span class="w">            </span><span class="n">x_domain</span><span class="o">++</span><span class="p">;</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">sipm</span><span class="p">.</span><span class="n">headers</span><span class="p">().</span><span class="n">contains</span><span class="p">(</span><span class="s">"X-Seamless"</span><span class="p">))</span><span class="w">          </span><span class="n">x_seamless</span><span class="o">++</span><span class="p">;</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">sipm</span><span class="p">.</span><span class="n">headers</span><span class="p">().</span><span class="n">contains</span><span class="p">(</span><span class="s">"X-Call-Instance-ID"</span><span class="p">))</span><span class="w">  </span><span class="n">x_call_instance_id</span><span class="o">++</span><span class="p">;</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">        </span><span class="c1">// Inspect nested Session Description Protocol (SDP) JSON blocks</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">sipm</span><span class="p">.</span><span class="n">hasBody</span><span class="p">()</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">sipm</span><span class="p">.</span><span class="n">body</span><span class="p">().</span><span class="n">contains</span><span class="p">(</span><span class="s">"sdp"</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">sipm</span><span class="p">.</span><span class="n">body</span><span class="p">()[</span><span class="s">"sdp"</span><span class="p">].</span><span class="n">is_array</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">            </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sdpBlock</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">sipm</span><span class="p">.</span><span class="n">body</span><span class="p">()[</span><span class="s">"sdp"</span><span class="p">])</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">sdpBlock</span><span class="p">.</span><span class="n">is_object</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="w">                    </span><span class="n">total_sdp_elements</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">sdpBlock</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="w">                    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">sdpBlock</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="s">"a"</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">sdpBlock</span><span class="p">[</span><span class="s">"a"</span><span class="p">].</span><span class="n">is_object</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="w">                        </span><span class="n">total_sdp_elements</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="p">(</span><span class="n">sdpBlock</span><span class="p">[</span><span class="s">"a"</span><span class="p">].</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="w">                        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">sdpBlock</span><span class="p">[</span><span class="s">"a"</span><span class="p">].</span><span class="n">contains</span><span class="p">(</span><span class="s">"x-voice-callowner-login_alias"</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="w">                            </span><span class="n">sdp_callowner_alias</span><span class="o">++</span><span class="p">;</span>
+</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="w">                        </span><span class="p">}</span>
+</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a><span class="w">                    </span><span class="p">}</span>
+</span><span id="__span-2-21"><a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a><span class="w">                </span><span class="p">}</span>
+</span><span id="__span-2-22"><a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a><span class="w">            </span><span class="p">}</span>
+</span><span id="__span-2-23"><a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-2-24"><a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="c1">// end of callback</span>
+</span><span id="__span-2-25"><a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a><span class="p">);</span>
+</span></code></pre></div>
+<hr />
+<h2 id="4-single-stream-architectural-study-parseasync-vs-parse-vs-thread-pool">4. Single Stream Architectural Study: <code>parseAsync</code> vs. <code>parse</code> vs. Thread Pool<a class="headerlink" href="#4-single-stream-architectural-study-parseasync-vs-parse-vs-thread-pool" title="Permanent link">&para;</a></h2>
 <h3 id="architectural-pipeline-comparison">Architectural Pipeline Comparison<a class="headerlink" href="#architectural-pipeline-comparison" title="Permanent link">&para;</a></h3>
 <pre class="mermaid"><code>flowchart LR
-    subgraph OptionA ["⚡ Option A: parseAsync Single-Thread (Optimal: ~39,500 msg/s)"]
+    subgraph OptionA ["⚡ Option A: parseAsync Single-Thread (Optimal: Zero Locks)"]
         direction LR
         SockA["🌐 Network Socket"]:::sockClass --&gt; IOA["⚙️ I/O Thread"]:::ioClass
         IOA --&gt; PA["⚡ parseAsync(buffer)"]:::parseClass
         PA --&gt; CBA["🚀 Inline Handler Callback&lt;br/&gt;&lt;i&gt;(Zero Thread Switches)&lt;/i&gt;"]:::optClass
     end
 
-    subgraph OptionC ["⚠️ Option C: Thread Pool Offload (21% Slower)"]
+    subgraph OptionC ["⚠️ Option C: Thread Pool Offload (Lock Contention)"]
         direction LR
         SockC["🌐 Network Socket"]:::sockClass --&gt; IOC["⚙️ I/O Thread"]:::ioClass
         IOC --&gt; PC["⚡ parseAsync(buffer)"]:::parseClass
@@ -1609,49 +2032,21 @@
 <ol>
 <li><strong>Option A (<code>parseAsync</code> Single-Thread Callback)</strong>: Execute <code>sip2json::parseAsync</code> directly on the network I/O thread. Process each message inside the inline callback without thread switches.</li>
 <li><strong>Option B (<code>parse</code> Single-Thread Vector)</strong>: Execute <code>sip2json::parse</code> on the network thread to build a <code>std::vector&lt;sipmessage&gt;</code>, then iterate sequentially over the vector.</li>
-<li><strong>Option C (<code>parseAsync</code> + Thread Pool Offload)</strong>: Execute <code>parseAsync</code> on the I/O thread and push parsed <code>sipmessage</code> objects into a thread pool queue for 4 worker threads to process.</li>
+<li><strong>Option C (<code>parseAsync</code> + Thread Pool Offload)</strong>: Execute <code>parseAsync</code> on the I/O thread and push parsed <code>sipmessage</code> objects into a thread pool queue for worker threads to process.</li>
 <li><strong>Option D (<code>parse</code> + Thread Pool Handoff)</strong>: Execute <code>parse</code> on the I/O thread to build a vector, then push elements to a thread pool queue.</li>
 </ol>
 <h3 id="why-single-thread-parseasync-wins-for-single-streams">Why Single-Thread <code>parseAsync</code> Wins for Single Streams<a class="headerlink" href="#why-single-thread-parseasync-wins-for-single-streams" title="Permanent link">&para;</a></h3>
 <div class="admonition important">
 <p class="admonition-title">Zero Thread Synchronization Overhead</p>
-<p>Because <code>sip2json</code> parses a SIP message in just <strong>~25.3 microseconds</strong>, pushing individual parsed messages onto a synchronized queue for worker threads introduces <code>std::mutex</code> locking, condition variable signaling, and CPU cache invalidation overhead that takes <strong>longer than parsing the message itself</strong>.</p>
+<p>Because <code>sip2json</code> parses a SIP message with microsecond-level latency, pushing individual parsed messages onto a synchronized queue for worker threads introduces <code>std::mutex</code> locking, condition variable signaling, and CPU cache invalidation overhead that takes <strong>longer than parsing the message itself</strong>.</p>
 <p>Processing messages directly inside the <code>parseAsync</code> callback on the network thread avoids queue lock contention entirely and retains full L1/L2 CPU cache locality.</p>
 </div>
 <hr />
-<h2 id="4-worst-case-noisy-stream-buffer-resilience">4. Worst-Case Noisy Stream Buffer Resilience<a class="headerlink" href="#4-worst-case-noisy-stream-buffer-resilience" title="Permanent link">&para;</a></h2>
-<p>In production environments, network buffers can contain leading junk, corrupted protocol lines, binary noise, or fragmented TCP frames before valid start lines.</p>
-<p><code>sip2json</code> uses Compile-Time Regular Expression searching to scan forward in the buffer, skip over noise bytes, and recover valid SIP message start lines automatically:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: left;">Stream Buffer Setup</th>
-<th style="text-align: left;">Time / Batch</th>
-<th style="text-align: left;">Effective Parse Rate</th>
-<th style="text-align: left;">Processing Bandwidth</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;"><strong>10 Messages + Noise</strong></td>
-<td style="text-align: left;">29.83 µs</td>
-<td style="text-align: left;"><strong>335,255 msg/sec</strong></td>
-<td style="text-align: left;">167.89 MiB/s</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>100 Messages + Noise</strong></td>
-<td style="text-align: left;">45.62 µs</td>
-<td style="text-align: left;"><strong>2,191,860 msg/sec</strong></td>
-<td style="text-align: left;">1.03 GiB/s</td>
-</tr>
-</tbody>
-</table>
-<hr />
 <h2 id="5-running-benchmarks-locally">5. Running Benchmarks Locally<a class="headerlink" href="#5-running-benchmarks-locally" title="Permanent link">&para;</a></h2>
 <p>Build and run the single-threaded benchmark suite across all sample fixtures:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>cmake<span class="w"> </span>--preset<span class="w"> </span>Apple-Release
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>cmake<span class="w"> </span>--build<span class="w"> </span>--preset<span class="w"> </span>Apple-Release
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>./build/Apple-Release/tests/benchmark/sip2json_benchmark<span class="w"> </span>tests/validation/samples
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>cmake<span class="w"> </span>--preset<span class="w"> </span>Apple-Release
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>cmake<span class="w"> </span>--build<span class="w"> </span>--preset<span class="w"> </span>Apple-Release
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>./build/Apple-Release/tests/benchmark/sip2json_benchmark<span class="w"> </span>tests/validation/samples
 </span></code></pre></div>
 
 
@@ -1754,6 +2149,8 @@
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
         <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+      
+        <script src="../../js/fontsize.js"></script>
       
     
   </body>

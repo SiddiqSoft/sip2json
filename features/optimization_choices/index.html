@@ -333,6 +333,26 @@
   
   
   
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../maintainers/" class="md-tabs__link">
+          
+  
+  
+  Maintainer Guide
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
     <li class="md-tabs__item">
       <a href="../../license/" class="md-tabs__link">
         
@@ -1177,6 +1197,207 @@
   
   
   
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Maintainer Guide
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Maintainer Guide
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintainers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview & Handbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintainers/setup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Environment Setup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintainers/building/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Building, Testing & Benchmarks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintainers/documentation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation & MkDocs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintainers/pipelines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Azure Pipelines & Secrets
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
     <li class="md-nav__item">
       <a href="../../license/" class="md-nav__link">
         
@@ -1414,6 +1635,7 @@
 <thead>
 <tr>
 <th style="text-align: left;">Optimization Technique</th>
+<th style="text-align: center;">Associated Tag</th>
 <th style="text-align: left;">Replaced Pattern</th>
 <th style="text-align: left;">Performance Gain</th>
 <th style="text-align: left;">Hardware Mechanism</th>
@@ -1422,45 +1644,59 @@
 <tbody>
 <tr>
 <td style="text-align: left;"><strong>CTRE Startline Regex Simplification</strong></td>
-<td style="text-align: left;"><code>[\r\n|\n]</code> set-matching character class</td>
+<td style="text-align: center;"><code>v2.6.0</code></td>
+<td style="text-align: left;"><code>[\r\n\|\n]</code> set-matching character class</td>
 <td style="text-align: left;"><strong>+6.0% to +6.8% throughput</strong></td>
 <td style="text-align: left;">Replaced character class brackets with <code>\r?\n</code>; reduced CTRE compile-time template instantiation depth by <strong>&gt;85%</strong> (~150 vs &gt;1000 depth) resolving MSVC <code>error C2999</code></td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>64-bit FNV-1a Hash <code>switch(h)</code></strong></td>
+<td style="text-align: center;"><code>v2.6.0</code></td>
 <td style="text-align: left;">Sequential <code>std::string</code> <code>if-else</code> chain</td>
 <td style="text-align: left;"><strong>+74.4% throughput</strong></td>
-<td style="text-align: left;">100% collision-free 64-bit FNV-1a hash matching via 1-cycle $O(1)$ jump table</td>
+<td style="text-align: left;">100% collision-free 64-bit FNV-1a hash matching via 1-cycle $O(1)$ direct jump table</td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong><code>constexpr</code> Compile-Time Labels</strong></td>
+<td style="text-align: center;"><code>v2.6.0</code></td>
 <td style="text-align: left;">Dynamic runtime string hashing</td>
 <td style="text-align: left;"><strong>0 ns overhead</strong></td>
 <td style="text-align: left;"><code>constexpr</code> compile-time <code>hash_header_key(...)</code> evaluated directly into switch jump table</td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>Bitwise Register Case-Folding</strong></td>
+<td style="text-align: center;"><code>v2.6.0</code></td>
 <td style="text-align: left;"><code>std::transform(::tolower)</code></td>
 <td style="text-align: left;"><strong>-42.6% latency</strong></td>
 <td style="text-align: left;">Converts ASCII case in-register during 64-bit FNV-1a hashing</td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>Merged <code>HeaderKeySet</code> Architecture</strong></td>
+<td style="text-align: center;"><code>v2.6.0</code></td>
 <td style="text-align: left;"><code>CanonicalHeaderKeyResult</code> wrapper</td>
 <td style="text-align: left;"><strong>+4.8% throughput</strong></td>
 <td style="text-align: left;">Eliminates temporary wrapper objects; enables 1-cycle pointer comparison (<code>&amp;keySet == &amp;HFS_CONTENT_LENGTH</code>)</td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>Inline Stream Callback (<code>parseAsync</code>)</strong></td>
+<td style="text-align: center;"><code>v2.5.0</code></td>
 <td style="text-align: left;">Vector accumulation (<code>std::vector&lt;sipmessage&gt;</code>)</td>
 <td style="text-align: left;"><strong>+93.8% vs master</strong></td>
 <td style="text-align: left;">Zero-copy execution directly on network buffer</td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>Fast-Path <code>X-</code> Header Branch</strong></td>
+<td style="text-align: center;"><code>v2.6.0</code></td>
 <td style="text-align: left;">Sequential canonical check loop</td>
 <td style="text-align: left;"><strong>2 CPU cycles</strong></td>
 <td style="text-align: left;">Immediate bitmask check for custom headers</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Static String Constants (<code>HF_</code> / <code>HFS_</code>)</strong></td>
+<td style="text-align: center;"><code>v2.5.8</code></td>
+<td style="text-align: left;">Dynamic heap-allocated header strings</td>
+<td style="text-align: left;"><strong>Zero allocation overhead</strong></td>
+<td style="text-align: left;">Compile-time static <code>std::string_view</code> and <code>std::string</code> header keys preventing dynamic heap allocations</td>
 </tr>
 </tbody>
 </table>
@@ -1565,6 +1801,8 @@
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
         <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+      
+        <script src="../../js/fontsize.js"></script>
       
     
   </body>

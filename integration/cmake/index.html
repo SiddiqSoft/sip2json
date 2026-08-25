@@ -333,6 +333,26 @@
   
   
   
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../maintainers/" class="md-tabs__link">
+          
+  
+  
+  Maintainer Guide
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
     <li class="md-tabs__item">
       <a href="../../license/" class="md-tabs__link">
         
@@ -1188,6 +1208,207 @@
   
   
   
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Maintainer Guide
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Maintainer Guide
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintainers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview & Handbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintainers/setup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Environment Setup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintainers/building/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Building, Testing & Benchmarks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintainers/documentation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation & MkDocs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintainers/pipelines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Azure Pipelines & Secrets
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
     <li class="md-nav__item">
       <a href="../../license/" class="md-nav__link">
         
@@ -1377,6 +1598,12 @@
 
 <h1 id="cmake-submodules-integration">CMake &amp; Submodules Integration<a class="headerlink" href="#cmake-submodules-integration" title="Permanent link">&para;</a></h1>
 <p><code>sip2json</code> provides full CMake target support with exported target <code>sip2json::sip2json</code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">NuGet Package Deprecation (Starting with v2.0)</p>
+<p><code>sip2json</code> previously provided NuGet packages for legacy MSVC environments (<code>v1.x</code>). However, modern <code>sip2json</code> (v2+) is built on C++23 header-only templates and relies directly on <strong>CTRE (Compile-Time Regular Expressions)</strong> for zero-allocation regex evaluation.</p>
+<p>Because there is <strong>no support for CTRE as a NuGet package</strong> for modern C++23 header-only templates, <strong>NuGet package distribution has been deprecated starting with v2.0</strong>.</p>
+<p>Please use <strong>CMake CPM</strong> (<code>CPMAddPackage</code>) or <strong>FetchContent</strong> as the standard cross-platform integration method for Windows, Linux, and macOS.</p>
+</div>
 <hr />
 <h2 id="modern-cmake-integration-via-cpm">Modern CMake Integration via CPM<a class="headerlink" href="#modern-cmake-integration-via-cpm" title="Permanent link">&para;</a></h2>
 <p><a href="https://github.com/cpm-cmake/CPM.cmake">CPM.cmake</a> is the recommended package manager for C++ CMake projects:</p>
@@ -1566,6 +1793,8 @@
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
         <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+      
+        <script src="../../js/fontsize.js"></script>
       
     
   </body>
