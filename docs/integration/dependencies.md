@@ -10,7 +10,7 @@ graph TD
 
     sip2json["📦 <b>sip2json::sip2json</b><br/><i>Modern C++23 Header-Only SIP Parser & Serializer</i>"]:::projectClass
 
-    subgraph CoreGroup ["⚡ Core Header-Only Dependencies (Required via CPM)"]
+    subgraph CoreGroup ["⚡ Core Header-Only"]
         NLOHMANNJSON["<b>nlohmann_json</b> <code>v3.12.0</code><br/><i>JSON Model & Deserialization</i>"]:::coreClass1
         CTRE["<b>ctre</b> <code>v3.11.0</code><br/><i>Compile-Time Regular Expressions</i>"]:::coreClass2
     end
@@ -31,7 +31,9 @@ graph TD
 
 ## Detailed Dependency Breakdown
 
-| Dependency | Repository / Source | Version | Integration Method | Scope / Target | Description |
-| :--- | :--- | :---: | :---: | :--- | :--- |
-| **nlohmann_json** | [`nlohmann/json`](https://github.com/nlohmann/json) | `v3.12.0` | `CPM` | All Platforms (`INTERFACE`) | First-class JSON object model and DOM serialization |
-| **ctre** | [`hanickadot/compile-time-regular-expressions`](https://github.com/hanickadot/compile-time-regular-expressions) | `v3.11.0` | `CPM` | All Platforms (`INTERFACE`) | Fast compile-time regular expression evaluation engine |
+As of Version `{ version }`
+
+| Dependency | Version | CPM Scope / Target | Description |
+| :--------- | :-----: | :------------- | :--- |
+| [**nlohmann_json**](https://github.com/nlohmann/json) | `v3.12.0` | All Platforms (`INTERFACE`) | First-class JSON object model and DOM serialization |
+| [**ctre**](https://github.com/hanickadot/compile-time-regular-expressions) | `v3.11.0` | All Platforms (`INTERFACE`) | Fast compile-time regular expression evaluation engine |

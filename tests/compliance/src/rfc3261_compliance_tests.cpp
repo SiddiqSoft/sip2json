@@ -206,6 +206,7 @@ namespace siddiqsoft
     //-------------------------------------------------------------------------
     TEST(RFC3261_Compliance, DirectJsonInitialization_RequestWithSDP)
     {
+        auto callId = siddiqsoft::createCallId();
         // Directly construct a sipmessage using a JSON initializer without calling setHeader() or setBody()
         siddiqsoft::sipmessage msg(nlohmann::json {
             {"s", {
@@ -217,7 +218,7 @@ namespace siddiqsoft
             {"h", {
                 {"From", "<sip:bob@example.com>;tag=98765"},
                 {"To", "<sip:alice@example.com>"},
-                {"Call-ID", "direct-json-init-callid-12345"},
+                {"Call-ID", callId},
                 {"CSeq", "1 INVITE"},
                 {"Contact", "<sip:bob@192.0.2.1:5060>"},
                 {"Content-Type", "application/sdp"},
@@ -261,8 +262,8 @@ namespace siddiqsoft
         EXPECT_EQ("sip:alice@example.com", msg.getUriView());
 
         // Assert header lookups & views
-        EXPECT_EQ("direct-json-init-callid-12345", msg.getCallID());
-        EXPECT_EQ("direct-json-init-callid-12345", msg.getCallIDView());
+        EXPECT_EQ(callId, msg.getCallID());
+        EXPECT_EQ(callId, msg.getCallIDView());
         EXPECT_EQ("<sip:bob@example.com>;tag=98765", msg.getHeader<std::string>("From"));
         EXPECT_EQ("<sip:alice@example.com>", msg.getHeader<std::string>("To"));
         EXPECT_EQ("application/sdp", msg.getContentType());
@@ -279,7 +280,7 @@ namespace siddiqsoft
         std::string wire = siddiqsoft::sip2json::serialize(msg);
         EXPECT_FALSE(wire.empty());
         EXPECT_TRUE(wire.starts_with("INVITE sip:alice@example.com SIP/2.0\r\n"));
-        EXPECT_TRUE(wire.find("Call-ID: direct-json-init-callid-12345\r\n") != std::string::npos);
+        EXPECT_TRUE(wire.find("Call-ID: " + callId + "\r\n") != std::string::npos);
         EXPECT_TRUE(wire.find("Content-Type: application/sdp\r\n") != std::string::npos);
         EXPECT_TRUE(wire.find("v=0\r\n") != std::string::npos);
         EXPECT_TRUE(wire.find("o=bob 2890844526 2890844526 IN IP4 192.0.2.1\r\n") != std::string::npos);

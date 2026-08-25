@@ -102,20 +102,19 @@ This pattern is ideal for microservices and cloud workers receiving structured J
 #include <iostream>
 #include "siddiqsoft/sip2json.hpp"
 
-using namespace siddiqsoft;
-
 int main()
 {
+    // 1. Directly initialize sipmessage from the JSON document
     // Define the full SIP message and SDP body directly via JSON structure
-    nlohmann::json rawJson = {
-        {"s", {
+    siddiqsoft::sipmessage msg(nlohmann::json {
+        {"s", { // start-line
             {"type", "request"},
             {"method", "INVITE"},
             {"uri", "sip:bob@example.com"},
             {"version", "SIP/2.0"}
         }},
-        {"h", {
-            {"Call-ID", "call-99812-alpha@10.0.0.4"},
+        {"h", { // headers
+            {"Call-ID", siddiqsoft::createCallId()},
             {"CSeq", "1 INVITE"},
             {"From", "sip:alice@example.com;tag=a831"},
             {"To", "sip:bob@example.com"},
@@ -124,11 +123,11 @@ int main()
             {"Content-Type", "application/sdp"},
             {"User-Agent", "sip2json/2.6"}
         }},
-        {"b", {
-            {"sdp", {
+        {"b", { //body
+            {"sdp", { // must match what you set in Content-Type header
                 {
-                    {"v", 0},
-                    {"o", {
+                    {"v", 0}, // first sdp element
+                    {"o", {   // origin info
                         {"user", "alice"},
                         {"t1", "2890844526"},
                         {"t2", "2890844526"},
@@ -137,14 +136,14 @@ int main()
                         {"host", "10.0.0.4"}
                     }},
                     {"s", "Talk"},
-                    {"c", {
+                    {"c", { // contact
                         {"type", "IN"},
                         {"subtype", "IP4"},
                         {"dn", "10.0.0.4"}
                     }},
-                    {"t", {0, 0}},
-                    {"m", "audio 49170 RTP/AVP 0 101"},
-                    {"a", {
+                    {"t", {0, 0}}, // times are epoch values start/stop
+                    {"m", "audio 49170 RTP/AVP 0 101"}, // codecs
+                    {"a", { // extended attributes
                         {"rtpmap", {"0 PCMU/8000", "101 telephone-event/8000"}},
                         {"fmtp", "101 0-16"},
                         {"sendrecv", true}
@@ -154,12 +153,9 @@ int main()
         }}
     };
 
-    // 1. Directly initialize sipmessage from the JSON document
-    sipmessage msg(rawJson);
-
     // 2. Serialize directly to standard RFC 3261 wire format
     try {
-        std::string rawSipWire = sip2json::serialize(msg);
+        std::string rawSipWire = siddiqsoft::sip2json::serialize(msg);
         std::cout << "Directly Serialized Wire SIP:\n\n" << rawSipWire << std::endl;
     } catch (const sip2json_exception& e) {
         std::cerr << "Serialization error: " << e.what() << std::endl;
