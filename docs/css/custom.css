@@ -149,3 +149,39 @@ code, kbd, pre {
 .md-typeset .headerlink {
   transition: opacity 0.2s ease;
 }
+
+/* -------------------------------------------------------------------------- */
+/* Mermaid Diagrams & Visual Chart Enhancements                              */
+/* -------------------------------------------------------------------------- */
+.mermaid {
+  text-align: center;
+  margin: 2rem auto;
+  overflow-x: auto;
+  padding: 1.25rem 1rem;
+  background-color: var(--md-default-bg-color);
+  border-radius: 8px;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  box-shadow: 0 4px 8px -2px rgba(0, 0, 0, 0.06);
+}
+
+.mermaid svg {
+  max-width: 100% !important;
+  height: auto !important;
+  min-height: 240px;
+  font-family: var(--md-font-main) !important;
+}
+
+/* Make text inside Mermaid diagrams larger and sharper */
+.mermaid .node text,
+.mermaid .nodeLabel,
+.mermaid .label,
+.mermaid .edgeLabel {
+  font-size: 14px !important;
+  letter-spacing: 0.2px;
+}
+
+.mermaid .cluster-label text {
+  font-size: 15px !important;
+  font-weight: 700 !important;
+}
+

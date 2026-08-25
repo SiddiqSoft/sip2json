@@ -46,15 +46,54 @@ target_link_libraries(your_target PRIVATE sip2json::sip2json)
 
 ---
 
-## Build Options
+## Git Submodule Integration
 
-| Option | Default | Description |
-| :--- | :--- | :--- |
-| `sip2json_HEADERKEY_MODE_INSENSITIVE` | `ON` | Enable RFC 3261 case-insensitive header key matching and normalization to canonical Pascal-Kebab-Case keys (`Content-Length`, `Via`, `Call-ID`, etc.) and compact form abbreviations (`l`, `v`, `i`, `c`, `m`, `f`, `t`, `s`, `e`). |
-| `sip2json_BUILD_TESTS` | `OFF` | Build unit tests (requires GoogleTest) |
-| `sip2json_BUILD_BENCHMARKS` | `OFF` | Build performance benchmark suite |
+For vendored repository workflows:
+
+```bash
+git submodule add https://github.com/SiddiqSoft/sip2json.git vendor/sip2json
+```
+
+```cmake
+add_subdirectory(vendor/sip2json)
+target_link_libraries(your_target PRIVATE sip2json::sip2json)
+```
 
 ---
 
+## CMake Configuration Options
+
+| Option | Default | Description |
+| :--- | :---: | :--- |
+| `sip2json_HEADERKEY_MODE_INSENSITIVE` | `ON` | Enable RFC 3261 case-insensitive header key matching and normalization to canonical Pascal-Kebab-Case keys (`Content-Length`, `Via`, `Call-ID`, etc.) and compact form abbreviations (`l`, `v`, `i`, `c`, `m`, `f`, `t`, `s`, `e`). |
+| `sip2json_BUILD_TESTS` | `OFF` | Build compliance, torture, and validation test suites (requires GoogleTest via CPM). |
+| `sip2json_BUILD_BENCHMARKS` | `OFF` | Build the stream parsing performance benchmark executable. |
+
+---
+
+## Windows Prerequisites & Long Paths (CTRE Support)
+
+When building on Windows, the underlying **CTRE (Compile-Time Regular Expressions)** library and CMake package caches generate deeply nested header and template expansion paths that can exceed the legacy 260-character Windows path limit (`MAX_PATH`).
+
 > [!TIP]
-> **Windows Environment Setup Note**: To prevent CTRE template expansion `filename too long` errors on Windows, run [`scripts/prep_windows_machine.ps1`](https://github.com/SiddiqSoft/sip2json/blob/master/scripts/prep_windows_machine.ps1) as Administrator to enable Registry `LongPathsEnabled = 1` and Git `core.longpaths = true`. See the [Integration Guide Overview](index.md#windows-prerequisites-long-paths-ctre-support) for full details.
+> **Automated Windows Machine Configuration**
+> Run [`scripts/prep_windows_machine.ps1`](https://github.com/SiddiqSoft/sip2json/blob/master/scripts/prep_windows_machine.ps1) in an Administrator PowerShell session to enable Registry `LongPathsEnabled = 1` and Git `core.longpaths = true`:
+> ```powershell
+> powershell -ExecutionPolicy Bypass -File .\scripts\prep_windows_machine.ps1
+> ```
+
+### Manual Windows Configuration Steps
+
+1. **Enable Windows Registry Long Paths (`LongPathsEnabled`)**:
+   ```powershell
+   New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name "LongPathsEnabled" -Value 1 -PropertyType DWORD -Force
+   ```
+2. **Enable Git Long Paths Support**:
+   ```bash
+   git config --global core.longpaths true
+   ```
+3. **CPM Cache Path Optimization**:
+   ```cmake
+   set(CPM_SOURCE_CACHE "C:/cpmcache" CACHE PATH "CPM Cache Directory")
+   ```
+

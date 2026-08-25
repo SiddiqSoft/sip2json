@@ -111,10 +111,9 @@
 
 ---
 
-## Navigation
+## Navigation & Documentation Sections
 
-- [**Features**](features/index.md): Streaming parser, JSON schema, SDP body processing, [**Standards Compliance**](features/compliance.md), and [**Test Suite Sources & IETF Links**](features/test_suite_sources.md).
-- [**Integration**](integration/index.md): CMake CPM, Git submodules, and build setup.
-- [**Architecture**](architecture/index.md): Stateless design, iterator processing, and memory layout.
-- [**API Reference**](api/index.md): Comprehensive specifications for `sipmessage`, `sip2json` methods, and exceptions.
-- [**Examples**](examples/index.md): Sample applications and integration snippets.
+- [**Getting Started**](integration/cmake.md): Quick start, CMake CPM integration, [Project Dependencies](integration/dependencies.md), and [Practical Examples](examples/index.md).
+- [**Core Concepts & Architecture**](features/json_schema.md): JSON schema metaphor, [Stream Data Flow](architecture/dataflow.md), [SDP Media Processing](features/sdp.md), and [Standards Compliance & Torture Tests](features/compliance.md).
+- [**Performance & Benchmarks**](features/benchmarks.md): Multi-platform throughput and latency metrics, [Optimization Choices](features/optimization_choices.md), and [Native Struct vs JSON Study](architecture/native_vs_json.md).
+- [**API Reference**](api/sipmessage.md): Complete class reference for [`sipmessage`](api/sipmessage.md), [`sip2json`](api/sip2json.md) parser functions, and [Exceptions & Errors](api/errors.md).

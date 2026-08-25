@@ -8,15 +8,22 @@
 
 ```mermaid
 flowchart TD
-    A["Incoming Header Key (e.g. 'vIa')"] --> B["hash_header_key(key, len)"]
-    B --> C["Compute 64-bit FNV-1a Hash with In-Register Case-Folding"]
-    C --> D{"Fast-Path: Starts with 'X-' or 'X_'?"}
-    D -- "Yes (Custom X-Header)" --> E["Return Custom Header Result (2 cycles)"]
-    D -- "No (Canonical Candidate)" --> F["switch (h) 64-Bit Direct Jump Table (1 cycle)"]
-    F -- "case hash_header_key('via')" --> G["Return static HFS_VIA (hash: 0x68e8f7194eba5d73)"]
-    F -- "case hash_header_key('from')" --> H["Return static HFS_FROM (hash: 0x7f845078d7a5c0b5)"]
-    F -- "case hash_header_key('content-length')" --> I["Return static HFS_CONTENT_LENGTH (hash: 0x2d69a1e6ee916e7d)"]
-    F -- "default (Unrecognized Custom)" --> J["Return Custom KeySet"]
+    A["📥 <b>Incoming Header Key</b><br/><code>(e.g. 'vIa', 'From', 'X-domain')</code>"]:::inputClass --> B["⚙️ <b>hash_header_key(key, len)</b><br/><i>In-Register ASCII Lowercasing</i>"]:::hashClass
+    B --> C["⚡ <b>64-bit FNV-1a Hash Accumulation</b><br/><i>(0 ns Allocation Overhead)</i>"]:::hashClass
+    C --> D{"🔍 <b>Fast-Path Check</b><br/><i>Starts with 'X-' / 'X_'?</i>"}:::decisionClass
+    D -- "✅ Yes (Custom X-Header)" --> E["🚀 <b>Return Custom Header KeySet</b><br/><i>(2 CPU cycles fast exit)</i>"]:::customClass
+    D -- "❌ No (Canonical Candidate)" --> F["🔀 <b>switch (h) Direct Jump Table</b><br/><i>(1 CPU cycle O(1) Indirect Branch)</i>"]:::jumpClass
+    F -- "case hash('via')" --> G["📌 <b>Return static HFS_VIA</b><br/><code>hash: 0x68e8f7194eba5d73</code>"]:::matchClass
+    F -- "case hash('from')" --> H["📌 <b>Return static HFS_FROM</b><br/><code>hash: 0x7f845078d7a5c0b5</code>"]:::matchClass
+    F -- "case hash('content-length')" --> I["📌 <b>Return static HFS_CONTENT_LENGTH</b><br/><code>hash: 0x2d69a1e6ee916e7d</code>"]:::matchClass
+    F -- "default (Unrecognized)" --> J["🏷️ <b>Return Custom KeySet</b>"]:::customClass
+
+    classDef inputClass fill:#1565C0,stroke:#0D47A1,stroke-width:2px,color:#FFFFFF,font-weight:bold;
+    classDef hashClass fill:#6A1B9A,stroke:#4A148C,stroke-width:2px,color:#FFFFFF;
+    classDef decisionClass fill:#EF6C00,stroke:#E65100,stroke-width:2px,color:#FFFFFF,font-weight:bold;
+    classDef jumpClass fill:#00838F,stroke:#006064,stroke-width:2px,color:#FFFFFF,font-weight:bold;
+    classDef matchClass fill:#2E7D32,stroke:#1B5E20,stroke-width:2px,color:#FFFFFF;
+    classDef customClass fill:#455A64,stroke:#263238,stroke-width:2px,color:#FFFFFF;
 ```
 
 ---

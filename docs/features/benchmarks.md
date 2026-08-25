@@ -69,21 +69,28 @@ xychart-beta
 
 ```mermaid
 flowchart LR
-    subgraph OptionA ["Option A: parseAsync Single-Thread (Optimal - 39,493 msg/sec)"]
+    subgraph OptionA ["⚡ Option A: parseAsync Single-Thread (Optimal: ~39,500 msg/s)"]
         direction LR
-        SockA["Network Socket"] --> IOA["I/O Thread"]
-        IOA --> PA["parseAsync(buffer)"]
-        PA --> CBA["Inline Handler Callback"]
+        SockA["🌐 Network Socket"]:::sockClass --> IOA["⚙️ I/O Thread"]:::ioClass
+        IOA --> PA["⚡ parseAsync(buffer)"]:::parseClass
+        PA --> CBA["🚀 Inline Handler Callback<br/><i>(Zero Thread Switches)</i>"]:::optClass
     end
     
-    subgraph OptionC ["Option C: parseAsync + Thread Pool Offload (21% Slower)"]
+    subgraph OptionC ["⚠️ Option C: Thread Pool Offload (21% Slower)"]
         direction LR
-        SockC["Network Socket"] --> IOC["I/O Thread"]
-        IOC --> PC["parseAsync(buffer)"]
-        PC --> Mtx["std::mutex Queue Lock Contention"]
-        Mtx --> W1["Worker Thread 1"]
-        Mtx --> W2["Worker Thread 2"]
+        SockC["🌐 Network Socket"]:::sockClass --> IOC["⚙️ I/O Thread"]:::ioClass
+        IOC --> PC["⚡ parseAsync(buffer)"]:::parseClass
+        PC --> Mtx["🔒 std::mutex Lock Contention<br/><i>(Queue Overhead)</i>"]:::warnClass
+        Mtx --> W1["🧵 Worker Thread 1"]:::threadClass
+        Mtx --> W2["🧵 Worker Thread 2"]:::threadClass
     end
+
+    classDef sockClass fill:#1565C0,stroke:#0D47A1,color:#FFFFFF,font-weight:bold;
+    classDef ioClass fill:#455A64,stroke:#263238,color:#FFFFFF;
+    classDef parseClass fill:#6A1B9A,stroke:#4A148C,color:#FFFFFF,font-weight:bold;
+    classDef optClass fill:#2E7D32,stroke:#1B5E20,stroke-width:2px,color:#FFFFFF,font-weight:bold;
+    classDef warnClass fill:#C62828,stroke:#B71C1C,stroke-width:2px,color:#FFFFFF;
+    classDef threadClass fill:#EF6C00,stroke:#E65100,color:#FFFFFF;
 ```
 
 ### Architectural Question

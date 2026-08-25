@@ -102,7 +102,7 @@ def parse_cmake_file(filepath):
 
 def generate_markdown(dependencies, project_name="sip2json"):
     """
-    Generates markdown content containing the Mermaid diagram and dependency breakdown table.
+    Generates markdown content containing a rich, colorful Mermaid diagram and dependency breakdown table.
     """
     platform_deps = [
         d for d in dependencies if d["scope"] in ("Windows", "Linux/macOS")
@@ -111,75 +111,87 @@ def generate_markdown(dependencies, project_name="sip2json"):
     test_deps = [d for d in dependencies if d["scope"] == "Test"]
 
     lines = []
-    lines.append("# Project Dependencies")
+    lines.append("# Project Dependencies & Architecture Hierarchy")
     lines.append("")
     lines.append(
-        f"This document is automatically generated from `CMakeLists.txt` files for `{project_name}`."
+        f"`{project_name}` is a lightweight, zero-binary-bloat, **header-only Modern C++23 library**. "
+        "Dependencies are managed declaratively via [CPM.cmake](https://github.com/cpm-cmake/CPM.cmake) "
+        "and cached automatically across local and CI builds."
     )
     lines.append("")
-    lines.append("## Dependency Diagram")
+    lines.append("## Dependency Architecture Diagram")
     lines.append("")
     lines.append("```mermaid")
     lines.append("graph TD")
-    lines.append(f'    {project_name}["{project_name}::{project_name}"]')
+    lines.append('    App["🚀 <b>Client Application / Service</b><br/><i>(VoIP Proxy, WebRTC Gateway, Media Server, Analytics)</i>"]:::appClass')
+    lines.append("")
+    lines.append(f'    {project_name}["📦 <b>{project_name}::{project_name}</b><br/><i>Modern C++23 Header-Only SIP Parser & Serializer</i>"]:::projectClass')
     lines.append("")
 
-    if platform_deps:
-        lines.append(
-            '    subgraph Platform["Platform-Specific Dependencies"]'
-        )
-        for d in platform_deps:
+    if core_deps:
+        lines.append('    subgraph CoreGroup ["⚡ Core Header-Only Dependencies (Required via CPM)"]')
+        for i, d in enumerate(core_deps):
             node_id = re.sub(r"[^A-Za-z0-9]", "", d["name"]).upper()
-            scope_desc = (
-                "Windows / MSVC"
-                if d["scope"] == "Windows"
-                else "Linux / macOS"
-            )
-            lines.append(
-                f'        {node_id}["{d["name"]} {d["version"]} ({scope_desc})"]'
-            )
+            role_desc = "JSON Model & Deserialization" if "json" in d["name"].lower() else "Compile-Time Regular Expressions"
+            color_class = f"coreClass{i+1}"
+            lines.append(f'        {node_id}["<b>{d["name"]}</b> <code>{d["version"]}</code><br/><i>{role_desc}</i>"]:::{color_class}')
         lines.append("    end")
         lines.append("")
 
-    if core_deps:
-        lines.append('    subgraph Core["Core Dependencies (via CPM)"]')
-        for d in core_deps:
+    if platform_deps:
+        lines.append('    subgraph PlatformGroup ["🖥️ Platform-Specific Dependencies"]')
+        for d in platform_deps:
             node_id = re.sub(r"[^A-Za-z0-9]", "", d["name"]).upper()
-            lines.append(f'        {node_id}["{d["name"]} {d["version"]}"]')
+            scope_desc = "Windows / MSVC" if d["scope"] == "Windows" else "Linux / macOS"
+            lines.append(f'        {node_id}["<b>{d["name"]}</b> <code>{d["version"]}</code><br/><i>{scope_desc}</i>"]:::platformClass')
         lines.append("    end")
         lines.append("")
 
     if test_deps:
-        lines.append('    subgraph Test["Test Dependencies (Optional)"]')
+        lines.append('    subgraph TestGroup ["🧪 Test & Benchmark Suite (Optional - Active when tests enabled)"]')
         for d in test_deps:
             node_id = re.sub(r"[^A-Za-z0-9]", "", d["name"]).upper()
-            lines.append(f'        {node_id}["{d["name"]} {d["version"]}"]')
+            lines.append(f'        {node_id}["<b>{d["name"]}</b> <code>{d["version"]}</code><br/><i>Unit, Torture & SDP Certification Tests</i>"]:::testClass')
         lines.append("    end")
         lines.append("")
 
     # Connect diagram edges
-    for d in platform_deps + core_deps:
+    lines.append(f'    App -->|"<code>#include &lt;siddiqsoft/sip2json.hpp&gt;</code>"| {project_name}')
+    for d in core_deps:
         node_id = re.sub(r"[^A-Za-z0-9]", "", d["name"]).upper()
-        lines.append(f"    {project_name} --> {node_id}")
+        lines.append(f'    {project_name} -->|"<code>INTERFACE link</code>"| {node_id}')
+
+    for d in platform_deps:
+        node_id = re.sub(r"[^A-Za-z0-9]", "", d["name"]).upper()
+        lines.append(f'    {project_name} -->|"<code>Platform dependency</code>"| {node_id}')
 
     for d in test_deps:
         node_id = re.sub(r"[^A-Za-z0-9]", "", d["name"]).upper()
         lines.append(
-            f'    {project_name} -. "sip2json_BUILD_TESTS=ON" .-> {node_id}'
+            f'    {project_name} -.->|"<code>sip2json_BUILD_TESTS=ON</code>"| {node_id}'
         )
 
+    lines.append("")
+    lines.append("    classDef appClass fill:#2E7D32,stroke:#1B5E20,stroke-width:2px,color:#FFFFFF,font-weight:bold;")
+    lines.append("    classDef projectClass fill:#1565C0,stroke:#0D47A1,stroke-width:3px,color:#FFFFFF,font-weight:bold;")
+    lines.append("    classDef coreClass1 fill:#6A1B9A,stroke:#4A148C,stroke-width:2px,color:#FFFFFF;")
+    lines.append("    classDef coreClass2 fill:#00695C,stroke:#004D40,stroke-width:2px,color:#FFFFFF;")
+    lines.append("    classDef platformClass fill:#0277BD,stroke:#01579B,stroke-width:2px,color:#FFFFFF;")
+    lines.append("    classDef testClass fill:#E65100,stroke:#BF360C,stroke-width:2px,color:#FFFFFF;")
     lines.append("```")
     lines.append("")
-    lines.append("## Dependency Breakdown")
+    lines.append("---")
+    lines.append("")
+    lines.append("## Detailed Dependency Breakdown")
     lines.append("")
     lines.append(
-        "| Dependency | Repository / Target | Version | Type | Scope / Platform |"
+        "| Dependency | Repository / Source | Version | Integration Method | Scope / Target | Description |"
     )
     lines.append(
-        "| :--- | :--- | :--- | :--- | :--- |"
+        "| :--- | :--- | :---: | :---: | :--- | :--- |"
     )
 
-    all_deps = platform_deps + core_deps + test_deps
+    all_deps = core_deps + platform_deps + test_deps
     for d in all_deps:
         if d["repo"].startswith("System /"):
             repo_str = f'`{d["repo"]}`'
@@ -188,13 +200,19 @@ def generate_markdown(dependencies, project_name="sip2json"):
 
         scope_str = {
             "Windows": "Windows (MSVC)",
-            "Linux/macOS": "Linux / macOS (GCC, Clang, AppleClang)",
+            "Linux/macOS": "Linux / macOS (GCC, Clang)",
             "Core": "All Platforms (`INTERFACE`)",
-            "Test": "Test Target Only (`sip2json_BUILD_TESTS=ON`)",
+            "Test": "Test Suite (`sip2json_BUILD_TESTS=ON`)",
         }.get(d["scope"], d["scope"])
 
+        desc = {
+            "nlohmann_json": "First-class JSON object model and DOM serialization",
+            "ctre": "Fast compile-time regular expression evaluation engine",
+            "gtest": "GoogleTest runner for compliance and torture suites",
+        }.get(d["name"], "Component library dependency")
+
         lines.append(
-            f'| **{d["name"]}** | {repo_str} | {d["version"]} | `{d["type"]}` | {scope_str} |'
+            f'| **{d["name"]}** | {repo_str} | `{d["version"]}` | `{d["type"]}` | {scope_str} | {desc} |'
         )
 
     lines.append("")
