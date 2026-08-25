@@ -24,7 +24,7 @@
 * **Modern C++23**: Built for C++23 standards using concepts, string views, move semantics, and CTRE (Compile-Time Regular Expressions).
 * **Asynchronous & Streaming Parsing**: High-performance stream iterator parsing with non-blocking callbacks for multi-frame TCP buffers.
 * **Full SDP Support**: Native decoding and encoding of Session Description Protocol (`application/sdp`) payloads.
-* Use this library to build your application server that suits the purpose of:
+* Use this library to build your application server that [suits the purpose](architecture/native_vs_json.md) of:
   * firing events to your storage system (not just for logging)
   * AI/ML/analytics use
   * firing to ServiceBus/MessageBus/RabbitMQ for processing by serverless or microservices
