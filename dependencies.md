@@ -35,3 +35,17 @@ graph TD
 | :--- | :--- | :---: | :---: | :--- | :--- |
 | **nlohmann_json** | [`nlohmann/json`](https://github.com/nlohmann/json) | `v3.12.0` | `CPM` | All Platforms (`INTERFACE`) | First-class JSON object model and DOM serialization |
 | **ctre** | [`hanickadot/compile-time-regular-expressions`](https://github.com/hanickadot/compile-time-regular-expressions) | `v3.11.0` | `CPM` | All Platforms (`INTERFACE`) | Fast compile-time regular expression evaluation engine |
+
+---
+
+## Development & System Requirements
+
+For maintainers and developers building from source or running client integration suites, the following system libraries and development packages are required:
+
+| Component | Package Names (RHEL / Fedora / Debian / macOS / Windows) | Required For |
+| :--- | :--- | :--- |
+| **libcurl** | `libcurl-devel` / `libcurl4-openssl-dev` / `curl` (Homebrew) / `curl` (vcpkg) | HTTP/REST client integration, remote benchmark metric publication, and network diagnostics |
+| **OpenSSL (`libopenssl`)** | `openssl-devel` / `libssl-dev` / `openssl@3` (Homebrew) / `openssl` (vcpkg) | TLS transport validation, cryptographic hashing, and secure socket communications |
+| **C++23 Compiler** | `gcc-c++` (>= 14) / `clang` (>= 18) / `MSVC` (>= 19.38 / VS 2022 v143) | Core C++23 standard support (`<format>`, `std::string_view`, concepts, constexpr) |
+| **CMake & Ninja** | `cmake` (>= 3.31) & `ninja-build` (>= 1.11) | Cross-platform build configuration, CPM package caching, and test orchestration |
+| **Python 3** | `python3` (>= 3.10) & `python3-pip` | MkDocs site generation, benchmark aggregation (`publish_benchmarks.py`), and diagram generation |

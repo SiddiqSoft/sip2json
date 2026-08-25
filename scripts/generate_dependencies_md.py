@@ -216,6 +216,36 @@ def generate_markdown(dependencies, project_name="sip2json"):
         )
 
     lines.append("")
+    lines.append("---")
+    lines.append("")
+    lines.append("## Development & System Requirements")
+    lines.append("")
+    lines.append(
+        "For maintainers and developers building from source or running client integration suites, the following system libraries and development packages are required:"
+    )
+    lines.append("")
+    lines.append(
+        "| Component | Package Names (RHEL / Fedora / Debian / macOS / Windows) | Required For |"
+    )
+    lines.append(
+        "| :--- | :--- | :--- |"
+    )
+    lines.append(
+        "| **libcurl** | `libcurl-devel` / `libcurl4-openssl-dev` / `curl` (Homebrew) / `curl` (vcpkg) | HTTP/REST client integration, remote benchmark metric publication, and network diagnostics |"
+    )
+    lines.append(
+        "| **OpenSSL (`libopenssl`)** | `openssl-devel` / `libssl-dev` / `openssl@3` (Homebrew) / `openssl` (vcpkg) | TLS transport validation, cryptographic hashing, and secure socket communications |"
+    )
+    lines.append(
+        "| **C++23 Compiler** | `gcc-c++` (>= 14) / `clang` (>= 18) / `MSVC` (>= 19.38 / VS 2022 v143) | Core C++23 standard support (`<format>`, `std::string_view`, concepts, constexpr) |"
+    )
+    lines.append(
+        "| **CMake & Ninja** | `cmake` (>= 3.31) & `ninja-build` (>= 1.11) | Cross-platform build configuration, CPM package caching, and test orchestration |"
+    )
+    lines.append(
+        "| **Python 3** | `python3` (>= 3.10) & `python3-pip` | MkDocs site generation, benchmark aggregation (`publish_benchmarks.py`), and diagram generation |"
+    )
+    lines.append("")
     return "\n".join(lines)
 
 

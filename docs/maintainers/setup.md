@@ -2,6 +2,10 @@
 
 This guide details how to configure a pristine development workstation for `sip2json` on **macOS**, **Linux**, and **Windows**.
 
+> [!IMPORTANT]
+> **Development System Requirements (`libcurl` & `OpenSSL` / `libopenssl`)**:
+> In addition to the C++23 compiler, build generator, and Python, development environments require **`libcurl`** and **`OpenSSL`** (`libopenssl`) development libraries and header packages installed for tooling, security test suites, and client network validation.
+
 ---
 
 ## 1. macOS Setup (Apple Silicon & Intel)
@@ -13,9 +17,9 @@ macOS is the primary local development environment for `sip2json`. Both native A
 # 1. Install Xcode Command Line Tools
 xcode-select --install
 
-# 2. Install package management tools, build generator, and LLVM
+# 2. Install package management tools, build generator, LLVM, libcurl, and OpenSSL
 brew update
-brew install cmake ninja llvm git python3
+brew install cmake ninja llvm git python3 openssl curl
 
 # 3. Verify toolchain versions
 cmake --version    # Requires >= 3.29
@@ -23,19 +27,20 @@ ninja --version    # Requires >= 1.11
 clang --version    # Apple Clang 15+ or Homebrew LLVM Clang 18+
 ```
 
-### Environment Variables (Optional for Homebrew LLVM)
-If you prefer building with Homebrew's upstream LLVM Clang instead of Xcode's AppleClang:
+### Environment Variables (Optional for Homebrew LLVM & OpenSSL)
+If you prefer building with Homebrew's upstream LLVM Clang and OpenSSL:
 ```bash
 export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
-export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
-export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
+export LDFLAGS="-L/opt/homebrew/opt/llvm/lib -L/opt/homebrew/opt/openssl/lib"
+export CPPFLAGS="-I/opt/homebrew/opt/llvm/include -I/opt/homebrew/opt/openssl/include"
+export PKG_CONFIG_PATH="/opt/homebrew/opt/openssl/lib/pkgconfig:$PKG_CONFIG_PATH"
 ```
 
 ---
 
 ## 2. Linux Setup (Red Hat Enterprise Linux 10.2 / Fedora / Debian)
 
-`sip2json` requires a C++23 compliant compiler (`GCC 14+` or `Clang 18+`), CMake 3.31+, and Ninja.
+`sip2json` requires a C++23 compliant compiler (`GCC 14+` or `Clang 18+`), CMake 3.31+, Ninja, and **`libcurl`** / **`OpenSSL`** development packages.
 
 ### Red Hat Enterprise Linux 10.2 / Rocky Linux 10 / AlmaLinux 10
 ```bash
@@ -43,7 +48,7 @@ export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
 sudo dnf install -y epel-release
 sudo dnf config-manager --set-enabled crb || sudo dnf config-manager --set-enabled powertools
 
-# 2. Install Development Tools, GCC 14+, Clang 18+, CMake, Ninja, and Python
+# 2. Install Development Tools, GCC 14+, Clang 18+, CMake, Ninja, Python, libcurl, and OpenSSL
 sudo dnf groupinstall -y "Development Tools"
 sudo dnf install -y \
     gcc-c++ \
@@ -55,6 +60,8 @@ sudo dnf install -y \
     git \
     python3 \
     python3-pip \
+    libcurl-devel \
+    openssl-devel \
     tar \
     curl
 
@@ -67,7 +74,7 @@ ninja --version    # Requires >= 1.11
 
 ### Fedora (40+)
 ```bash
-# 1. Update package index and install toolchain
+# 1. Update package index and install toolchain, libcurl, and OpenSSL
 sudo dnf update -y
 sudo dnf install -y \
     gcc-c++ \
@@ -80,6 +87,8 @@ sudo dnf install -y \
     python3 \
     python3-pip \
     python3-devel \
+    libcurl-devel \
+    openssl-devel \
     tar \
     curl
 
@@ -91,7 +100,7 @@ cmake --version
 
 ### Debian 12 (Bookworm) & Debian 13 (Trixie)
 ```bash
-# 1. Update package lists and install base utilities
+# 1. Update package lists and install base utilities, libcurl, and OpenSSL
 sudo apt-get update
 sudo apt-get install -y \
     build-essential \
@@ -101,6 +110,8 @@ sudo apt-get install -y \
     python3 \
     python3-venv \
     python3-pip \
+    libcurl4-openssl-dev \
+    libssl-dev \
     curl \
     tar
 
@@ -128,6 +139,11 @@ Install Visual Studio 2022 (Community, Professional, or Enterprise) with the **D
 - **C++ CMake tools for Windows**
 - **Windows 11 SDK** (or Windows 10 SDK 10.0.19041+)
 - **Git for Windows**
+
+*(Optional)* If installing `libcurl` and `OpenSSL` via Microsoft `vcpkg`:
+```powershell
+vcpkg install curl openssl:x64-windows
+```
 
 ### Step 2: Automated Machine Setup Script (`prep_windows_machine.ps1`)
 Because `sip2json` and **CTRE (Compile-Time Regular Expressions)** generate deeply nested template and cache directories, you **MUST** enable Windows Long Path support to avoid `MAX_PATH` (260 characters) compilation and cache errors.
