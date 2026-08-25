@@ -256,4 +256,36 @@ code, kbd, pre {
   fill: var(--md-default-fg-color--light) !important;
 }
 
+/* -------------------------------------------------------------------------- */
+/* Suppress Inner Vertical Scrollbars (Sidebars, TOC, Nav, and Containers)     */
+/* -------------------------------------------------------------------------- */
+.md-sidebar__scrollwrap,
+.md-sidebar,
+.md-nav,
+.md-nav--primary,
+.md-nav--secondary,
+.md-nav__list,
+.md-content,
+.md-content__inner,
+.md-main__inner {
+  scrollbar-width: none !important;        /* Firefox */
+  -ms-overflow-style: none !important;     /* IE / Edge */
+}
+
+.md-sidebar__scrollwrap::-webkit-scrollbar,
+.md-sidebar::-webkit-scrollbar,
+.md-nav::-webkit-scrollbar,
+.md-nav--primary::-webkit-scrollbar,
+.md-nav--secondary::-webkit-scrollbar,
+.md-nav__list::-webkit-scrollbar,
+.md-content::-webkit-scrollbar,
+.md-content__inner::-webkit-scrollbar,
+.md-main__inner::-webkit-scrollbar {
+  display: none !important;                /* Chrome, Safari, Opera, Edge */
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+}
+
+
 
