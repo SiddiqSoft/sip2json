@@ -111,7 +111,7 @@ siddiqsoft::sip2json::parseAsync(
         // Verify canonical & custom edge headers
         if (sipm.headers().contains("X-domain"))            x_domain++;
         if (sipm.headers().contains("X-Seamless"))          x_seamless++;
-        if (sipm.headers().contains("X-Call-Instance-ID"))   x_call_instance_id++;
+        if (sipm.headers().contains("X-Call-Instance-ID"))  x_call_instance_id++;
         
         // Inspect nested Session Description Protocol (SDP) JSON blocks
         if (sipm.hasBody() && sipm.body().contains("sdp") && sipm.body()["sdp"].is_array()) {
@@ -127,7 +127,7 @@ siddiqsoft::sip2json::parseAsync(
                 }
             }
         }
-    }
+    } // end of callback
 );
 ```
 
