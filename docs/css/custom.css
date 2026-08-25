@@ -84,29 +84,85 @@ code, kbd, pre {
   vertical-align: top;
 }
 
+/* -------------------------------------------------------------------------- */
+/* High-Contrast Inline Code Tag Styling                                      */
+/* -------------------------------------------------------------------------- */
+.md-typeset code {
+  font-family: var(--md-font-code);
+  font-size: 0.85em;
+  font-weight: 600;
+  color: #3730a3;                              /* Deep Indigo in Light Mode */
+  background-color: #eef2ff;                   /* Soft Lavender Pill */
+  border: 1px solid #c7d2fe;                   /* Crisp Border */
+  border-radius: 4px;
+  padding: 0.15em 0.4em;
+  box-shadow: none;
+  word-break: break-word;
+}
+
+[data-md-color-scheme="slate"] .md-typeset code {
+  color: #67e8f9;                              /* Electric Ice Cyan in Dark Mode */
+  background-color: rgba(99, 102, 241, 0.18);  /* Deep Slate/Indigo Tint */
+  border: 1px solid rgba(103, 232, 249, 0.35);  /* Luminous Cyan Border */
+  box-shadow: none;
+}
+
 /* Prevent unnatural single-character line wraps for inline code in table cells */
 .md-typeset table:not([class]) td code,
 .md-typeset table:not([class]) th code {
   white-space: nowrap;
-  font-size: 0.875em;
-  padding: 0.15em 0.35em;
+  font-size: 0.85em;
+  font-weight: 600;
+  padding: 0.2em 0.45em;
   word-break: keep-all;
+  color: #1e1b4b;
+  background-color: #e0e7ff;
+  border: 1px solid #a5b4fc;
+  box-shadow: none;
+}
+
+[data-md-color-scheme="slate"] .md-typeset table:not([class]) td code,
+[data-md-color-scheme="slate"] .md-typeset table:not([class]) th code {
+  color: #a5f3fc;
+  background-color: rgba(6, 182, 212, 0.18);
+  border: 1px solid rgba(6, 182, 212, 0.4);
+  box-shadow: none;
 }
 
 .md-typeset table:not([class]) tr:hover td {
   background-color: var(--md-accent-fg-color--transparent, rgba(63, 81, 181, 0.05));
 }
 
-/* Enhanced Code Blocks */
+/* -------------------------------------------------------------------------- */
+/* High-Contrast Code Blocks & API Reference Signatures                       */
+/* -------------------------------------------------------------------------- */
+.md-typeset pre {
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-left: 4px solid #6366f1;              /* Indigo Accent Bar */
+  box-shadow: none;
+}
+
+[data-md-color-scheme="slate"] .md-typeset pre {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: 4px solid #06b6d4;              /* Luminous Cyan Accent Bar */
+  box-shadow: none;
+}
+
 .md-typeset pre > code {
-  border-radius: 6px;
+  border: none;
+  background-color: transparent;
+  color: inherit;
+  font-weight: normal;
   font-size: 0.85em;
-  line-height: 1.5;
+  line-height: 1.55;
+  padding: 0;
+  box-shadow: none;
 }
 
 .md-typeset .highlight {
-  border-radius: 6px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  box-shadow: none;
 }
 
 /* Hero & Card Grid enhancements */
