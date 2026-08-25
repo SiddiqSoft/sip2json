@@ -31,7 +31,7 @@ include(pack/CMakeCommonHelpers.cmake)
 project(sip2json
         VERSION         "${CURRENT_PROJECT_VERSION}"
         LANGUAGES       CXX
-        HOMEPAGE_URL    "%%myurl%%"
+        HOMEPAGE_URL    "https://siddiqsoft.github.io/sip2json"
         DESCRIPTION     "A SIP Parser for Modern C++. Header-only library to parse and serialize SIP messages to/from JSON.")
 
 if(NOT CMAKE_CXX_STANDARD)
@@ -57,7 +57,7 @@ target_include_directories(${PROJECT_NAME}
 # The following is needed to make the .natvis file available to the IDE for debugging
 target_sources(${PROJECT_NAME} PRIVATE siddiqsoft.${PROJECT_NAME}.natvis)
 # Install natvis file for Visual Studio debugger visualization
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/SiddiqSoft.sip2json.natvis
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/siddiqsoft.sip2json.natvis
         DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}
         COMPONENT natvis
         OPTIONAL)
