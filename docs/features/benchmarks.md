@@ -29,15 +29,6 @@ The benchmark suite tests `sip2json` against a comprehensive real-world dataset 
 | **Carrier Extension & Edge Frames** | `Test_extension_aras.sip`, `Test_extension_nelson.sip`, `Test_check_Via.sip` | Custom telephony headers (`X-domain`, `X-Seamless`, `X-Call-Instance-ID`, `P-Asserted-Identity`, `P-Charging-Vector`). | Fast-path `X-` header bypass, preservation of unrecognized vendor headers in JSON without parsing degradation. |
 | **Fragmented & Edge Boundary Fixtures** | `Test_incomplete_buffer_for_content.sip`, `Test_incomplete_buffer_for_header.sip`, `Test_incomplete_buffer_for_parse.sip`, `Test_invalid_document.sip`, `Test_invalid_startline.sip`, `Test_unsupported_contenttype.sip` | Incomplete byte streams, truncated content lengths, malformed start lines, unknown MIME types. | Error callback invocation, recovery without memory leaks or buffer overrun exceptions. |
 
-### Empirical Stream Inspection & SDP Element Counts
-
-| Fixture Stream File | Messages Received | Total SDP Elements | Avg SDP Elements / Msg | `X-domain` Headers | `X-Seamless` Headers | `X-Call-Instance-ID` | SDP `a=x-voice-callowner-login_alias` |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **`Mixed_Stream_1.sip`** | 18 | 853 | **47.39** | 18 | 0 | 16 | 22 |
-| **`Mixed_Stream_2.sip`** | 9 | 349 | **38.78** | 9 | 0 | 9 | 9 |
-| **`Mixed_Stream_3.sip`** | 21 | 739 | **35.19** | 21 | 0 | 21 | 8 |
-| **`RandomStream_Recv_File_1.sip`** | 459 | 21,409 | **46.64** | 459 | 34 | 344 | 549 |
-
 ---
 
 ## 3. How We Tested
