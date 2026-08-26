@@ -50,8 +50,8 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Roboto";--md-code-font:"JetBrains Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CVictor+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Victor Mono"}</style>
       
     
     
@@ -393,7 +393,9 @@
   
 
 
-<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="sip2json" class="md-nav__button md-logo" aria-label="sip2json" data-md-component="logo">
       
@@ -1543,210 +1545,6 @@
               </div>
             
             
-              
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
-                <div class="md-sidebar__scrollwrap">
-                  <div class="md-sidebar__inner">
-                    
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#1-multi-platform-cross-architecture-pipeline-benchmark-matrix" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        1. Multi-Platform &amp; Cross-Architecture Pipeline Benchmark Matrix
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#2-benchmark-source-data-dataset-outline" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2. Benchmark Source Data &amp; Dataset Outline
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="2. Benchmark Source Data &amp; Dataset Outline">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#test-dataset-classification" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Test Dataset Classification
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#3-how-we-tested" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3. How We Tested
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="3. How We Tested">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#test-execution-methodology-controls" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Test Execution Methodology &amp; Controls
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#benchmark-harness-implementation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Benchmark Harness Implementation
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Benchmark Harness Implementation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#pass-1-multi-message-asynchronous-stream-parsing-sip2jsonparseasync" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Pass 1: Multi-Message Asynchronous Stream Parsing (sip2json::parseAsync)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pass-2-single-message-discrete-parsing-sip2jsonparsefrombuffer" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Pass 2: Single-Message Discrete Parsing (sip2json::parseFromBuffer)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pass-3-deep-header-sdp-ast-inspection-loop" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Pass 3: Deep Header &amp; SDP AST Inspection Loop
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#4-single-stream-architectural-study-parseasync-vs-parse-vs-thread-pool" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4. Single Stream Architectural Study: parseAsync vs. parse vs. Thread Pool
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="4. Single Stream Architectural Study: parseAsync vs. parse vs. Thread Pool">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#architectural-pipeline-comparison" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Architectural Pipeline Comparison
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#architectural-question" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Architectural Question
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#why-single-thread-parseasync-wins-for-single-streams" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Why Single-Thread parseAsync Wins for Single Streams
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#5-running-benchmarks-locally" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        5. Running Benchmarks Locally
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-                  </div>
-                </div>
-              </div>
-            
           
           
             <div class="md-content" data-md-component="content">
@@ -1830,41 +1628,76 @@
 <tbody>
 <tr>
 <td style="text-align: left;"><strong>Linux</strong></td>
-<td style="text-align: center;"><strong>arm64</strong></td>
+<td style="text-align: center;"><strong>x64</strong></td>
 <td style="text-align: center;">Clang</td>
 <td style="text-align: left;">Linux (4 CPU Cores, 48 MHz, 6 GB RAM)</td>
-<td style="text-align: center;"><strong>94,900.68 msg/s</strong></td>
-<td style="text-align: center;"><strong>235.31 MB/s</strong></td>
-<td style="text-align: center;"><strong>23.65 ms</strong></td>
-<td style="text-align: center;"><strong>295,664.13 msg/s</strong></td>
-<td style="text-align: center;"><strong>3.40 ms</strong></td>
+<td style="text-align: center;"><strong>101,143.64 msg/s</strong></td>
+<td style="text-align: center;"><strong>250.79 MB/s</strong></td>
+<td style="text-align: center;"><strong>21.07 ms</strong></td>
+<td style="text-align: center;"><strong>302,900.78 msg/s</strong></td>
+<td style="text-align: center;"><strong>3.32 ms</strong></td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>Linux</strong></td>
-<td style="text-align: center;"><strong>arm64</strong></td>
+<td style="text-align: center;"><strong>x64</strong></td>
+<td style="text-align: center;">Clang</td>
+<td style="text-align: left;">Linux (4 CPU Cores, 48 MHz, 6 GB RAM)</td>
+<td style="text-align: center;"><strong>101,143.64 msg/s</strong></td>
+<td style="text-align: center;"><strong>250.79 MB/s</strong></td>
+<td style="text-align: center;"><strong>21.07 ms</strong></td>
+<td style="text-align: center;"><strong>302,900.78 msg/s</strong></td>
+<td style="text-align: center;"><strong>3.32 ms</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Linux</strong></td>
+<td style="text-align: center;"><strong>x64</strong></td>
 <td style="text-align: center;">GCC</td>
 <td style="text-align: left;">Linux (4 CPU Cores, 48 MHz, 6 GB RAM)</td>
-<td style="text-align: center;"><strong>114,673.46 msg/s</strong></td>
-<td style="text-align: center;"><strong>284.34 MB/s</strong></td>
-<td style="text-align: center;"><strong>17.10 ms</strong></td>
-<td style="text-align: center;"><strong>311,740.27 msg/s</strong></td>
-<td style="text-align: center;"><strong>3.22 ms</strong></td>
+<td style="text-align: center;"><strong>90,689.66 msg/s</strong></td>
+<td style="text-align: center;"><strong>224.87 MB/s</strong></td>
+<td style="text-align: center;"><strong>25.00 ms</strong></td>
+<td style="text-align: center;"><strong>279,703.63 msg/s</strong></td>
+<td style="text-align: center;"><strong>3.59 ms</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Linux</strong></td>
+<td style="text-align: center;"><strong>x64</strong></td>
+<td style="text-align: center;">GCC</td>
+<td style="text-align: left;">Linux (4 CPU Cores, 48 MHz, 6 GB RAM)</td>
+<td style="text-align: center;"><strong>90,689.66 msg/s</strong></td>
+<td style="text-align: center;"><strong>224.87 MB/s</strong></td>
+<td style="text-align: center;"><strong>25.00 ms</strong></td>
+<td style="text-align: center;"><strong>279,703.63 msg/s</strong></td>
+<td style="text-align: center;"><strong>3.59 ms</strong></td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>Windows</strong></td>
-<td style="text-align: center;"><strong>arm64</strong></td>
+<td style="text-align: center;"><strong>x64</strong></td>
 <td style="text-align: center;">MSVC</td>
 <td style="text-align: left;">Windows (4 CPU Cores, 3072 MHz, 6 GB RAM)</td>
-<td style="text-align: center;"><strong>96,864.86 msg/s</strong></td>
-<td style="text-align: center;"><strong>240.18 MB/s</strong></td>
-<td style="text-align: center;"><strong>10.77 ms</strong></td>
-<td style="text-align: center;"><strong>149,333.33 msg/s</strong></td>
-<td style="text-align: center;"><strong>6.74 ms</strong></td>
+<td style="text-align: center;"><strong>93,090.91 msg/s</strong></td>
+<td style="text-align: center;"><strong>230.82 MB/s</strong></td>
+<td style="text-align: center;"><strong>10.80 ms</strong></td>
+<td style="text-align: center;"><strong>144,000.00 msg/s</strong></td>
+<td style="text-align: center;"><strong>7.03 ms</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Windows</strong></td>
+<td style="text-align: center;"><strong>x64</strong></td>
+<td style="text-align: center;">MSVC</td>
+<td style="text-align: left;">Windows (4 CPU Cores, 3072 MHz, 6 GB RAM)</td>
+<td style="text-align: center;"><strong>93,090.91 msg/s</strong></td>
+<td style="text-align: center;"><strong>230.82 MB/s</strong></td>
+<td style="text-align: center;"><strong>10.80 ms</strong></td>
+<td style="text-align: center;"><strong>144,000.00 msg/s</strong></td>
+<td style="text-align: center;"><strong>7.03 ms</strong></td>
 </tr>
 </tbody>
 </table>
 <!-- PIPELINE_BENCHMARKS_END -->
-
+<p>The build machines are VMs on the same host (Mac Mini M4pro) with 4vCPU, 6GB RAM each.
+- GCC and Clang build on the same host!
+- Note that GCC produces code that is significantly faster than Clang whereas MSVC is second.</p>
 <hr />
 <h2 id="2-benchmark-source-data-dataset-outline">2. Benchmark Source Data &amp; Dataset Outline<a class="headerlink" href="#2-benchmark-source-data-dataset-outline" title="Permanent link">&para;</a></h2>
 <p>The benchmark suite tests <code>sip2json</code> against a comprehensive real-world dataset comprising <strong>36 production SIP stream capture files</strong> (~1.5 MB total wire data) located in <code>tests/validation/samples/</code>.</p>
@@ -2143,7 +1976,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "2.6.0-beta.1"}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "toc.integrate", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "2.6.0-beta.1"}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>

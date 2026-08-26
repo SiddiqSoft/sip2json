@@ -50,8 +50,8 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Roboto";--md-code-font:"JetBrains Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CVictor+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Victor Mono"}</style>
       
     
     
@@ -393,7 +393,9 @@
   
 
 
-<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="sip2json" class="md-nav__button md-logo" aria-label="sip2json" data-md-component="logo">
       
@@ -1493,160 +1495,6 @@
               </div>
             
             
-              
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
-                <div class="md-sidebar__scrollwrap">
-                  <div class="md-sidebar__inner">
-                    
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#1-cicd-architecture-overview" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        1. CI/CD Architecture Overview
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#2-pipeline-stages-explained" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2. Pipeline Stages Explained
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#3-self-hosted-build-agent-requirements" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3. Self-Hosted Build Agent Requirements
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="3. Self-Hosted Build Agent Requirements">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#linux-agent-demands-agentos-equals-linux" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Linux Agent Demands (Agent.OS -equals Linux)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#windows-agent-demands-agentos-equals-windows_nt" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Windows Agent Demands (Agent.OS -equals Windows_NT)
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#4-required-azure-devops-secrets-variables" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4. Required Azure DevOps Secrets &amp; Variables
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="4. Required Azure DevOps Secrets &amp; Variables">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#1-secret-variables-variable-groups" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        1. Secret Variables &amp; Variable Groups
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#2-github-service-connection" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2. GitHub Service Connection
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#5-semantic-versioning-branch-workflow-gitversionyml" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        5. Semantic Versioning &amp; Branch Workflow (GitVersion.yml)
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="5. Semantic Versioning &amp; Branch Workflow (GitVersion.yml)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#release-procedure-for-maintainers" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Release Procedure for Maintainers:
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-                  </div>
-                </div>
-              </div>
-            
           
           
             <div class="md-content" data-md-component="content">
@@ -1762,13 +1610,13 @@
 <tr>
 <td style="text-align: left;"><strong><code>Windows</code></strong></td>
 <td style="text-align: left;">PR or Branch Push</td>
-<td style="text-align: left;">Build matrix (x64 / ARM64, MSVC), executes 321 CTests, runs stream benchmarks, publishes benchmark artifacts.</td>
+<td style="text-align: left;">Build matrix (x64 / ARM64, MSVC), executes 324 CTests, runs stream benchmarks, publishes benchmark artifacts.</td>
 <td style="text-align: left;"><code>.azure/az-build-windows.yml</code></td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong><code>Linux</code></strong></td>
 <td style="text-align: left;">PR or Branch Push</td>
-<td style="text-align: left;">Build matrix (x64 / ARM64, GCC / Clang), executes 321 CTests, runs stream benchmarks, publishes benchmark artifacts.</td>
+<td style="text-align: left;">Build matrix (x64 / ARM64, GCC / Clang), executes 324 CTests, runs stream benchmarks, publishes benchmark artifacts.</td>
 <td style="text-align: left;"><code>.azure/az-build-linux.yml</code></td>
 </tr>
 <tr>
@@ -1790,7 +1638,7 @@
 <p>The pipeline uses the self-hosted <strong><code>Default</code></strong> agent pool (<code>pool: name: Default</code>) and targets specific OS demands:</p>
 <h3 id="linux-agent-demands-agentos-equals-linux">Linux Agent Demands (<code>Agent.OS -equals Linux</code>)<a class="headerlink" href="#linux-agent-demands-agentos-equals-linux" title="Permanent link">&para;</a></h3>
 <ul>
-<li><strong>OS</strong>: Ubuntu 22.04 / 24.04 LTS (x64 and arm64).</li>
+<li><strong>OS</strong>: Red Hat Enterprise Linux 10.2 / Fedora / Debian (x64 and arm64).</li>
 <li><strong>Tools</strong>: GCC 14+, Clang 18+, CMake 3.29+, Ninja 1.11+, Python 3.10+, Git 2.40+.</li>
 <li><strong>User Permissions</strong>: Agent process must have read/write access to <code>$(Agent.HomeDirectory)/.cpmcache</code>.</li>
 </ul>
@@ -1804,7 +1652,7 @@
 <h2 id="4-required-azure-devops-secrets-variables">4. Required Azure DevOps Secrets &amp; Variables<a class="headerlink" href="#4-required-azure-devops-secrets-variables" title="Permanent link">&para;</a></h2>
 <p>To configure a new Azure DevOps organization or project pipeline for <code>sip2json</code>, maintainers must set up the following secrets and service connections:</p>
 <h3 id="1-secret-variables-variable-groups">1. Secret Variables &amp; Variable Groups<a class="headerlink" href="#1-secret-variables-variable-groups" title="Permanent link">&para;</a></h3>
-<p>In <strong>Azure DevOps</strong> $\rightarrow$ <strong>Pipelines</strong> $\rightarrow$ <strong>Library</strong> $\rightarrow$ create a Variable Group (e.g., <code>sip2json-secrets</code> or Pipeline Variables):</p>
+<p>In <strong>Azure DevOps</strong> &rarr; <strong>Pipelines</strong> &rarr; <strong>Library</strong> &rarr; create a Variable Group (e.g., pipeline secrets or variable group):</p>
 <table>
 <thead>
 <tr>
@@ -1822,7 +1670,7 @@
 <tr>
 <td style="text-align: left;"><strong><code>GITHUB_USER</code></strong></td>
 <td style="text-align: center;">Plain Text</td>
-<td style="text-align: left;">Email / Name for Azure Pipelines git commit actor (e.g. <code>azure-pipelines[bot]@siddiqsoft.com</code> or maintainer email).</td>
+<td style="text-align: left;">Name or bot identifier for Azure Pipelines git commit actor (e.g. <code>azure-pipelines[bot]</code> or maintainer username).</td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong><code>System.AccessToken</code></strong></td>
@@ -1832,10 +1680,10 @@
 </tbody>
 </table>
 <h3 id="2-github-service-connection">2. GitHub Service Connection<a class="headerlink" href="#2-github-service-connection" title="Permanent link">&para;</a></h3>
-<p>In <strong>Project Settings</strong> $\rightarrow$ <strong>Pipelines</strong> $\rightarrow$ <strong>Service connections</strong> $\rightarrow$ <strong>New service connection</strong>:
+<p>In <strong>Project Settings</strong> &rarr; <strong>Pipelines</strong> &rarr; <strong>Service connections</strong> &rarr; <strong>New service connection</strong>:
 1. Select <strong>GitHub</strong>.
 2. Authentication method: <strong>Personal Access Token (PAT)</strong> or <strong>Azure Pipelines GitHub App</strong>.
-3. Service connection name: <code>SiddiqSoft-GitHub</code> (or configure default GitHub connection).
+3. Service connection name: <code>github-service-connection</code> (or your configured GitHub service connection name).
 4. Grant access permission to all pipelines.</p>
 <hr />
 <h2 id="5-semantic-versioning-branch-workflow-gitversionyml">5. Semantic Versioning &amp; Branch Workflow (<code>GitVersion.yml</code>)<a class="headerlink" href="#5-semantic-versioning-branch-workflow-gitversionyml" title="Permanent link">&para;</a></h2>
@@ -1862,7 +1710,7 @@
 <ol>
 <li>Create a release branch: <code>git checkout -b release/2.6.0</code></li>
 <li>Push commits and open Pull Request to <code>master</code>.</li>
-<li>Azure Pipelines builds the full Linux &amp; Windows matrix and runs the 321-test suite.</li>
+<li>Azure Pipelines builds the full Linux &amp; Windows matrix and runs the 324-test suite.</li>
 <li>Once PR is merged to <code>master</code>, Azure Pipelines triggers <code>PublishGitHub</code> and <code>PublishDocs</code>.</li>
 <li>Maintainers approve the manual validation gates in the Azure DevOps portal to publish the official GitHub Release and update <code>gh-pages</code>.</li>
 </ol>
@@ -1961,7 +1809,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "2.6.0-beta.1"}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "toc.integrate", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "2.6.0-beta.1"}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>

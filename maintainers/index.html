@@ -50,8 +50,8 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Roboto";--md-code-font:"JetBrains Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CVictor+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Victor Mono"}</style>
       
     
     
@@ -393,7 +393,9 @@
   
 
 
-<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href=".." title="sip2json" class="md-nav__button md-logo" aria-label="sip2json" data-md-component="logo">
       
@@ -1387,54 +1389,6 @@
               </div>
             
             
-              
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
-                <div class="md-sidebar__scrollwrap">
-                  <div class="md-sidebar__inner">
-                    
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#repository-architecture-directory-layout" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Repository Architecture &amp; Directory Layout
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#maintainer-guide-index" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Maintainer Guide Index
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-                  </div>
-                </div>
-              </div>
-            
           
           
             <div class="md-content" data-md-component="content">
@@ -1501,53 +1455,73 @@
 <hr />
 <h2 id="repository-architecture-directory-layout">Repository Architecture &amp; Directory Layout<a class="headerlink" href="#repository-architecture-directory-layout" title="Permanent link">&para;</a></h2>
 <p><code>sip2json</code> is a header-only Modern C++23 SIP protocol parser and serializer library designed with <code>nlohmann::json</code> as a first-class API metaphor.</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>sip2json/
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>├── include/                     # Public and private header-only library implementation
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>│   └── siddiqsoft/
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│       ├── sip2json.hpp         # Primary public header (parse, parseAsync, parseFromBuffer, serialize)
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│       ├── sipmessage.hpp       # sipmessage class (subclasses nlohmann::json)
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│       └── private/             # Zero-allocation internal helpers, serializers &amp; CTRE regexes
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│           ├── sip2json_header_keys.hpp      # 64-bit FNV-1a constexpr hash matching &amp; jump table
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│           ├── sip2json_parser.hpp           # Start-line &amp; header parsing engine
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│           ├── sip2json_serializer.hpp       # Wire format serialization engine
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│           ├── sip2json_sdp.hpp              # SDP payload AST parser and serializer
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│           ├── sip2json_exception.hpp        # Hierarchy of parser exceptions
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│           ├── sip2json_response_codes.hpp   # RFC 3261 response codes &amp; reason phrases
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│           └── sip2json_utils.hpp            # In-register lowercasing, date/time, hex tools
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>├── tests/                       # Comprehensive test suites (321 tests, 100% passing)
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│   ├── compliance/              # RFC 3261, RFC 4475 (50 torture cases), SDP RFC 4566/8866 suites
-</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>│   ├── regression/              # Production defect regressions &amp; stream re-assembly tests
-</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>│   ├── coverage/                # Branch &amp; statement coverage tests
-</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>│   ├── security/                # CRLF injection, integer overflow, memory safety tests
-</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>│   ├── vulnerability/           # CVE &amp; fuzzing attack simulation tests
-</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>│   ├── validation/              # Real-world stream fixtures (36 files, ~1.5 MB)
-</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>│   └── benchmark/               # C++ benchmark harnesses (single-thread &amp; Google Benchmark)
-</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>├── docs/                        # MkDocs documentation source (Material theme)
-</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>│   ├── hooks.py                 # MkDocs build hook (version resolution &amp; dynamic doc generation)
-</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>│   └── ...                      # Markdown guides, architecture studies, and API references
-</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>├── scripts/                     # Maintainer automation scripts
-</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>│   ├── prep_windows_machine.ps1 # Administrator setup for Windows (Registry long paths, Git config)
-</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>│   ├── init_msvc_env.bat        # Command-line MSVC developer environment initialization
-</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>│   ├── init_msvc_env.ps1        # PowerShell MSVC environment initialization
-</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>│   ├── publish_benchmarks.py    # Cross-platform CI benchmark aggregator and markdown injector
-</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>│   └── generate_dependencies_md.py # Dynamic CMake dependency diagram generator
-</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>├── .azure/                      # Azure DevOps CI/CD pipeline stage and job templates
-</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>│   ├── az-build-linux.yml       # Linux CI build matrix (GCC &amp; Clang, x64 &amp; arm64)
-</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>│   ├── az-build-windows.yml     # Windows CI build matrix (MSVC, x64 &amp; arm64)
-</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>│   ├── az-publish-docs.yml      # MkDocs documentation builder &amp; GitHub Pages publisher
-</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>│   └── az-publish-github.yml    # GitHub Releases publisher
-</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>├── azure-pipelines.yml          # Main Azure Pipelines orchestration definition
-</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>├── CMakeLists.txt               # Main CMake build definition (CPM package management)
-</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>├── CMakePresets.json            # Cross-platform build and configure presets
-</span><span id="__span-0-39"><a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a>├── GitVersion.yml               # Semantic version calculation configuration
-</span><span id="__span-0-40"><a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a>└── mkdocs.yml                   # MkDocs Material theme configuration and navigation
-</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Directory / File</th>
+<th style="text-align: left;">Scope &amp; Type</th>
+<th style="text-align: left;">Purpose &amp; Key Artifacts</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong><code>include/siddiqsoft/</code></strong></td>
+<td style="text-align: left;">Public API Headers</td>
+<td style="text-align: left;">Primary public interface: <a href="file:///Users/maas/source/repos/siddiqsoft/sip2json/include/siddiqsoft/sip2json.hpp"><code>sip2json.hpp</code></a> (parser &amp; serializer entry points) and <a href="file:///Users/maas/source/repos/siddiqsoft/sip2json/include/siddiqsoft/sipmessage.hpp"><code>sipmessage.hpp</code></a> (<code>nlohmann::json</code> subclass).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>include/siddiqsoft/private/</code></strong></td>
+<td style="text-align: left;">Internal Engine</td>
+<td style="text-align: left;">High-performance header parsing (<a href="file:///Users/maas/source/repos/siddiqsoft/sip2json/include/siddiqsoft/private/sip2json_parser.hpp"><code>sip2json_parser.hpp</code></a>), constexpr 64-bit FNV-1a matching (<a href="file:///Users/maas/source/repos/siddiqsoft/sip2json/include/siddiqsoft/private/sip2json_header_keys.hpp"><code>sip2json_header_keys.hpp</code></a>), SDP parser (<a href="file:///Users/maas/source/repos/siddiqsoft/sip2json/include/siddiqsoft/private/sip2json_sdp.hpp"><code>sip2json_sdp.hpp</code></a>), wire serializer (<a href="file:///Users/maas/source/repos/siddiqsoft/sip2json/include/siddiqsoft/private/sip2json_serializer.hpp"><code>sip2json_serializer.hpp</code></a>), exceptions (<a href="file:///Users/maas/source/repos/siddiqsoft/sip2json/include/siddiqsoft/private/sip2json_exception.hpp"><code>sip2json_exception.hpp</code></a>), and response codes (<a href="file:///Users/maas/source/repos/siddiqsoft/sip2json/include/siddiqsoft/private/sip2json_response_codes.hpp"><code>sip2json_response_codes.hpp</code></a>).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>tests/</code></strong></td>
+<td style="text-align: left;">Test Suites (324 Tests)</td>
+<td style="text-align: left;">Categorized testing architecture: <code>compliance/</code> (RFC 3261 &amp; RFC 4475), <code>regression/</code> (bug fixes &amp; memory safety), <code>coverage/</code> (statement &amp; branch coverage), <code>security/</code> (CRLF injection &amp; memory safety), <code>vulnerability/</code> (fuzzing &amp; overflow resilience), <code>validation/</code> (36 sample stream captures), and <code>benchmark/</code> (performance harnesses).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>docs/</code></strong></td>
+<td style="text-align: left;">Documentation Source</td>
+<td style="text-align: left;">MkDocs Material site source, theme overrides, API references, architecture deep-dives, and <a href="file:///Users/maas/source/repos/siddiqsoft/sip2json/docs/hooks.py"><code>docs/hooks.py</code></a> build lifecycle hooks.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>scripts/</code></strong></td>
+<td style="text-align: left;">Developer Automation</td>
+<td style="text-align: left;">Cross-platform build helpers: <a href="file:///Users/maas/source/repos/siddiqsoft/sip2json/scripts/publish_benchmarks.py"><code>publish_benchmarks.py</code></a> (matrix aggregator), <a href="file:///Users/maas/source/repos/siddiqsoft/sip2json/scripts/generate_dependencies_md.py"><code>generate_dependencies_md.py</code></a>, <a href="file:///Users/maas/source/repos/siddiqsoft/sip2json/scripts/prep_windows_machine.ps1"><code>prep_windows_machine.ps1</code></a>, and <a href="file:///Users/maas/source/repos/siddiqsoft/sip2json/scripts/init_msvc_env.ps1"><code>init_msvc_env.ps1</code></a>.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>.azure/</code></strong></td>
+<td style="text-align: left;">CI/CD Pipelines</td>
+<td style="text-align: left;">Modular Azure DevOps pipeline definitions: <a href="file:///Users/maas/source/repos/siddiqsoft/sip2json/.azure/az-build-linux.yml"><code>az-build-linux.yml</code></a>, <a href="file:///Users/maas/source/repos/siddiqsoft/sip2json/.azure/az-build-windows.yml"><code>az-build-windows.yml</code></a>, <a href="file:///Users/maas/source/repos/siddiqsoft/sip2json/.azure/az-publish-docs.yml"><code>az-publish-docs.yml</code></a>, and <a href="file:///Users/maas/source/repos/siddiqsoft/sip2json/.azure/az-publish-github.yml"><code>az-publish-github.yml</code></a>.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>CMakeLists.txt</code></strong></td>
+<td style="text-align: left;">Build Definition</td>
+<td style="text-align: left;">CMake 3.31+ interface library target definition with CPM dependency management.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>CMakePresets.json</code></strong></td>
+<td style="text-align: left;">Build Presets</td>
+<td style="text-align: left;">Cross-platform configure, build, and test presets for macOS (Xcode/LLVM), Linux (GCC/Clang), and Windows (MSVC x64/ARM64).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>GitVersion.yml</code></strong></td>
+<td style="text-align: left;">Versioning Policy</td>
+<td style="text-align: left;">Semantic version calculation rules based on Git commit history and release branch names.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>mkdocs.yml</code></strong></td>
+<td style="text-align: left;">Site Configuration</td>
+<td style="text-align: left;">Material for MkDocs navigation hierarchy, theme extensions, search, and integrated Table of Contents (<code>toc.integrate</code>).</td>
+</tr>
+</tbody>
+</table>
 <hr />
 <h2 id="maintainer-guide-index">Maintainer Guide Index<a class="headerlink" href="#maintainer-guide-index" title="Permanent link">&para;</a></h2>
 <p>Navigate the dedicated maintainer guides:</p>
 <ol>
-<li><a href="setup/"><strong>Developer Environment Setup</strong></a>: Step-by-step toolchain and prerequisite configuration for macOS (Apple Silicon &amp; Intel), Linux (Ubuntu / Debian / RHEL), and Windows (MSVC 2022 + long paths).</li>
-<li><a href="building/"><strong>Building, Testing &amp; Benchmarking</strong></a>: Using CMake Presets, executing the 321-test CTest suite, running performance benchmark harnesses, and diagnosing memory with AddressSanitizer.</li>
+<li><a href="setup/"><strong>Developer Environment Setup</strong></a>: Step-by-step toolchain and prerequisite configuration for macOS (Apple Silicon &amp; Intel), Linux (Red Hat 10.2 / Fedora / Debian), and Windows (MSVC 2022 + long paths).</li>
+<li><a href="building/"><strong>Building, Testing &amp; Benchmarking</strong></a>: Using CMake Presets, executing the 324-test CTest suite, running performance benchmark harnesses, and diagnosing memory with AddressSanitizer.</li>
 <li><a href="documentation/"><strong>Documentation &amp; MkDocs</strong></a>: Local preview server (<code>mkdocs serve</code>), strict verification builds, Python virtual environment, and dynamic build hooks (<code>docs/hooks.py</code>).</li>
 <li><a href="pipelines/"><strong>Azure Pipelines CI/CD &amp; Secrets</strong></a>: Self-hosted agent requirements, multi-platform build matrix, release gates, GitHub Pages deployment, and required Azure DevOps secrets (<code>GITHUB_TOKEN</code>, <code>GITHUB_USER</code>).</li>
 </ol>
@@ -1646,7 +1620,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "2.6.0-beta.1"}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "toc.integrate", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "2.6.0-beta.1"}</script>
     
     
       <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>

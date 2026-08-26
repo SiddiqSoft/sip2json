@@ -50,8 +50,8 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Roboto";--md-code-font:"JetBrains Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CVictor+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Victor Mono"}</style>
       
     
     
@@ -393,7 +393,9 @@
   
 
 
-<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="sip2json" class="md-nav__button md-logo" aria-label="sip2json" data-md-component="logo">
       
@@ -611,6 +613,17 @@
     <span class="md-ellipsis">
       
         Detailed Dependency Breakdown
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#development-system-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Development &amp; System Requirements
       
     </span>
   </a>
@@ -1387,54 +1400,6 @@
               </div>
             
             
-              
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
-                <div class="md-sidebar__scrollwrap">
-                  <div class="md-sidebar__inner">
-                    
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#dependency-architecture-diagram" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Dependency Architecture Diagram
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#detailed-dependency-breakdown" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Detailed Dependency Breakdown
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-                  </div>
-                </div>
-              </div>
-            
           
           
             <div class="md-content" data-md-component="content">
@@ -1551,6 +1516,45 @@
 </tr>
 </tbody>
 </table>
+<hr />
+<h2 id="development-system-requirements">Development &amp; System Requirements<a class="headerlink" href="#development-system-requirements" title="Permanent link">&para;</a></h2>
+<p>For maintainers and developers building from source or running client integration suites, the following system libraries and development packages are required:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Component</th>
+<th style="text-align: left;">Package Names (RHEL / Fedora / Debian / macOS / Windows)</th>
+<th style="text-align: left;">Required For</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>libcurl</strong></td>
+<td style="text-align: left;"><code>libcurl-devel</code> / <code>libcurl4-openssl-dev</code> / <code>curl</code> (Homebrew) / <code>curl</code> (vcpkg)</td>
+<td style="text-align: left;">HTTP/REST client integration, remote benchmark metric publication, and network diagnostics</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>OpenSSL (<code>libopenssl</code>)</strong></td>
+<td style="text-align: left;"><code>openssl-devel</code> / <code>libssl-dev</code> / <code>openssl@3</code> (Homebrew) / <code>openssl</code> (vcpkg)</td>
+<td style="text-align: left;">TLS transport validation, cryptographic hashing, and secure socket communications</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>C++23 Compiler</strong></td>
+<td style="text-align: left;"><code>gcc-c++</code> (&gt;= 14) / <code>clang</code> (&gt;= 18) / <code>MSVC</code> (&gt;= 19.38 / VS 2022 v143)</td>
+<td style="text-align: left;">Core C++23 standard support (<code>&lt;format&gt;</code>, <code>std::string_view</code>, concepts, constexpr)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>CMake &amp; Ninja</strong></td>
+<td style="text-align: left;"><code>cmake</code> (&gt;= 3.31) &amp; <code>ninja-build</code> (&gt;= 1.11)</td>
+<td style="text-align: left;">Cross-platform build configuration, CPM package caching, and test orchestration</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Python 3</strong></td>
+<td style="text-align: left;"><code>python3</code> (&gt;= 3.10) &amp; <code>python3-pip</code></td>
+<td style="text-align: left;">MkDocs site generation, benchmark aggregation (<code>publish_benchmarks.py</code>), and diagram generation</td>
+</tr>
+</tbody>
+</table>
 
 
 
@@ -1646,7 +1650,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "2.6.0-beta.1"}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "toc.integrate", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "2.6.0-beta.1"}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>

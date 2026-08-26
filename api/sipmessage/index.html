@@ -50,8 +50,8 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Roboto";--md-code-font:"JetBrains Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CVictor+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Victor Mono"}</style>
       
     
     
@@ -393,7 +393,9 @@
   
 
 
-<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="sip2json" class="md-nav__button md-logo" aria-label="sip2json" data-md-component="logo">
       
@@ -1609,276 +1611,6 @@
               </div>
             
             
-              
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
-                <div class="md-sidebar__scrollwrap">
-                  <div class="md-sidebar__inner">
-                    
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#performance-best-practice" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Performance Best Practice
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#constructors" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Constructors
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Constructors">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#1-default-constructor" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        1. Default Constructor
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#2-request-constructor" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2. Request Constructor
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#3-response-constructor-from-status-code" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3. Response Constructor (from Status Code)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#4-response-constructor-from-request" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4. Response Constructor (from Request)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#5-direct-json-constructors" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        5. Direct JSON Constructors
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#header-accessors-mutators" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Header Accessors &amp; Mutators
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Header Accessors &amp; Mutators">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#getheader" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        getHeader
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#setheader" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        setHeader
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#headers" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        headers
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#convenience-header-getters-setters" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Convenience Header Getters &amp; Setters
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#start-line-accessors-inspection" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Start-Line Accessors &amp; Inspection
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Start-Line Accessors &amp; Inspection">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#getmethod-geturi" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        getMethod &amp; getUri
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#getstatuscode-getreason" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        getStatusCode &amp; getReason
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ismessagerequest-ismessageresponse" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        isMessageRequest &amp; isMessageResponse
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#zero-copy-string-view-accessors" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Zero-Copy String View Accessors
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#body-sdp-accessors" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Body &amp; SDP Accessors
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Body &amp; SDP Accessors">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#hasbody-body" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        hasBody &amp; body
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#setbody-getbodyelement" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        setBody &amp; getBodyElement
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-                  </div>
-                </div>
-              </div>
-            
           
           
             <div class="md-content" data-md-component="content">
@@ -2469,7 +2201,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "2.6.0-beta.1"}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "toc.integrate", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "2.6.0-beta.1"}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
