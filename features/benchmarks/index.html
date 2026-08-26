@@ -50,8 +50,8 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CVictor+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Roboto";--md-code-font:"Victor Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Iosevka+Alie:300,300i,400,400i,700,700i%7CIosevka:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Iosevka Alie";--md-code-font:"Iosevka"}</style>
       
     
     
@@ -1610,7 +1610,7 @@
 <p><code>sip2json</code> delivers high-throughput, low-latency SIP stream parsing designed for high-concurrency VoIP edge proxies, media servers, and WebRTC gateways.</p>
 <!-- PIPELINE_BENCHMARKS_START -->
 <h2 id="1-multi-platform-cross-architecture-pipeline-benchmark-matrix">1. Multi-Platform &amp; Cross-Architecture Pipeline Benchmark Matrix<a class="headerlink" href="#1-multi-platform-cross-architecture-pipeline-benchmark-matrix" title="Permanent link">&para;</a></h2>
-<p><em>Empirical build pipeline measurements collected dynamically across live matrix runners (Build Version <code>2.6.0-beta.1</code>):</em></p>
+<p><em>Empirical build pipeline measurements collected dynamically across live matrix runners (Build Version <code>2.6.0</code>):</em></p>
 <table>
 <thead>
 <tr>
@@ -1631,73 +1631,79 @@
 <td style="text-align: center;"><strong>x64</strong></td>
 <td style="text-align: center;">Clang</td>
 <td style="text-align: left;">Linux (4 CPU Cores, 48 MHz, 6 GB RAM)</td>
-<td style="text-align: center;"><strong>101,143.64 msg/s</strong></td>
-<td style="text-align: center;"><strong>250.79 MB/s</strong></td>
-<td style="text-align: center;"><strong>21.07 ms</strong></td>
-<td style="text-align: center;"><strong>302,900.78 msg/s</strong></td>
-<td style="text-align: center;"><strong>3.32 ms</strong></td>
+<td style="text-align: center;"><strong>112,927.27 msg/s</strong></td>
+<td style="text-align: center;"><strong>280.01 MB/s</strong></td>
+<td style="text-align: center;"><strong>17.73 ms</strong></td>
+<td style="text-align: center;"><strong>316,242.30 msg/s</strong></td>
+<td style="text-align: center;"><strong>3.17 ms</strong></td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>Linux</strong></td>
 <td style="text-align: center;"><strong>x64</strong></td>
 <td style="text-align: center;">Clang</td>
 <td style="text-align: left;">Linux (4 CPU Cores, 48 MHz, 6 GB RAM)</td>
-<td style="text-align: center;"><strong>101,143.64 msg/s</strong></td>
-<td style="text-align: center;"><strong>250.79 MB/s</strong></td>
-<td style="text-align: center;"><strong>21.07 ms</strong></td>
-<td style="text-align: center;"><strong>302,900.78 msg/s</strong></td>
-<td style="text-align: center;"><strong>3.32 ms</strong></td>
+<td style="text-align: center;"><strong>112,927.27 msg/s</strong></td>
+<td style="text-align: center;"><strong>280.01 MB/s</strong></td>
+<td style="text-align: center;"><strong>17.73 ms</strong></td>
+<td style="text-align: center;"><strong>316,242.30 msg/s</strong></td>
+<td style="text-align: center;"><strong>3.17 ms</strong></td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>Linux</strong></td>
 <td style="text-align: center;"><strong>x64</strong></td>
 <td style="text-align: center;">GCC</td>
 <td style="text-align: left;">Linux (4 CPU Cores, 48 MHz, 6 GB RAM)</td>
-<td style="text-align: center;"><strong>90,689.66 msg/s</strong></td>
-<td style="text-align: center;"><strong>224.87 MB/s</strong></td>
-<td style="text-align: center;"><strong>25.00 ms</strong></td>
-<td style="text-align: center;"><strong>279,703.63 msg/s</strong></td>
-<td style="text-align: center;"><strong>3.59 ms</strong></td>
+<td style="text-align: center;"><strong>91,089.25 msg/s</strong></td>
+<td style="text-align: center;"><strong>225.86 MB/s</strong></td>
+<td style="text-align: center;"><strong>24.02 ms</strong></td>
+<td style="text-align: center;"><strong>289,301.32 msg/s</strong></td>
+<td style="text-align: center;"><strong>3.47 ms</strong></td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>Linux</strong></td>
 <td style="text-align: center;"><strong>x64</strong></td>
 <td style="text-align: center;">GCC</td>
 <td style="text-align: left;">Linux (4 CPU Cores, 48 MHz, 6 GB RAM)</td>
-<td style="text-align: center;"><strong>90,689.66 msg/s</strong></td>
-<td style="text-align: center;"><strong>224.87 MB/s</strong></td>
-<td style="text-align: center;"><strong>25.00 ms</strong></td>
-<td style="text-align: center;"><strong>279,703.63 msg/s</strong></td>
-<td style="text-align: center;"><strong>3.59 ms</strong></td>
+<td style="text-align: center;"><strong>91,089.25 msg/s</strong></td>
+<td style="text-align: center;"><strong>225.86 MB/s</strong></td>
+<td style="text-align: center;"><strong>24.02 ms</strong></td>
+<td style="text-align: center;"><strong>289,301.32 msg/s</strong></td>
+<td style="text-align: center;"><strong>3.47 ms</strong></td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>Windows</strong></td>
 <td style="text-align: center;"><strong>x64</strong></td>
 <td style="text-align: center;">MSVC</td>
 <td style="text-align: left;">Windows (4 CPU Cores, 3072 MHz, 6 GB RAM)</td>
-<td style="text-align: center;"><strong>93,090.91 msg/s</strong></td>
-<td style="text-align: center;"><strong>230.82 MB/s</strong></td>
-<td style="text-align: center;"><strong>10.80 ms</strong></td>
-<td style="text-align: center;"><strong>144,000.00 msg/s</strong></td>
-<td style="text-align: center;"><strong>7.03 ms</strong></td>
+<td style="text-align: center;"><strong>95,255.81 msg/s</strong></td>
+<td style="text-align: center;"><strong>236.19 MB/s</strong></td>
+<td style="text-align: center;"><strong>10.66 ms</strong></td>
+<td style="text-align: center;"><strong>149,333.33 msg/s</strong></td>
+<td style="text-align: center;"><strong>6.90 ms</strong></td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>Windows</strong></td>
 <td style="text-align: center;"><strong>x64</strong></td>
 <td style="text-align: center;">MSVC</td>
 <td style="text-align: left;">Windows (4 CPU Cores, 3072 MHz, 6 GB RAM)</td>
-<td style="text-align: center;"><strong>93,090.91 msg/s</strong></td>
-<td style="text-align: center;"><strong>230.82 MB/s</strong></td>
-<td style="text-align: center;"><strong>10.80 ms</strong></td>
-<td style="text-align: center;"><strong>144,000.00 msg/s</strong></td>
-<td style="text-align: center;"><strong>7.03 ms</strong></td>
+<td style="text-align: center;"><strong>95,255.81 msg/s</strong></td>
+<td style="text-align: center;"><strong>236.19 MB/s</strong></td>
+<td style="text-align: center;"><strong>10.66 ms</strong></td>
+<td style="text-align: center;"><strong>149,333.33 msg/s</strong></td>
+<td style="text-align: center;"><strong>6.90 ms</strong></td>
 </tr>
 </tbody>
 </table>
 <!-- PIPELINE_BENCHMARKS_END -->
-<p>The build machines are VMs on the same host (Mac Mini M4pro) with 4vCPU, 6GB RAM each.
-- GCC and Clang build on the same host!
-- Note that GCC produces code that is significantly faster than Clang whereas MSVC is second.</p>
+
+<div class="admonition note">
+<p class="admonition-title">Performance Comparisions</p>
+<ul>
+<li>The Linux builds are on the same build agent.</li>
+<li>The Windows build machine is Windows 11 pro on same host.</li>
+<li>The host is Mac Mini with vCPU (4) and RAM (6Gb) each.</li>
+</ul>
+</div>
 <hr />
 <h2 id="2-benchmark-source-data-dataset-outline">2. Benchmark Source Data &amp; Dataset Outline<a class="headerlink" href="#2-benchmark-source-data-dataset-outline" title="Permanent link">&para;</a></h2>
 <p>The benchmark suite tests <code>sip2json</code> against a comprehensive real-world dataset comprising <strong>36 production SIP stream capture files</strong> (~1.5 MB total wire data) located in <code>tests/validation/samples/</code>.</p>
@@ -1976,7 +1982,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "toc.integrate", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "2.6.0-beta.1"}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "toc.integrate", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "2.6.0"}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>

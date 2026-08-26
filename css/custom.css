@@ -1,9 +1,9 @@
 /* Custom styles for sip2json documentation */
 
 :root {
-  --md-font-main: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-  --md-font-code: "JetBrains Mono", SFMono-Regular, Consolas, Menlo, monospace;
-  --md-typeset-font-size: 0.80rem;             /* Reduced, compact starting font size */
+  --md-font-main: "Iosevka Alie", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --md-font-code: "Iosevka", "JetBrains Mono", SFMono-Regular, Consolas, Menlo, monospace;
+  --md-typeset-font-size: 0.86rem;             /* Reduced, compact starting font size */
 }
 
 /* Base typography: flexible, scalable, and responsive to user sizing */
@@ -163,7 +163,7 @@ code, kbd, pre {
 /* -------------------------------------------------------------------------- */
 .md-typeset code {
   font-family: var(--md-font-code);
-  font-size: 0.86em;
+  font-size: 0.89em;
   font-weight: 600;
   color: #1e293b;                              /* Crisp Dark Slate in Light Mode */
   background-color: transparent;               /* No background color */
@@ -185,7 +185,7 @@ code, kbd, pre {
 .md-typeset table:not([class]) td code,
 .md-typeset table:not([class]) th code {
   white-space: normal;                         /* Allow natural wrapping to avoid horizontal scrollbar */
-  font-size: 0.84em;
+  font-size: 0.89em;
   font-weight: 600;
   padding: 0;
   overflow-wrap: anywhere;
@@ -230,7 +230,7 @@ code, kbd, pre {
   background-color: transparent;
   color: inherit;
   font-weight: normal;
-  font-size: 0.86em;
+  font-size: 0.89em;
   line-height: 1.55;
   padding: 0;
   box-shadow: none;
@@ -271,11 +271,18 @@ code, kbd, pre {
   color: var(--md-primary-fg-color);
 }
 
-/* Admonition Refinements */
+/* -------------------------------------------------------------------------- */
+/* Admonition Refinements: Content-Fitted Width (Notes, Callouts, Warnings)  */
+/* -------------------------------------------------------------------------- */
 .md-typeset .admonition,
-.md-typeset details {
+.md-typeset details.admonition {
   border-radius: 6px;
   box-shadow: none;                            /* No drop shadows */
+  width: -moz-fit-content;
+  width: fit-content;                          /* Shrink-wrap to accommodate content */
+  max-width: 100%;                             /* Responsive boundary constraint */
+  margin-top: 1em;
+  margin-bottom: 1em;
 }
 
 /* Permalinks */
