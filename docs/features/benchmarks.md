@@ -12,9 +12,12 @@
 | **macOS** | **arm64** | AppleClang | macOS (arm64, AppleClang) | **31,105.85 msg/s** | **81.98 MB/s** | **32.15 µs** | **36,139.45 msg/s** | **27.67 µs** |
 
 <!-- PIPELINE_BENCHMARKS_END -->
-The build machines are VMs on the same host (Mac Mini M4pro) with 4vCPU, 6GB RAM each.
-- GCC and Clang build on the same host!
-- Note that GCC produces code that is significantly faster than Clang whereas MSVC is second.
+
+!!! note "Performance Comparisions"
+
+    - The Linux builds are on the same build agent.
+    - The Windows build machine is Windows 11 pro on same host.
+    - The host is Mac Mini with vCPU (4) and RAM (6Gb) each.
 ---
 
 ## 2. Benchmark Source Data & Dataset Outline

@@ -35,8 +35,8 @@ theme:
         icon: material/brightness-4
         name: Switch to light mode
   font:
-    text: false
-    code: Victor Mono
+    text: Iosevka Alie
+    code: Iosevka
   features:
     - navigation.tabs
     - navigation.tabs.sticky
