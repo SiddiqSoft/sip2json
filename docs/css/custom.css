@@ -271,11 +271,18 @@ code, kbd, pre {
   color: var(--md-primary-fg-color);
 }
 
-/* Admonition Refinements */
+/* -------------------------------------------------------------------------- */
+/* Admonition Refinements: Content-Fitted Width (Notes, Callouts, Warnings)  */
+/* -------------------------------------------------------------------------- */
 .md-typeset .admonition,
-.md-typeset details {
+.md-typeset details.admonition {
   border-radius: 6px;
   box-shadow: none;                            /* No drop shadows */
+  width: -moz-fit-content;
+  width: fit-content;                          /* Shrink-wrap to accommodate content */
+  max-width: 100%;                             /* Responsive boundary constraint */
+  margin-top: 1em;
+  margin-bottom: 1em;
 }
 
 /* Permalinks */
