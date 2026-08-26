@@ -87,14 +87,36 @@ int main(int argc, char** argv)
     std::cout << "  Loaded " << sample_files.size() << " sample files (" << (total_sample_bytes / 1024.0) << " KB total)"
               << std::endl;
 #if defined(__APPLE__) && defined(__MACH__)
-    std::cout << "  [HOST INFO] macOS (" << (sizeof(void*) == 8 ? "arm64" : "x64") << ", AppleClang)" << std::endl;
+    #if defined(__aarch64__) || defined(_M_ARM64)
+    std::cout << "  [HOST INFO] macOS (arm64, AppleClang)" << std::endl;
+    #else
+    std::cout << "  [HOST INFO] macOS (x64, AppleClang)" << std::endl;
+    #endif
 #elif defined(_MSC_VER)
-    std::cout << "  [HOST INFO] Windows (" << (sizeof(void*) == 8 ? "x64" : "x86") << ", MSVC)" << std::endl;
+    #if defined(_M_ARM64) || defined(__aarch64__)
+    std::cout << "  [HOST INFO] Windows (arm64, MSVC)" << std::endl;
+    #elif defined(_M_X64) || defined(_M_AMD64) || defined(__x86_64__)
+    std::cout << "  [HOST INFO] Windows (x64, MSVC)" << std::endl;
+    #else
+    std::cout << "  [HOST INFO] Windows (x86, MSVC)" << std::endl;
+    #endif
 #elif defined(__linux__)
     #if defined(__clang__)
-    std::cout << "  [HOST INFO] Linux (" << (sizeof(void*) == 8 ? "x64" : "x86") << ", Clang)" << std::endl;
+        #if defined(__aarch64__) || defined(_M_ARM64)
+        std::cout << "  [HOST INFO] Linux (arm64, Clang)" << std::endl;
+        #elif defined(__x86_64__) || defined(_M_X64)
+        std::cout << "  [HOST INFO] Linux (x64, Clang)" << std::endl;
+        #else
+        std::cout << "  [HOST INFO] Linux (x86, Clang)" << std::endl;
+        #endif
     #else
-    std::cout << "  [HOST INFO] Linux (" << (sizeof(void*) == 8 ? "x64" : "x86") << ", GCC)" << std::endl;
+        #if defined(__aarch64__) || defined(_M_ARM64)
+        std::cout << "  [HOST INFO] Linux (arm64, GCC)" << std::endl;
+        #elif defined(__x86_64__) || defined(_M_X64)
+        std::cout << "  [HOST INFO] Linux (x64, GCC)" << std::endl;
+        #else
+        std::cout << "  [HOST INFO] Linux (x86, GCC)" << std::endl;
+        #endif
     #endif
 #endif
     std::cout << "================================================================================" << std::endl;

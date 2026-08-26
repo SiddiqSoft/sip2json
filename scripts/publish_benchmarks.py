@@ -147,25 +147,62 @@ def format_latency(val_float: float, unit: str = "us") -> str:
     else:
         return f"{us / 1000000.0:.2f} s"
 
+def parse_platform_from_path(file_path: Path) -> tuple:
+    """Extract authoritative OS, Arch, and Compiler from file path or parent directories."""
+    path_str = str(file_path).replace("\\", "/")
+    
+    # 1. Match artifact pattern: benchmark-results-<OS>-<Arch>-<Compiler> or benchmark_results_<OS>_<Arch>_<Compiler>
+    m = re.search(r"benchmark[-_]results[-_]([A-Za-z]+)[-_](arm64|x64|x86)[-_]([A-Za-z0-9]+)", path_str, re.IGNORECASE)
+    if m:
+        os_name = format_os_name(m.group(1))
+        arch_name = m.group(2).lower()
+        comp_raw = m.group(3)
+        if comp_raw.lower() in ("appleclang", "clang"):
+            compiler_name = "AppleClang" if os_name == "macOS" else "Clang"
+        elif comp_raw.lower() == "gcc":
+            compiler_name = "GCC"
+        elif comp_raw.lower() == "msvc":
+            compiler_name = "MSVC"
+        else:
+            compiler_name = comp_raw
+        return os_name, arch_name, compiler_name
+
+    # 2. Check CMake preset folder pattern: build/<PresetName>
+    m = re.search(r"build/([A-Za-z0-9_-]+)", path_str, re.IGNORECASE)
+    if m:
+        preset = m.group(1).lower()
+        if "apple" in preset or "darwin" in preset or "macos" in preset:
+            arch = "arm64" if "arm64" in preset else ("x64" if "x64" in preset else ("arm64" if platform.machine() in ("arm64", "aarch64") else "x64"))
+            return "macOS", arch, "AppleClang"
+        elif "windows" in preset or "win" in preset:
+            arch = "arm64" if "arm64" in preset else "x64"
+            return "Windows", arch, "MSVC"
+        elif "linux" in preset:
+            arch = "arm64" if "arm64" in preset else "x64"
+            compiler = "GCC" if "gcc" in preset else "Clang"
+            return "Linux", arch, compiler
+
+    # 3. Fallback heuristic from path string
+    path_lower = path_str.lower()
+    if any(k in path_lower for k in ["darwin", "apple", "macos"]):
+        return "macOS", "arm64", "AppleClang"
+    elif "windows" in path_lower or "win" in path_lower:
+        arch = "arm64" if "arm64" in path_lower else "x64"
+        return "Windows", arch, "MSVC"
+    elif "linux" in path_lower:
+        arch = "arm64" if "arm64" in path_lower else "x64"
+        compiler = "GCC" if "gcc" in path_lower else "Clang"
+        return "Linux", arch, compiler
+
+    # 4. Host machine fallback
+    host_os = format_os_name(platform.system())
+    host_arch = "arm64" if platform.machine() in ("arm64", "aarch64") else "x64"
+    host_comp = "AppleClang" if host_os == "macOS" else ("MSVC" if host_os == "Windows" else "Clang")
+    return host_os, host_arch, host_comp
+
 def parse_platform_from_filename(filename_str: str) -> tuple:
     """Extract OS, Arch, and Compiler from benchmark JSON/TXT artifact filename if available."""
-    name = Path(filename_str).stem
-    if name.startswith("benchmark_results_"):
-        parts = name.replace("benchmark_results_", "").split("_")
-        os_name = parts[0] if len(parts) > 0 else "Linux"
-        arch_name = parts[1] if len(parts) > 1 else "x64"
-        compiler_name = parts[2] if len(parts) > 2 else "Clang/MSVC"
-        return os_name, arch_name, compiler_name
-    elif "Linux" in filename_str:
-        arch = "arm64" if "arm64" in filename_str else "x64"
-        compiler = "GCC" if "GCC" in filename_str else "Clang"
-        return "Linux", arch, compiler
-    elif "Windows" in filename_str:
-        arch = "arm64" if "arm64" in filename_str else "x64"
-        return "Windows", arch, "MSVC"
-    elif "macOS" in filename_str or "Darwin" in filename_str or "Apple" in filename_str:
-        return "macOS", "arm64", "AppleClang"
-    return "Linux", "x64", "Clang"
+    return parse_platform_from_path(Path(filename_str))
 
 def check_platform_completeness(platform_results: list, required_str: str) -> tuple:
     """Check if all required (OS, Arch) combinations are present in platform_results."""
@@ -235,10 +272,30 @@ def update_benchmarks_doc(repo_root: Path, platform_results: list, require_all: 
     ]
 
     if platform_results:
+        # Deduplicate results by canonical (OS, Arch, Compiler) key
+        dedup_map = {}
+        for r in platform_results:
+            os_name = format_os_name(r.get("os", "Linux"))
+            arch = r.get("arch", "x64").lower()
+            compiler = r.get("compiler", "Clang")
+            canon_key = (os_name, arch, compiler)
+
+            if canon_key not in dedup_map:
+                dedup_map[canon_key] = dict(r)
+                dedup_map[canon_key]["os"] = os_name
+                dedup_map[canon_key]["arch"] = arch
+                dedup_map[canon_key]["compiler"] = compiler
+            else:
+                # Merge fields if existing has N/A
+                existing = dedup_map[canon_key]
+                for field in ("async_tput", "bandwidth", "async_lat", "single_tput", "single_lat", "host_info"):
+                    if (not existing.get(field) or existing.get(field) == "N/A") and r.get(field) and r.get(field) != "N/A":
+                        existing[field] = r[field]
+
         # Sort results: Linux, Windows, macOS, then Arch, then Compiler
         os_order = ["Linux", "Windows", "macOS"]
         sorted_results = sorted(
-            platform_results,
+            dedup_map.values(),
             key=lambda r: (
                 os_order.index(format_os_name(r.get("os", "Linux"))) if format_os_name(r.get("os", "Linux")) in os_order else 99,
                 r.get("arch", ""),
@@ -298,27 +355,29 @@ def main():
     docs_assets_dir.mkdir(parents=True, exist_ok=True)
 
     # 1. Search for benchmark JSON and TXT artifacts collected from build matrix jobs
-    json_search_dirs = [
-        benchmarks_dir / "artifacts",
-        benchmarks_dir / "results",
-        repo_root / "build",
-        benchmarks_dir
-    ]
-
     platform_results_map = {}
+    processed_files = set()
 
-    for sdir in json_search_dirs:
-        if not sdir.exists():
+    # Search in artifacts directory and build output directory
+    search_roots = [benchmarks_dir / "artifacts", repo_root / "build", benchmarks_dir / "results"]
+
+    for sroot in search_roots:
+        if not sroot.exists():
             continue
 
         # Process text summaries (stream_benchmark_summary.txt)
-        for txt_file in sdir.glob("**/stream_benchmark_summary.txt"):
+        for txt_file in sroot.glob("**/stream_benchmark_summary.txt"):
+            resolved = txt_file.resolve()
+            if resolved in processed_files:
+                continue
+            processed_files.add(resolved)
+
             try:
-                os_name, arch, compiler = parse_platform_from_filename(str(txt_file.parent.name) + " " + str(txt_file))
+                os_name, arch, compiler = parse_platform_from_path(txt_file)
+                key = (os_name, arch.lower(), compiler)
                 
                 content = txt_file.read_text(encoding="utf-8", errors="ignore")
-                key = (os_name, arch, compiler)
-                res = platform_results_map.get(key, {
+                res = platform_results_map.setdefault(key, {
                     "os": os_name, "arch": arch, "compiler": compiler,
                     "async_tput": "N/A", "bandwidth": "N/A", "async_lat": "N/A",
                     "single_tput": "N/A", "single_lat": "N/A", "host_info": ""
@@ -328,20 +387,6 @@ def main():
                 if host_match:
                     raw_host = host_match.group(1).strip()
                     res["host_info"] = sanitize_host_info(raw_host)
-                    if "AppleClang" in raw_host or "macOS" in raw_host or "Apple" in raw_host:
-                        os_name, arch, compiler = "macOS", "arm64", "AppleClang"
-                    elif "MSVC" in raw_host or "Windows" in raw_host:
-                        os_name = "Windows"
-                        arch = "arm64" if "arm64" in raw_host else "x64"
-                        compiler = "MSVC"
-                    elif "Linux" in raw_host:
-                        os_name = "Linux"
-                        arch = "arm64" if "arm64" in raw_host else "x64"
-                        compiler = "GCC" if "GCC" in raw_host else "Clang"
-                    key = (os_name, arch, compiler)
-                    res["os"] = os_name
-                    res["arch"] = arch
-                    res["compiler"] = compiler
 
                 stream_match = re.search(r"parseAsync.*?Throughput\s*:\s*([\d,.]+)\s*msg/sec.*?Data Bandwidth\s*:\s*([\d,.]+)\s*MB/sec.*?Avg Latency/Msg\s*:\s*([\d,.]+)\s*(\w+)/msg", content, re.DOTALL)
                 if stream_match:
@@ -361,17 +406,21 @@ def main():
                     res["single_tput"] = f"{tput:,.2f} msg/s"
                     res["single_lat"] = format_latency(lat, unit)
 
-                platform_results_map[key] = res
             except Exception as ex:
                 print(f"[publish_benchmarks] Could not parse text summary {txt_file}: {ex}", flush=True)
 
         # Process Google Benchmark JSON files matching benchmark_results_*.json
-        for jfile in sdir.glob("**/benchmark_results_*.json"):
+        for jfile in sroot.glob("**/benchmark_results_*.json"):
+            resolved = jfile.resolve()
+            if resolved in processed_files:
+                continue
+            processed_files.add(resolved)
+
             try:
                 data = json.loads(jfile.read_text(encoding="utf-8"))
-                os_name, arch, compiler = parse_platform_from_filename(jfile.name)
-                key = (os_name, arch, compiler)
-                res = platform_results_map.get(key, {
+                os_name, arch, compiler = parse_platform_from_path(jfile)
+                key = (os_name, arch.lower(), compiler)
+                res = platform_results_map.setdefault(key, {
                     "os": os_name, "arch": arch, "compiler": compiler,
                     "async_tput": "N/A", "bandwidth": "N/A", "async_lat": "N/A",
                     "single_tput": "N/A", "single_lat": "N/A", "host_info": ""
@@ -386,7 +435,8 @@ def main():
                     if mhz: specs.append(f"{mhz} MHz")
                     ram_str = get_system_ram_gb()
                     if ram_str: specs.append(ram_str)
-                    res["host_info"] = f"{os_name} ({', '.join(specs)})" if specs else os_name
+                    if not res.get("host_info"):
+                        res["host_info"] = f"{os_name} ({', '.join(specs)})" if specs else os_name
 
                 b_list = data.get("benchmarks", [])
                 for b in b_list:
@@ -396,18 +446,17 @@ def main():
                     tunit = b.get("time_unit", "us")
 
                     if "async" in bname or "callback" in bname:
-                        if items_sec > 0:
+                        if items_sec > 0 and (res["async_tput"] == "N/A"):
                             res["async_tput"] = f"{items_sec:,.2f} msg/s"
                             res["bandwidth"] = f"{(items_sec * 2600) / 1024 / 1024:.2f} MB/s"
-                        if rtime > 0:
+                        if rtime > 0 and (res["async_lat"] == "N/A"):
                             res["async_lat"] = format_latency(rtime, tunit)
                     elif any(k in bname for k in ["single", "parsefrombuffer", "minimalresponse", "registerrequest", "invitewithsdp"]):
-                        if items_sec > 0:
+                        if items_sec > 0 and (res["single_tput"] == "N/A"):
                             res["single_tput"] = f"{items_sec:,.2f} msg/s"
-                        if rtime > 0:
+                        if rtime > 0 and (res["single_lat"] == "N/A"):
                             res["single_lat"] = format_latency(rtime, tunit)
 
-                platform_results_map[key] = res
             except Exception as ex:
                 print(f"[publish_benchmarks] Could not parse JSON file {jfile}: {ex}", flush=True)
 

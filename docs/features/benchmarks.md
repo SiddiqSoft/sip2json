@@ -9,7 +9,7 @@
 
 | OS | Arch | Compiler | Host Environment | Stream Throughput | Bandwidth | Stream Latency | Single Msg Throughput | Single Latency |
 | :--- | :---: | :---: | :--- | :---: | :---: | :---: | :---: | :---: |
-| **macOS** | **arm64** | AppleClang | macOS (arm64, AppleClang) | **31,105.85 msg/s** | **81.98 MB/s** | **32.15 µs** | **36,139.45 msg/s** | **27.67 µs** |
+| **macOS** | **arm64** | AppleClang | macOS (arm64, AppleClang) | **31,216.28 msg/s** | **82.27 MB/s** | **32.03 µs** | **38,762.20 msg/s** | **25.80 µs** |
 
 <!-- PIPELINE_BENCHMARKS_END -->
 
