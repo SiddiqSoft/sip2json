@@ -35,8 +35,8 @@ theme:
         icon: material/brightness-4
         name: Switch to light mode
   font:
-    text: Roboto
-    code: JetBrains Mono
+    text: Iosevka Alie
+    code: Iosevka
   features:
     - navigation.tabs
     - navigation.tabs.sticky
@@ -46,6 +46,7 @@ theme:
     - navigation.top
     - navigation.footer
     - navigation.tracking
+    - toc.integrate
     - search.suggest
     - search.highlight
     - search.share
@@ -82,32 +83,32 @@ extra_css:
 
 extra_javascript:
   - https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js
+  - js/fontsize.js
 
 nav:
   - Home: index.md
-  - Features:
-      - Overview: features/index.md
-      - Async Stream Parsing: features/async.md
-      - Performance & Benchmarks: features/benchmarks.md
-      - JSON Metaphor & Schema: features/json_schema.md
-      - SDP Support: features/sdp.md
-  - Integration:
-      - Quick Start: integration/index.md
-      - CMake & Submodules: integration/cmake.md
-      - Dependencies Diagram: integration/dependencies.md
-      - NuGet Package: integration/nuget.md
-  - Architecture & Design:
-      - Overview: architecture/index.md
-      - Design Patterns: architecture/patterns.md
-      - Data Flow & Memory: architecture/dataflow.md
-      - Native vs JSON Study: architecture/native_vs_json.md
+  - Getting Started:
+      - Quick Start & CMake: integration/cmake.md
+      - Project Dependencies: integration/dependencies.md
+      - Practical Examples: examples/index.md
   - API Reference:
-      - Overview: api/index.md
       - sipmessage: api/sipmessage.md
       - sip2json Functions: api/sip2json.md
-      - Exceptions & Errors: api/errors.md
-  - Examples:
-      - Overview: examples/index.md
-      - Stream Parsing Callback: examples/async_parsing.md
-      - Message Serialization: examples/serialization.md
+      - Exceptions & Error Codes: api/errors.md
+  - Core Concepts & Architecture:
+      - JSON Metaphor & Schema: features/json_schema.md
+      - Stream Architecture & Data Flow: architecture/dataflow.md
+      - Session Description Protocol (SDP): features/sdp.md
+      - Standards Compliance & Torture Tests: features/compliance.md
+      - IETF Test Suite Reference: features/test_suite_sources.md
+  - Performance & Benchmarks:
+      - Empirical Benchmarks & Metrics: features/benchmarks.md
+      - Optimization Choices & Hardware Study: features/optimization_choices.md
+      - Native Struct vs JSON Study: architecture/native_vs_json.md
+  - Maintainer Guide:
+      - Overview & Handbook: maintainers/index.md
+      - Environment Setup: maintainers/setup.md
+      - Building, Testing & Benchmarks: maintainers/building.md
+      - Documentation & MkDocs: maintainers/documentation.md
+      - Azure Pipelines & Secrets: maintainers/pipelines.md
   - License: license.md

@@ -1,12 +1,16 @@
 cmake_minimum_required(VERSION 3.31)
 
 if(${${PROJECT_NAME}_BUILD_TESTS})
+    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/compliance" AND IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/compliance")
+        add_subdirectory(compliance)
+    endif()
+
     if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/regression" AND IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/regression")
         add_subdirectory(regression)
     endif()
 
-    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/compliance" AND IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/compliance")
-        add_subdirectory(compliance)
+    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/benchmark" AND IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/benchmark")
+        add_subdirectory(benchmark)
     endif()
 
     if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/validation" AND IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/validation")

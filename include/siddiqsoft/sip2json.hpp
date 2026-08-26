@@ -69,11 +69,15 @@ namespace siddiqsoft
         static constexpr size_t TYPICAL_SIP_MESSAGE_SIZE = 3 * 1024; ///< Typical SIP message buffer size
         static constexpr size_t METADATA_ONLY_SIZE       = 1;        ///< Size when only metadata is present
 
-        static bool parseStartLine(sipmessage& sipm, std::string::iterator& bufferStart, const std::string::iterator& bufferEnd) noexcept(false);
+        static bool        parseStartLine(sipmessage&                  sipm,
+                                          std::string::iterator&       bufferStart,
+                                          const std::string::iterator& bufferEnd) noexcept(false);
         static std::string escapeJsonPointerToken(const std::string& token);
-        static bool storeHeaderValue(sipmessage& sipm, const std::string& key, const std::string& value) noexcept(false);
-        static bool parseHeaders(sipmessage& sipm, std::string::iterator& bufferStart, const std::string::iterator& bufferEnd) noexcept(false);
-        static bool parseBodySDP(sipmessage& sipm, std::string::iterator& bufferStart, const std::string::iterator& bufferEnd) noexcept(false);
+        static bool        storeHeaderValue(sipmessage& sipm, const std::string& key, const std::string& value) noexcept(false);
+        static bool
+        parseHeaders(sipmessage& sipm, std::string::iterator& bufferStart, const std::string::iterator& bufferEnd) noexcept(false);
+        static bool
+        parseBodySDP(sipmessage& sipm, std::string::iterator& bufferStart, const std::string::iterator& bufferEnd) noexcept(false);
         static std::string serializeSDP(sipmessage& sipm) noexcept(false);
         static std::string serializeSDPelement(nlohmann::json& sdpBlock, const std::string& element);
 

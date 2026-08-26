@@ -76,10 +76,9 @@ if(${${PROJECT_NAME}_BUILD_BENCHMARKS})
 
     target_link_libraries(${BENCHPROJ}
                           PRIVATE
+                          sip2json::sip2json
                           benchmark::benchmark
-                          benchmark::benchmark_main
-                          nlohmann_json::nlohmann_json
-                          ctre::ctre)
+                          benchmark::benchmark_main)
 
     target_include_directories(${BENCHPROJ}
                                PRIVATE

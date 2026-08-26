@@ -88,17 +88,22 @@ parameters:
     values: [ Release, Debug ]
     displayName: "Build types to build (Release, Debug)"
   
-  # Testing
+  # Testing & Benchmarking
   - name: RunTests
     type: boolean
     default: true
-    displayName: "Run tests after building"
+    displayName: "Run unit tests after building"
+
+  - name: RunBenchmarks
+    type: boolean
+    default: true
+    displayName: "Run benchmarks after building"
 
   # Publishing
-  - name: PublishNuGet
-    type: boolean
-    default: false
-    displayName: "Publish to NuGet (auto-enabled on main/master)"
+  #- name: PublishNuGet
+  #  type: boolean
+  #  default: false
+  #  displayName: "Publish to NuGet (auto-enabled on main/master)"
 
   - name: PublishGitHub
     type: boolean
@@ -120,13 +125,13 @@ parameters:
 # VARIABLES
 # ============================================================================
 variables:
-  # Auto-enable publishing on main/master branches
-  ${{ if and(eq(parameters.PublishNuGet, false), or(eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))) }}:
-    PublishNuGet: true
+  # Auto-enable publishing on main/master branches (NuGet deprecated, disabled by default)
+  ${{ if and(eq(parameters.PublishGitHub, false), or(eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))) }}:
+    #PublishNuGet: false
     PublishGitHub: true
     PublishDocs: true
   ${{ else }}:
-    PublishNuGet: ${{ parameters.PublishNuGet }}
+    #PublishNuGet: ${{ parameters.PublishNuGet }}
     PublishGitHub: ${{ parameters.PublishGitHub }}
     PublishDocs: ${{ parameters.PublishDocs }}
 
@@ -166,7 +171,8 @@ stages:
         compilers: ${{ parameters.Compilers_Windows }}
         buildTypes: ${{ parameters.BuildTypes }}
         runTests: ${{ parameters.RunTests }}
-        publishNuGet: ${{ variables.PublishNuGet }}
+        runBenchmarks: ${{ parameters.RunBenchmarks }}
+        #publishNuGet: ${{ variables.PublishNuGet }}
 
   # ==========================================================================
   # STAGE 1: LINUX BUILD
@@ -191,33 +197,32 @@ stages:
         compilers: ${{ parameters.Compilers_Linux }}
         buildTypes: ${{ parameters.BuildTypes }}
         runTests: ${{ parameters.RunTests }}
+        runBenchmarks: ${{ parameters.RunBenchmarks }}
 
   # ==========================================================================
-  # STAGE 3: NUGET PUBLICATION
+  # STAGE 3: NUGET PUBLICATION (DEPRECATED - DISABLED & COMMENTED OUT)
   # ==========================================================================
-  - stage: PublishNuGet
-    displayName: "NuGet Release"
-    dependsOn:
-      - Windows
-      - Linux
-    condition: and(eq(${{ variables.PublishNuGet }}, true), succeeded())
-    jobs:
-      - job: ApproveNuGetRelease
-        displayName: "Manual Approval - NuGet Release"
-        pool: server
-        steps:
-          - task: ManualValidation@0
-            timeoutInMinutes: 1440
-            inputs:
-              notifyUsers: ''
-              instructions: 'Please review and approve the publication of the NuGet package.'
-              onTimeout: 'reject'
-
-      - template: .azure/az-publish-nuget.yml
-        parameters:
-          displayName: NuGet Release
-          PublishNuGet: ${{ variables.PublishNuGet }}
-          dependsOn: [ ApproveNuGetRelease ]
+  # - stage: PublishNuGet
+  #   displayName: "NuGet Release"
+  #   dependsOn:
+  #     - Windows
+  #     - Linux
+  #   condition: and(eq(${{ variables.PublishNuGet }}, true), succeeded())
+  #   jobs:
+  #     - job: ApproveNuGetRelease
+  #       displayName: "Manual Approval - NuGet Release"
+  #       pool: server
+  #       steps:
+  #         - task: ManualValidation@0
+  #           timeoutInMinutes: 1440
+  #           instructions: 'Please review and approve the publication of the NuGet package.'
+  #           onTimeout: 'reject'
+  #
+  #     - template: .azure/az-publish-nuget.yml
+  #       parameters:
+  #         displayName: NuGet Release
+  #         PublishNuGet: ${{ variables.PublishNuGet }}
+  #         dependsOn: [ ApproveNuGetRelease ]
 
   # ==========================================================================
   # STAGE 4: GITHUB RELEASE PUBLICATION

@@ -274,10 +274,6 @@
                 "value": "arm64",
                 "strategy": "external"
             },
-            "toolset": {
-                "value": "host=arm64",
-                "strategy": "external"
-            },
             "inherits": "Windows-Base",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug"
@@ -289,10 +285,6 @@
             "description": "Target Win with Ninja and MSVC (Release) - Auto-detects Visual Studio version",
             "architecture": {
                 "value": "arm64",
-                "strategy": "external"
-            },
-            "toolset": {
-                "value": "host=arm64",
                 "strategy": "external"
             },
             "inherits": "Windows-Base",

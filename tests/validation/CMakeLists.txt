@@ -65,10 +65,6 @@ add_executable(${PROJECT_NAME})
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_${CMAKE_CXX_STANDARD})
 target_sources(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/test.cpp)
 
-# Benchmark executable target
-add_executable(sip2json_benchmark ${CMAKE_CURRENT_SOURCE_DIR}/src/benchmark.cpp)
-target_compile_features(sip2json_benchmark PRIVATE cxx_std_${CMAKE_CXX_STANDARD})
-
 # ____________________________________
 # Dependencies
 if(NOT TARGET GTest::gtest_main)
@@ -83,7 +79,6 @@ endif()
 
 target_link_libraries(${PROJECT_NAME} PRIVATE GTest::gtest_main
                                                 sip2json::sip2json)
-target_link_libraries(sip2json_benchmark PRIVATE sip2json::sip2json)
 
 include(GoogleTest)
 gtest_discover_tests(${PROJECT_NAME} TEST_PREFIX "${PROJECT_NAME}."

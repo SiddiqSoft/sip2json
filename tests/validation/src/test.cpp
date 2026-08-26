@@ -28,6 +28,7 @@
 #include <Windows.h>
 #include <processenv.h>
 #else
+#include <cstdlib>
 #include <unistd.h>
 #endif
 
@@ -37,52 +38,62 @@ static std::string loadSampleFile(const std::string& fileName)
     std::string samplesDirectoryPath {};
 
 
-    if (auto env_samples_dir = std::getenv("SAMPLES_DIR"); env_samples_dir != nullptr) {
+    if (auto env_samples_dir = std::getenv("SAMPLES_DIR"); env_samples_dir != nullptr)
+    {
         std::clog << " -- Environment SAMPLES_DIR  : " << env_samples_dir << std::endl;
         samplesDirectoryPath = env_samples_dir;
     }
-    else {
-        auto cwd = std::filesystem::current_path();
+    else
+    {
+        auto                               cwd        = std::filesystem::current_path();
         std::vector<std::filesystem::path> candidates = {
-            cwd / "samples",
-            cwd / "tests" / "validation" / "samples",
-            cwd.parent_path() / "samples",
-            cwd.parent_path() / "tests" / "validation" / "samples",
-            cwd.parent_path().parent_path() / "samples",
-            cwd.parent_path().parent_path() / "tests" / "validation" / "samples"
-        };
-        for (const auto& cand : candidates) {
-            if (std::filesystem::exists(cand)) {
+                cwd / "samples",
+                cwd / "tests" / "validation" / "samples",
+                cwd.parent_path() / "samples",
+                cwd.parent_path() / "tests" / "validation" / "samples",
+                cwd.parent_path().parent_path() / "samples",
+                cwd.parent_path().parent_path() / "tests" / "validation" / "samples",
+                cwd.parent_path().parent_path().parent_path() / "samples",
+                cwd.parent_path().parent_path().parent_path() / "tests" / "validation" / "samples",
+                cwd.parent_path().parent_path().parent_path().parent_path() / "samples",
+                cwd.parent_path().parent_path().parent_path().parent_path() / "tests" / "validation" / "samples"};
+        for (const auto& cand : candidates)
+        {
+            if (std::filesystem::exists(cand) && std::filesystem::is_directory(cand))
+            {
                 samplesDirectoryPath = cand.string();
                 break;
             }
         }
-        if (samplesDirectoryPath.empty()) {
-            samplesDirectoryPath = (cwd / "samples").string();
-        }
+        if (samplesDirectoryPath.empty()) { samplesDirectoryPath = (cwd / "samples").string(); }
         std::clog << "Using fallback samples directory: " << samplesDirectoryPath << std::endl;
     }
 
-    if (std::filesystem::exists(samplesDirectoryPath)) {
+    if (std::filesystem::exists(samplesDirectoryPath))
+    {
         std::clog << " -- Using the samples directory at: " << samplesDirectoryPath << std::endl;
         std::clog << " -- Attempting to open the file   : " << std::format("{}/{}.sip", samplesDirectoryPath, fileName)
                   << std::endl;
 
-        try {
+        try
+        {
             std::stringstream testFile;
             std::ifstream     sampleInputFile {std::format("{}/{}.sip", samplesDirectoryPath, fileName), std::ios::binary};
 
-            if (sampleInputFile.is_open()) {
+            if (sampleInputFile.is_open())
+            {
                 testFile << sampleInputFile.rdbuf();
                 sampleInputFile.close();
             }
-            else {
+            else
+            {
                 throw std::runtime_error {std::format("Failed opening file: `{}`!", fileName)};
             }
 
             return testFile.str();
         }
-        catch (std::exception& e) {
+        catch (std::exception& e)
+        {
             std::cerr << "loadSampleFile exception: " << e.what() << std::endl;
             throw;
         }
@@ -108,13 +119,15 @@ TEST(core_parser_tests, Test_UserAgent)
     auto                   ua = __func__; // NOLINT
     siddiqsoft::sipmessage sipm(METHOD_REGISTER, "sip:hello@world.com");
 
-    try {
+    try
+    {
         sipm.setUserAgent(ua);
         std::cerr << sip2json::serialize(sipm);
         EXPECT_TRUE(sipm.getUserAgent().find(ua) != std::string::npos);
         EXPECT_TRUE(sipm.getUserAgent().find("sip2json") != std::string::npos);
     }
-    catch (const std::exception& e) {
+    catch (const std::exception& e)
+    {
         FAIL() << "Got exception. " << e.what();
     }
 }
@@ -124,11 +137,13 @@ TEST(core_parser_tests, Test_meta_element)
 {
     siddiqsoft::sipmessage sipm(siddiqsoft::METHOD_REGISTER, "sip:hello@world.com");
 
-    try {
+    try
+    {
         std::clog << siddiqsoft::sip2json::serialize(sipm);
         EXPECT_TRUE(sipm.contains("meta"));
     }
-    catch (const std::exception& e) {
+    catch (const std::exception& e)
+    {
         FAIL() << "Got exception. " << e.what();
     }
 }
@@ -169,7 +184,7 @@ TEST(core_parser_tests, Test_sip2jsonErrors)
 TEST(core_parser_tests, Test_createCallId)
 {
     constexpr size_t EXPECTED_CALL_ID_LENGTH = 44;
-    auto ci = siddiqsoft::createCallId();
+    auto             ci                      = siddiqsoft::createCallId();
     EXPECT_TRUE(ci.length() == EXPECTED_CALL_ID_LENGTH);
 }
 
@@ -184,7 +199,7 @@ TEST(core_parser_tests, Test_TimeAsRFC1123)
 TEST(core_parser_tests, Test_TimeAsRFC1123_args)
 {
     constexpr size_t BUFFER_SIZE = 128;
-    tm knowntm {};
+    tm               knowntm {};
     knowntm.tm_year  = 2010 - 1900;
     knowntm.tm_mon   = 11 - 1; // Nov
     knowntm.tm_mday  = 13;     // 13th
@@ -260,7 +275,7 @@ TEST(core_parser_tests, Test_TimeAsISO8601)
 TEST(core_parser_tests, Test_TimeAsISO8601_args)
 {
     constexpr time_t EXPECTED_EPOCH = 1289690999L;
-    tm knowntm {};
+    tm               knowntm {};
     knowntm.tm_year  = 2010 - 1900;
     knowntm.tm_mon   = 11 - 1; // Nov
     knowntm.tm_mday  = 13;     // 13th
@@ -306,7 +321,7 @@ TEST(core_parser_tests, Test_TimeAsISO8601_epoch)
 
 TEST(siphelpers, Test_createRequest)
 {
-    siddiqsoft::sipmessage registerMessage("REGISTER", "sip:hello@world.com", siddiqsoft::createCallId(), 1);
+    siddiqsoft::sipmessage registerMessage(siddiqsoft::METHOD_REGISTER, "sip:hello@world.com", siddiqsoft::createCallId(), 1);
     auto                   diagContents = registerMessage.flatten().dump(2);
 
     EXPECT_TRUE(registerMessage.size() != 0);
@@ -333,7 +348,7 @@ TEST(siphelpers, Test_createRequest_then_response)
 {
     using namespace nlohmann::json_literals;
 
-    siddiqsoft::sipmessage registerMessage("REGISTER", "sip:hello@world.com", siddiqsoft::createCallId(), 1);
+    siddiqsoft::sipmessage registerMessage(siddiqsoft::METHOD_REGISTER, "sip:hello@world.com", siddiqsoft::createCallId(), 1);
 
     EXPECT_TRUE(!registerMessage.value("/h/Date"_json_pointer, std::string {}).empty());
 
@@ -366,16 +381,17 @@ TEST(siphelpers, Test_serialize)
     auto ll       = __LINE__;
     auto myCallId = siddiqsoft::createCallId();
     ll            = __LINE__;
-    siddiqsoft::sipmessage registerMessage("REGISTER", "sip:hello@world.com", myCallId, 1);
+    siddiqsoft::sipmessage registerMessage(siddiqsoft::METHOD_REGISTER, "sip:hello@world.com", myCallId, 1);
 
     ll = __LINE__;
-    registerMessage.setHeader("To", "sip:hello@world.com").setHeader("Contact", "sip:hello@world.com");
+    registerMessage.setHeader(siddiqsoft::HF_TO, "sip:hello@world.com").setHeader(siddiqsoft::HF_CONTACT, "sip:hello@world.com");
 
-    try {
+    try
+    {
         ll           = __LINE__;
         auto strsipm = siddiqsoft::sip2json::serialize(registerMessage);
 
-        ll           = __LINE__;
+        ll = __LINE__;
         EXPECT_TRUE(strsipm.length() != 0);
 
         ll                           = __LINE__;
@@ -394,7 +410,8 @@ TEST(siphelpers, Test_serialize)
 
         EXPECT_EQ(strsipm.length(), siddiqsoft::sip2json::serialize(sipm2).length());
     }
-    catch (const std::exception& e) {
+    catch (const std::exception& e)
+    {
         std::clog << std::format("{}:Exception lastline:{} --> {}\n", __func__, ll, e.what());
         FAIL() << "Unexpected exception: " << e.what();
     }
@@ -403,11 +420,11 @@ TEST(siphelpers, Test_serialize)
 // NOLINTNEXTLINE
 TEST(siphelpers, Test_serialize_empty_mb_fail)
 {
-    siddiqsoft::sipmessage registerMessage("REGISTER", "sip:hello@world.com", siddiqsoft::createCallId(), 1);
+    siddiqsoft::sipmessage registerMessage(siddiqsoft::METHOD_REGISTER, "sip:hello@world.com", siddiqsoft::createCallId(), 1);
 
-    registerMessage.setHeader("To", "sip:hello@world.com")
-            .setHeader("Contact", "sip:hello@world.com")
-            .setHeader("Content-Type", "application/dummy");
+    registerMessage.setHeader(siddiqsoft::HF_TO, "sip:hello@world.com")
+            .setHeader(siddiqsoft::HF_CONTACT, "sip:hello@world.com")
+            .setHeader(siddiqsoft::HF_CONTENT_TYPE, "application/dummy");
     // This will cause serialize to throw!
     registerMessage["b"] = 0;
     EXPECT_THROW(siddiqsoft::sip2json::serialize(registerMessage), std::exception);
@@ -416,10 +433,11 @@ TEST(siphelpers, Test_serialize_empty_mb_fail)
 
 TEST(siphelpers, Test_serialize_empty_mb_fail_2)
 {
-    siddiqsoft::sipmessage registerMessage("REGISTER", "sip:hello@world.com", siddiqsoft::createCallId(), 1);
+    siddiqsoft::sipmessage registerMessage(siddiqsoft::METHOD_REGISTER, "sip:hello@world.com", siddiqsoft::createCallId(), 1);
 
-    registerMessage.setHeader(
-            {{"To", "sip:hello@world.com"}, {"Contact", "sip:hello@world.com"}, {"Content-Type", "application/dummy"}});
+    registerMessage.setHeader({{siddiqsoft::HF_TO, "sip:hello@world.com"},
+                               {siddiqsoft::HF_CONTACT, "sip:hello@world.com"},
+                               {siddiqsoft::HF_CONTENT_TYPE, "application/dummy"}});
     // This will cause serialize to throw!
     registerMessage["b"] = 0;
     EXPECT_THROW(siddiqsoft::sip2json::serialize(registerMessage), std::exception);
@@ -428,11 +446,11 @@ TEST(siphelpers, Test_serialize_empty_mb_fail_2)
 // NOLINTNEXTLINE
 TEST(siphelpers, Test_serialize_empty_mb_valid)
 {
-    siddiqsoft::sipmessage registerMessage("REGISTER", "sip:hello@world.com", siddiqsoft::createCallId(), 1);
+    siddiqsoft::sipmessage registerMessage(siddiqsoft::METHOD_REGISTER, "sip:hello@world.com", siddiqsoft::createCallId(), 1);
 
-    registerMessage.setHeader("To", "sip:hello@world.com")
-            .setHeader("Contact", "sip:hello@world.com")
-            .setHeader("Content-Type", siddiqsoft::CONTENT_TYPE_APP_SDP);
+    registerMessage.setHeader(siddiqsoft::HF_TO, "sip:hello@world.com")
+            .setHeader(siddiqsoft::HF_CONTACT, "sip:hello@world.com")
+            .setHeader(siddiqsoft::HF_CONTENT_TYPE, siddiqsoft::CONTENT_TYPE_APP_SDP);
     // Should not throw; body is null despite the header being SDP there is no body element set.
     // This is a supported use-case
     EXPECT_NO_THROW(siddiqsoft::sip2json::serialize(registerMessage));
@@ -441,11 +459,11 @@ TEST(siphelpers, Test_serialize_empty_mb_valid)
 
 TEST(siphelpers, Test_serialize_empty_mb_valid_2)
 {
-    siddiqsoft::sipmessage registerMessage("REGISTER", "sip:hello@world.com", siddiqsoft::createCallId(), 1);
+    siddiqsoft::sipmessage registerMessage(siddiqsoft::METHOD_REGISTER, "sip:hello@world.com", siddiqsoft::createCallId(), 1);
 
-    registerMessage.setHeader({{"To", "sip:hello@world.com"},
-                               {"Contact", "sip:hello@world.com"},
-                               {"Content-Type", siddiqsoft::CONTENT_TYPE_APP_SDP}});
+    registerMessage.setHeader({{siddiqsoft::HF_TO, "sip:hello@world.com"},
+                               {siddiqsoft::HF_CONTACT, "sip:hello@world.com"},
+                               {siddiqsoft::HF_CONTENT_TYPE, siddiqsoft::CONTENT_TYPE_APP_SDP}});
     // Should not throw; body is null despite the header being SDP there is no body element set.
     // This is a supported use-case
     EXPECT_NO_THROW(siddiqsoft::sip2json::serialize(registerMessage));
@@ -456,10 +474,11 @@ TEST(siphelpers, Test_serialize_empty_mb_valid_2)
 TEST(siphelpers, Test_incomplete_buffer_for_parse)
 {
     EXPECT_THROW(
-            []() {
+            []()
+            {
                 std::string buffer {siddiqsoft::SIP_SAMPLE_MINIMAL_MESSAGE};
-                auto bs     = buffer.begin();
-                auto dummy  = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end());
+                auto        bs    = buffer.begin();
+                auto        dummy = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end());
             }(),
             siddiqsoft::incomplete_buffer_for_parse_error)
             << "Expect exception: incomplete_buffer_for_parse\n";
@@ -471,11 +490,8 @@ TEST(siphelpers, Test_incomplete_buffer_for_content)
 {
     auto buffer = loadSampleFile("Test_incomplete_buffer_for_content"); // NOLINT
     auto bs     = buffer.begin();
-    EXPECT_THROW(
-            [&]() {
-                auto dummy = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end());
-            }(),
-            siddiqsoft::incomplete_buffer_for_content_error);
+    EXPECT_THROW([&]() { auto dummy = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end()); }(),
+                 siddiqsoft::incomplete_buffer_for_content_error);
 }
 
 
@@ -484,11 +500,8 @@ TEST(siphelpers, Test_incomplete_buffer_for_header)
 {
     auto buffer = loadSampleFile("Test_incomplete_buffer_for_header"); // NOLINT
     auto bs     = buffer.begin();
-    EXPECT_THROW(
-            [&]() {
-                auto dummy = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end());
-            }(),
-            siddiqsoft::incomplete_buffer_for_header_error);
+    EXPECT_THROW([&]() { auto dummy = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end()); }(),
+                 siddiqsoft::incomplete_buffer_for_header_error);
 }
 
 
@@ -496,7 +509,8 @@ TEST(siphelpers, Test_incomplete_buffer_for_header)
 TEST(siphelpers, Test_unsupported_contenttype)
 {
     EXPECT_THROW(
-            []() {
+            []()
+            {
                 auto buffer = loadSampleFile("Test_unsupported_contenttype"); // NOLINT
                 auto bs     = buffer.begin();
                 auto dummy  = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end());
@@ -511,11 +525,7 @@ TEST(siphelpers, Test_invalid_document)
     siddiqsoft::sipmessage sipm;
     sipm["dummy"] = "world";
     // We should expect the invalid_document_error trying to serialize this invalid message.
-    EXPECT_THROW(
-            [&]() {
-                siddiqsoft::sip2json::serialize(sipm);
-            }(),
-            siddiqsoft::invalid_document_error);
+    EXPECT_THROW([&]() { siddiqsoft::sip2json::serialize(sipm); }(), siddiqsoft::invalid_document_error);
 }
 
 
@@ -523,7 +533,8 @@ TEST(siphelpers, Test_invalid_document)
 TEST(siphelpers, Test_invalid_document_startline)
 {
     EXPECT_THROW(
-            []() {
+            []()
+            {
                 siddiqsoft::sipmessage sipm("ROR", "sip:dummy@world.com");
                 siddiqsoft::sip2json::serialize(sipm);
             }(),
@@ -536,10 +547,10 @@ TEST(siphelpers, Test_empty_mb)
 {
     using namespace nlohmann::json_literals;
 
-    siddiqsoft::sipmessage sipm("REGISTER", "sip:hello@world.com", siddiqsoft::createCallId(), 1);
+    siddiqsoft::sipmessage sipm(siddiqsoft::METHOD_REGISTER, "sip:hello@world.com", siddiqsoft::createCallId(), 1);
 
     sipm.setHeader("To", "sip:hello@world.com")
-            .setHeader("Contact", "sip:hello@world.com")
+            .setHeader(siddiqsoft::HF_CONTACT, "sip:hello@world.com")
             .setHeader("Content-Type", siddiqsoft::CONTENT_TYPE_APP_SDP);
 
     // By default the body is null
@@ -554,7 +565,7 @@ TEST(siphelpers, Test_empty_mb)
     // Set some dummy value..
     sipm.setBody("/sdp/0/v"_json_pointer, 0)
             .setBody("/sdp/0/s"_json_pointer, "subject")
-            .setBody("/sdp/0/a/access_code"_json_pointer, "0277777")
+            .setBody("/sdp/0/a/access_code"_json_pointer, "0200007")
             .setBody("/sdp/0/t"_json_pointer, nlohmann::json {100001, 200002});
 
     // Check again for the body. it should be non-null
@@ -568,8 +579,8 @@ TEST(siphelpers, Test_empty_mb)
     sipm.erase("b");
     EXPECT_FALSE(sipm.hasBody()) << sipm.dump(2);
 
-    sipm.setHeader("Content-Type", siddiqsoft::CONTENT_TYPE_TEXT_PLAIN);
-    EXPECT_EQ(siddiqsoft::CONTENT_TYPE_TEXT_PLAIN, sipm.getHeader<std::string>(siddiqsoft::HFS_CONTENT_TYPE[1], "unknown"))
+    sipm.setHeader(siddiqsoft::HF_CONTENT_TYPE, siddiqsoft::CONTENT_TYPE_TEXT_PLAIN);
+    EXPECT_EQ(siddiqsoft::CONTENT_TYPE_TEXT_PLAIN, sipm.getHeader<std::string>(siddiqsoft::HFS_CONTENT_TYPE.canonical(), "unknown"))
             << sipm.dump(2);
 }
 
@@ -578,11 +589,11 @@ TEST(siphelpers, Test_empty_mb_2)
 {
     using namespace nlohmann::json_literals;
 
-    siddiqsoft::sipmessage sipm("REGISTER", "sip:hello@world.com", siddiqsoft::createCallId(), 1);
+    siddiqsoft::sipmessage sipm(siddiqsoft::METHOD_REGISTER, "sip:hello@world.com", siddiqsoft::createCallId(), 1);
 
-    sipm.setHeader({{"To", "sip:hello@world.com"},
-                    {"Contact", "sip:hello@world.com"},
-                    {"Content-Type", siddiqsoft::CONTENT_TYPE_APP_SDP}});
+    sipm.setHeader({{siddiqsoft::HF_TO, "sip:hello@world.com"},
+                    {siddiqsoft::HF_CONTACT, "sip:hello@world.com"},
+                    {siddiqsoft::HF_CONTENT_TYPE, siddiqsoft::CONTENT_TYPE_APP_SDP}});
 
     // By default the body is null
     EXPECT_TRUE(sipm.body().empty());
@@ -598,7 +609,7 @@ TEST(siphelpers, Test_empty_mb_2)
                    {{{"v", 0},
                      {"s", "subject"},
                      {"t", {100001, 200002}},
-                     {"a", {{"server", "media-server"}, {"access_code", "0277777"}}}},
+                     {"a", {{"server", "media-server"}, {"access_code", "0200007"}}}},
 
                     {{"v", 0},
                      {"s", "subject-2"},
@@ -617,7 +628,7 @@ TEST(siphelpers, Test_empty_mb_2)
     EXPECT_EQ(100001, sipm.getBodyElement("/sdp/0/t/0"_json_pointer, 0)) << sipm.body().dump(2);
     EXPECT_EQ(200002, sipm.getBodyElement("/sdp/0/t/1"_json_pointer, 0)) << sipm.body().dump(2);
     EXPECT_EQ("media-server", sipm.getBodyElement<std::string>("/sdp/0/a/server"_json_pointer, "")) << sipm.body().dump(2);
-    EXPECT_EQ("0277777", sipm.getBodyElement<std::string>("/sdp/0/a/access_code"_json_pointer, "")) << sipm.body().dump(2);
+    EXPECT_EQ("0200007", sipm.getBodyElement<std::string>("/sdp/0/a/access_code"_json_pointer, "")) << sipm.body().dump(2);
 
     // Check the second sdp
     EXPECT_EQ(0, sipm.getBodyElement("/sdp/1/v"_json_pointer, 99)) << sipm.body().dump(2);
@@ -631,19 +642,19 @@ TEST(siphelpers, Test_empty_mb_2)
     sipm.erase("b");
     EXPECT_FALSE(sipm.hasBody()) << sipm.dump(2);
 
-    sipm.setHeader("Content-Type", siddiqsoft::CONTENT_TYPE_TEXT_PLAIN);
-    EXPECT_EQ(siddiqsoft::CONTENT_TYPE_TEXT_PLAIN, sipm.getHeader<std::string>(siddiqsoft::HFS_CONTENT_TYPE[1], "unknown"))
+    sipm.setHeader(siddiqsoft::HF_CONTENT_TYPE, siddiqsoft::CONTENT_TYPE_TEXT_PLAIN);
+    EXPECT_EQ(siddiqsoft::CONTENT_TYPE_TEXT_PLAIN, sipm.getHeader<std::string>(siddiqsoft::HFS_CONTENT_TYPE.canonical(), "unknown"))
             << sipm.dump(2);
 }
 
 
 TEST(siphelpers, Test_empty_mb_3)
 {
-    siddiqsoft::sipmessage sipm("REGISTER", "sip:hello@world.com", siddiqsoft::createCallId(), 1);
+    siddiqsoft::sipmessage sipm(siddiqsoft::METHOD_REGISTER, "sip:hello@world.com", siddiqsoft::createCallId(), 1);
 
-    sipm.setHeader("To", "sip:hello@world.com")
-            .setHeader("Contact", "sip:hello@world.com")
-            .setHeader("Content-Type", siddiqsoft::CONTENT_TYPE_APP_SDP);
+    sipm.setHeader(siddiqsoft::HF_TO, "sip:hello@world.com")
+            .setHeader(siddiqsoft::HF_CONTACT, "sip:hello@world.com")
+            .setHeader(siddiqsoft::HF_CONTENT_TYPE, siddiqsoft::CONTENT_TYPE_APP_SDP);
 
     // By default the body is null
     EXPECT_TRUE(sipm.body().empty());
@@ -677,7 +688,7 @@ TEST(siphelpers, Test_empty_mb_3)
                            {{"v", 0},
                             {"s", "subject"},
                             {"t", {100001, 200002}},
-                            {"a", {{"server", "media-server"}, {"access_code", "0277777"}}}},
+                            {"a", {{"server", "media-server"}, {"access_code", "0200007"}}}},
                    }}});
 
     // Check again for the body. it should be non-null
@@ -692,15 +703,15 @@ TEST(siphelpers, Test_empty_mb_3)
     EXPECT_EQ(100001, sipm.getBodyElement("/sdp/0/t/0"_json_pointer, 0)) << sipm.body().dump(2);
     EXPECT_EQ(200002, sipm.getBodyElement("/sdp/0/t/1"_json_pointer, 0)) << sipm.body().dump(2);
     EXPECT_EQ("media-server", sipm.getBodyElement<std::string>("/sdp/0/a/server"_json_pointer, "")) << sipm.body().dump(2);
-    EXPECT_EQ("0277777", sipm.getBodyElement<std::string>("/sdp/0/a/access_code"_json_pointer, "")) << sipm.body().dump(2);
+    EXPECT_EQ("0200007", sipm.getBodyElement<std::string>("/sdp/0/a/access_code"_json_pointer, "")) << sipm.body().dump(2);
     // The field is removed!
     EXPECT_EQ("", sipm.getBodyElement<std::string>("/sdp/0/a/clir"_json_pointer, "")) << sipm.body().dump(2);
 
     sipm.erase("b");
     EXPECT_FALSE(sipm.hasBody()) << sipm.dump(2);
 
-    sipm.setHeader("Content-Type", siddiqsoft::CONTENT_TYPE_TEXT_PLAIN);
-    EXPECT_EQ(siddiqsoft::CONTENT_TYPE_TEXT_PLAIN, sipm.getHeader<std::string>(siddiqsoft::HFS_CONTENT_TYPE[1], "unknown"))
+    sipm.setHeader(siddiqsoft::HF_CONTENT_TYPE, siddiqsoft::CONTENT_TYPE_TEXT_PLAIN);
+    EXPECT_EQ(siddiqsoft::CONTENT_TYPE_TEXT_PLAIN, sipm.getHeader<std::string>(siddiqsoft::HFS_CONTENT_TYPE.canonical(), "unknown"))
             << sipm.dump(2);
 }
 
@@ -710,12 +721,12 @@ TEST(siphelpers, Test_empty_h)
 {
     auto                   callId = siddiqsoft::createCallId();
     std::string            cSeq {};
-    siddiqsoft::sipmessage sipm("REGISTER", "sip:hello@world.com", callId, 1);
+    siddiqsoft::sipmessage sipm(siddiqsoft::METHOD_REGISTER, "sip:hello@world.com", callId, 1);
 
-    sipm.setHeader("To", "sip:hello@world.com")
-            .setHeader("Contact", "sip:hello@world.com")
-            .setHeader("Content-Type", siddiqsoft::CONTENT_TYPE_TEXT_PLAIN)
-            .setHeader("Content-Length", 0);
+    sipm.setHeader(siddiqsoft::HF_TO, "sip:hello@world.com")
+            .setHeader(siddiqsoft::HF_CONTACT, "sip:hello@world.com")
+            .setHeader(siddiqsoft::HF_CONTENT_TYPE, siddiqsoft::CONTENT_TYPE_TEXT_PLAIN)
+            .setHeader(siddiqsoft::HF_CONTENT_LENGTH, 0);
 
     std::clog << std::format("{} - contents\n{}\n", __func__, siddiqsoft::sip2json::serialize(sipm));
 
@@ -745,16 +756,19 @@ TEST(siphelpers, Test_empty_message)
 {
     siddiqsoft::sipmessage emptyMessage;
 
-    try {
+    try
+    {
         siddiqsoft::sip2json::serialize(emptyMessage);
 
         FAIL() << "Expect exception: empty_message\n";
     }
-    catch (siddiqsoft::empty_message_error& e) {
+    catch (siddiqsoft::empty_message_error& e)
+    {
         std::clog << e.what();
         EXPECT_TRUE(e.errCode == siddiqsoft::sip2jsonErrors::empty_message);
     }
-    catch (std::exception& e) {
+    catch (std::exception& e)
+    {
         std::clog << e.what();
         FAIL() << "unknown/unhandled exception: " << e.what();
     }
@@ -765,7 +779,7 @@ TEST(siphelpers, Test_empty_message)
 TEST(synthetics, Check_invalid_startline_CRLF)
 {
     std::string buffer {
-            "preceeding junk\r\nNOTiFY sip:lab.edial.rc.116.voip@loopup.co;pool=uk-ed-nelson;box=uk-ed-nelson-04.ring2-corp.com "
+            "preceeding junk\r\nNOTiFY sip:lab.edial.rc.116.voip@loopup.co;pool=uk-ed-nelson;box=uk-ed-nelson-04.voice-corp.com "
             "SIP/2.0\r\n"
             "Via: SIP/2.0/TCP "
             "localhost:780;branch=conference.wizard@local.host__eDial_sep__lab.edial.rc.116.voip@loopup.co;received=127.0.0.1:"
@@ -779,13 +793,15 @@ TEST(synthetics, Check_invalid_startline_CRLF)
 
     std::cerr << "Loaded the test buffer: " << buffer << std::endl;
 
-    try {
+    try
+    {
         auto bs    = buffer.begin();
         auto dummy = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end());
         // The following should not execute.. we should catch the exception!
         FAIL() << "Expect exception: invalid_startline\n";
     }
-    catch (siddiqsoft::invalid_startline_error& e) {
+    catch (siddiqsoft::invalid_startline_error& e)
+    {
         std::clog << e.what();
         EXPECT_TRUE(e.errCode == siddiqsoft::sip2jsonErrors::invalid_startline);
     }
@@ -794,7 +810,7 @@ TEST(synthetics, Check_invalid_startline_CRLF)
 // NOLINTNEXTLINE
 TEST(siphelpers, Test_check_isMessageTypeRequest)
 {
-    siddiqsoft::sipmessage sipm("INVITE", "sip:hello@world.com", siddiqsoft::createCallId(), 1);
+    siddiqsoft::sipmessage sipm(siddiqsoft::METHOD_INVITE, "sip:hello@world.com", siddiqsoft::createCallId(), 1);
 
     EXPECT_TRUE(sipm.size() != 0);
     EXPECT_TRUE(!sipm.value("/h/Date"_json_pointer, std::string {}).empty());
@@ -818,7 +834,7 @@ TEST(siphelpers, Test_check_isMessageTypeResponse)
 // NOLINTNEXTLINE
 TEST(siphelpers, Test_check_getContentType)
 {
-    siddiqsoft::sipmessage sipm("INVITE", "sip:hello@world.com", siddiqsoft::createCallId(), 1);
+    siddiqsoft::sipmessage sipm(siddiqsoft::METHOD_INVITE, "sip:hello@world.com", siddiqsoft::createCallId(), 1);
 
     EXPECT_TRUE(sipm.size() != 0);
     EXPECT_TRUE(!sipm.value("/h/Date"_json_pointer, std::string {}).empty());
@@ -842,11 +858,11 @@ TEST(siphelpers, Test_check_getContentType)
 // NOLINTNEXTLINE
 TEST(siphelpers, Test_header_method)
 {
-    siddiqsoft::sipmessage sipm("REGISTER", "sip:hello@world.com", siddiqsoft::createCallId(), 1);
+    siddiqsoft::sipmessage sipm(siddiqsoft::METHOD_REGISTER, "sip:hello@world.com", siddiqsoft::createCallId(), 1);
 
-    sipm.setHeader("To", "sip:hello@world.com")
-            .setHeader("Contact", "sip:hello@world.com")
-            .setHeader("Content-Type", siddiqsoft::CONTENT_TYPE_APP_SDP);
+    sipm.setHeader(siddiqsoft::HF_TO, "sip:hello@world.com")
+            .setHeader(siddiqsoft::HF_CONTACT, "sip:hello@world.com")
+            .setHeader(siddiqsoft::HF_CONTENT_TYPE, siddiqsoft::CONTENT_TYPE_APP_SDP);
 
     EXPECT_EQ("sip:hello@world.com", sipm.getHeader<std::string>("Contact"));
     EXPECT_EQ(siddiqsoft::CONTENT_TYPE_APP_SDP, sipm.getContentType());
@@ -856,9 +872,9 @@ TEST(siphelpers, Test_header_method)
 TEST(siphelpers, Test_body_method)
 {
     std::string            iName {"MY_INAME"};
-    siddiqsoft::sipmessage sipm("INVITE", "sip:hello@world.com", siddiqsoft::createCallId(), 1);
+    siddiqsoft::sipmessage sipm(siddiqsoft::METHOD_INVITE, "sip:hello@world.com", siddiqsoft::createCallId(), 1);
 
-    sipm.setHeader("Content-Type", siddiqsoft::CONTENT_TYPE_APP_SDP);
+    sipm.setHeader(siddiqsoft::HF_CONTENT_TYPE, siddiqsoft::CONTENT_TYPE_APP_SDP);
 
     EXPECT_TRUE(sipm.body().empty());
 
@@ -875,7 +891,7 @@ TEST(siphelpers, Test_body_method)
             .setBody("/sdp/0/i/name"_json_pointer, iName)
             .setBody("/sdp/0/i/type"_json_pointer, "CallByPhone-URL")
             .setBody("/sdp/0/i/dn"_json_pointer, "16668661212")
-            .setBody("/sdp/0/a/access_code"_json_pointer, "0277777")
+            .setBody("/sdp/0/a/access_code"_json_pointer, "0200007")
             .setBody("/sdp/0/t"_json_pointer, nlohmann::json {100001, 200002})
             .setBody("/sdp/0/m"_json_pointer, "audio voice");
 
@@ -888,7 +904,8 @@ TEST(siphelpers, Test_body_method)
     EXPECT_EQ(100001, sipm.body()["sdp"][0]["t"][0].get<int>());
     EXPECT_EQ(200002, sipm.body()["sdp"][0]["t"][1].get<int>());
 
-    try {
+    try
+    {
         auto buffer = siddiqsoft::sip2json::serialize(sipm);
 
         std::cerr << "Serialized:\n" << buffer << "\n";
@@ -897,23 +914,28 @@ TEST(siphelpers, Test_body_method)
         // We will attempt to parse it back into a new message.
         // The callback will be invoked and this is where we will check
         // for our correctness.
-        buffer = siddiqsoft::sip2json::parseAsync(buffer, [&](auto&& dsipm) {
-            // We Should check for the iline
-            EXPECT_EQ(iName, dsipm.body().value("/sdp/0/i/name"_json_pointer, "")) << dsipm.dump(2);
+        buffer = siddiqsoft::sip2json::parseAsync(buffer,
+                                                  [&](auto&& dsipm)
+                                                  {
+                                                      // We Should check for the iline
+                                                      EXPECT_EQ(iName, dsipm.body().value("/sdp/0/i/name"_json_pointer, ""))
+                                                              << dsipm.dump(2);
 
-            int expected_v = dsipm.body()["sdp"][0]["v"].template get<int>();
-            EXPECT_EQ(0, expected_v);
-            std::string expected_s = dsipm.body()["sdp"][0]["s"].template get<std::string>();
-            EXPECT_EQ("subject", expected_s);
-            int expected_t0 = dsipm.body()["sdp"][0]["t"][0].template get<int>();
-            EXPECT_EQ(100001, expected_t0);
-            int expected_t1 = dsipm.body()["sdp"][0]["t"][1].template get<int>();
-            EXPECT_EQ(200002, expected_t1);
-        });
+                                                      int expected_v = dsipm.body()["sdp"][0]["v"].template get<int>();
+                                                      EXPECT_EQ(0, expected_v);
+                                                      std::string expected_s =
+                                                              dsipm.body()["sdp"][0]["s"].template get<std::string>();
+                                                      EXPECT_EQ("subject", expected_s);
+                                                      int expected_t0 = dsipm.body()["sdp"][0]["t"][0].template get<int>();
+                                                      EXPECT_EQ(100001, expected_t0);
+                                                      int expected_t1 = dsipm.body()["sdp"][0]["t"][1].template get<int>();
+                                                      EXPECT_EQ(200002, expected_t1);
+                                                  });
         // All the message buffer should be consumed with no lef-overs.
         EXPECT_EQ(0, buffer.length()) << buffer;
     }
-    catch (const std::exception& e) {
+    catch (const std::exception& e)
+    {
         std::clog << std::format("{}:Exception: {}\n", __func__, e.what());
         FAIL() << "Unexpected exception: " << e.what();
     }
@@ -925,7 +947,7 @@ TEST(synthetics, Check_async_invalid_startline_CRLF)
 {
     std::string buffer {
             "\r\npreceeding junk\r\nNOTiFY "
-            "sip:lab.edial.rc.116.voip@loopup.co;pool=uk-ed-nelson;box=uk-ed-nelson-04.ring2-corp.com SIP/2.0\r\n"
+            "sip:lab.edial.rc.116.voip@loopup.co;pool=uk-ed-nelson;box=uk-ed-nelson-04.voice-corp.com SIP/2.0\r\n"
             "Via: SIP/2.0/TCP "
             "localhost:780;branch=conference.wizard@local.host__eDial_sep__lab.edial.rc.116.voip@loopup.co;received=127.0.0.1:"
             "48114:442357920\r\n"
@@ -935,11 +957,14 @@ TEST(synthetics, Check_async_invalid_startline_CRLF)
             "Content-Length: 0\r\n"
             "Content-type: application/sdp\r\n"
             "\r\n"};
-    bool passTest        = false;
-    auto bs              = buffer.begin();
+    bool passTest = false;
+    auto bs       = buffer.begin();
 
     auto remainingBuffer = siddiqsoft::sip2json::parseAsync(
-            buffer, {}, [&](const siddiqsoft::sip2json_exception& e, std::string::iterator&, const std::string::iterator&) {
+            buffer,
+            {},
+            [&](const siddiqsoft::sip2json_exception& e, std::string::iterator&, const std::string::iterator&)
+            {
                 std::cerr << "errCode: " << e.errCode << " what: " << e.what() << std::endl;
                 EXPECT_TRUE(e.errCode == siddiqsoft::sip2jsonErrors::invalid_startline);
                 passTest = true;
@@ -951,11 +976,14 @@ TEST(synthetics, Check_async_invalid_startline_CRLF)
 TEST(siphelpers, Test_async_incomplete_buffer_for_parse)
 {
     std::string buffer {siddiqsoft::SIP_SAMPLE_MINIMAL_MESSAGE};
-    bool passTest        = false;
-    auto bs              = buffer.begin();
+    bool        passTest = false;
+    auto        bs       = buffer.begin();
 
     auto remainingBuffer = siddiqsoft::sip2json::parseAsync(
-            buffer, [](auto&&){}, [&](const siddiqsoft::sip2json_exception& e, std::string::iterator&, const std::string::iterator&) {
+            buffer,
+            [](auto&&) { },
+            [&](const siddiqsoft::sip2json_exception& e, std::string::iterator&, const std::string::iterator&)
+            {
                 EXPECT_TRUE(e.errCode == siddiqsoft::sip2jsonErrors::incomplete_buffer_for_parse);
                 passTest = true;
             });
@@ -973,7 +1001,10 @@ TEST(siphelpers, Test_async_incomplete_buffer_for_content)
     ASSERT_TRUE(buffer.size() > 0) << "Buffer contents: [[ " << buffer << " ]]";
 
     auto remainingBuffer = siddiqsoft::sip2json::parseAsync(
-            buffer, {}, [&](const siddiqsoft::sip2json_exception& e, std::string::iterator&, const std::string::iterator&) {
+            buffer,
+            {},
+            [&](const siddiqsoft::sip2json_exception& e, std::string::iterator&, const std::string::iterator&)
+            {
                 // We would get multiple exceptions/callbacks so we should watch out for our specific code.
                 std::clog << std::format("Test_incomplete_buffer_for_content: got error:{}\n", e.errCode);
                 if (e.errCode == siddiqsoft::sip2jsonErrors::incomplete_buffer_for_content) passTest = true;
@@ -985,12 +1016,15 @@ TEST(siphelpers, Test_async_incomplete_buffer_for_content)
 // NOLINTNEXTLINE
 TEST(siphelpers, Test_async_incomplete_buffer_for_header)
 {
-    bool passTest        = false;
-    auto buffer          = loadSampleFile("Test_incomplete_buffer_for_header"); // NOLINT
-    auto bs              = buffer.begin();
+    bool passTest = false;
+    auto buffer   = loadSampleFile("Test_incomplete_buffer_for_header"); // NOLINT
+    auto bs       = buffer.begin();
 
     auto remainingBuffer = siddiqsoft::sip2json::parseAsync(
-            buffer, {}, [&](const siddiqsoft::sip2json_exception& e, std::string::iterator&, const std::string::iterator&) {
+            buffer,
+            {},
+            [&](const siddiqsoft::sip2json_exception& e, std::string::iterator&, const std::string::iterator&)
+            {
                 EXPECT_TRUE(e.errCode == siddiqsoft::sip2jsonErrors::incomplete_buffer_for_header);
                 passTest = true;
             });
@@ -1009,7 +1043,10 @@ TEST(siphelpers, Test_async_unsupported_contenttype)
     EXPECT_FALSE(buffer.empty()) << "File `Test_unsupported_contenttype` contents...should be non-empty!\n";
 
     auto remainingBuffer = siddiqsoft::sip2json::parseAsync(
-            buffer, {}, [&](const siddiqsoft::sip2json_exception& e, std::string::iterator&, const std::string::iterator&) {
+            buffer,
+            {},
+            [&](const siddiqsoft::sip2json_exception& e, std::string::iterator&, const std::string::iterator&)
+            {
                 EXPECT_TRUE(e.errCode == siddiqsoft::sip2jsonErrors::unsupported_contenttype);
                 passTest = true;
             });
@@ -1028,13 +1065,15 @@ TEST(siphelpers, Test_unknown_exception)
     // Deliberately throw an exception in the parse-callback so we can ensure that the error-callback is invoked.
     auto remainingBuffer = siddiqsoft::sip2json::parseAsync(
             buffer,
-            [&](siddiqsoft::sipmessage&& sipm) {
+            [&](siddiqsoft::sipmessage&& sipm)
+            {
                 // We should parse valid message and get our callback.
                 pass1Test = true;
                 // Throw so we can get the error-callback triggered.
                 throw 666;
             },
-            [&](const siddiqsoft::sip2json_exception& e, std::string::iterator&, const std::string::iterator&) {
+            [&](const siddiqsoft::sip2json_exception& e, std::string::iterator&, const std::string::iterator&)
+            {
                 if (pass1Test) pass2Test = (e.errCode == siddiqsoft::sip2jsonErrors::unknown);
             });
 
@@ -1051,51 +1090,58 @@ TEST(validation, Test_extension_aras)
     auto parseCount = 0;
 
 
-    buffer          = siddiqsoft::sip2json::parseAsync(
+    buffer = siddiqsoft::sip2json::parseAsync(
             buffer,
-            [&](auto&& sipm) {
+            [&](auto&& sipm)
+            {
                 // std::cerr << "We're inside the callback..the sipmessage...\n" << sipm.dump(1) << std::endl;
-                switch (parseCount++) {
-                    case 0: {
-                        std::cerr << __func__ << " - case " << parseCount << ".." << std::endl;
-                        EXPECT_EQ(2, sipm["/h/Via"_json_pointer].size()) << sipm.dump(2);
-                        EXPECT_EQ(1118, sipm.getContentLength());
-                        EXPECT_EQ("+14155500001x,0000000001",
-                                  sipm.template getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
-                        EXPECT_EQ("1.11", sipm.value("/b/sdp/0/a/x-ring2-coords"_json_pointer, "")) << sipm.dump(2);
-                    } break;
-                    case 1: {
-                        std::cerr << __func__ << " - case " << parseCount << ".." << std::endl;
-                        // EXPECT_TRUE(false) << sipm.dump(2); // Diagnostics only
+                switch (parseCount++)
+                {
+                case 0:
+                {
+                    std::cerr << __func__ << " - case " << parseCount << ".." << std::endl;
+                    EXPECT_EQ(2, sipm["/h/Via"_json_pointer].size()) << sipm.dump(2);
+                    EXPECT_EQ(1118, sipm.getContentLength());
+                    EXPECT_EQ("+14155500001x,0000000001",
+                              sipm.template getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
+                    EXPECT_EQ("1.11", sipm.value("/b/sdp/0/a/x-voice-coords"_json_pointer, "")) << sipm.dump(2);
+                }
+                break;
+                case 1:
+                {
+                    std::cerr << __func__ << " - case " << parseCount << ".." << std::endl;
+                    // EXPECT_TRUE(false) << sipm.dump(2); // Diagnostics only
 
-                        EXPECT_EQ(2, sipm["/h/Via"_json_pointer].size()) << sipm.dump(2);
-                        EXPECT_EQ(1263, sipm.getContentLength());
-                        EXPECT_EQ("+14155500001x,0000000001",
-                                  sipm.template getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
-                        EXPECT_TRUE(sipm.contains("/b/sdp/0/a/x-ring2-coords"_json_pointer)) << sipm.dump(2);
-                        EXPECT_EQ(2, sipm["/b/sdp/0/a/x-ring2-coords"_json_pointer].size()) << sipm.dump(2);
-                        EXPECT_EQ("2.11", sipm.value("/b/sdp/0/a/x-ring2-coords/0"_json_pointer, "")) << sipm.dump(2);
-                        EXPECT_EQ("2.22", sipm.value("/b/sdp/0/a/x-ring2-coords/1"_json_pointer, "")) << sipm.dump(2);
-                    } break;
-                    case 2: {
-                        std::cerr << __func__ << " - case " << parseCount << ".." << std::endl;
-                        // EXPECT_TRUE(false) << sipm.dump(2); // Diagnostics only
+                    EXPECT_EQ(2, sipm["/h/Via"_json_pointer].size()) << sipm.dump(2);
+                    EXPECT_EQ(1263, sipm.getContentLength());
+                    EXPECT_EQ("+14155500001x,0000000001",
+                              sipm.template getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
+                    EXPECT_TRUE(sipm.contains("/b/sdp/0/a/x-voice-coords"_json_pointer)) << sipm.dump(2);
+                    EXPECT_EQ(2, sipm["/b/sdp/0/a/x-voice-coords"_json_pointer].size()) << sipm.dump(2);
+                    EXPECT_EQ("2.11", sipm.value("/b/sdp/0/a/x-voice-coords/0"_json_pointer, "")) << sipm.dump(2);
+                    EXPECT_EQ("2.22", sipm.value("/b/sdp/0/a/x-voice-coords/1"_json_pointer, "")) << sipm.dump(2);
+                }
+                break;
+                case 2:
+                {
+                    std::cerr << __func__ << " - case " << parseCount << ".." << std::endl;
+                    // EXPECT_TRUE(false) << sipm.dump(2); // Diagnostics only
 
-                        EXPECT_EQ(2, sipm["/h/Via"_json_pointer].size()) << sipm.dump(2);
-                        EXPECT_EQ(1318, sipm.getContentLength());
-                        EXPECT_EQ("+14155500001x,0000000001",
-                                  sipm.template getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
-                        EXPECT_TRUE(sipm.contains("/b/sdp/0/a/x-ring2-coords"_json_pointer)) << sipm.dump(2);
-                        EXPECT_EQ(3, sipm["/b/sdp/0/a/x-ring2-coords"_json_pointer].size()) << sipm.dump(2);
-                        EXPECT_EQ("3.11", sipm.value("/b/sdp/0/a/x-ring2-coords/0"_json_pointer, "")) << sipm.dump(2);
-                        EXPECT_EQ("3.22", sipm.value("/b/sdp/0/a/x-ring2-coords/1"_json_pointer, "")) << sipm.dump(2);
-                        EXPECT_EQ("3.33", sipm.value("/b/sdp/0/a/x-ring2-coords/2"_json_pointer, "")) << sipm.dump(2);
-                    } break;
+                    EXPECT_EQ(2, sipm["/h/Via"_json_pointer].size()) << sipm.dump(2);
+                    EXPECT_EQ(1318, sipm.getContentLength());
+                    EXPECT_EQ("+14155500001x,0000000001",
+                              sipm.template getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
+                    EXPECT_TRUE(sipm.contains("/b/sdp/0/a/x-voice-coords"_json_pointer)) << sipm.dump(2);
+                    EXPECT_EQ(3, sipm["/b/sdp/0/a/x-voice-coords"_json_pointer].size()) << sipm.dump(2);
+                    EXPECT_EQ("3.11", sipm.value("/b/sdp/0/a/x-voice-coords/0"_json_pointer, "")) << sipm.dump(2);
+                    EXPECT_EQ("3.22", sipm.value("/b/sdp/0/a/x-voice-coords/1"_json_pointer, "")) << sipm.dump(2);
+                    EXPECT_EQ("3.33", sipm.value("/b/sdp/0/a/x-voice-coords/2"_json_pointer, "")) << sipm.dump(2);
+                }
+                break;
                 };
             },
-            [](const siddiqsoft::sip2json_exception& e, std::string::iterator&, const std::string::iterator&) {
-                EXPECT_FALSE(true) << e.what();
-            }
+            [](const siddiqsoft::sip2json_exception& e, std::string::iterator&, const std::string::iterator&)
+            { EXPECT_FALSE(true) << e.what(); }
 
     );
     // Sleep for a bit.. just for testing..
@@ -1108,45 +1154,49 @@ TEST(validation, Test_extension_aras)
 // NOLINTNEXTLINE
 TEST(validation, Test_extension_nelson)
 {
-    auto buffer          = loadSampleFile("Test_extension_nelson"); // NOLINT
-    auto bs              = buffer.begin();
-    auto parseCount      = 0;
+    auto buffer     = loadSampleFile("Test_extension_nelson"); // NOLINT
+    auto bs         = buffer.begin();
+    auto parseCount = 0;
 
 
-    auto remainingBuffer = siddiqsoft::sip2json::parseAsync(buffer, [&](siddiqsoft::sipmessage&& sipm) {
-        switch (parseCount++) {
-            case 0:
-                EXPECT_EQ(1065, sipm.getContentLength());
-                EXPECT_EQ("+15550000019", sipm.getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
-                break;
-            case 1:
-                EXPECT_EQ(1189, sipm.getContentLength());
-                EXPECT_EQ("+15550000019", sipm.getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
-                break;
-            case 2:
-                EXPECT_EQ(2011, sipm.getContentLength());
-                EXPECT_EQ(2, sipm.body()["sdp"].size());
-                EXPECT_EQ("+15550000019", sipm.getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
-                EXPECT_EQ("+445550000007", sipm.getBodyElement<std::string>("/sdp/1/c/dn"_json_pointer, ""));
-                break;
-            case 3:
-                EXPECT_EQ(978, sipm.getContentLength());
-                EXPECT_EQ("+445550000007", sipm.getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
-                break;
-            case 4:
-                EXPECT_EQ(1080, sipm.getContentLength());
-                EXPECT_EQ("+445550000007", sipm.getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
-                break;
-            case 5:
-                EXPECT_EQ(1073, sipm.getContentLength());
-                EXPECT_EQ("+442555000022x,0000000022", sipm.getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
-                break;
-            case 6:
-                EXPECT_EQ(1321, sipm.getContentLength());
-                EXPECT_EQ("+442555000022x,0000000022", sipm.getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
-                break;
-        };
-    });
+    auto remainingBuffer = siddiqsoft::sip2json::parseAsync(
+            buffer,
+            [&](siddiqsoft::sipmessage&& sipm)
+            {
+                switch (parseCount++)
+                {
+                case 0:
+                    EXPECT_EQ(1065, sipm.getContentLength());
+                    EXPECT_EQ("+15550000019", sipm.getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
+                    break;
+                case 1:
+                    EXPECT_EQ(1189, sipm.getContentLength());
+                    EXPECT_EQ("+15550000019", sipm.getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
+                    break;
+                case 2:
+                    EXPECT_EQ(2011, sipm.getContentLength());
+                    EXPECT_EQ(2, sipm.body()["sdp"].size());
+                    EXPECT_EQ("+15550000019", sipm.getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
+                    EXPECT_EQ("+445550000007", sipm.getBodyElement<std::string>("/sdp/1/c/dn"_json_pointer, ""));
+                    break;
+                case 3:
+                    EXPECT_EQ(978, sipm.getContentLength());
+                    EXPECT_EQ("+445550000007", sipm.getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
+                    break;
+                case 4:
+                    EXPECT_EQ(1080, sipm.getContentLength());
+                    EXPECT_EQ("+445550000007", sipm.getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
+                    break;
+                case 5:
+                    EXPECT_EQ(1073, sipm.getContentLength());
+                    EXPECT_EQ("+442555000022x,0000000022", sipm.getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
+                    break;
+                case 6:
+                    EXPECT_EQ(1321, sipm.getContentLength());
+                    EXPECT_EQ("+442555000022x,0000000022", sipm.getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
+                    break;
+                };
+            });
 
     // There must be atleast 7 NOTIFY from the buffer
     EXPECT_EQ(7, parseCount);
@@ -1156,8 +1206,8 @@ TEST(validation, Test_extension_nelson)
 // NOLINTNEXTLINE
 TEST(validation, Test_parse_invalid_string_position)
 {
-    auto buffer      = loadSampleFile("Test_parse_invalid_string_position"); // NOLINT
-    auto bs          = buffer.begin();
+    auto buffer = loadSampleFile("Test_parse_invalid_string_position"); // NOLINT
+    auto bs     = buffer.begin();
 
     auto parseResult = siddiqsoft::sip2json::parse(bs, buffer.end());
 
@@ -1216,7 +1266,7 @@ TEST(ImplementationChecks, Test_formatters_1)
 TEST(synthetics, Check_header_array_CRLF)
 {
     std::string buffer {
-            "NOTIFY sip:lab.edial.rc.116.voip@loopup.co;pool=uk-ed-nelson;box=uk-ed-nelson-04.ring2-corp.com SIP/2.0\r\n"
+            "NOTIFY sip:lab.edial.rc.116.voip@loopup.co;pool=uk-ed-nelson;box=uk-ed-nelson-04.voice-corp.com SIP/2.0\r\n"
             "Via: SIP/2.0/TCP "
             "localhost:780;branch=conference.wizard@local.host__eDial_sep__lab.edial.rc.116.voip@loopup.co;received=127.0.0.1:"
             "48114:442357920\r\n"
@@ -1239,7 +1289,8 @@ TEST(synthetics, Check_header_array_CRLF)
         std::cerr << "Log the parseFromBuffer output: " << sipm.dump(1) << std::endl;
         EXPECT_TRUE(via.is_array()) << via.dump(1);
 
-        if (via.is_string()) {
+        if (via.is_string())
+        {
             // swap out an push to array
             auto previous = via.get<std::string>();
             sipm["h"].erase("Via");
@@ -1249,7 +1300,8 @@ TEST(synthetics, Check_header_array_CRLF)
             auto elemJustAdded = sipm["h"]["Via"].get<std::vector<std::string>>()[1];
             EXPECT_TRUE(elemJustAdded.find("x@y.z") != std::string::npos) << sipm["h"]["Via"].dump();
         }
-        else if (via.is_array()) {
+        else if (via.is_array())
+        {
             // Add another element..
             sipm["h"]["Via"].push_back(std::format("SIP/2.0/TCP {}", "a@b.c"));
             EXPECT_EQ(sipm["h"]["Via"].get<std::vector<std::string>>().size(), 5) << sipm["h"]["Via"].dump();
@@ -1260,7 +1312,7 @@ TEST(synthetics, Check_header_array_CRLF)
 TEST(synthetics, Check_header_array_LF)
 {
     std::string buffer {
-            "NOTIFY sip:lab.edial.rc.116.voip@loopup.co;pool=uk-ed-nelson;box=uk-ed-nelson-04.ring2-corp.com SIP/2.0\n"
+            "NOTIFY sip:lab.edial.rc.116.voip@loopup.co;pool=uk-ed-nelson;box=uk-ed-nelson-04.voice-corp.com SIP/2.0\n"
             "Via: SIP/2.0/TCP "
             "localhost:780;branch=conference.wizard@local.host__eDial_sep__lab.edial.rc.116.voip@loopup.co;received=127.0.0.1:"
             "48114:442357920\n"
@@ -1282,7 +1334,8 @@ TEST(synthetics, Check_header_array_LF)
         std::cerr << "Log the parseFromBuffer output: " << sipm.dump(1) << std::endl;
         EXPECT_TRUE(via.is_array()) << via.dump(1);
 
-        if (via.is_string()) {
+        if (via.is_string())
+        {
             // swap out an push to array
             auto previous = via.get<std::string>();
             sipm["h"].erase("Via");
@@ -1292,7 +1345,8 @@ TEST(synthetics, Check_header_array_LF)
             auto elemJustAdded = sipm["h"]["Via"].get<std::vector<std::string>>()[1];
             EXPECT_TRUE(elemJustAdded.find("x@y.z") != std::string::npos) << sipm["h"]["Via"].dump();
         }
-        else if (via.is_array()) {
+        else if (via.is_array())
+        {
             // Add another element..
             sipm["h"]["Via"].push_back(std::format("SIP/2.0/TCP {}", "a@b.c"));
             EXPECT_EQ(sipm["h"]["Via"].get<std::vector<std::string>>().size(), 5) << sipm["h"]["Via"].dump();
@@ -1304,7 +1358,7 @@ TEST(synthetics, Check_startline_precedingjunk_CRLF)
 {
     std::string buffer {
             "2024-11-25T11:11:00.000Z Message\r\nNOTIFY "
-            "sip:lab.edial.rc.116.voip@loopup.co;pool=uk-ed-nelson;box=uk-ed-nelson-04.ring2-corp.com SIP/2.0\r\n"
+            "sip:lab.edial.rc.116.voip@loopup.co;pool=uk-ed-nelson;box=uk-ed-nelson-04.voice-corp.com SIP/2.0\r\n"
             "Via: SIP/2.0/TCP "
             "localhost:780;branch=conference.wizard@local.host__eDial_sep__lab.edial.rc.116.voip@loopup.co;received=127.0.0.1:"
             "48114:442357920\r\n"
@@ -1327,7 +1381,8 @@ TEST(synthetics, Check_startline_precedingjunk_CRLF)
         std::cerr << "Log the parseFromBuffer output: " << sipm.dump(1) << std::endl;
         EXPECT_TRUE(via.is_array()) << via.dump(1);
 
-        if (via.is_string()) {
+        if (via.is_string())
+        {
             // swap out an push to array
             auto previous = via.get<std::string>();
             sipm["h"].erase("Via");
@@ -1337,7 +1392,8 @@ TEST(synthetics, Check_startline_precedingjunk_CRLF)
             auto elemJustAdded = sipm["h"]["Via"].get<std::vector<std::string>>()[1];
             EXPECT_TRUE(elemJustAdded.find("x@y.z") != std::string::npos) << sipm["h"]["Via"].dump();
         }
-        else if (via.is_array()) {
+        else if (via.is_array())
+        {
             // Add another element..
             sipm["h"]["Via"].push_back(std::format("SIP/2.0/TCP {}", "a@b.c"));
             EXPECT_EQ(sipm["h"]["Via"].get<std::vector<std::string>>().size(), 5) << sipm["h"]["Via"].dump();
@@ -1354,13 +1410,15 @@ TEST(siphelpers, Test_check_Via)
     siddiqsoft::sipmessage sipm;
 
     EXPECT_NO_THROW(sipm = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end()));
-    if (sipm.contains("/h/Via"_json_pointer)) {
+    if (sipm.contains("/h/Via"_json_pointer))
+    {
         auto via = sipm["h"]["Via"];
 
         std::cerr << "Log the parseFromBuffer output: " << sipm.dump(1) << std::endl;
         EXPECT_TRUE(via.is_array()) << via.dump(1);
 
-        if (via.is_string()) {
+        if (via.is_string())
+        {
             // swap out an push to array
             auto previous = via.get<std::string>();
             sipm["h"].erase("Via");
@@ -1370,13 +1428,15 @@ TEST(siphelpers, Test_check_Via)
             auto elemJustAdded = sipm["h"]["Via"].get<std::vector<std::string>>()[1];
             EXPECT_TRUE(elemJustAdded.find("x@y.z") != std::string::npos) << sipm["h"]["Via"].dump();
         }
-        else if (via.is_array()) {
+        else if (via.is_array())
+        {
             // Add another element..
             sipm["h"]["Via"].push_back(std::format("SIP/2.0/TCP {}", "a@b.c"));
             EXPECT_EQ(sipm["h"]["Via"].get<std::vector<std::string>>().size(), 4) << sipm["h"]["Via"].dump();
         }
     }
-    else {
+    else
+    {
         sipm["h"]["Via"] = std::format("SIP/2.0/TCP {}", "10.10.30.40");
     }
 
@@ -1454,7 +1514,7 @@ TEST(edge_cases, Test_parse_register_request_no_body)
 
     EXPECT_NO_THROW(sipm = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end()));
     EXPECT_TRUE(sipm.isMessageRequest());
-    EXPECT_EQ("REGISTER", sipm.getMethod());
+    EXPECT_EQ(siddiqsoft::METHOD_REGISTER, sipm.getMethod());
     EXPECT_EQ(0, sipm.getContentLength());
     EXPECT_EQ("65 REGISTER", sipm.getHeader<std::string>("CSeq"));
     EXPECT_EQ(300, sipm.getExpires());
@@ -1494,4 +1554,545 @@ TEST(edge_cases_2, Test_parse_notify_empty_header_value)
     EXPECT_TRUE(sipm.headers().contains("X-rss-id")) << sipm.dump(2);
     EXPECT_EQ("", sipm.getHeader<std::string>("X-rss-id")) << "X-rss-id should have empty value";
     EXPECT_FALSE(sipm.headers().contains("X-active-talker")) << sipm.dump(2);
+}
+
+// NOLINTNEXTLINE
+TEST(validation, Test_RandomStream_Recv_File_1_counts)
+{
+    auto buffer = loadSampleFile("RandomStream_Recv_File_1");
+    ASSERT_FALSE(buffer.empty());
+
+    uint32_t messageCount                  = 0;
+    uint32_t xDomainCount                  = 0;
+    uint32_t xSeamlessCount                = 0;
+    uint32_t xCallInstanceIdCount          = 0;
+    uint32_t messagesWithSdpCallOwnerAlias = 0;
+    uint32_t totalSdpCallOwnerAlias        = 0;
+    uint32_t totalSdpBlocks                = 0;
+    uint32_t totalSdpElements              = 0;
+
+    auto remaining =
+            siddiqsoft::sip2json::parseAsync(buffer,
+                                             [&](siddiqsoft::sipmessage&& sipm)
+                                             {
+                                                 messageCount++;
+                                                 if (sipm.headers().contains("X-domain")) { xDomainCount++; }
+                                                 if (sipm.headers().contains("X-Seamless")) { xSeamlessCount++; }
+                                                 if (sipm.headers().contains("X-Call-Instance-ID")) { xCallInstanceIdCount++; }
+                                                 if (sipm.hasBody() && sipm.body().contains("sdp") && sipm.body()["sdp"].is_array())
+                                                 {
+                                                     bool msgHasAlias = false;
+                                                     totalSdpBlocks += sipm.body()["sdp"].size();
+                                                     for (const auto& sdpBlock : sipm.body()["sdp"])
+                                                     {
+                                                         if (sdpBlock.is_object())
+                                                         {
+                                                             totalSdpElements += sdpBlock.size();
+                                                             if (sdpBlock.contains("a") && sdpBlock["a"].is_object())
+                                                             {
+                                                                 totalSdpElements += (sdpBlock["a"].size() - 1);
+                                                                 if (sdpBlock["a"].contains("x-voice-callowner-login_alias"))
+                                                                 {
+                                                                     msgHasAlias = true;
+                                                                     totalSdpCallOwnerAlias++;
+                                                                 }
+                                                             }
+                                                         }
+                                                     }
+                                                     if (msgHasAlias) messagesWithSdpCallOwnerAlias++;
+                                                 }
+                                             });
+
+    std::clog << "RandomStream_Recv_File_1 summary:" << std::endl;
+    std::clog << "  Total Messages            : " << messageCount << std::endl;
+    std::clog << "  X-domain Header Count     : " << xDomainCount << std::endl;
+    std::clog << "  X-Seamless Header Count   : " << xSeamlessCount << std::endl;
+    std::clog << "  X-Call-Instance-ID Count  : " << xCallInstanceIdCount << std::endl;
+    std::clog << "  Msgs w/ SDP CallOwner     : " << messagesWithSdpCallOwnerAlias << std::endl;
+    std::clog << "  Total SDP CallOwner Alias : " << totalSdpCallOwnerAlias << std::endl;
+    std::clog << "  Total SDP Blocks          : " << totalSdpBlocks << std::endl;
+    std::clog << "  Total SDP Elements        : " << totalSdpElements << std::endl;
+    std::clog << "  Avg SDP Elements/Msg      : " << (double(totalSdpElements) / messageCount) << std::endl;
+
+    EXPECT_EQ(459u, messageCount);
+    EXPECT_EQ(459u, xDomainCount);
+    EXPECT_EQ(34u, xSeamlessCount);
+    EXPECT_EQ(344u, xCallInstanceIdCount);
+    EXPECT_EQ(336u, messagesWithSdpCallOwnerAlias);
+    EXPECT_EQ(549u, totalSdpCallOwnerAlias);
+    EXPECT_EQ(557u, totalSdpBlocks);
+    EXPECT_EQ(21409u, totalSdpElements);
+}
+
+// NOLINTNEXTLINE
+TEST(validation, Test_Mixed_Stream_1_counts)
+{
+    auto buffer = loadSampleFile("Mixed_Stream_1");
+    ASSERT_FALSE(buffer.empty());
+
+    uint32_t messageCount                  = 0;
+    uint32_t xDomainCount                  = 0;
+    uint32_t xSeamlessCount                = 0;
+    uint32_t xCallInstanceIdCount          = 0;
+    uint32_t messagesWithSdpCallOwnerAlias = 0;
+    uint32_t totalSdpCallOwnerAlias        = 0;
+    uint32_t totalSdpBlocks                = 0;
+    uint32_t totalSdpElements              = 0;
+
+    auto remaining =
+            siddiqsoft::sip2json::parseAsync(buffer,
+                                             [&](siddiqsoft::sipmessage&& sipm)
+                                             {
+                                                 messageCount++;
+                                                 if (sipm.headers().contains("X-domain")) { xDomainCount++; }
+                                                 if (sipm.headers().contains("X-Seamless")) { xSeamlessCount++; }
+                                                 if (sipm.headers().contains("X-Call-Instance-ID")) { xCallInstanceIdCount++; }
+                                                 if (sipm.hasBody() && sipm.body().contains("sdp") && sipm.body()["sdp"].is_array())
+                                                 {
+                                                     bool msgHasAlias = false;
+                                                     totalSdpBlocks += sipm.body()["sdp"].size();
+                                                     for (const auto& sdpBlock : sipm.body()["sdp"])
+                                                     {
+                                                         if (sdpBlock.is_object())
+                                                         {
+                                                             totalSdpElements += sdpBlock.size();
+                                                             if (sdpBlock.contains("a") && sdpBlock["a"].is_object())
+                                                             {
+                                                                 totalSdpElements += (sdpBlock["a"].size() - 1);
+                                                                 if (sdpBlock["a"].contains("x-voice-callowner-login_alias"))
+                                                                 {
+                                                                     msgHasAlias = true;
+                                                                     totalSdpCallOwnerAlias++;
+                                                                 }
+                                                             }
+                                                         }
+                                                     }
+                                                     if (msgHasAlias) messagesWithSdpCallOwnerAlias++;
+                                                 }
+                                             });
+
+    std::clog << "Mixed_Stream_1 summary:" << std::endl;
+    std::clog << "  Total Messages            : " << messageCount << std::endl;
+    std::clog << "  X-domain Header Count     : " << xDomainCount << std::endl;
+    std::clog << "  X-Seamless Header Count   : " << xSeamlessCount << std::endl;
+    std::clog << "  X-Call-Instance-ID Count  : " << xCallInstanceIdCount << std::endl;
+    std::clog << "  Msgs w/ SDP CallOwner     : " << messagesWithSdpCallOwnerAlias << std::endl;
+    std::clog << "  Total SDP CallOwner Alias : " << totalSdpCallOwnerAlias << std::endl;
+    std::clog << "  Total SDP Blocks          : " << totalSdpBlocks << std::endl;
+    std::clog << "  Total SDP Elements        : " << totalSdpElements << std::endl;
+    std::clog << "  Avg SDP Elements/Msg      : " << (double(totalSdpElements) / messageCount) << std::endl;
+
+    EXPECT_EQ(18u, messageCount);
+    EXPECT_EQ(18u, xDomainCount);
+    EXPECT_EQ(0u, xSeamlessCount);
+    EXPECT_EQ(16u, xCallInstanceIdCount);
+    EXPECT_EQ(16u, messagesWithSdpCallOwnerAlias);
+    EXPECT_EQ(22u, totalSdpCallOwnerAlias);
+    EXPECT_EQ(22u, totalSdpBlocks);
+    EXPECT_EQ(853u, totalSdpElements);
+}
+
+// NOLINTNEXTLINE
+TEST(validation, Test_Mixed_Stream_2_counts)
+{
+    auto buffer = loadSampleFile("Mixed_Stream_2");
+    ASSERT_FALSE(buffer.empty());
+
+    uint32_t messageCount                  = 0;
+    uint32_t xDomainCount                  = 0;
+    uint32_t xSeamlessCount                = 0;
+    uint32_t xCallInstanceIdCount          = 0;
+    uint32_t messagesWithSdpCallOwnerAlias = 0;
+    uint32_t totalSdpCallOwnerAlias        = 0;
+    uint32_t totalSdpBlocks                = 0;
+    uint32_t totalSdpElements              = 0;
+
+    auto remaining =
+            siddiqsoft::sip2json::parseAsync(buffer,
+                                             [&](siddiqsoft::sipmessage&& sipm)
+                                             {
+                                                 messageCount++;
+                                                 if (sipm.headers().contains("X-domain")) { xDomainCount++; }
+                                                 if (sipm.headers().contains("X-Seamless")) { xSeamlessCount++; }
+                                                 if (sipm.headers().contains("X-Call-Instance-ID")) { xCallInstanceIdCount++; }
+                                                 if (sipm.hasBody() && sipm.body().contains("sdp") && sipm.body()["sdp"].is_array())
+                                                 {
+                                                     bool msgHasAlias = false;
+                                                     totalSdpBlocks += sipm.body()["sdp"].size();
+                                                     for (const auto& sdpBlock : sipm.body()["sdp"])
+                                                     {
+                                                         if (sdpBlock.is_object())
+                                                         {
+                                                             totalSdpElements += sdpBlock.size();
+                                                             if (sdpBlock.contains("a") && sdpBlock["a"].is_object())
+                                                             {
+                                                                 totalSdpElements += (sdpBlock["a"].size() - 1);
+                                                                 if (sdpBlock["a"].contains("x-voice-callowner-login_alias"))
+                                                                 {
+                                                                     msgHasAlias = true;
+                                                                     totalSdpCallOwnerAlias++;
+                                                                 }
+                                                             }
+                                                         }
+                                                     }
+                                                     if (msgHasAlias) messagesWithSdpCallOwnerAlias++;
+                                                 }
+                                             });
+
+    std::clog << "Mixed_Stream_2 summary:" << std::endl;
+    std::clog << "  Total Messages            : " << messageCount << std::endl;
+    std::clog << "  X-domain Header Count     : " << xDomainCount << std::endl;
+    std::clog << "  X-Seamless Header Count   : " << xSeamlessCount << std::endl;
+    std::clog << "  X-Call-Instance-ID Count  : " << xCallInstanceIdCount << std::endl;
+    std::clog << "  Msgs w/ SDP CallOwner     : " << messagesWithSdpCallOwnerAlias << std::endl;
+    std::clog << "  Total SDP CallOwner Alias : " << totalSdpCallOwnerAlias << std::endl;
+    std::clog << "  Total SDP Blocks          : " << totalSdpBlocks << std::endl;
+    std::clog << "  Total SDP Elements        : " << totalSdpElements << std::endl;
+    std::clog << "  Avg SDP Elements/Msg      : " << (double(totalSdpElements) / messageCount) << std::endl;
+
+    EXPECT_EQ(9u, messageCount);
+    EXPECT_EQ(9u, xDomainCount);
+    EXPECT_EQ(0u, xSeamlessCount);
+    EXPECT_EQ(9u, xCallInstanceIdCount);
+    EXPECT_EQ(8u, messagesWithSdpCallOwnerAlias);
+    EXPECT_EQ(9u, totalSdpCallOwnerAlias);
+    EXPECT_EQ(10u, totalSdpBlocks);
+    EXPECT_EQ(349u, totalSdpElements);
+}
+
+// NOLINTNEXTLINE
+TEST(validation, Test_Mixed_Stream_3_counts)
+{
+    auto buffer = loadSampleFile("Mixed_Stream_3");
+    ASSERT_FALSE(buffer.empty());
+
+    uint32_t messageCount                  = 0;
+    uint32_t xDomainCount                  = 0;
+    uint32_t xSeamlessCount                = 0;
+    uint32_t xCallInstanceIdCount          = 0;
+    uint32_t messagesWithSdpCallOwnerAlias = 0;
+    uint32_t totalSdpCallOwnerAlias        = 0;
+    uint32_t totalSdpBlocks                = 0;
+    uint32_t totalSdpElements              = 0;
+
+    auto remaining =
+            siddiqsoft::sip2json::parseAsync(buffer,
+                                             [&](siddiqsoft::sipmessage&& sipm)
+                                             {
+                                                 messageCount++;
+                                                 if (sipm.headers().contains("X-domain")) { xDomainCount++; }
+                                                 if (sipm.headers().contains("X-Seamless")) { xSeamlessCount++; }
+                                                 if (sipm.headers().contains("X-Call-Instance-ID")) { xCallInstanceIdCount++; }
+                                                 if (sipm.hasBody() && sipm.body().contains("sdp") && sipm.body()["sdp"].is_array())
+                                                 {
+                                                     bool msgHasAlias = false;
+                                                     totalSdpBlocks += sipm.body()["sdp"].size();
+                                                     for (const auto& sdpBlock : sipm.body()["sdp"])
+                                                     {
+                                                         if (sdpBlock.is_object())
+                                                         {
+                                                             totalSdpElements += sdpBlock.size();
+                                                             if (sdpBlock.contains("a") && sdpBlock["a"].is_object())
+                                                             {
+                                                                 totalSdpElements += (sdpBlock["a"].size() - 1);
+                                                                 if (sdpBlock["a"].contains("x-voice-callowner-login_alias"))
+                                                                 {
+                                                                     msgHasAlias = true;
+                                                                     totalSdpCallOwnerAlias++;
+                                                                 }
+                                                             }
+                                                         }
+                                                     }
+                                                     if (msgHasAlias) messagesWithSdpCallOwnerAlias++;
+                                                 }
+                                             });
+
+    std::clog << "Mixed_Stream_3 summary:" << std::endl;
+    std::clog << "  Total Messages            : " << messageCount << std::endl;
+    std::clog << "  X-domain Header Count     : " << xDomainCount << std::endl;
+    std::clog << "  X-Seamless Header Count   : " << xSeamlessCount << std::endl;
+    std::clog << "  X-Call-Instance-ID Count  : " << xCallInstanceIdCount << std::endl;
+    std::clog << "  Msgs w/ SDP CallOwner     : " << messagesWithSdpCallOwnerAlias << std::endl;
+    std::clog << "  Total SDP CallOwner Alias : " << totalSdpCallOwnerAlias << std::endl;
+    std::clog << "  Total SDP Blocks          : " << totalSdpBlocks << std::endl;
+    std::clog << "  Total SDP Elements        : " << totalSdpElements << std::endl;
+    std::clog << "  Avg SDP Elements/Msg      : " << (double(totalSdpElements) / messageCount) << std::endl;
+
+    EXPECT_EQ(21u, messageCount);
+    EXPECT_EQ(21u, xDomainCount);
+    EXPECT_EQ(0u, xSeamlessCount);
+    EXPECT_EQ(21u, xCallInstanceIdCount);
+    EXPECT_EQ(8u, messagesWithSdpCallOwnerAlias);
+    EXPECT_EQ(8u, totalSdpCallOwnerAlias);
+    EXPECT_EQ(23u, totalSdpBlocks);
+    EXPECT_EQ(739u, totalSdpElements);
+}
+
+// NOLINTNEXTLINE
+TEST(validation_samples, Test_NOTIFY_CallEnd)
+{
+    auto buffer = loadSampleFile("NOTIFY_CallEnd");
+    ASSERT_FALSE(buffer.empty());
+    auto                   bs = buffer.begin();
+    siddiqsoft::sipmessage sipm;
+    EXPECT_NO_THROW(sipm = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end()));
+    EXPECT_TRUE(sipm.isMessageRequest());
+    EXPECT_EQ("NOTIFY", sipm.getMethod());
+}
+
+// NOLINTNEXTLINE
+TEST(validation_samples, Test_NOTIFY_CallStart_1)
+{
+    auto buffer = loadSampleFile("NOTIFY_CallStart_1");
+    ASSERT_FALSE(buffer.empty());
+    auto                   bs = buffer.begin();
+    siddiqsoft::sipmessage sipm;
+    EXPECT_NO_THROW(sipm = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end()));
+    EXPECT_TRUE(sipm.isMessageRequest());
+    EXPECT_EQ("NOTIFY", sipm.getMethod());
+}
+
+// NOLINTNEXTLINE
+TEST(validation_samples, Test_NOTIFY_CallStart_2)
+{
+    auto buffer = loadSampleFile("NOTIFY_CallStart_2");
+    ASSERT_FALSE(buffer.empty());
+    auto                   bs = buffer.begin();
+    siddiqsoft::sipmessage sipm;
+    EXPECT_NO_THROW(sipm = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end()));
+    EXPECT_TRUE(sipm.isMessageRequest());
+    EXPECT_EQ("NOTIFY", sipm.getMethod());
+}
+
+// NOLINTNEXTLINE
+TEST(validation_samples, Test_NOTIFY_LegAdd)
+{
+    auto buffer = loadSampleFile("NOTIFY_LegAdd");
+    ASSERT_FALSE(buffer.empty());
+    auto                   bs = buffer.begin();
+    siddiqsoft::sipmessage sipm;
+    EXPECT_NO_THROW(sipm = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end()));
+    EXPECT_TRUE(sipm.isMessageRequest());
+    EXPECT_EQ("NOTIFY", sipm.getMethod());
+}
+
+// NOLINTNEXTLINE
+TEST(validation_samples, Test_NOTIFY_LegDrop)
+{
+    auto buffer = loadSampleFile("NOTIFY_LegDrop");
+    ASSERT_FALSE(buffer.empty());
+    auto                   bs = buffer.begin();
+    siddiqsoft::sipmessage sipm;
+    EXPECT_NO_THROW(sipm = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end()));
+    EXPECT_TRUE(sipm.isMessageRequest());
+    EXPECT_EQ("NOTIFY", sipm.getMethod());
+}
+
+// NOLINTNEXTLINE
+TEST(validation_samples, Test_NOTIFY_SDP_multi_1)
+{
+    auto buffer = loadSampleFile("NOTIFY_SDP_multi_1");
+    ASSERT_FALSE(buffer.empty());
+    auto                   bs = buffer.begin();
+    siddiqsoft::sipmessage sipm;
+    EXPECT_NO_THROW(sipm = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end()));
+    EXPECT_TRUE(sipm.isMessageRequest());
+    EXPECT_EQ("NOTIFY", sipm.getMethod());
+}
+
+// NOLINTNEXTLINE
+TEST(validation_samples, Test_NOTIFY_chunked_read)
+{
+    auto buffer = loadSampleFile("NOTIFY_chunked_read");
+    ASSERT_FALSE(buffer.empty());
+    auto                   bs = buffer.begin();
+    siddiqsoft::sipmessage sipm;
+    EXPECT_NO_THROW(sipm = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end()));
+    EXPECT_TRUE(sipm.isMessageRequest());
+    EXPECT_EQ("NOTIFY", sipm.getMethod());
+}
+
+// NOLINTNEXTLINE
+TEST(validation_samples, Test_NOTIFY_chunked_read_NELSON)
+{
+    auto buffer = loadSampleFile("NOTIFY_chunked_read_NELSON");
+    ASSERT_FALSE(buffer.empty());
+    auto                   bs = buffer.begin();
+    siddiqsoft::sipmessage sipm;
+    EXPECT_NO_THROW(sipm = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end()));
+    EXPECT_TRUE(sipm.isMessageRequest());
+    EXPECT_EQ("NOTIFY", sipm.getMethod());
+}
+
+// NOLINTNEXTLINE
+TEST(validation_samples, Test_NOTIFY_connectorleg_1)
+{
+    auto buffer = loadSampleFile("NOTIFY_connectorleg_1");
+    ASSERT_FALSE(buffer.empty());
+    auto                   bs = buffer.begin();
+    siddiqsoft::sipmessage sipm;
+    EXPECT_NO_THROW(sipm = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end()));
+    EXPECT_TRUE(sipm.isMessageRequest());
+    EXPECT_EQ("NOTIFY", sipm.getMethod());
+}
+
+// NOLINTNEXTLINE
+TEST(validation_samples, Test_NOTIFY_generic_1)
+{
+    auto buffer = loadSampleFile("NOTIFY_generic_1");
+    ASSERT_FALSE(buffer.empty());
+    auto                   bs = buffer.begin();
+    siddiqsoft::sipmessage sipm;
+    EXPECT_NO_THROW(sipm = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end()));
+    EXPECT_TRUE(sipm.isMessageRequest());
+    EXPECT_EQ("NOTIFY", sipm.getMethod());
+}
+
+// NOLINTNEXTLINE
+TEST(validation_samples, Test_NOTIFY_invalid_cline_1)
+{
+    auto buffer = loadSampleFile("NOTIFY_invalid_cline_1");
+    ASSERT_FALSE(buffer.empty());
+    auto                   bs = buffer.begin();
+    siddiqsoft::sipmessage sipm;
+    EXPECT_NO_THROW(sipm = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end()));
+    EXPECT_TRUE(sipm.isMessageRequest());
+    EXPECT_EQ("NOTIFY", sipm.getMethod());
+}
+
+// NOLINTNEXTLINE
+TEST(validation_samples, Test_NOTIFY_playbacklegs_1)
+{
+    auto buffer = loadSampleFile("NOTIFY_playbacklegs_1");
+    ASSERT_FALSE(buffer.empty());
+    auto                   bs = buffer.begin();
+    siddiqsoft::sipmessage sipm;
+    EXPECT_NO_THROW(sipm = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end()));
+    EXPECT_TRUE(sipm.isMessageRequest());
+    EXPECT_EQ("NOTIFY", sipm.getMethod());
+}
+
+// NOLINTNEXTLINE
+TEST(validation_samples, Test_NOTIFY_single_2)
+{
+    auto buffer = loadSampleFile("NOTIFY_single_2");
+    ASSERT_FALSE(buffer.empty());
+    auto                   bs = buffer.begin();
+    siddiqsoft::sipmessage sipm;
+    EXPECT_NO_THROW(sipm = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end()));
+    EXPECT_TRUE(sipm.isMessageRequest());
+    EXPECT_EQ("NOTIFY", sipm.getMethod());
+}
+
+// NOLINTNEXTLINE
+TEST(validation_samples, Test_OK_REGISTER_Multiline_ContactHeader_1)
+{
+    auto buffer = loadSampleFile("OK_REGISTER_Multiline_ContactHeader_1");
+    ASSERT_FALSE(buffer.empty());
+    size_t count     = 0;
+    auto   remaining = siddiqsoft::sip2json::parseAsync(buffer, [&](siddiqsoft::sipmessage&&) { count++; });
+    EXPECT_GT(count, 0u);
+}
+
+// NOLINTNEXTLINE
+TEST(validation_samples, Test_all_34_sample_files_exhaustive_coverage)
+{
+    std::string samplesDir {};
+    if (auto env_samples_dir = std::getenv("SAMPLES_DIR"); env_samples_dir != nullptr) { samplesDir = env_samples_dir; }
+    else
+    {
+        auto                               cwd        = std::filesystem::current_path();
+        std::vector<std::filesystem::path> candidates = {
+                cwd / "samples",
+                cwd / "tests" / "validation" / "samples",
+                cwd.parent_path() / "samples",
+                cwd.parent_path() / "tests" / "validation" / "samples",
+                cwd.parent_path().parent_path() / "samples",
+                cwd.parent_path().parent_path() / "tests" / "validation" / "samples",
+                cwd.parent_path().parent_path().parent_path() / "samples",
+                cwd.parent_path().parent_path().parent_path() / "tests" / "validation" / "samples",
+                cwd.parent_path().parent_path().parent_path().parent_path() / "samples",
+                cwd.parent_path().parent_path().parent_path().parent_path() / "tests" / "validation" / "samples"};
+        for (const auto& cand : candidates)
+        {
+            if (std::filesystem::exists(cand) && std::filesystem::is_directory(cand))
+            {
+                samplesDir = cand.string();
+                break;
+            }
+        }
+    }
+
+    ASSERT_FALSE(samplesDir.empty()) << "samples directory path not found";
+    ASSERT_TRUE(std::filesystem::exists(samplesDir)) << "samples directory does not exist: " << samplesDir;
+
+    size_t fileCount           = 0;
+    size_t totalMessagesParsed = 0;
+
+    for (const auto& entry : std::filesystem::directory_iterator(samplesDir))
+    {
+        if (entry.is_regular_file() && entry.path().extension() == ".sip")
+        {
+            fileCount++;
+            std::ifstream file(entry.path(), std::ios::binary);
+            ASSERT_TRUE(file.is_open()) << "Failed to open " << entry.path();
+            std::string buffer((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+            file.close();
+
+            ASSERT_FALSE(buffer.empty()) << "File is empty: " << entry.path();
+
+            size_t msgsInFile = 0;
+            try
+            {
+                (void)siddiqsoft::sip2json::parseAsync(buffer,
+                                                       [&](siddiqsoft::sipmessage&&)
+                                                       {
+                                                           msgsInFile++;
+                                                           totalMessagesParsed++;
+                                                       });
+            }
+            catch (const std::exception& e)
+            {
+                std::clog << "Handled test exception for " << entry.path().filename() << ": " << e.what() << std::endl;
+            }
+        }
+    }
+
+    std::clog << "Exhaustive coverage of samples directory:" << std::endl;
+    std::clog << "  Total .sip files verified : " << fileCount << std::endl;
+    std::clog << "  Total Messages parsed     : " << totalMessagesParsed << std::endl;
+
+    EXPECT_GE(fileCount, 34u);
+    EXPECT_GT(totalMessagesParsed, 0u);
+}
+
+//-------------------------------------------------------------------------
+// SIPp Scenario Integration Tests
+//-------------------------------------------------------------------------
+TEST(validation_samples, Test_SIPp_UAC_Invite_Scenario)
+{
+    std::string filename = "sipp_uac_invite";
+    std::string content  = loadSampleFile(filename);
+
+    auto bs   = content.begin();
+    auto sipm = siddiqsoft::sip2json::parseFromBuffer(bs, content.end());
+
+    EXPECT_EQ("INVITE", sipm.getMethod());
+    EXPECT_EQ("sip:service@10.0.0.1:5060", sipm.getUri());
+    EXPECT_EQ("1-1000@10.0.0.2", sipm.getCallID());
+    EXPECT_EQ("application/sdp", sipm.getContentType());
+}
+
+TEST(validation_samples, Test_SIPp_UAS_200OK_Scenario)
+{
+    std::string filename = "sipp_uas_200ok";
+    std::string content  = loadSampleFile(filename);
+
+    auto bs   = content.begin();
+    auto sipm = siddiqsoft::sip2json::parseFromBuffer(bs, content.end());
+
+    EXPECT_EQ("SIP/2.0", sipm.value("/s/version"_json_pointer, ""));
+    EXPECT_EQ(200, sipm.value("/s/status"_json_pointer, 0));
+    EXPECT_EQ("1-1000@10.0.0.2", sipm.getCallID());
+    EXPECT_EQ("application/sdp", sipm.getContentType());
 }

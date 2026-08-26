@@ -150,8 +150,7 @@ namespace siddiqsoft
                                                                           {608, "Rejected"},
                                                                           {609, "Feature Not Implemented"},
                                                                           // 999 - Internal invalid; return empty string
-                                                                          {INVALID_SIP_RESPONSE_CODE, ""}
-                                                                        };
+                                                                          {INVALID_SIP_RESPONSE_CODE, ""}};
 
     /// @brief Retrieves the reason phrase for a given SIP status code.
     /// @param statusCode The SIP status code to look up.

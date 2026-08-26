@@ -92,8 +92,8 @@ a=clir:false
 a=fmtp:x-record uri:file:4D4463774D6A67344D6A55334F5451304E4455794E6A49354E5335316179316C5A433130614746745A584D744D444575636D6C755A7A4975593239744F6A45314F5455354D5449794D4459364E7A4D774D6A5532/recording.wav;host=10.254.254.1;access_code=13773497
 a=machine_leg:1
 a=acs_guid:000471698977
-a=x-ring2-call_source_type:0
-a=x-ring2-smartproxy:usdc2-asalt04.example.net
-a=x-ring2-unique_device_id:00000006-0000-4000-8000-000000000000
-a=x-ring2-clientaddress:203.0.113.56:54290
+a=x-voice-call_source_type:0
+a=x-voice-smartproxy:usdc2-asalt04.example.net
+a=x-voice-unique_device_id:00000006-0000-4000-8000-000000000000
+a=x-voice-clientaddress:203.0.113.56:54290
 

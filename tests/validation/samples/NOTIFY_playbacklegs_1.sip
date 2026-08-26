@@ -67,8 +67,8 @@ a=cli-screening:00
 a=trunk:8:chan:0
 a=useforfrom:user.nm@example.net
 a=heard_by_leg:1
-a=x-ring2-smartproxy:USCHEQ-ASRTA01.example.net
-a=x-ring2-UF1:1
+a=x-voice-smartproxy:USCHEQ-ASRTA01.example.net
+a=x-voice-UF1:1
 NOTIFY sip:user.nm@example.net SIP/2.0
 Via: SIP/2.0/tcp localhost:8443
 Via: SIP/2.0/tcp localhost:8443;branch=user.nm@example.net__eDial_sep__user.nm@example.net
@@ -139,5 +139,5 @@ a=cli-screening:00
 a=trunk:8:chan:0
 a=useforfrom:user.nm@example.net
 a=heard_by_leg:1
-a=x-ring2-smartproxy:USCHEQ-ASRTA01.example.net
-a=x-ring2-UF1:1
+a=x-voice-smartproxy:USCHEQ-ASRTA01.example.net
+a=x-voice-UF1:1
