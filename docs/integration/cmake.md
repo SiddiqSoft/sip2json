@@ -56,5 +56,20 @@ target_link_libraries(your_target PRIVATE sip2json::sip2json)
 
 ---
 
+## Building from Source with CMake Presets
+
+If you are cloning and developing `sip2json` directly, the repository provides multi-platform CMake Presets (`Apple-Debug`, `Apple-Release`, `Darwin-Clang-Release`, `Linux-Clang-Release`, `Linux-GCC-Release`, `Windows-x64-Release`):
+
+```bash
+# Configure, build, and test
+cmake --preset Darwin-Clang-Release
+cmake --build --preset Darwin-Clang-Release
+ctest --preset Darwin-Clang-Release -j 4
+```
+
+For full preset architecture, project configuration via `project-base.json`, and CI/CD workflows, see the [Maintainer Guide & CI/CD Pipeline](../maintainers/pipelines.md).
+
+---
+
 > [!TIP]
 > **Windows Environment Setup Note**: To prevent CTRE template expansion `filename too long` errors on Windows, run [`scripts/prep_windows_machine.ps1`](https://github.com/SiddiqSoft/sip2json/blob/master/scripts/prep_windows_machine.ps1) as Administrator to enable Registry `LongPathsEnabled = 1` and Git `core.longpaths = true`. See the [Integration Guide Overview](index.md#windows-prerequisites-long-paths-ctre-support) for full details.

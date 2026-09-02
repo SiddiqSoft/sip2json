@@ -114,5 +114,5 @@ nav:
       - Stream Parsing Callback: examples/async_parsing.md
       - Message Serialization: examples/serialization.md
   - Maintainers:
-      - Azure Pipelines CI/CD: maintainers/pipelines.md
+      - Maintainer & CI/CD Guide: maintainers/pipelines.md
   - License: license.md
