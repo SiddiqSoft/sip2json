@@ -12,13 +12,13 @@
         <meta name="author" content="Siddiq Software LLC">
       
       
-        <link rel="canonical" href="https://siddiqsoft.github.io/sip2json/features/benchmarks/">
+        <link rel="canonical" href="https://siddiqsoft.github.io/sip2json/architecture/patterns/">
       
       
-        <link rel="prev" href="../async/">
+        <link rel="prev" href="../">
       
       
-        <link rel="next" href="../optimization_choices/">
+        <link rel="next" href="../dataflow/">
       
       
         
@@ -29,7 +29,7 @@
     
     
       
-        <title>Performance & Benchmarks - sip2json</title>
+        <title>Design Patterns - sip2json</title>
       
     
     
@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#performance-benchmarks" class="md-skip">
+        <a href="#design-patterns" class="md-skip">
           Skip to content
         </a>
       
@@ -121,7 +121,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Performance & Benchmarks
+              Design Patterns
             
           </span>
         </div>
@@ -250,13 +250,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../features/" class="md-tabs__link">
           
   
   
@@ -292,11 +290,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../architecture/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
           
   
   
@@ -448,31 +448,28 @@
       
   
   
-    
   
   
-  
     
     
     
     
-      
-        
-        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
             
   
   
@@ -490,7 +487,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -508,7 +505,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../" class="md-nav__link">
+      <a href="../../features/" class="md-nav__link">
         
   
   
@@ -536,7 +533,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../async/" class="md-nav__link">
+      <a href="../../features/async/" class="md-nav__link">
         
   
   
@@ -561,37 +558,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Performance & Benchmarks
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../features/benchmarks/" class="md-nav__link">
         
   
   
@@ -607,187 +577,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#1-multi-platform-cross-architecture-pipeline-benchmark-matrix" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        1. Multi-Platform &amp; Cross-Architecture Pipeline Benchmark Matrix
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="1. Multi-Platform &amp; Cross-Architecture Pipeline Benchmark Matrix">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#linux-platform-benchmarks" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Linux Platform Benchmarks
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#windows-platform-benchmarks" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Windows Platform Benchmarks
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#2-visual-throughput-latency-milestone-comparison" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2. Visual Throughput &amp; Latency Milestone Comparison
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="2. Visual Throughput &amp; Latency Milestone Comparison">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#stream-parsing-throughput-comparison-messages-second-higher-is-better" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Stream Parsing Throughput Comparison (Messages / Second - Higher is Better)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#per-message-processing-latency-microseconds-lower-is-better" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Per-Message Processing Latency (Microseconds - Lower is Better)
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#3-historical-release-comparison-matrix-release260-vs-v242-vs-v117x" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3. Historical Release Comparison Matrix (release/2.6.0 vs. v2.4.2 vs. v1.17.x)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#4-single-stream-architectural-study-parseasync-vs-parse-vs-thread-pool" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4. Single Stream Architectural Study: parseAsync vs. parse vs. Thread Pool
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="4. Single Stream Architectural Study: parseAsync vs. parse vs. Thread Pool">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#architectural-pipeline-comparison" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Architectural Pipeline Comparison
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#architectural-question" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Architectural Question
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#why-single-thread-parseasync-wins-for-single-streams" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Why Single-Thread parseAsync Wins for Single Streams
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#5-worst-case-noisy-stream-buffer-resilience" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        5. Worst-Case Noisy Stream Buffer Resilience
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#6-running-benchmarks-locally" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        6. Running Benchmarks Locally
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -800,7 +589,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../optimization_choices/" class="md-nav__link">
+      <a href="../../features/optimization_choices/" class="md-nav__link">
         
   
   
@@ -828,7 +617,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../json_schema/" class="md-nav__link">
+      <a href="../../features/json_schema/" class="md-nav__link">
         
   
   
@@ -856,7 +645,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../sdp/" class="md-nav__link">
+      <a href="../../features/sdp/" class="md-nav__link">
         
   
   
@@ -884,7 +673,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../compliance/" class="md-nav__link">
+      <a href="../../features/compliance/" class="md-nav__link">
         
   
   
@@ -912,7 +701,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../test_suite_sources/" class="md-nav__link">
+      <a href="../../features/test_suite_sources/" class="md-nav__link">
         
   
   
@@ -1117,28 +906,31 @@
       
   
   
+    
   
   
+  
     
     
     
     
+      
+        
+        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
         
           
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
-        
-          
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
             
   
   
@@ -1156,7 +948,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1174,7 +966,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/" class="md-nav__link">
+      <a href="../" class="md-nav__link">
         
   
   
@@ -1199,10 +991,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../architecture/patterns/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design Patterns
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1218,6 +1037,59 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-builder-pattern-method-chaining" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Builder Pattern (Method Chaining)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-strategy-callback-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Strategy / Callback Pattern
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-data-transfer-object-dto-type-conversions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Data Transfer Object (DTO) &amp; Type Conversions
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1230,7 +1102,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/dataflow/" class="md-nav__link">
+      <a href="../dataflow/" class="md-nav__link">
         
   
   
@@ -1258,7 +1130,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/native_vs_json/" class="md-nav__link">
+      <a href="../native_vs_json/" class="md-nav__link">
         
   
   
@@ -1658,88 +1530,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#1-multi-platform-cross-architecture-pipeline-benchmark-matrix" class="md-nav__link">
+  <a href="#1-builder-pattern-method-chaining" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Multi-Platform &amp; Cross-Architecture Pipeline Benchmark Matrix
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="1. Multi-Platform &amp; Cross-Architecture Pipeline Benchmark Matrix">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#linux-platform-benchmarks" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Linux Platform Benchmarks
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#windows-platform-benchmarks" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Windows Platform Benchmarks
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#2-visual-throughput-latency-milestone-comparison" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2. Visual Throughput &amp; Latency Milestone Comparison
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="2. Visual Throughput &amp; Latency Milestone Comparison">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#stream-parsing-throughput-comparison-messages-second-higher-is-better" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Stream Parsing Throughput Comparison (Messages / Second - Higher is Better)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#per-message-processing-latency-microseconds-lower-is-better" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Per-Message Processing Latency (Microseconds - Lower is Better)
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#3-historical-release-comparison-matrix-release260-vs-v242-vs-v117x" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3. Historical Release Comparison Matrix (release/2.6.0 vs. v2.4.2 vs. v1.17.x)
+        1. Builder Pattern (Method Chaining)
       
     </span>
   </a>
@@ -1747,60 +1541,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#4-single-stream-architectural-study-parseasync-vs-parse-vs-thread-pool" class="md-nav__link">
+  <a href="#2-strategy-callback-pattern" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4. Single Stream Architectural Study: parseAsync vs. parse vs. Thread Pool
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="4. Single Stream Architectural Study: parseAsync vs. parse vs. Thread Pool">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#architectural-pipeline-comparison" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Architectural Pipeline Comparison
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#architectural-question" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Architectural Question
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#why-single-thread-parseasync-wins-for-single-streams" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Why Single-Thread parseAsync Wins for Single Streams
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#5-worst-case-noisy-stream-buffer-resilience" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        5. Worst-Case Noisy Stream Buffer Resilience
+        2. Strategy / Callback Pattern
       
     </span>
   </a>
@@ -1808,10 +1552,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#6-running-benchmarks-locally" class="md-nav__link">
+  <a href="#3-data-transfer-object-dto-type-conversions" class="md-nav__link">
     <span class="md-ellipsis">
       
-        6. Running Benchmarks Locally
+        3. Data Transfer Object (DTO) &amp; Type Conversions
       
     </span>
   </a>
@@ -1864,7 +1608,7 @@
         <a href="../" class="md-path__link">
           
   <span class="md-ellipsis">
-    Features
+    Architecture & Design
   </span>
 
         </a>
@@ -1886,255 +1630,38 @@
   
 
 
-<h1 id="performance-benchmarks">Performance &amp; Benchmarks<a class="headerlink" href="#performance-benchmarks" title="Permanent link">&para;</a></h1>
-<p><code>sip2json</code> delivers high-throughput, low-latency SIP stream parsing designed for high-concurrency VoIP edge proxies, media servers, and WebRTC gateways.</p>
-<!-- PIPELINE_BENCHMARKS_START -->
-<h2 id="1-multi-platform-cross-architecture-pipeline-benchmark-matrix">1. Multi-Platform &amp; Cross-Architecture Pipeline Benchmark Matrix<a class="headerlink" href="#1-multi-platform-cross-architecture-pipeline-benchmark-matrix" title="Permanent link">&para;</a></h2>
-<blockquote>
-<p>[!NOTE]
-<strong>Build Release &amp; Version</strong>: <code>3.0.0-beta.1</code> | <strong>Branch</strong>: <code>release/2.6.0</code>
-<strong>Host Runner Environment Legend (Derived at Build Time)</strong>:
-- <strong>Linux Runner</strong>: lba4.siddiq.org (4 Cores, 48 MHz)
-- <strong>Windows Runner</strong>: WINDEV (4 Cores, 3072 MHz)</p>
-</blockquote>
-<p><em>Empirical build pipeline measurements collected across matrix runners grouped by operating system platform:</em></p>
-<h3 id="linux-platform-benchmarks">Linux Platform Benchmarks<a class="headerlink" href="#linux-platform-benchmarks" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Architecture</th>
-<th style="text-align: center;">Compiler</th>
-<th style="text-align: center;">Stream Throughput (<code>parseAsync</code>)</th>
-<th style="text-align: center;">Bandwidth</th>
-<th style="text-align: center;">Per-Msg Latency</th>
-<th style="text-align: center;">Single Message (<code>parseFromBuffer</code>)</th>
-<th style="text-align: center;">Single Latency</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><strong>arm64</strong></td>
-<td style="text-align: center;">Clang</td>
-<td style="text-align: center;"><strong>116,142.12 msg/s</strong></td>
-<td style="text-align: center;"><strong>287.98 MB/s</strong></td>
-<td style="text-align: center;"><strong>20246667.01 ns</strong></td>
-<td style="text-align: center;"><strong>418,185.79 msg/s</strong></td>
-<td style="text-align: center;"><strong>2404158.48 ns</strong></td>
-</tr>
-<tr>
-<td style="text-align: center;"><strong>x64</strong></td>
-<td style="text-align: center;">Clang</td>
-<td style="text-align: center;"><strong>46,551.28 msg/s</strong></td>
-<td style="text-align: center;"><strong>122.69 MB/s</strong></td>
-<td style="text-align: center;"><strong>21.48 us</strong></td>
-<td style="text-align: center;"><strong>56,501.96 msg/s</strong></td>
-<td style="text-align: center;"><strong>17.70 us</strong></td>
-</tr>
-</tbody>
-</table>
-<h3 id="windows-platform-benchmarks">Windows Platform Benchmarks<a class="headerlink" href="#windows-platform-benchmarks" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Architecture</th>
-<th style="text-align: center;">Compiler</th>
-<th style="text-align: center;">Stream Throughput (<code>parseAsync</code>)</th>
-<th style="text-align: center;">Bandwidth</th>
-<th style="text-align: center;">Per-Msg Latency</th>
-<th style="text-align: center;">Single Message (<code>parseFromBuffer</code>)</th>
-<th style="text-align: center;">Single Latency</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><strong>arm64</strong></td>
-<td style="text-align: center;">MSVC</td>
-<td style="text-align: center;"><strong>172,972.97 msg/s</strong></td>
-<td style="text-align: center;"><strong>428.90 MB/s</strong></td>
-<td style="text-align: center;"><strong>6178694.17 ns</strong></td>
-<td style="text-align: center;"><strong>375,466.67 msg/s</strong></td>
-<td style="text-align: center;"><strong>2719059.82 ns</strong></td>
-</tr>
-<tr>
-<td style="text-align: center;"><strong>x64</strong></td>
-<td style="text-align: center;">Clang</td>
-<td style="text-align: center;"><strong>39,088.76 msg/s</strong></td>
-<td style="text-align: center;"><strong>103.02 MB/s</strong></td>
-<td style="text-align: center;"><strong>25.58 us</strong></td>
-<td style="text-align: center;"><strong>33,127.62 msg/s</strong></td>
-<td style="text-align: center;"><strong>30.19 us</strong></td>
-</tr>
-</tbody>
-</table>
-<!-- PIPELINE_BENCHMARKS_END -->
-
+<h1 id="design-patterns">Design Patterns<a class="headerlink" href="#design-patterns" title="Permanent link">&para;</a></h1>
+<p><code>sip2json</code> applies clean C++ design patterns to provide a fluent and intuitive API.</p>
 <hr />
-<h2 id="2-visual-throughput-latency-milestone-comparison">2. Visual Throughput &amp; Latency Milestone Comparison<a class="headerlink" href="#2-visual-throughput-latency-milestone-comparison" title="Permanent link">&para;</a></h2>
-<h3 id="stream-parsing-throughput-comparison-messages-second-higher-is-better">Stream Parsing Throughput Comparison (Messages / Second - Higher is Better)<a class="headerlink" href="#stream-parsing-throughput-comparison-messages-second-higher-is-better" title="Permanent link">&para;</a></h3>
-<pre class="mermaid"><code>xychart-beta
-    title "SIP Stream Parsing Throughput (Messages / Sec)"
-    x-axis ["v1.17.x Legacy", "v2.4.2 Release", "master Branch", "v2.6.0 (parse)", "v2.6.0 (parseAsync)"]
-    y-axis "Throughput (msg/s)" 0 --&gt; 45000
-    bar [14250, 21394, 19043, 36292, 39493]</code></pre>
-<h3 id="per-message-processing-latency-microseconds-lower-is-better">Per-Message Processing Latency (Microseconds - Lower is Better)<a class="headerlink" href="#per-message-processing-latency-microseconds-lower-is-better" title="Permanent link">&para;</a></h3>
-<pre class="mermaid"><code>xychart-beta
-    title "Average Per-Message Processing Latency (µs/msg)"
-    x-axis ["v1.17.x Legacy", "v2.4.2 Release", "master Branch", "v2.6.0 (parse)", "v2.6.0 (parseAsync)"]
-    y-axis "Latency (µs)" 0 --&gt; 60
-    bar [58.20, 46.74, 52.51, 27.55, 25.32]</code></pre>
+<h2 id="1-builder-pattern-method-chaining">1. Builder Pattern (Method Chaining)<a class="headerlink" href="#1-builder-pattern-method-chaining" title="Permanent link">&para;</a></h2>
+<p>The <code>sipmessage</code> class supports method chaining for configuring headers, start lines, and content:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">sipmessage</span><span class="w"> </span><span class="n">msg</span><span class="p">(</span><span class="n">siddiqsoft</span><span class="o">::</span><span class="n">METHOD_INVITE</span><span class="p">,</span><span class="w"> </span><span class="s">"sip:alice@example.com"</span><span class="p">,</span><span class="w"> </span><span class="s">"call-id-100"</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">msg</span><span class="p">.</span><span class="n">setHeader</span><span class="p">(</span><span class="n">siddiqsoft</span><span class="o">::</span><span class="n">HF_FROM</span><span class="p">,</span><span class="w"> </span><span class="s">"sip:bob@example.com"</span><span class="p">)</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">   </span><span class="p">.</span><span class="n">setHeader</span><span class="p">(</span><span class="n">siddiqsoft</span><span class="o">::</span><span class="n">HF_TO</span><span class="p">,</span><span class="w"> </span><span class="s">"sip:alice@example.com"</span><span class="p">)</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">   </span><span class="p">.</span><span class="n">setHeader</span><span class="p">(</span><span class="n">siddiqsoft</span><span class="o">::</span><span class="n">HF_USER_AGENT</span><span class="p">,</span><span class="w"> </span><span class="s">"sip2json/2.0"</span><span class="p">);</span>
+</span></code></pre></div>
 <hr />
-<h2 id="3-historical-release-comparison-matrix-release260-vs-v242-vs-v117x">3. Historical Release Comparison Matrix (<code>release/2.6.0</code> vs. <code>v2.4.2</code> vs. <code>v1.17.x</code>)<a class="headerlink" href="#3-historical-release-comparison-matrix-release260-vs-v242-vs-v117x" title="Permanent link">&para;</a></h2>
-<p><em>Fresh empirical measurements across 36 real-world SIP message stream fixtures (164,400 stream iterations, 31,000 single message iterations):</em></p>
-<table>
-<thead>
-<tr>
-<th style="text-align: left;">Performance Metric</th>
-<th style="text-align: center;"><strong>v1.17.x Milestone</strong></th>
-<th style="text-align: center;"><strong>v2.4.2 Release Tag</strong></th>
-<th style="text-align: center;"><strong>master Branch</strong></th>
-<th style="text-align: center;"><strong>v2.6.0 Current (<code>parse</code>)</strong></th>
-<th style="text-align: center;"><strong>v2.6.0 Current (<code>parseAsync</code>)</strong></th>
-<th style="text-align: center;"><strong>Speedup vs v2.4.2</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;"><strong>Stream Throughput</strong></td>
-<td style="text-align: center;">14,250.00 msg/s</td>
-<td style="text-align: center;"><strong>21,394.49 msg/s</strong></td>
-<td style="text-align: center;">19,043.79 msg/s</td>
-<td style="text-align: center;"><strong>36,292.77 msg/s</strong></td>
-<td style="text-align: center;"><strong>39,493.57 msg/s</strong></td>
-<td style="text-align: center;"><span style="color:green; font-weight:bold;">+84.6% FASTER</span></td>
-</tr>
-<tr>
-<td style="text-align: left;">Stream Execution Time</td>
-<td style="text-align: center;">11.53 s</td>
-<td style="text-align: center;">7.68 s</td>
-<td style="text-align: center;">8.63 s</td>
-<td style="text-align: center;">4.53 s</td>
-<td style="text-align: center;"><strong>4.16 s</strong></td>
-<td style="text-align: center;"><span style="color:green; font-weight:bold;">-45.8% Time</span></td>
-</tr>
-<tr>
-<td style="text-align: left;">Processing Bandwidth</td>
-<td style="text-align: center;">37.55 MB/s</td>
-<td style="text-align: center;">56.39 MB/s</td>
-<td style="text-align: center;">50.19 MB/s</td>
-<td style="text-align: center;">95.08 MB/s</td>
-<td style="text-align: center;"><strong>104.08 MB/s</strong></td>
-<td style="text-align: center;"><span style="color:green; font-weight:bold;">+47.69 MB/s</span></td>
-</tr>
-<tr>
-<td style="text-align: left;">Avg Per-Msg Latency</td>
-<td style="text-align: center;">58.20 µs</td>
-<td style="text-align: center;">46.74 µs</td>
-<td style="text-align: center;">52.51 µs</td>
-<td style="text-align: center;">27.55 µs</td>
-<td style="text-align: center;"><strong>25.32 µs</strong></td>
-<td style="text-align: center;"><span style="color:green; font-weight:bold;">-21.42 µs/msg</span></td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Single Message (<code>parseFromBuffer</code>)</strong></td>
-<td style="text-align: center;">16,800.00 msg/s</td>
-<td style="text-align: center;"><strong>24,770.67 msg/s</strong></td>
-<td style="text-align: center;">23,256.49 msg/s</td>
-<td style="text-align: center;"><strong>43,976.62 msg/s</strong></td>
-<td style="text-align: center;"><strong>46,983.39 msg/s</strong></td>
-<td style="text-align: center;"><span style="color:green; font-weight:bold;">+89.7% FASTER</span></td>
-</tr>
-<tr>
-<td style="text-align: left;">Single-Msg Latency</td>
-<td style="text-align: center;">59.52 µs</td>
-<td style="text-align: center;">40.37 µs</td>
-<td style="text-align: center;">43.00 µs</td>
-<td style="text-align: center;">22.74 µs</td>
-<td style="text-align: center;"><strong>21.28 µs</strong></td>
-<td style="text-align: center;"><span style="color:green; font-weight:bold;">-19.09 µs/msg</span></td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>MSVC CTRE Template Depth</strong></td>
-<td style="text-align: center;">&gt; 2,000</td>
-<td style="text-align: center;">&gt; 1,500</td>
-<td style="text-align: center;">&gt; 1,000</td>
-<td style="text-align: center;">&gt; 1,000</td>
-<td style="text-align: center;"><strong>~150 Depth</strong></td>
-<td style="text-align: center;"><span style="color:green; font-weight:bold;">&gt;85% Reduction</span></td>
-</tr>
-</tbody>
-</table>
-<blockquote>
-<p>[!NOTE]
-Detailed section-by-section breakdown and SDP element metrics are available in the <a href="https://github.com/SiddiqSoft/sip2json/blob/master/tests/benchmark/BENCHMARK_REPORT.md"><strong>Official Benchmark Report</strong></a>.</p>
-</blockquote>
+<h2 id="2-strategy-callback-pattern">2. Strategy / Callback Pattern<a class="headerlink" href="#2-strategy-callback-pattern" title="Permanent link">&para;</a></h2>
+<p>Asynchronous stream parsing uses non-blocking callbacks for decoupled event handling:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">sip2json</span><span class="o">::</span><span class="n">parseAsync</span><span class="p">(</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="n">startIt</span><span class="p">,</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="n">endIt</span><span class="p">,</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="p">[](</span><span class="n">sipmessage</span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">msg</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">        </span><span class="c1">// Message handler strategy</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="p">},</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="p">[](</span><span class="n">sip2jsonErrors</span><span class="o">&amp;</span><span class="w"> </span><span class="n">err</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">info</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">        </span><span class="c1">// Error handler strategy</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="p">);</span>
+</span></code></pre></div>
 <hr />
-<h2 id="4-single-stream-architectural-study-parseasync-vs-parse-vs-thread-pool">4. Single Stream Architectural Study: <code>parseAsync</code> vs. <code>parse</code> vs. Thread Pool<a class="headerlink" href="#4-single-stream-architectural-study-parseasync-vs-parse-vs-thread-pool" title="Permanent link">&para;</a></h2>
-<h3 id="architectural-pipeline-comparison">Architectural Pipeline Comparison<a class="headerlink" href="#architectural-pipeline-comparison" title="Permanent link">&para;</a></h3>
-<pre class="mermaid"><code>flowchart LR
-    subgraph OptionA ["Option A: parseAsync Single-Thread (Optimal - 39,493 msg/sec)"]
-        direction LR
-        SockA["Network Socket"] --&gt; IOA["I/O Thread"]
-        IOA --&gt; PA["parseAsync(buffer)"]
-        PA --&gt; CBA["Inline Handler Callback"]
-    end
-
-    subgraph OptionC ["Option C: parseAsync + Thread Pool Offload (21% Slower)"]
-        direction LR
-        SockC["Network Socket"] --&gt; IOC["I/O Thread"]
-        IOC --&gt; PC["parseAsync(buffer)"]
-        PC --&gt; Mtx["std::mutex Queue Lock Contention"]
-        Mtx --&gt; W1["Worker Thread 1"]
-        Mtx --&gt; W2["Worker Thread 2"]
-    end</code></pre>
-<h3 id="architectural-question">Architectural Question<a class="headerlink" href="#architectural-question" title="Permanent link">&para;</a></h3>
-<p>When receiving a single continuous TCP/TLS stream of SIP messages on a single network socket, <strong>which approach yields the highest processing throughput?</strong></p>
-<ol>
-<li><strong>Option A (<code>parseAsync</code> Single-Thread Callback)</strong>: Execute <code>sip2json::parseAsync</code> directly on the network I/O thread. Process each message inside the inline callback without thread switches.</li>
-<li><strong>Option B (<code>parse</code> Single-Thread Vector)</strong>: Execute <code>sip2json::parse</code> on the network thread to build a <code>std::vector&lt;sipmessage&gt;</code>, then iterate sequentially over the vector.</li>
-<li><strong>Option C (<code>parseAsync</code> + Thread Pool Offload)</strong>: Execute <code>parseAsync</code> on the I/O thread and push parsed <code>sipmessage</code> objects into a thread pool queue for 4 worker threads to process.</li>
-<li><strong>Option D (<code>parse</code> + Thread Pool Handoff)</strong>: Execute <code>parse</code> on the I/O thread to build a vector, then push elements to a thread pool queue.</li>
-</ol>
-<h3 id="why-single-thread-parseasync-wins-for-single-streams">Why Single-Thread <code>parseAsync</code> Wins for Single Streams<a class="headerlink" href="#why-single-thread-parseasync-wins-for-single-streams" title="Permanent link">&para;</a></h3>
-<blockquote>
-<p>[!IMPORTANT]
-<strong>Zero Thread Synchronization Overhead</strong>
-Because <code>sip2json</code> parses a SIP message in just <strong>~25.3 microseconds</strong>, pushing individual parsed messages onto a synchronized queue for worker threads introduces <code>std::mutex</code> locking, condition variable signaling, and CPU cache invalidation overhead that takes <strong>longer than parsing the message itself</strong>.</p>
-<p>Processing messages directly inside the <code>parseAsync</code> callback on the network thread avoids queue lock contention entirely and retains full L1/L2 CPU cache locality.</p>
-</blockquote>
-<hr />
-<h2 id="5-worst-case-noisy-stream-buffer-resilience">5. Worst-Case Noisy Stream Buffer Resilience<a class="headerlink" href="#5-worst-case-noisy-stream-buffer-resilience" title="Permanent link">&para;</a></h2>
-<p>In production environments, network buffers can contain leading junk, corrupted protocol lines, binary noise, or fragmented TCP frames before valid start lines.</p>
-<p><code>sip2json</code> uses Compile-Time Regular Expression searching to scan forward in the buffer, skip over noise bytes, and recover valid SIP message start lines automatically:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: left;">Stream Buffer Setup</th>
-<th style="text-align: left;">Time / Batch</th>
-<th style="text-align: left;">Effective Parse Rate</th>
-<th style="text-align: left;">Processing Bandwidth</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;"><strong>10 Messages + Noise</strong></td>
-<td style="text-align: left;">29.83 µs</td>
-<td style="text-align: left;"><strong>335,255 msg/sec</strong></td>
-<td style="text-align: left;">167.89 MiB/s</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>100 Messages + Noise</strong></td>
-<td style="text-align: left;">45.62 µs</td>
-<td style="text-align: left;"><strong>2,191,860 msg/sec</strong></td>
-<td style="text-align: left;">1.03 GiB/s</td>
-</tr>
-</tbody>
-</table>
-<hr />
-<h2 id="6-running-benchmarks-locally">6. Running Benchmarks Locally<a class="headerlink" href="#6-running-benchmarks-locally" title="Permanent link">&para;</a></h2>
-<p>Build and run the single-threaded benchmark suite across all sample fixtures:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>cmake<span class="w"> </span>--preset<span class="w"> </span>Apple-Release
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>cmake<span class="w"> </span>--build<span class="w"> </span>--preset<span class="w"> </span>Apple-Release
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>./build/Apple-Release/tests/benchmark/sip2json_benchmark<span class="w"> </span>tests/validation/samples
+<h2 id="3-data-transfer-object-dto-type-conversions">3. Data Transfer Object (DTO) &amp; Type Conversions<a class="headerlink" href="#3-data-transfer-object-dto-type-conversions" title="Permanent link">&para;</a></h2>
+<p><code>sipmessage</code> integrates natively with <code>nlohmann::json</code> via C++ standard <code>to_json</code> and <code>from_json</code> serializer functions, allowing implicit conversions:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">sipmessage</span><span class="w"> </span><span class="n">msg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sip2json</span><span class="o">::</span><span class="n">parse</span><span class="p">(</span><span class="n">rawSipText</span><span class="p">);</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="c1">// Direct implicit conversion to nlohmann::json DTO</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="n">nlohmann</span><span class="o">::</span><span class="n">json</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">msg</span><span class="p">;</span>
 </span></code></pre></div>
 
 
@@ -2171,7 +1698,7 @@ Because <code>sip2json</code> parses a SIP message in just <strong>~25.3 microse
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../async/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Async Stream Parsing">
+          <a href="../" class="md-footer__link md-footer__link--prev" aria-label="Previous: Overview">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -2181,20 +1708,20 @@ Because <code>sip2json</code> parses a SIP message in just <strong>~25.3 microse
                 Previous
               </span>
               <div class="md-ellipsis">
-                Async Stream Parsing
+                Overview
               </div>
             </div>
           </a>
         
         
           
-          <a href="../optimization_choices/" class="md-footer__link md-footer__link--next" aria-label="Next: Optimization Choices">
+          <a href="../dataflow/" class="md-footer__link md-footer__link--next" aria-label="Next: Data Flow &amp; Memory">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Optimization Choices
+                Data Flow & Memory
               </div>
             </div>
             <div class="md-footer__button md-icon">

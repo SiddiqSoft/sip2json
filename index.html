@@ -16,7 +16,7 @@
       
       
       
-        <link rel="next" href="integration/cmake/">
+        <link rel="next" href="features/">
       
       
         
@@ -48,8 +48,8 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Iosevka+Alie:300,300i,400,400i,700,700i%7CIosevka:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Iosevka Alie";--md-code-font:"Iosevka"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"JetBrains Mono"}</style>
       
     
     
@@ -254,11 +254,11 @@
     
     
       <li class="md-tabs__item">
-        <a href="integration/cmake/" class="md-tabs__link">
+        <a href="features/" class="md-tabs__link">
           
   
   
-  Getting Started
+  Features
 
         </a>
       </li>
@@ -274,7 +274,47 @@
     
     
       <li class="md-tabs__item">
-        <a href="api/sipmessage/" class="md-tabs__link">
+        <a href="integration/" class="md-tabs__link">
+          
+  
+  
+  Integration
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="architecture/" class="md-tabs__link">
+          
+  
+  
+  Architecture & Design
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="api/" class="md-tabs__link">
           
   
   
@@ -294,51 +334,11 @@
     
     
       <li class="md-tabs__item">
-        <a href="features/json_schema/" class="md-tabs__link">
+        <a href="examples/" class="md-tabs__link">
           
   
   
-  Core Concepts & Architecture
-
-        </a>
-      </li>
-    
-  
-
-      
-        
-  
-  
-  
-  
-    
-    
-      <li class="md-tabs__item">
-        <a href="features/benchmarks/" class="md-tabs__link">
-          
-  
-  
-  Performance & Benchmarks
-
-        </a>
-      </li>
-    
-  
-
-      
-        
-  
-  
-  
-  
-    
-    
-      <li class="md-tabs__item">
-        <a href="maintainers/" class="md-tabs__link">
-          
-  
-  
-  Maintainer Guide
+  Examples
 
         </a>
       </li>
@@ -391,9 +391,7 @@
   
 
 
-  
-
-<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="." title="sip2json" class="md-nav__button md-logo" aria-label="sip2json" data-md-component="logo">
       
@@ -517,10 +515,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#navigation-documentation-sections" class="md-nav__link">
+  <a href="#navigation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Navigation &amp; Documentation Sections
+        Navigation
       
     </span>
   </a>
@@ -567,7 +565,7 @@
   <span class="md-ellipsis">
     
   
-    Getting Started
+    Features
   
 
     
@@ -583,7 +581,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Getting Started
+    Features
   
 
           </label>
@@ -596,14 +594,14 @@
   
   
     <li class="md-nav__item">
-      <a href="integration/cmake/" class="md-nav__link">
+      <a href="features/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Quick Start & CMake
+    Overview
   
 
     
@@ -624,14 +622,14 @@
   
   
     <li class="md-nav__item">
-      <a href="integration/dependencies/" class="md-nav__link">
+      <a href="features/async/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Project Dependencies
+    Async Stream Parsing
   
 
     
@@ -652,14 +650,154 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/" class="md-nav__link">
+      <a href="features/benchmarks/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Practical Examples
+    Performance & Benchmarks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="features/optimization_choices/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Optimization Choices
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="features/json_schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    JSON Metaphor & Schema
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="features/sdp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SDP Support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="features/compliance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Standards Compliance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="features/test_suite_sources/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Test Suite Sources & IETF Links
   
 
     
@@ -712,7 +850,7 @@
   <span class="md-ellipsis">
     
   
-    API Reference
+    Integration
   
 
     
@@ -728,11 +866,385 @@
             <span class="md-nav__icon md-icon"></span>
             
   
+    Integration
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quick Start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="integration/cmake/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CMake & Submodules
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="integration/dependencies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dependencies Diagram
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="integration/nuget/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NuGet Package
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture & Design
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture & Design
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="architecture/patterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design Patterns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="architecture/dataflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Flow & Memory
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="architecture/native_vs_json/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Native vs JSON Study
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
     API Reference
   
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -804,353 +1316,7 @@
   <span class="md-ellipsis">
     
   
-    Exceptions & Error Codes
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
-        
-          
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Core Concepts & Architecture
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Core Concepts & Architecture
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="features/json_schema/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    JSON Metaphor & Schema
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="architecture/dataflow/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Stream Architecture & Data Flow
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="features/sdp/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Session Description Protocol (SDP)
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="features/compliance/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Standards Compliance & Torture Tests
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="features/test_suite_sources/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    IETF Test Suite Reference
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
-        
-          
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Performance & Benchmarks
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Performance & Benchmarks
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="features/benchmarks/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Empirical Benchmarks & Metrics
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="features/optimization_choices/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Optimization Choices & Hardware Study
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="architecture/native_vs_json/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Native Struct vs JSON Study
+    Exceptions & Errors
   
 
     
@@ -1203,7 +1369,7 @@
   <span class="md-ellipsis">
     
   
-    Maintainer Guide
+    Examples
   
 
     
@@ -1219,7 +1385,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Maintainer Guide
+    Examples
   
 
           </label>
@@ -1232,14 +1398,14 @@
   
   
     <li class="md-nav__item">
-      <a href="maintainers/" class="md-nav__link">
+      <a href="examples/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Overview & Handbook
+    Overview
   
 
     
@@ -1260,14 +1426,14 @@
   
   
     <li class="md-nav__item">
-      <a href="maintainers/setup/" class="md-nav__link">
+      <a href="examples/async_parsing/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Environment Setup
+    Stream Parsing Callback
   
 
     
@@ -1288,70 +1454,14 @@
   
   
     <li class="md-nav__item">
-      <a href="maintainers/building/" class="md-nav__link">
+      <a href="examples/serialization/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Building, Testing & Benchmarks
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="maintainers/documentation/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Documentation & MkDocs
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="maintainers/pipelines/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Azure Pipelines & Secrets
+    Message Serialization
   
 
     
@@ -1406,6 +1516,76 @@
               </div>
             
             
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#design-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Design Objectives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quick-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quick Example
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Requirements
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#navigation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Navigation
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
           
           
             <div class="md-content" data-md-component="content">
@@ -1429,19 +1609,14 @@
 
 <h1 id="sip2json-a-focused-sip-parser-for-modern-c">sip2json: A Focused SIP Parser for Modern C++<a class="headerlink" href="#sip2json-a-focused-sip-parser-for-modern-c" title="Permanent link">&para;</a></h1>
 <div class="badge-container">
-  <img src="https://img.shields.io/badge/version-v2.6.0-4f46e5.svg" alt="Version 2.6.0"/>
+  <img src="https://img.shields.io/badge/version-v3.0.0-beta.1-4f46e5.svg" alt="Version 3.0.0-beta.1"/>
   <a href="https://dev.azure.com/siddiqsoft/siddiqsoft/_build/latest?definitionId=21&branchName=master"><img src="https://dev.azure.com/siddiqsoft/siddiqsoft/_apis/build/status/siddiqsoftware.sip2json?branchName=master" alt="Build Status"></a>
-  <a href="https://dev.azure.com/siddiqsoft/siddiqsoft/_build/latest?definitionId=21&branchName=master"><img src="https://img.shields.io/badge/Total%20Tests-321%20Passed%20(100%25)-2ea44f?logo=checkmarx&logoColor=white" alt="Total Tests 321/321 Passed" /></a>
-  <a href="features/compliance/"><img src="https://img.shields.io/badge/RFC%204475-50%2F50%20Torture%20(100%25)-success?logo=testinglibrary&logoColor=white" alt="RFC 4475 Torture Tests" /></a>
-  <a href="features/compliance/"><img src="https://img.shields.io/badge/RFC%203261-SIP%20Core%20Validated-003366?logo=shield&logoColor=white" alt="RFC 3261 Compliance" /></a>
-  <a href="features/sdp/"><img src="https://img.shields.io/badge/SDP%20%26%20WebRTC-RFC%208866%20%7C%20BUNDLE%20%7C%20ICE-1488C6?logo=webrtc&logoColor=white" alt="SDP and WebRTC Suite" /></a>
-  <a href="features/compliance/"><img src="https://img.shields.io/badge/SIP%20Extensions-PRACK%20%7C%20NOTIFY%20%7C%20REFER-6f42c1?logo=gitbook&logoColor=white" alt="SIP Extensions Suite" /></a>
-  <a href="features/compliance/"><img src="https://img.shields.io/badge/Security-Memory%20%26%20CRLF%20Safe-107C41?logo=securityscorecard&logoColor=white" alt="Security and Memory Safety" /></a>
-  <a href="https://en.cppreference.com/w/cpp/23"><img src="https://img.shields.io/badge/C%2B%2B-23-00599C?logo=cplusplus" alt="C++23 Standard" /></a>
-  <a href="license.md"><img src="https://img.shields.io/badge/License-BSD--3--Clause-blue" alt="License" /></a>
+  <a href="https://www.nuget.org/packages/siddiqsoft.sip2json"><img src="https://img.shields.io/nuget/v/siddiqsoft.sip2json" alt="NuGet Version"></a>
+  <a href="https://www.nuget.org/packages/siddiqsoft.sip2json"><img src="https://img.shields.io/nuget/dt/siddiqsoft.sip2json" alt="NuGet Downloads"></a>
+  <a href="https://dev.azure.com/siddiqsoft/siddiqsoft/_build/latest?definitionId=21&branchName=master"><img src="https://img.shields.io/azure-devops/tests/siddiqsoft/siddiqsoft/21/master.svg" alt="Tests" /></a>
 </div>
 
-<p><strong><code>sip2json</code></strong> (<code>v2.6.0</code>) is a header-only Modern C++23 SIP protocol parser and serializer library designed with <code>nlohmann::json</code> as a first-class API metaphor for seamlessly converting SIP protocol messages to/from JSON for NoSQL databases and distributed event processing.</p>
+<p><strong><code>sip2json</code></strong> (<code>v3.0.0-beta.1</code>) is a header-only Modern C++23 SIP protocol parser and serializer library designed with <code>nlohmann::json</code> as a first-class API metaphor for seamlessly converting SIP protocol messages to/from JSON for NoSQL databases and distributed event processing.</p>
 <hr />
 <h2 id="design-objectives">Design Objectives<a class="headerlink" href="#design-objectives" title="Permanent link">&para;</a></h2>
 <ul>
@@ -1450,11 +1625,6 @@
 <li><strong>Modern C++23</strong>: Built for C++23 standards using concepts, string views, move semantics, and CTRE (Compile-Time Regular Expressions).</li>
 <li><strong>Asynchronous &amp; Streaming Parsing</strong>: High-performance stream iterator parsing with non-blocking callbacks for multi-frame TCP buffers.</li>
 <li><strong>Full SDP Support</strong>: Native decoding and encoding of Session Description Protocol (<code>application/sdp</code>) payloads.</li>
-<li>Use this library to build your application server that <a href="architecture/native_vs_json/">suits the purpose</a> of:</li>
-<li>firing events to your storage system (not just for logging)</li>
-<li>AI/ML/analytics use</li>
-<li>firing to ServiceBus/MessageBus/RabbitMQ for processing by serverless or microservices</li>
-<li>build a REST server that allows handling of call processing via micro-services</li>
 </ul>
 <hr />
 <h2 id="quick-example">Quick Example<a class="headerlink" href="#quick-example" title="Permanent link">&para;</a></h2>
@@ -1556,13 +1726,13 @@
 </tbody>
 </table>
 <hr />
-<h2 id="navigation-documentation-sections">Navigation &amp; Documentation Sections<a class="headerlink" href="#navigation-documentation-sections" title="Permanent link">&para;</a></h2>
+<h2 id="navigation">Navigation<a class="headerlink" href="#navigation" title="Permanent link">&para;</a></h2>
 <ul>
-<li><a href="integration/cmake/"><strong>Getting Started</strong></a>: Quick start, CMake CPM integration, <a href="integration/dependencies/">Project Dependencies</a>, and <a href="examples/">Practical Examples</a>.</li>
-<li><a href="api/sipmessage/"><strong>API Reference</strong></a>: Complete class reference for <a href="api/sipmessage/"><code>sipmessage</code></a>, <a href="api/sip2json/"><code>sip2json</code></a> parser functions, and <a href="api/errors/">Exceptions &amp; Errors</a>.</li>
-<li><a href="features/json_schema/"><strong>Core Concepts &amp; Architecture</strong></a>: JSON schema metaphor, <a href="architecture/dataflow/">Stream Data Flow</a>, <a href="features/sdp/">SDP Media Processing</a>, and <a href="features/compliance/">Standards Compliance &amp; Torture Tests</a>.</li>
-<li><a href="features/benchmarks/"><strong>Performance &amp; Benchmarks</strong></a>: Multi-platform throughput and latency metrics, <a href="features/optimization_choices/">Optimization Choices</a>, and <a href="architecture/native_vs_json/">Native Struct vs JSON Study</a>.</li>
-<li><a href="maintainers/"><strong>Maintainer &amp; Developer Guide</strong></a>: Multi-platform environment setup (macOS, Linux, Windows), build presets, CTest execution, <a href="maintainers/documentation/">Documentation &amp; MkDocs</a>, and <a href="maintainers/pipelines/">Azure Pipelines CI/CD &amp; Secrets</a>.</li>
+<li><a href="features/"><strong>Features</strong></a>: Streaming parser, JSON schema, SDP body processing, <a href="features/compliance/"><strong>Standards Compliance</strong></a>, and <a href="features/test_suite_sources/"><strong>Test Suite Sources &amp; IETF Links</strong></a>.</li>
+<li><a href="integration/"><strong>Integration</strong></a>: CMake CPM, Git submodules, and build setup.</li>
+<li><a href="architecture/"><strong>Architecture</strong></a>: Stateless design, iterator processing, and memory layout.</li>
+<li><a href="api/"><strong>API Reference</strong></a>: Comprehensive specifications for <code>sipmessage</code>, <code>sip2json</code> methods, and exceptions.</li>
+<li><a href="examples/"><strong>Examples</strong></a>: Sample applications and integration snippets.</li>
 </ul>
 
 
@@ -1600,13 +1770,13 @@
         
         
           
-          <a href="integration/cmake/" class="md-footer__link md-footer__link--next" aria-label="Next: Quick Start &amp; CMake">
+          <a href="features/" class="md-footer__link md-footer__link--next" aria-label="Next: Overview">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Quick Start & CMake
+                Overview
               </div>
             </div>
             <div class="md-footer__button md-icon">
@@ -1643,14 +1813,12 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "toc.integrate", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "2.6.0"}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.0.0-beta.1"}</script>
     
     
       <script src="assets/javascripts/bundle.d7400e89.min.js"></script>
       
         <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-      
-        <script src="js/fontsize.js"></script>
       
     
   </body>
