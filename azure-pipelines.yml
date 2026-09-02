@@ -33,8 +33,7 @@ trigger:
   paths:
     exclude:
       - README.md
-      - .azure/*
-      - azure-pipelines.yml # Avoids recursive triggers when modifying the pipeline itself
+      - docs/*
 pr:
   branches:
     include:
