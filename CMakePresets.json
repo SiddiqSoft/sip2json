@@ -97,11 +97,11 @@
         },
         {
             "name": "Darwin-Clang-Debug",
-            "inherits": "Apple-LLVM-Debug"
+            "inherits": "Apple-Debug"
         },
         {
             "name": "Darwin-Clang-Release",
-            "inherits": "Apple-LLVM-Release"
+            "inherits": "Apple-Release"
         },
         {
             "name": "Darwin",
@@ -327,6 +327,14 @@
             "configurePreset": "Apple-LLVM-Release"
         },
         {
+            "name": "Darwin-Clang-Debug",
+            "configurePreset": "Darwin-Clang-Debug"
+        },
+        {
+            "name": "Darwin-Clang-Release",
+            "configurePreset": "Darwin-Clang-Release"
+        },
+        {
             "name": "Darwin",
             "configurePreset": "Apple-Release"
         },
@@ -427,6 +435,28 @@
         {
             "name": "Darwin-LLVM",
             "configurePreset": "Apple-LLVM-Release",
+            "output": {
+                "outputOnFailure": true
+            },
+            "execution": {
+                "noTestsAction": "error",
+                "stopOnFailure": true
+            }
+        },
+        {
+            "name": "Darwin-Clang-Debug",
+            "configurePreset": "Darwin-Clang-Debug",
+            "output": {
+                "outputOnFailure": true
+            },
+            "execution": {
+                "noTestsAction": "error",
+                "stopOnFailure": true
+            }
+        },
+        {
+            "name": "Darwin-Clang-Release",
+            "configurePreset": "Darwin-Clang-Release",
             "output": {
                 "outputOnFailure": true
             },
