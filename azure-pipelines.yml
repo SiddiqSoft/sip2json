@@ -74,9 +74,9 @@ parameters:
 
   - name: Compilers_Linux
     type: stringList
-    default: [ Clang ]
-    values: [ Clang, GCC ]
-    displayName: "Linux compilers to build (Clang, GCC)"
+    default: [ GCC ]
+    values: [ GCC, Clang ]
+    displayName: "Linux compilers to build (GCC, Clang)"
 
   - name: Compilers_Darwin
     type: stringList
