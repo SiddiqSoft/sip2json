@@ -96,6 +96,14 @@
             "inherits": "Apple-LLVM-Release"
         },
         {
+            "name": "Darwin-Clang-Debug",
+            "inherits": "Apple-LLVM-Debug"
+        },
+        {
+            "name": "Darwin-Clang-Release",
+            "inherits": "Apple-LLVM-Release"
+        },
+        {
             "name": "Darwin",
             "inherits": "Apple-Release"
         },
