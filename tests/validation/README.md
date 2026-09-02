@@ -27,7 +27,7 @@ This project provides a comprehensive test suite for the `sip2json` library, dem
 - **LLVM Tools**: For code coverage analysis (Linux/macOS)
 - **Build System**: 
   - Windows: Visual Studio 2022
-  - macOS: Homebrew with LLVM tools
+  - macOS: Xcode / Command Line Tools (AppleClang)
   - Linux: LLVM/GCC toolchain
 
 ## Building

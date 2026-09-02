@@ -35,6 +35,7 @@ project(sip2json_client_test
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+enable_testing()
 
 # Option to select sip2json version for testing/benchmarking: 'current' (default) or tag/version like '1.17.1', '2.4.2', '2.5.7', '2.5.8'
 set(SIP2JSON_VERSION "current" CACHE STRING "Version/tag of sip2json to benchmark (e.g. 'current', '1.17.1', '2.4.2', '2.5.7', '2.5.8')")
@@ -55,6 +56,7 @@ else()
         if(TARGET sip2json)
             add_library(sip2json::sip2json ALIAS sip2json)
         elseif(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../../CMakeLists.txt")
+            set(sip2json_BUILD_TESTS OFF CACHE BOOL "" FORCE)
             add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/../.." "${CMAKE_CURRENT_BINARY_DIR}/sip2json")
         endif()
     endif()

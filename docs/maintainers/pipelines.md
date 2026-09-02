@@ -21,7 +21,7 @@ Each build configures and builds with CMake and Ninja, optionally runs the CTest
 All build agents must be registered in the `Default` pool and expose the matching `Agent.OS` demand:
 
 - Linux agents: `Agent.OS -equals Linux`, CMake 3.29+, Ninja, Python 3.10+, and GCC or Clang.
-- Darwin agents: `Agent.OS -equals Darwin`, macOS on x64 or arm64, CMake 3.29+, Ninja, Python 3.10+, and Apple Clang or Homebrew LLVM.
+- Darwin agents: `Agent.OS -equals Darwin`, macOS on x64 or arm64, CMake 3.29+, Ninja, Python 3.10+, and AppleClang (Xcode / Command Line Tools).
 - Windows agents: `Agent.OS -equals Windows_NT`, Visual Studio/MSVC, Windows SDK, CMake, and Ninja.
 
 The agent process needs read/write access to `$(Agent.HomeDirectory)/.cpmcache`. Darwin builds use the `Darwin-Clang-Debug` and `Darwin-Clang-Release` presets from `CMakePresets.json`.
