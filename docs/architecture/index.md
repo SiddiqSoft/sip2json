@@ -1,15 +1,15 @@
-# Architecture & Design Overview
+# Architecture & Design
 
-`sip2json` is engineered around zero-copy design principles, stateless execution, compile-time regular expression optimization, and modern C++23 type safety.
+`sip2json` is engineered around zero-copy `std::string_view` parsing, stateless execution, 64-bit FNV-1a hash matching, and modern C++23 type safety.
 
 ---
 
-## Architectural Principles
+## Principles
 
-1. **Stateless Operations**: Neither `sipmessage` nor `sip2json` maintain internal connection state or dialog state machine logic.
-2. **First-Class JSON Representation**: Data models serialize cleanly to and from `nlohmann::json` objects with zero transformation layers.
-3. **Iterator-Based Stream Parsing**: Stream functions process raw string iterators directly, supporting non-blocking stream buffer drains.
-4. **Header-Only Implementation**: Zero compiled binary dependencies; single `#include "siddiqsoft/sip2json.hpp"`.
+1. **Stateless Operations**: No connection state or dialog state machine logic.
+2. **First-Class JSON**: Serializes to/from `nlohmann::json` objects without transformation layers.
+3. **Iterator Stream Parsing**: Processes string iterators directly, supporting non-blocking stream buffer drains.
+4. **Header-Only**: Single `#include "siddiqsoft/sip2json.hpp"`, zero compiled dependencies, zero regex dependencies.
 
 ---
 
@@ -100,7 +100,7 @@ Empirical trade-off study comparing standalone native C++ structs against `nlohm
 
 ### [Performance & Benchmarks](benchmarks.md)
 
-High-throughput empirical benchmarks (~39.5k msgs/sec), per-message latency, and single-stream vs. thread pool analysis.
+Multi-platform benchmarks (>64k msgs/sec), per-message latency (<16 µs), and thread scaling analysis.
 
 [View Benchmarks :octicons-arrow-right-24:](benchmarks.md)
 

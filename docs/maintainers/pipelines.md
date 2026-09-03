@@ -1,37 +1,37 @@
-# Maintainer Guide & CI/CD Pipeline
+# Maintainer Guide
 
-This guide outlines the architecture, CMake presets design, build matrix, and automated Azure Pipelines CI/CD workflows for maintainers and contributors of `sip2json`.
+CI/CD architecture, CMake presets, and release workflows.
 
 ---
 
-## CI/CD Pipeline Architecture
+## Pipeline Architecture
 
-The continuous integration and continuous deployment (CI/CD) pipeline is defined in [`azure-pipelines.yml`](https://github.com/SiddiqSoft/sip2json/blob/master/azure-pipelines.yml) and executes on self-hosted agents within the `Default` agent pool.
+Defined in [`azure-pipelines.yml`](https://github.com/SiddiqSoft/sip2json/blob/master/azure-pipelines.yml) on self-hosted agents (`Default` pool):
 
 ```mermaid
 flowchart TD
-    subgraph Triggers["Trigger & Ingestion"]
+    subgraph Triggers["Trigger"]
         T1["Push to master / main / release/*"]
-        T2["Pull Request (main / release/*)"]
+        T2["Pull Request"]
     end
 
-    subgraph Matrix["Parallel Cross-Platform Build Matrix"]
-        W["Windows Stage<br/>(MSVC x64 & arm64)"]
-        L["Linux Stage<br/>(GCC & Clang, x64 & arm64)"]
-        D["Darwin Stage<br/>(AppleClang, x64 & arm64)"]
+    subgraph Matrix["Build Matrix"]
+        W["Windows Stage (MSVC)"]
+        L["Linux Stage (GCC & Clang)"]
+        D["Darwin Stage (AppleClang)"]
     end
 
-    subgraph Verification["Verification & Artifacts"]
-        V1["CTest Test Suite Execution"]
-        V2["Release Benchmark Collection"]
-        V3["Linux x64 Code Coverage (gcovr)"]
-        V4["Build & Benchmark Artifacts Publish"]
+    subgraph Verification["Verification"]
+        V1["CTest Execution"]
+        V2["Benchmark Collection"]
+        V3["Coverage (gcovr)"]
     end
 
-    subgraph Publish["Gated Publication (main / master)"]
-        G1{"Manual Approval Gate"}
-        P1["Publish GitHub Release"]
-        P2["Publish Documentation Site (MkDocs / gh-pages)"]
+    subgraph Publish["Publication (main / master)"]
+        G1{"Approval Gate"}
+        P0["NuGet Package"]
+        P1["GitHub Release"]
+        P2["MkDocs Site"]
     end
 
     T1 --> Matrix
@@ -40,6 +40,7 @@ flowchart TD
     L --> Verification
     D --> Verification
     Verification --> G1
+    G1 --> P0
     G1 --> P1
     G1 --> P2
 ```
@@ -309,6 +310,7 @@ When manually triggering a pipeline in Azure DevOps, maintainers can customize:
 | `BuildTypes` | `stringList` | `[ Release ]` | `Release`, `Debug` | Build configurations |
 | `RunTests` | `boolean` | `true` | `true`, `false` | Execute unit and compliance test suites |
 | `RunBenchmarks` | `boolean` | `true` | `true`, `false` | Execute performance benchmark harnesses |
+| `PublishNuGet` | `boolean` | `false` | `true`, `false` | Trigger NuGet Release (auto on `master`/`main`) |
 | `PublishGitHub` | `boolean` | `false` | `true`, `false` | Trigger GitHub Release (auto on `master`/`main`) |
 | `PublishDocs` | `boolean` | `false` | `true`, `false` | Publish documentation site (auto on `master`/`main`) |
 | `Cleanup` | `boolean` | `false` | `true`, `false` | Run cache and workspace cleanup only |
