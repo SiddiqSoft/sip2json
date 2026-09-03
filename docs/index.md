@@ -3,8 +3,8 @@
 <div class="badge-container">
   <img src="https://img.shields.io/badge/version-v{{ version }}-4f46e5.svg" alt="Version {{ version }}"/>
   <a href="https://dev.azure.com/siddiqsoft/siddiqsoft/_build/latest?definitionId=21&branchName=master"><img src="https://dev.azure.com/siddiqsoft/siddiqsoft/_apis/build/status/siddiqsoftware.sip2json?branchName=master" alt="Build Status"></a>
-  <a href="https://www.nuget.org/packages/siddiqsoft.sip2json"><img src="https://img.shields.io/nuget/v/siddiqsoft.sip2json" alt="NuGet Version"></a>
-  <a href="https://www.nuget.org/packages/siddiqsoft.sip2json"><img src="https://img.shields.io/nuget/dt/siddiqsoft.sip2json" alt="NuGet Downloads"></a>
+  <a href="https://www.nuget.org/packages/SiddiqSoft.sip2json/"><img src="https://img.shields.io/nuget/v/SiddiqSoft.sip2json?logo=nuget" alt="NuGet Version"></a>
+  <a href="https://www.nuget.org/packages/SiddiqSoft.sip2json/"><img src="https://img.shields.io/nuget/dt/SiddiqSoft.sip2json?logo=nuget" alt="NuGet Downloads"></a>
   <a href="https://dev.azure.com/siddiqsoft/siddiqsoft/_build/latest?definitionId=21&branchName=master"><img src="https://dev.azure.com/siddiqsoft/siddiqsoft/21/master.svg" alt="Tests" /></a>
 </div>
 
