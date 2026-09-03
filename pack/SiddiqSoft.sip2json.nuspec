@@ -23,25 +23,13 @@
         <icon>docs\Siddiq-Software-Avatar.png</icon>
         <readme>docs\README.md</readme>
         <releaseNotes>
-## v2.4 Release - Performance and Documentation Enhancements
+## v3.0 Release - Zero-Regex Architecture &amp; C++23 std::string_view Optimizations
 
-### New Features
-- **Constexpr Optimization**: Compile-time string constants for improved performance
-- **Comprehensive Benchmarks**: 30+ benchmark tests including stress tests for large packets
-- **HTML Benchmark Reports**: Professional performance analysis reports
-- **Enhanced Documentation**: Complete API reference, architecture guide, and migration guide
-
-### Improvements
-- Optimized parsing with constexpr patterns
-- High-frequency decode benchmarks for large packets
-- Stress tests (100, 1000+ packet scenarios)
-- Professional HTML and JSON benchmark reporting
-- Streamlined documentation for better navigation
-
-### Documentation
-- **API Reference**: docs/API.md - Complete method documentation with examples
-- **Architecture Guide**: docs/ARCHITECTURE.md - Design patterns and optimization
-- **Documentation Index**: docs/INDEX.md - Quick navigation hub
+### Key Highlights
+- **Zero-Regex Architecture**: Eliminated CTRE and all runtime regex overhead; pure zero-copy C++23 std::string_view tokenization.
+- **Significant Performance Gains**: Up to +97.5% throughput improvement and 49.3% latency reduction compared to v2.x.
+- **Single Dependency**: Only nlohmann.json is required.
+- **Native NuGet Support**: Restored native NuGet package support for MSVC / Visual Studio C++23 projects.
 
 For detailed release notes, visit: https://github.com/siddiqsoftware/sip2json/releases
         </releaseNotes>

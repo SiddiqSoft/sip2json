@@ -120,11 +120,11 @@ Dependency hierarchy diagram and version breakdown (`nlohmann_json`).
 
 <div class="card" markdown="1">
 
-### [NuGet Migration Notice](nuget.md)
+### [NuGet Package Integration](nuget.md)
 
-Deprecation notice and migration advice for previous NuGet package consumers.
+Native Visual Studio and MSBuild package integration for C++23 projects.
 
-[View Migration Notice :octicons-arrow-right-24:](nuget.md)
+[View NuGet Guide :octicons-arrow-right-24:](nuget.md)
 
 </div>
 

@@ -244,6 +244,8 @@ sequenceDiagram
     Maintainer->>Pipeline: Approve Release
     par Publish Artifacts
         Pipeline->>GitHub: Create Release with Binaries & Tarballs
+    and Publish NuGet
+        Pipeline->>NuGet: Push SiddiqSoft.sip2json Package to nuget.org
     and Publish Documentation
         Pipeline->>Pages: Build MkDocs Site with Dynamic Version & Benchmarks
     end
@@ -252,7 +254,7 @@ sequenceDiagram
 ### Dynamic Versioning & Documentation Hooks
 1. **[`docs/hooks.py`](https://github.com/SiddiqSoft/sip2json/blob/master/docs/hooks.py)**: Dynamically injects GitVersion SemVer into site metadata (`config['extra']['version']`) and replaces `{{ version }}` / `{{ tag_version }}` placeholders across markdown files.
 2. **[`scripts/publish_benchmarks.py`](https://github.com/SiddiqSoft/sip2json/blob/master/scripts/publish_benchmarks.py)**: Collects benchmark outputs across build matrix platforms, extracts CPU architecture and core count, and renders responsive platform-grouped benchmark tables and visual comparison charts into [`docs/architecture/benchmarks.md`](../architecture/benchmarks.md).
-3. **NuGet Status**: NuGet packaging and publication have been deprecated and disabled in pipeline definitions. Header-only CMake (`CPMAddPackage` / `FetchContent`) is the standard distribution channel.
+3. **NuGet Packaging & Publication**: NuGet packaging (`NuGetCommand@2 pack`) runs during the Windows Release job to package header files, `.natvis`, and `.targets`. Publication (`Stage 4: PublishNuGet`) is auto-enabled on `main`/`master` releases, guarded by maintainer manual validation approval before pushing to `nuget.org` via the `sqs-nuget` service connection.
 
 ---
 

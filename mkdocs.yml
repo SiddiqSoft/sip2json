@@ -90,7 +90,7 @@ nav:
       - Getting Started: quickstart/index.md
       - CMake & CPM: quickstart/cmake.md
       - Dependencies: quickstart/dependencies.md
-      - NuGet Migration: quickstart/nuget.md
+      - NuGet Package: quickstart/nuget.md
   - API Reference:
       - Overview: api/index.md
       - sipmessage: api/sipmessage.md
