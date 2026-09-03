@@ -17,7 +17,19 @@ def on_config(config, **kwargs):
         or os.getenv("CI_BUILDID")
     )
     
-    # 2. If not running in CI or env vars are missing, try running git describe
+    # 2. If not running in CI or env vars are missing, try checking GitVersion.yml next-version or git describe
+    if not version:
+        try:
+            root_dir = Path(__file__).resolve().parent.parent
+            gv_file = root_dir / "GitVersion.yml"
+            if gv_file.exists():
+                for line in gv_file.read_text().splitlines():
+                    if line.startswith("next-version:"):
+                        version = line.split(":", 1)[1].strip()
+                        break
+        except Exception:
+            pass
+
     if not version:
         try:
             version = subprocess.check_output(
