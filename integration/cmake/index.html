@@ -353,6 +353,26 @@
   
   
   
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../maintainers/pipelines/" class="md-tabs__link">
+          
+  
+  
+  Maintainers
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
     <li class="md-tabs__item">
       <a href="../../license/" class="md-tabs__link">
         
@@ -907,6 +927,17 @@
     <span class="md-ellipsis">
       
         Build Options
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#building-from-source-with-cmake-presets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Building from Source with CMake Presets
       
     </span>
   </a>
@@ -1482,6 +1513,95 @@
   
   
   
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Maintainers
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Maintainers
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintainers/pipelines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Maintainer & CI/CD Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
     <li class="md-nav__item">
       <a href="../../license/" class="md-nav__link">
         
@@ -1556,6 +1676,17 @@
     <span class="md-ellipsis">
       
         Build Options
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#building-from-source-with-cmake-presets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Building from Source with CMake Presets
       
     </span>
   </a>
@@ -1691,6 +1822,15 @@
 </tr>
 </tbody>
 </table>
+<hr />
+<h2 id="building-from-source-with-cmake-presets">Building from Source with CMake Presets<a class="headerlink" href="#building-from-source-with-cmake-presets" title="Permanent link">&para;</a></h2>
+<p>If you are cloning and developing <code>sip2json</code> directly, the repository provides multi-platform CMake Presets (<code>Apple-Debug</code>, <code>Apple-Release</code>, <code>Darwin-Clang-Release</code>, <code>Linux-Clang-Release</code>, <code>Linux-GCC-Release</code>, <code>Windows-x64-Release</code>):</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Configure, build, and test</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>cmake<span class="w"> </span>--preset<span class="w"> </span>Darwin-Clang-Release
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>cmake<span class="w"> </span>--build<span class="w"> </span>--preset<span class="w"> </span>Darwin-Clang-Release
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>ctest<span class="w"> </span>--preset<span class="w"> </span>Darwin-Clang-Release<span class="w"> </span>-j<span class="w"> </span><span class="m">4</span>
+</span></code></pre></div>
+<p>For full preset architecture, project configuration via <code>project-base.json</code>, and CI/CD workflows, see the <a href="../../maintainers/pipelines/">Maintainer Guide &amp; CI/CD Pipeline</a>.</p>
 <hr />
 <blockquote>
 <p>[!TIP]

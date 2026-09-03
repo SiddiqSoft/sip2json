@@ -353,6 +353,26 @@
   
   
   
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../maintainers/pipelines/" class="md-tabs__link">
+          
+  
+  
+  Maintainers
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
     <li class="md-tabs__item">
       <a href="../../license/" class="md-tabs__link">
         
@@ -651,6 +671,17 @@
     <span class="md-ellipsis">
       
         Windows Platform Benchmarks
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#darwin-platform-benchmarks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Darwin Platform Benchmarks
       
     </span>
   </a>
@@ -1610,6 +1641,95 @@
   
   
   
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Maintainers
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Maintainers
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintainers/pipelines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Maintainer & CI/CD Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
     <li class="md-nav__item">
       <a href="../../license/" class="md-nav__link">
         
@@ -1685,6 +1805,17 @@
     <span class="md-ellipsis">
       
         Windows Platform Benchmarks
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#darwin-platform-benchmarks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Darwin Platform Benchmarks
       
     </span>
   </a>
@@ -1894,8 +2025,9 @@
 <p>[!NOTE]
 <strong>Build Release &amp; Version</strong>: <code>3.0.0-beta.1</code> | <strong>Branch</strong>: <code>release/2.6.0</code>
 <strong>Host Runner Environment Legend (Derived at Build Time)</strong>:
-- <strong>Linux Runner</strong>: lba4.siddiq.org (4 Cores, 48 MHz)
-- <strong>Windows Runner</strong>: WINDEV (4 Cores, 3072 MHz)</p>
+- <strong>Darwin Runner</strong>: macdev.siddiq.org (4 Cores, 24 MHz)
+- <strong>Windows Runner</strong>: WINDEV (4 Cores, 3072 MHz)
+- <strong>Linux Runner</strong>: lba4.siddiq.org (4 Cores, 48 MHz)</p>
 </blockquote>
 <p><em>Empirical build pipeline measurements collected across matrix runners grouped by operating system platform:</em></p>
 <h3 id="linux-platform-benchmarks">Linux Platform Benchmarks<a class="headerlink" href="#linux-platform-benchmarks" title="Permanent link">&para;</a></h3>
@@ -1914,21 +2046,21 @@
 <tbody>
 <tr>
 <td style="text-align: center;"><strong>arm64</strong></td>
-<td style="text-align: center;">Clang</td>
-<td style="text-align: center;"><strong>116,142.12 msg/s</strong></td>
-<td style="text-align: center;"><strong>287.98 MB/s</strong></td>
-<td style="text-align: center;"><strong>20246667.01 ns</strong></td>
-<td style="text-align: center;"><strong>418,185.79 msg/s</strong></td>
-<td style="text-align: center;"><strong>2404158.48 ns</strong></td>
+<td style="text-align: center;">GCC</td>
+<td style="text-align: center;"><strong>126,097.18 msg/s</strong></td>
+<td style="text-align: center;"><strong>312.66 MB/s</strong></td>
+<td style="text-align: center;"><strong>17453300.82 ns</strong></td>
+<td style="text-align: center;"><strong>445,452.71 msg/s</strong></td>
+<td style="text-align: center;"><strong>2252579.94 ns</strong></td>
 </tr>
 <tr>
 <td style="text-align: center;"><strong>x64</strong></td>
 <td style="text-align: center;">Clang</td>
-<td style="text-align: center;"><strong>46,551.28 msg/s</strong></td>
-<td style="text-align: center;"><strong>122.69 MB/s</strong></td>
-<td style="text-align: center;"><strong>21.48 us</strong></td>
-<td style="text-align: center;"><strong>56,501.96 msg/s</strong></td>
-<td style="text-align: center;"><strong>17.70 us</strong></td>
+<td style="text-align: center;"><strong>37,982.25 msg/s</strong></td>
+<td style="text-align: center;"><strong>100.11 MB/s</strong></td>
+<td style="text-align: center;"><strong>26.33 us</strong></td>
+<td style="text-align: center;"><strong>52,797.28 msg/s</strong></td>
+<td style="text-align: center;"><strong>18.94 us</strong></td>
 </tr>
 </tbody>
 </table>
@@ -1949,20 +2081,45 @@
 <tr>
 <td style="text-align: center;"><strong>arm64</strong></td>
 <td style="text-align: center;">MSVC</td>
-<td style="text-align: center;"><strong>172,972.97 msg/s</strong></td>
-<td style="text-align: center;"><strong>428.90 MB/s</strong></td>
-<td style="text-align: center;"><strong>6178694.17 ns</strong></td>
-<td style="text-align: center;"><strong>375,466.67 msg/s</strong></td>
-<td style="text-align: center;"><strong>2719059.82 ns</strong></td>
+<td style="text-align: center;"><strong>160,000.00 msg/s</strong></td>
+<td style="text-align: center;"><strong>396.73 MB/s</strong></td>
+<td style="text-align: center;"><strong>6448705.84 ns</strong></td>
+<td style="text-align: center;"><strong>346,434.78 msg/s</strong></td>
+<td style="text-align: center;"><strong>2910277.95 ns</strong></td>
 </tr>
 <tr>
 <td style="text-align: center;"><strong>x64</strong></td>
 <td style="text-align: center;">Clang</td>
-<td style="text-align: center;"><strong>39,088.76 msg/s</strong></td>
-<td style="text-align: center;"><strong>103.02 MB/s</strong></td>
+<td style="text-align: center;"><strong>39,098.52 msg/s</strong></td>
+<td style="text-align: center;"><strong>103.05 MB/s</strong></td>
 <td style="text-align: center;"><strong>25.58 us</strong></td>
-<td style="text-align: center;"><strong>33,127.62 msg/s</strong></td>
-<td style="text-align: center;"><strong>30.19 us</strong></td>
+<td style="text-align: center;"><strong>32,916.12 msg/s</strong></td>
+<td style="text-align: center;"><strong>30.38 us</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="darwin-platform-benchmarks">Darwin Platform Benchmarks<a class="headerlink" href="#darwin-platform-benchmarks" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Architecture</th>
+<th style="text-align: center;">Compiler</th>
+<th style="text-align: center;">Stream Throughput (<code>parseAsync</code>)</th>
+<th style="text-align: center;">Bandwidth</th>
+<th style="text-align: center;">Per-Msg Latency</th>
+<th style="text-align: center;">Single Message (<code>parseFromBuffer</code>)</th>
+<th style="text-align: center;">Single Latency</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><strong>arm64</strong></td>
+<td style="text-align: center;">Clang</td>
+<td style="text-align: center;"><strong>169,611.14 msg/s</strong></td>
+<td style="text-align: center;"><strong>420.56 MB/s</strong></td>
+<td style="text-align: center;"><strong>7362531.07 ns</strong></td>
+<td style="text-align: center;"><strong>508,060.07 msg/s</strong></td>
+<td style="text-align: center;"><strong>1968313.32 ns</strong></td>
 </tr>
 </tbody>
 </table>

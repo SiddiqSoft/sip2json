@@ -1,0 +1,2656 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="SIP Parser for Modern C++">
+      
+      
+        <meta name="author" content="Siddiq Software LLC">
+      
+      
+        <link rel="canonical" href="https://siddiqsoft.github.io/sip2json/maintainers/pipelines/">
+      
+      
+        <link rel="prev" href="../../examples/serialization/">
+      
+      
+        <link rel="next" href="../../license/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/Siddiq-Software-Avatar.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Maintainer & CI/CD Guide - sip2json</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../css/custom.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#maintainer-guide-cicd-pipeline" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="sip2json" class="md-header__button md-logo" aria-label="sip2json" data-md-component="logo">
+      
+  <img src="../../assets/Siddiq-Software-Avatar.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            sip2json
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Maintainer & CI/CD Guide
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/SiddiqSoft/sip2json" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    SiddiqSoft/sip2json
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../features/" class="md-tabs__link">
+          
+  
+  
+  Features
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../integration/" class="md-tabs__link">
+          
+  
+  
+  Integration
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../architecture/" class="md-tabs__link">
+          
+  
+  
+  Architecture & Design
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../api/" class="md-tabs__link">
+          
+  
+  
+  API Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../examples/" class="md-tabs__link">
+          
+  
+  
+  Examples
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
+          
+  
+  
+  Maintainers
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../license/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  License
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="sip2json" class="md-nav__button md-logo" aria-label="sip2json" data-md-component="logo">
+      
+  <img src="../../assets/Siddiq-Software-Avatar.png" alt="logo">
+
+    </a>
+    sip2json
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/SiddiqSoft/sip2json" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    SiddiqSoft/sip2json
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Features
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Features
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/async/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Async Stream Parsing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/benchmarks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Performance & Benchmarks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/optimization_choices/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Optimization Choices
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/json_schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    JSON Metaphor & Schema
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/sdp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SDP Support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/compliance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Standards Compliance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/test_suite_sources/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Test Suite Sources & IETF Links
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integration
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Integration
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quick Start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integration/cmake/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CMake & Submodules
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integration/dependencies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dependencies Diagram
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integration/nuget/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NuGet Package
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture & Design
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture & Design
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/patterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design Patterns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/dataflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Flow & Memory
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/native_vs_json/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Native vs JSON Study
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/sipmessage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    sipmessage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/sip2json/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    sip2json Functions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/errors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Exceptions & Errors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Examples
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/async_parsing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stream Parsing Callback
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/serialization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Message Serialization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Maintainers
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Maintainers
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Maintainer & CI/CD Guide
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Maintainer & CI/CD Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#cicd-pipeline-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CI/CD Pipeline Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#build-stages-platform-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Build Stages &amp; Platform Matrix
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cmake-presets-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CMake Presets Architecture
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CMake Presets Architecture">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#architectural-separation-of-concerns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architectural Separation of Concerns
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#available-presets-quick-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Available Presets Quick Reference
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Available Presets Quick Reference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configure-presets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configure Presets
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#local-development-maintainer-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Local Development &amp; Maintainer Workflow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Local Development &amp; Maintainer Workflow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-configure-build-and-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Configure, Build, and Test
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-standalone-validation-subproject-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Standalone Validation Subproject Testing
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#self-hosted-build-agent-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Self-Hosted Build Agent Requirements
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Self-Hosted Build Agent Requirements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#darwin-macos-agents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Darwin (macOS) Agents
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linux-agents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Linux Agents
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#windows-agents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Windows Agents
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#release-publication-lifecycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Release &amp; Publication Lifecycle
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Release &amp; Publication Lifecycle">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dynamic-versioning-documentation-hooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dynamic Versioning &amp; Documentation Hooks
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pipeline-parameters-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pipeline Parameters Reference
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../license/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    License
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#cicd-pipeline-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CI/CD Pipeline Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#build-stages-platform-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Build Stages &amp; Platform Matrix
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cmake-presets-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CMake Presets Architecture
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CMake Presets Architecture">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#architectural-separation-of-concerns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architectural Separation of Concerns
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#available-presets-quick-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Available Presets Quick Reference
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Available Presets Quick Reference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configure-presets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configure Presets
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#local-development-maintainer-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Local Development &amp; Maintainer Workflow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Local Development &amp; Maintainer Workflow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-configure-build-and-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Configure, Build, and Test
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-standalone-validation-subproject-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Standalone Validation Subproject Testing
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#self-hosted-build-agent-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Self-Hosted Build Agent Requirements
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Self-Hosted Build Agent Requirements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#darwin-macos-agents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Darwin (macOS) Agents
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linux-agents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Linux Agents
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#windows-agents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Windows Agents
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#release-publication-lifecycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Release &amp; Publication Lifecycle
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Release &amp; Publication Lifecycle">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dynamic-versioning-documentation-hooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dynamic Versioning &amp; Documentation Hooks
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pipeline-parameters-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pipeline Parameters Reference
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation" >
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="./" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Maintainers
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="maintainer-guide-cicd-pipeline">Maintainer Guide &amp; CI/CD Pipeline<a class="headerlink" href="#maintainer-guide-cicd-pipeline" title="Permanent link">&para;</a></h1>
+<p>This guide outlines the architecture, CMake presets design, build matrix, and automated Azure Pipelines CI/CD workflows for maintainers and contributors of <code>sip2json</code>.</p>
+<hr />
+<h2 id="cicd-pipeline-architecture">CI/CD Pipeline Architecture<a class="headerlink" href="#cicd-pipeline-architecture" title="Permanent link">&para;</a></h2>
+<p>The continuous integration and continuous deployment (CI/CD) pipeline is defined in <a href="https://github.com/SiddiqSoft/sip2json/blob/master/azure-pipelines.yml"><code>azure-pipelines.yml</code></a> and executes on self-hosted agents within the <code>Default</code> agent pool.</p>
+<pre class="mermaid"><code>flowchart TD
+    subgraph Triggers["Trigger &amp; Ingestion"]
+        T1["Push to master / main / release/*"]
+        T2["Pull Request (main / release/*)"]
+    end
+
+    subgraph Matrix["Parallel Cross-Platform Build Matrix"]
+        W["Windows Stage&lt;br/&gt;(MSVC x64 &amp; arm64)"]
+        L["Linux Stage&lt;br/&gt;(GCC &amp; Clang, x64 &amp; arm64)"]
+        D["Darwin Stage&lt;br/&gt;(AppleClang, x64 &amp; arm64)"]
+    end
+
+    subgraph Verification["Verification &amp; Artifacts"]
+        V1["CTest Test Suite Execution"]
+        V2["Release Benchmark Collection"]
+        V3["Linux x64 Code Coverage (gcovr)"]
+        V4["Build &amp; Benchmark Artifacts Publish"]
+    end
+
+    subgraph Publish["Gated Publication (main / master)"]
+        G1{"Manual Approval Gate"}
+        P1["Publish GitHub Release"]
+        P2["Publish Documentation Site (MkDocs / gh-pages)"]
+    end
+
+    T1 --&gt; Matrix
+    T2 --&gt; Matrix
+    W --&gt; Verification
+    L --&gt; Verification
+    D --&gt; Verification
+    Verification --&gt; G1
+    G1 --&gt; P1
+    G1 --&gt; P2</code></pre>
+<hr />
+<h2 id="build-stages-platform-matrix">Build Stages &amp; Platform Matrix<a class="headerlink" href="#build-stages-platform-matrix" title="Permanent link">&para;</a></h2>
+<p>The build matrix targets Windows, Linux, and macOS (Darwin) across <code>x64</code> and <code>arm64</code> architectures:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Platform Stage</th>
+<th style="text-align: left;">Target Architectures</th>
+<th style="text-align: left;">Compilers</th>
+<th style="text-align: left;">CMake Presets Prefix</th>
+<th style="text-align: left;">CI Template</th>
+<th style="text-align: left;">Artifacts Published</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Windows</strong></td>
+<td style="text-align: left;"><code>x64</code>, <code>arm64</code></td>
+<td style="text-align: left;">MSVC (Visual Studio 2022)</td>
+<td style="text-align: left;"><code>Windows-${arch}-${buildType}</code></td>
+<td style="text-align: left;"><code>.azure/az-build-windows.yml</code></td>
+<td style="text-align: left;">Binaries, CTest JUnit XML, Benchmarks</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Linux</strong></td>
+<td style="text-align: left;"><code>x64</code>, <code>arm64</code></td>
+<td style="text-align: left;">Clang (17+), GCC (13+)</td>
+<td style="text-align: left;"><code>Linux-${compiler}-${buildType}</code></td>
+<td style="text-align: left;"><code>.azure/az-build-unix.yml</code></td>
+<td style="text-align: left;">Binaries, CTest JUnit XML, Benchmarks, Coverage XML</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Darwin (macOS)</strong></td>
+<td style="text-align: left;"><code>x64</code>, <code>arm64</code></td>
+<td style="text-align: left;">AppleClang (Xcode / CLT)</td>
+<td style="text-align: left;"><code>Darwin-Clang-${buildType}</code></td>
+<td style="text-align: left;"><code>.azure/az-build-unix.yml</code></td>
+<td style="text-align: left;">Binaries, CTest JUnit XML, Benchmarks</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>[!NOTE]
+<strong>Unified Unix Pipeline</strong>: The Linux and Darwin stages share the parameterized template <code>.azure/az-build-unix.yml</code>. It dynamically adapts agent OS demands, compiler flags, and preset names based on the target platform.</p>
+</blockquote>
+<hr />
+<h2 id="cmake-presets-architecture">CMake Presets Architecture<a class="headerlink" href="#cmake-presets-architecture" title="Permanent link">&para;</a></h2>
+<p>The repository employs a decoupled, highly reusable CMake Presets structure separated across two files:</p>
+<pre class="mermaid"><code>flowchart TD
+    subgraph PB["project-base.json (Project-Specific)"]
+        PBase["Project-Base&lt;br/&gt;• sip2json_BUILD_TESTS=ON&lt;br/&gt;• sip2json_BUILD_BENCHMARKS=OFF&lt;br/&gt;• sip2json_HEADERKEY_MODE_INSENSITIVE=ON&lt;br/&gt;• CMAKE_CXX_STANDARD=23&lt;br/&gt;• CI_BUILDID=0.0.0"]
+    end
+
+    subgraph CP["CMakePresets.json (Generic / Portable)"]
+        CBase["Common-Base&lt;br/&gt;• Generator: Ninja&lt;br/&gt;• binaryDir: build/${presetName}&lt;br/&gt;• installDir: install/${presetName}&lt;br/&gt;• CPM_SOURCE_CACHE"]
+
+        subgraph Darwin["Darwin / macOS"]
+            ABase["Apple-Base (Darwin condition)"]
+            ADebug["Apple-Debug (Debug)"]
+            ARelease["Apple-Release (Release)"]
+            DCDebug["Darwin-Clang-Debug"]
+            DCRelease["Darwin-Clang-Release"]
+            DDefault["Darwin"]
+        end
+
+        subgraph Linux["Linux"]
+            LBase["Linux-Base (Linux condition)"]
+            LClangBase["Linux-Clang-Base (/usr/bin/clang)"]
+            LGCCBase["Linux-GCC-Base (/usr/bin/gcc)"]
+            LCDebug["Linux-Clang-Debug"]
+            LCRelease["Linux-Clang-Release"]
+            LGDebug["Linux-GCC-Debug"]
+            LGRelease["Linux-GCC-Release"]
+        end
+
+        subgraph Windows["Windows"]
+            WBase["Windows-Base (Windows condition, cl.exe)"]
+            Wx64Base["Windows-x64-Base (host=x64, arch=x64)"]
+            WarmBase["Windows-arm64-Base (arch=arm64)"]
+            Wx64Debug["Windows-x64-Debug"]
+            Wx64Release["Windows-x64-Release"]
+            WarmDebug["Windows-arm64-Debug"]
+            WarmRelease["Windows-arm64-Release"]
+        end
+    end
+
+    PBase --&gt; CBase
+    CBase --&gt; ABase
+    CBase --&gt; LBase
+    CBase --&gt; WBase
+
+    ABase --&gt; ADebug &amp; ARelease
+    ADebug --&gt; DCDebug
+    ARelease --&gt; DCRelease &amp; DDefault
+
+    LBase --&gt; LClangBase &amp; LGCCBase
+    LClangBase --&gt; LCDebug &amp; LCRelease
+    LGCCBase --&gt; LGDebug &amp; LGRelease
+
+    WBase --&gt; Wx64Base &amp; WarmBase
+    Wx64Base --&gt; Wx64Debug &amp; Wx64Release
+    WarmBase --&gt; WarmDebug &amp; WarmRelease</code></pre>
+<h3 id="architectural-separation-of-concerns">Architectural Separation of Concerns<a class="headerlink" href="#architectural-separation-of-concerns" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong><a href="https://github.com/SiddiqSoft/sip2json/blob/master/project-base.json"><code>project-base.json</code></a></strong>:</li>
+<li>Holds all <strong>per-project settings</strong> (e.g. <code>sip2json_BUILD_TESTS</code>, <code>sip2json_HEADERKEY_MODE_INSENSITIVE</code>, <code>CMAKE_CXX_STANDARD: 23</code>, <code>CI_BUILDID: 0.0.0</code>).</li>
+<li>
+<p>Project maintainers configure project-specific variables here without altering toolchain presets.</p>
+</li>
+<li>
+<p><strong><a href="https://github.com/SiddiqSoft/sip2json/blob/master/CMakePresets.json"><code>CMakePresets.json</code></a></strong>:</p>
+</li>
+<li>Contains <strong>zero project-specific names or flags</strong>.</li>
+<li>Fully portable and reusable across any C++20/23 library or service repository.</li>
+<li>Defines platform bases (<code>Apple-Base</code>, <code>Linux-Base</code>, <code>Windows-Base</code>) and standardized <code>Test-Base</code> execution rules.</li>
+</ol>
+<hr />
+<h2 id="available-presets-quick-reference">Available Presets Quick Reference<a class="headerlink" href="#available-presets-quick-reference" title="Permanent link">&para;</a></h2>
+<h3 id="configure-presets">Configure Presets<a class="headerlink" href="#configure-presets" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Preset Name</th>
+<th style="text-align: left;">Platform</th>
+<th style="text-align: left;">Compiler</th>
+<th style="text-align: left;">Build Type</th>
+<th style="text-align: left;">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>Apple-Debug</code></td>
+<td style="text-align: left;">macOS</td>
+<td style="text-align: left;">AppleClang</td>
+<td style="text-align: left;">Debug</td>
+<td style="text-align: left;">Native Xcode / Command Line Tools</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>Apple-Release</code></td>
+<td style="text-align: left;">macOS</td>
+<td style="text-align: left;">AppleClang</td>
+<td style="text-align: left;">Release</td>
+<td style="text-align: left;">Native Xcode / Command Line Tools</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>Darwin-Clang-Debug</code></td>
+<td style="text-align: left;">macOS</td>
+<td style="text-align: left;">AppleClang</td>
+<td style="text-align: left;">Debug</td>
+<td style="text-align: left;">Inherits <code>Apple-Debug</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>Darwin-Clang-Release</code></td>
+<td style="text-align: left;">macOS</td>
+<td style="text-align: left;">AppleClang</td>
+<td style="text-align: left;">Release</td>
+<td style="text-align: left;">Inherits <code>Apple-Release</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>Darwin</code></td>
+<td style="text-align: left;">macOS</td>
+<td style="text-align: left;">AppleClang</td>
+<td style="text-align: left;">Release</td>
+<td style="text-align: left;">Default macOS alias (inherits <code>Apple-Release</code>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>Linux-Clang-Debug</code></td>
+<td style="text-align: left;">Linux</td>
+<td style="text-align: left;">Clang (<code>/usr/bin/clang++</code>)</td>
+<td style="text-align: left;">Debug</td>
+<td style="text-align: left;">Clang toolchain</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>Linux-Clang-Release</code></td>
+<td style="text-align: left;">Linux</td>
+<td style="text-align: left;">Clang (<code>/usr/bin/clang++</code>)</td>
+<td style="text-align: left;">Release</td>
+<td style="text-align: left;">Clang toolchain</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>Linux-Clang</code></td>
+<td style="text-align: left;">Linux</td>
+<td style="text-align: left;">Clang (<code>/usr/bin/clang++</code>)</td>
+<td style="text-align: left;">Release</td>
+<td style="text-align: left;">Clang release alias</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>Linux-GCC-Debug</code></td>
+<td style="text-align: left;">Linux</td>
+<td style="text-align: left;">GCC (<code>/usr/bin/g++</code>)</td>
+<td style="text-align: left;">Debug</td>
+<td style="text-align: left;">GCC toolchain</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>Linux-GCC-Release</code></td>
+<td style="text-align: left;">Linux</td>
+<td style="text-align: left;">GCC (<code>/usr/bin/g++</code>)</td>
+<td style="text-align: left;">Release</td>
+<td style="text-align: left;">GCC toolchain</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>Linux-GCC</code></td>
+<td style="text-align: left;">Linux</td>
+<td style="text-align: left;">GCC (<code>/usr/bin/g++</code>)</td>
+<td style="text-align: left;">Release</td>
+<td style="text-align: left;">GCC release alias</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>Windows-x64-Debug</code></td>
+<td style="text-align: left;">Windows</td>
+<td style="text-align: left;">MSVC (<code>cl.exe</code>)</td>
+<td style="text-align: left;">Debug</td>
+<td style="text-align: left;">x64 architecture, host=x64</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>Windows-x64-Release</code></td>
+<td style="text-align: left;">Windows</td>
+<td style="text-align: left;">MSVC (<code>cl.exe</code>)</td>
+<td style="text-align: left;">Release</td>
+<td style="text-align: left;">x64 architecture, host=x64</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>Windows-x64</code></td>
+<td style="text-align: left;">Windows</td>
+<td style="text-align: left;">MSVC (<code>cl.exe</code>)</td>
+<td style="text-align: left;">Release</td>
+<td style="text-align: left;">Windows x64 release alias</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>Windows-arm64-Debug</code></td>
+<td style="text-align: left;">Windows</td>
+<td style="text-align: left;">MSVC (<code>cl.exe</code>)</td>
+<td style="text-align: left;">Debug</td>
+<td style="text-align: left;">ARM64 cross/native compilation</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>Windows-arm64-Release</code></td>
+<td style="text-align: left;">Windows</td>
+<td style="text-align: left;">MSVC (<code>cl.exe</code>)</td>
+<td style="text-align: left;">Release</td>
+<td style="text-align: left;">ARM64 cross/native compilation</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>Windows-arm64</code></td>
+<td style="text-align: left;">Windows</td>
+<td style="text-align: left;">MSVC (<code>cl.exe</code>)</td>
+<td style="text-align: left;">Release</td>
+<td style="text-align: left;">Windows ARM64 release alias</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="local-development-maintainer-workflow">Local Development &amp; Maintainer Workflow<a class="headerlink" href="#local-development-maintainer-workflow" title="Permanent link">&para;</a></h2>
+<h3 id="1-configure-build-and-test">1. Configure, Build, and Test<a class="headerlink" href="#1-configure-build-and-test" title="Permanent link">&para;</a></h3>
+<p>Maintainers can build and execute the full test suite (320+ unit and compliance tests) with standard CMake commands:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Configure with desired preset (e.g. Darwin-Clang-Release, Linux-GCC-Release, Windows-x64-Release)</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>cmake<span class="w"> </span>--preset<span class="w"> </span>&lt;preset-name&gt;
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1"># Build all targets</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>cmake<span class="w"> </span>--build<span class="w"> </span>--preset<span class="w"> </span>&lt;preset-name&gt;
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="c1"># Execute test suite (use -j 4 or higher for fast parallel execution)</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>ctest<span class="w"> </span>--preset<span class="w"> </span>&lt;preset-name&gt;<span class="w"> </span>-j<span class="w"> </span><span class="m">4</span>
+</span></code></pre></div>
+<blockquote>
+<p>[!TIP]
+<strong>Test Execution Parallelism</strong>: Specifying <code>-j &lt;num_workers&gt;</code> (e.g. <code>-j 4</code>) with <code>ctest</code> runs tests efficiently across worker threads without hitting operating system process limits.</p>
+</blockquote>
+<h3 id="2-standalone-validation-subproject-testing">2. Standalone Validation Subproject Testing<a class="headerlink" href="#2-standalone-validation-subproject-testing" title="Permanent link">&para;</a></h3>
+<p>To test <code>sip2json</code> against historical versions or external CPM consumers, use the subproject located in <code>tests/validation/</code>:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Configure standalone validation client</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nb">cd</span><span class="w"> </span>tests/validation
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>cmake<span class="w"> </span>--preset<span class="w"> </span>Apple-Release
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="c1"># Build and run client test suite</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>cmake<span class="w"> </span>--build<span class="w"> </span>--preset<span class="w"> </span>Apple-Release
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>ctest<span class="w"> </span>--preset<span class="w"> </span>Apple-Release<span class="w"> </span>-j<span class="w"> </span><span class="m">4</span>
+</span></code></pre></div>
+<hr />
+<h2 id="self-hosted-build-agent-requirements">Self-Hosted Build Agent Requirements<a class="headerlink" href="#self-hosted-build-agent-requirements" title="Permanent link">&para;</a></h2>
+<p>All build agents must be registered in the <code>Default</code> pool and expose the required <code>Agent.OS</code> demand:</p>
+<h3 id="darwin-macos-agents">Darwin (macOS) Agents<a class="headerlink" href="#darwin-macos-agents" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Demand: <code>Agent.OS -equals Darwin</code></li>
+<li>OS: macOS Sonoma (14+) on Apple Silicon (<code>arm64</code>) or Intel (<code>x64</code>).</li>
+<li>Toolchain: Xcode 15+ / Command Line Tools (<code>AppleClang 15+</code>).</li>
+<li>Utilities: CMake 3.29+, Ninja 1.11+, Python 3.10+.</li>
+<li><em>Note: No external Homebrew LLVM installation required.</em></li>
+</ul>
+<h3 id="linux-agents">Linux Agents<a class="headerlink" href="#linux-agents" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Demand: <code>Agent.OS -equals Linux</code></li>
+<li>OS: Ubuntu 22.04+ or Debian 12+ on <code>x64</code> or <code>arm64</code>.</li>
+<li>Toolchain: GCC 13+ (<code>/usr/bin/gcc</code>, <code>/usr/bin/g++</code>) or Clang 17+ (<code>/usr/bin/clang</code>, <code>/usr/bin/clang++</code>).</li>
+<li>Utilities: CMake 3.29+, Ninja, Python 3.10+, <code>gcovr</code> (for coverage).</li>
+</ul>
+<h3 id="windows-agents">Windows Agents<a class="headerlink" href="#windows-agents" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Demand: <code>Agent.OS -equals Windows_NT</code></li>
+<li>OS: Windows 11 / Windows Server 2022 (<code>x64</code> or <code>arm64</code>).</li>
+<li>Toolchain: Visual Studio 2022 (MSVC v143+), Windows 11 SDK.</li>
+<li>Prerequisites: Execute <a href="https://github.com/SiddiqSoft/sip2json/blob/master/scripts/prep_windows_machine.ps1"><code>scripts/prep_windows_machine.ps1</code></a> as Administrator to configure <code>LongPathsEnabled = 1</code> and <code>git config --system core.longpaths true</code>.</li>
+</ul>
+<hr />
+<h2 id="release-publication-lifecycle">Release &amp; Publication Lifecycle<a class="headerlink" href="#release-publication-lifecycle" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>sequenceDiagram
+    autonumber
+    actor Maintainer
+    participant Git as Git Repository
+    participant Pipeline as Azure Pipelines
+    participant GitVersion as GitVersion Task
+    participant GitHub as GitHub Releases
+    participant Pages as GitHub Pages (MkDocs)
+
+    Maintainer-&gt;&gt;Git: Push tag / merge to master or release/*
+    Git-&gt;&gt;Pipeline: Webhook Trigger
+    Pipeline-&gt;&gt;GitVersion: Calculate SemVer (GitVersion.yml)
+    GitVersion--&gt;&gt;Pipeline: Major.Minor.Patch &amp; FullSemVer
+    Pipeline-&gt;&gt;Pipeline: Run Windows, Linux, Darwin build matrix
+    Pipeline-&gt;&gt;Pipeline: Aggregate benchmark outputs &amp; test results
+    Pipeline-&gt;&gt;Maintainer: Request Approval for Release
+    Maintainer-&gt;&gt;Pipeline: Approve Release
+    par Publish Artifacts
+        Pipeline-&gt;&gt;GitHub: Create Release with Binaries &amp; Tarballs
+    and Publish Documentation
+        Pipeline-&gt;&gt;Pages: Build MkDocs Site with Dynamic Version &amp; Benchmarks
+    end</code></pre>
+<h3 id="dynamic-versioning-documentation-hooks">Dynamic Versioning &amp; Documentation Hooks<a class="headerlink" href="#dynamic-versioning-documentation-hooks" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong><a href="https://github.com/SiddiqSoft/sip2json/blob/master/docs/hooks.py"><code>docs/hooks.py</code></a></strong>: Dynamically injects GitVersion SemVer into site metadata (<code>config['extra']['version']</code>) and replaces <code>3.0.0-beta.1</code> / <code>v3.0.0</code> placeholders across markdown files.</li>
+<li><strong><a href="https://github.com/SiddiqSoft/sip2json/blob/master/scripts/publish_benchmarks.py"><code>scripts/publish_benchmarks.py</code></a></strong>: Collects benchmark outputs across build matrix platforms, extracts CPU architecture and core count, and renders responsive platform-grouped benchmark tables and Mermaid charts into <a href="https://siddiqsoft.github.io/sip2json/features/benchmarks/"><code>docs/features/benchmarks.md</code></a>.</li>
+<li><strong>NuGet Status</strong>: NuGet packaging and publication have been deprecated and disabled in pipeline definitions. Header-only CMake (<code>CPMAddPackage</code> / <code>FetchContent</code>) is the standard distribution channel.</li>
+</ol>
+<hr />
+<h2 id="pipeline-parameters-reference">Pipeline Parameters Reference<a class="headerlink" href="#pipeline-parameters-reference" title="Permanent link">&para;</a></h2>
+<p>When manually triggering a pipeline in Azure DevOps, maintainers can customize:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Allowed Values</th>
+<th style="text-align: left;">Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>Platforms</code></td>
+<td style="text-align: left;"><code>stringList</code></td>
+<td style="text-align: left;"><code>[ Windows, Linux, Darwin ]</code></td>
+<td style="text-align: left;"><code>Windows</code>, <code>Linux</code>, <code>Darwin</code></td>
+<td style="text-align: left;">Target OS platforms to build</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>Architectures</code></td>
+<td style="text-align: left;"><code>stringList</code></td>
+<td style="text-align: left;"><code>[ arm64 ]</code></td>
+<td style="text-align: left;"><code>arm64</code>, <code>x64</code></td>
+<td style="text-align: left;">Target CPU architectures</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>Compilers_Windows</code></td>
+<td style="text-align: left;"><code>stringList</code></td>
+<td style="text-align: left;"><code>[ MSVC ]</code></td>
+<td style="text-align: left;"><code>MSVC</code></td>
+<td style="text-align: left;">Windows compiler toolsets</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>Compilers_Linux</code></td>
+<td style="text-align: left;"><code>stringList</code></td>
+<td style="text-align: left;"><code>[ Clang ]</code></td>
+<td style="text-align: left;"><code>Clang</code>, <code>GCC</code></td>
+<td style="text-align: left;">Linux compiler toolsets</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>Compilers_Darwin</code></td>
+<td style="text-align: left;"><code>stringList</code></td>
+<td style="text-align: left;"><code>[ Clang ]</code></td>
+<td style="text-align: left;"><code>Clang</code></td>
+<td style="text-align: left;">macOS compiler toolsets (AppleClang)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>BuildTypes</code></td>
+<td style="text-align: left;"><code>stringList</code></td>
+<td style="text-align: left;"><code>[ Release ]</code></td>
+<td style="text-align: left;"><code>Release</code>, <code>Debug</code></td>
+<td style="text-align: left;">Build configurations</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>RunTests</code></td>
+<td style="text-align: left;"><code>boolean</code></td>
+<td style="text-align: left;"><code>true</code></td>
+<td style="text-align: left;"><code>true</code>, <code>false</code></td>
+<td style="text-align: left;">Execute unit and compliance test suites</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>RunBenchmarks</code></td>
+<td style="text-align: left;"><code>boolean</code></td>
+<td style="text-align: left;"><code>true</code></td>
+<td style="text-align: left;"><code>true</code>, <code>false</code></td>
+<td style="text-align: left;">Execute performance benchmark harnesses</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>PublishGitHub</code></td>
+<td style="text-align: left;"><code>boolean</code></td>
+<td style="text-align: left;"><code>false</code></td>
+<td style="text-align: left;"><code>true</code>, <code>false</code></td>
+<td style="text-align: left;">Trigger GitHub Release (auto on <code>master</code>/<code>main</code>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>PublishDocs</code></td>
+<td style="text-align: left;"><code>boolean</code></td>
+<td style="text-align: left;"><code>false</code></td>
+<td style="text-align: left;"><code>true</code>, <code>false</code></td>
+<td style="text-align: left;">Publish documentation site (auto on <code>master</code>/<code>main</code>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>Cleanup</code></td>
+<td style="text-align: left;"><code>boolean</code></td>
+<td style="text-align: left;"><code>false</code></td>
+<td style="text-align: left;"><code>true</code>, <code>false</code></td>
+<td style="text-align: left;">Run cache and workspace cleanup only</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../../examples/serialization/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Message Serialization">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Message Serialization
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../license/" class="md-footer__link md-footer__link--next" aria-label="Next: License">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                License
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.0.0-beta.1"}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+      
+    
+  </body>
+</html>
