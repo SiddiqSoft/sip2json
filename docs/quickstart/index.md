@@ -1,17 +1,17 @@
 # Quick Start
 
-## 1. Add to CMake
+## 1. Add to Your Project
 
-=== "CPM.cmake"
+=== "CPM / CMake"
 
+    **CPM.cmake (Recommended)**:
     ```cmake
     include(cmake/CPM.cmake)
     CPMAddPackage("gh:SiddiqSoft/sip2json#{ tag_version }")
     target_link_libraries(your_target PRIVATE sip2json::sip2json)
     ```
 
-=== "FetchContent"
-
+    **FetchContent**:
     ```cmake
     include(FetchContent)
     FetchContent_Declare(
@@ -22,6 +22,22 @@
     FetchContent_MakeAvailable(sip2json)
     target_link_libraries(your_target PRIVATE sip2json::sip2json)
     ```
+
+=== "NuGet"
+
+    **Package Manager Console**:
+    ```powershell
+    Install-Package SiddiqSoft.sip2json
+    ```
+
+    **MSBuild (.vcxproj)**:
+    ```xml
+    <ItemGroup>
+      <PackageReference Include="SiddiqSoft.sip2json" Version="3.0.0" />
+    </ItemGroup>
+    ```
+
+    *Requires C++23 (`/std:c++latest` or `/std:c++23`). Dependency `nlohmann.json` is resolved automatically.*
 
 ---
 
