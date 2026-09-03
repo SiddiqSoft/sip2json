@@ -15,6 +15,8 @@
 #include <future>
 #include <atomic>
 #include <numeric>
+#include <charconv>
+#include <string_view>
 
 #include "nlohmann/json.hpp"
 #include "siddiqsoft/sip2json.hpp"
@@ -980,7 +982,7 @@ static void BM_WorstCaseNoisyAsyncParsing(benchmark::State& state)
     {
         std::string copy  = buffer;
         int         count = 0;
-        siddiqsoft::sip2json::parseAsync(copy,
+        (void)siddiqsoft::sip2json::parseAsync(copy,
                                          [&](auto&& sipm)
                                          {
                                              count++;
@@ -1020,7 +1022,7 @@ static void BM_MultiThreadedAsyncParsing(benchmark::State& state)
                                          {
                                              std::string copy        = threadBuffer;
                                              size_t      parsedCount = 0;
-                                             siddiqsoft::sip2json::parseAsync(copy,
+                                             (void)siddiqsoft::sip2json::parseAsync(copy,
                                                                               [&](auto&& sipm)
                                                                               {
                                                                                   parsedCount++;
@@ -1065,7 +1067,7 @@ static void BM_MultiThreadedNoisyAsyncParsing(benchmark::State& state)
                                          {
                                              std::string copy        = noisyThreadBuffer;
                                              size_t      parsedCount = 0;
-                                             siddiqsoft::sip2json::parseAsync(copy,
+                                             (void)siddiqsoft::sip2json::parseAsync(copy,
                                                                               [&](auto&& sipm)
                                                                               {
                                                                                   parsedCount++;
@@ -1142,7 +1144,7 @@ static void BM_SimulatedStream_ParseAsync_SingleThread(benchmark::State& state)
     {
         std::string copy        = streamBuffer;
         size_t      parsedCount = 0;
-        siddiqsoft::sip2json::parseAsync(copy,
+        (void)siddiqsoft::sip2json::parseAsync(copy,
                                          [&](auto&& sipm)
                                          {
                                              parsedCount++;
@@ -1212,7 +1214,7 @@ static void BM_SimulatedStream_ParseAsync_WithThreadPoolOffload(benchmark::State
 
         // Single Stream I/O thread runs parseAsync and pushes parsed messages into queue
         std::string copy = streamBuffer;
-        siddiqsoft::sip2json::parseAsync(copy, [&](auto&& sipm) { queue.push(std::move(sipm)); });
+        (void)siddiqsoft::sip2json::parseAsync(copy, [&](auto&& sipm) { queue.push(std::move(sipm)); });
         queue.setFinished();
 
         for (auto& w : workers)
@@ -1443,28 +1445,56 @@ namespace whatif
     inline sipmessage_native parseNative(std::string::iterator& bs, const std::string::iterator& be)
     {
         sipmessage_native msg;
-        auto              matchStartLine = ctre::search<siddiqsoft::SIP_PATTERN_STARTLINE>(bs, be);
-        if (matchStartLine)
-        {
-            auto g1 = matchStartLine.get<1>().to_view();
-            auto g2 = matchStartLine.get<2>().to_view();
-            auto g3 = matchStartLine.get<3>().to_view();
+        while (bs != be && (*bs == '\r' || *bs == '\n'))
+            ++bs;
 
-            if (siddiqsoft::SIPVER_20 == g3)
+        if (bs == be) return msg;
+
+        auto lineEnd = std::find(bs, be, '\n');
+        if (lineEnd != be)
+        {
+            std::string_view line(&*bs, static_cast<size_t>(std::distance(bs, lineEnd)));
+            if (!line.empty() && line.back() == '\r') line.remove_suffix(1);
+
+            if (line.starts_with("SIP/2.0 ") || line.starts_with("SIP/2.0\t"))
             {
-                msg.type    = siddiqsoft::SIPMessageType::request;
-                msg.method  = std::string(g1);
-                msg.uri     = std::string(g2);
-                msg.version = std::string(g3);
+                auto rem = line.substr(7);
+                while (!rem.empty() && (rem.front() == ' ' || rem.front() == '\t'))
+                    rem.remove_prefix(1);
+                uint32_t statusCode = 0;
+                auto [ptr, ec] = std::from_chars(rem.data(), rem.data() + rem.size(), statusCode);
+                if (ec == std::errc() && ptr != rem.data())
+                {
+                    std::string_view reason(ptr, static_cast<size_t>((rem.data() + rem.size()) - ptr));
+                    while (!reason.empty() && (reason.front() == ' ' || reason.front() == '\t'))
+                        reason.remove_prefix(1);
+                    msg.type    = siddiqsoft::SIPMessageType::response;
+                    msg.status  = static_cast<int>(statusCode);
+                    msg.reason  = std::string(reason);
+                    msg.version = std::string(siddiqsoft::SIPVER_20);
+                }
             }
-            else if (siddiqsoft::SIPVER_20 == g1)
+            else
             {
-                msg.type    = siddiqsoft::SIPMessageType::response;
-                msg.reason  = std::string(g3);
-                msg.status  = std::stoi(std::string(g2));
-                msg.version = std::string(g1);
+                auto sp1 = line.find_first_of(" \t");
+                auto sp2 = line.find_last_of(" \t");
+                if (sp1 != std::string_view::npos && sp2 != std::string_view::npos && sp1 < sp2)
+                {
+                    std::string_view method = line.substr(0, sp1);
+                    std::string_view uri = line.substr(sp1 + 1, sp2 - (sp1 + 1));
+                    while (!uri.empty() && (uri.front() == ' ' || uri.front() == '\t')) uri.remove_prefix(1);
+                    while (!uri.empty() && (uri.back() == ' ' || uri.back() == '\t')) uri.remove_suffix(1);
+                    std::string_view version = line.substr(sp2 + 1);
+                    while (!version.empty() && (version.front() == ' ' || version.front() == '\t')) version.remove_prefix(1);
+
+                    msg.type    = siddiqsoft::SIPMessageType::request;
+                    msg.method  = std::string(method);
+                    msg.uri     = std::string(uri);
+                    msg.version = std::string(version);
+                }
             }
-            bs = matchStartLine.get<0>().end();
+
+            bs = lineEnd + 1;
             while (bs != be && (*bs == '\r' || *bs == '\n'))
                 ++bs;
         }

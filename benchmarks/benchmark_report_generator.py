@@ -115,7 +115,7 @@ def generate_html_report(data: dict) -> str:
     <div class="container">
         <header>
             <h1>sip2json Benchmark Performance Report</h1>
-            <p>Generated on {datetime.now().strftime("%Y-%m-%d %H:%M:%S")} | Modern C++23 Header-Only SIP Parser</p>
+            <p>Generated on {datetime.now().strftime("%Y-%m-%d %H:%M:%S")} | Modern C++20 Header-Only SIP Parser</p>
         </header>
         
         <div class="summary">

@@ -2096,3 +2096,76 @@ TEST(validation_samples, Test_SIPp_UAS_200OK_Scenario)
     EXPECT_EQ("1-1000@10.0.0.2", sipm.getCallID());
     EXPECT_EQ("application/sdp", sipm.getContentType());
 }
+
+//-------------------------------------------------------------------------
+// std::string_view High-Performance API Tests
+//-------------------------------------------------------------------------
+TEST(validation_string_view_api, Test_StringView_parseFromBuffer_advances_view)
+{
+    std::string content = loadSampleFile("sipp_uac_invite");
+    std::string_view sv(content);
+    size_t origSize = sv.size();
+
+    auto sipm = siddiqsoft::sip2json::parseFromBuffer(sv);
+
+    EXPECT_EQ("INVITE", sipm.getMethod());
+    EXPECT_EQ("sip:service@10.0.0.1:5060", sipm.getUri());
+    EXPECT_EQ("1-1000@10.0.0.2", sipm.getCallID());
+    EXPECT_EQ("application/sdp", sipm.getContentTypeView());
+    EXPECT_LT(sv.size(), origSize);
+}
+
+TEST(validation_string_view_api, Test_StringView_parseFromBuffer_out_param)
+{
+    std::string content = loadSampleFile("sipp_uas_200ok");
+    std::string_view sv(content);
+    size_t consumed = 0;
+
+    auto sipm = siddiqsoft::sip2json::parseFromBuffer(sv, consumed);
+
+    EXPECT_EQ(200, sipm.value("/s/status"_json_pointer, 0));
+    EXPECT_EQ("1-1000@10.0.0.2", sipm.getCallID());
+    EXPECT_GT(consumed, 0u);
+    EXPECT_LE(consumed, content.size());
+}
+
+TEST(validation_string_view_api, Test_StringView_parseAsync_advances_view)
+{
+    std::string content = loadSampleFile("Mixed_Stream_1");
+    std::string_view sv(content);
+    size_t origSize = sv.size();
+    size_t msgCount = 0;
+
+    size_t consumed = siddiqsoft::sip2json::parseAsync(sv, [&](siddiqsoft::sipmessage&& msg) {
+        msgCount++;
+        EXPECT_FALSE(msg.empty());
+    });
+
+    EXPECT_GT(msgCount, 0u);
+    EXPECT_EQ(consumed, origSize - sv.size());
+}
+
+TEST(validation_string_view_api, Test_StringView_parse_advances_view)
+{
+    std::string content = loadSampleFile("Mixed_Stream_2");
+    std::string_view sv(content);
+    size_t origSize = sv.size();
+
+    auto msgs = siddiqsoft::sip2json::parse(sv);
+
+    EXPECT_GT(msgs.size(), 0u);
+    EXPECT_LT(sv.size(), origSize);
+}
+
+TEST(validation_string_view_api, Test_StringView_parse_out_param)
+{
+    std::string content = loadSampleFile("Mixed_Stream_3");
+    std::string_view sv(content);
+    size_t consumed = 0;
+
+    auto msgs = siddiqsoft::sip2json::parse(sv, consumed);
+
+    EXPECT_GT(msgs.size(), 0u);
+    EXPECT_GT(consumed, 0u);
+}
+

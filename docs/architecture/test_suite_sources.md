@@ -8,34 +8,29 @@ This document provides a section-by-section mapping of all test suites, test run
 
 ```mermaid
 graph TD
-    Root["🧪 <b>sip2json Test & Verification Suite Hierarchy</b>"]:::rootNode
+    Root["sip2json Test Suite Hierarchy"]
     
-    subgraph Compliance ["📘 Compliance & Torture Suites (tests/compliance)"]
-        C1["rfc3261_compliance_tests.cpp<br/><i>RFC 3261 Base Protocol & Compact Headers</i>"]:::compNode
-        C2["rfc4475_torture_tests.cpp<br/><i>50 Official RFC 4475 Torture Test Cases</i>"]:::compNode
-        C3["sdp_compliance_tests.cpp<br/><i>RFC 4566/8866 & WebRTC BUNDLE / ICE</i>"]:::compNode
-        C4["sip_certification_suite.cpp<br/><i>PRACK, Event Notification, REFER, PUBLISH</i>"]:::compNode
+    subgraph Compliance ["Compliance Category (tests/compliance)"]
+        C1["rfc3261_compliance_tests.cpp (RFC 3261 Core)"]
+        C2["rfc4475_torture_tests.cpp (50 RFC 4475 Torture Cases)"]
+        C3["sdp_compliance_tests.cpp (SDP & WebRTC RFCs)"]
+        C4["sip_certification_suite.cpp (Extension RFCs)"]
     end
     
-    subgraph Regression ["🛡️ Regression & Validation Suites (tests/regression & tests/validation)"]
-        R1["test.cpp<br/><i>36 Real-World Multi-Frame .sip & SIPp Fixtures</i>"]:::regNode
-        R2["edge_tests.cpp & synthetics.cpp<br/><i>Boundary Conditions & State Transitions</i>"]:::regNode
-        R3["siphelpers.cpp<br/><i>In-place Message Construction & Roundtrips</i>"]:::regNode
+    subgraph Regression ["Regression Category (tests/regression & tests/validation)"]
+        R1["test.cpp (36 Real-World .sip & SIPp Fixtures)"]
+        R2["edge_tests.cpp & synthetics.cpp (State Transitions)"]
+        R3["siphelpers.cpp (In-place Messages & Roundtrip)"]
     end
     
-    subgraph Benchmark ["⚡ Performance & Benchmark Suite (tests/benchmark)"]
-        B1["benchmark.cpp<br/><i>parse, parseAsync, parseFromBuffer Harness</i>"]:::benchNode
-        B2["BENCHMARK_REPORT.md<br/><i>Multi-Platform Matrices & Latency Metrics</i>"]:::benchNode
+    subgraph Benchmark ["Benchmark Category (tests/benchmark)"]
+        B1["benchmark.cpp (parse, parseAsync, parseFromBuffer)"]
+        B2["BENCHMARK_REPORT.md (Throughput & Latency Matrices)"]
     end
     
-    Root ==> Compliance
-    Root ==> Regression
-    Root ==> Benchmark
-
-    classDef rootNode fill:#1565C0,stroke:#0D47A1,stroke-width:3px,color:#FFFFFF,font-weight:bold;
-    classDef compNode fill:#2E7D32,stroke:#1B5E20,stroke-width:2px,color:#FFFFFF;
-    classDef regNode fill:#6A1B9A,stroke:#4A148C,stroke-width:2px,color:#FFFFFF;
-    classDef benchNode fill:#E65100,stroke:#BF360C,stroke-width:2px,color:#FFFFFF;
+    Root --> Compliance
+    Root --> Regression
+    Root --> Benchmark
 ```
 
 ---
@@ -114,7 +109,7 @@ graph TD
 ## 5. Performance Benchmark Suite (`tests/benchmark/`)
 
 - **Test Runner Source Code**: [`tests/benchmark/src/benchmark.cpp`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/benchmark/src/benchmark.cpp)
-- **Benchmark Metrics Documentation**: [Performance & Benchmark Metrics](benchmarks.md)
+- **Report Document**: [`tests/benchmark/BENCHMARK_REPORT.md`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/benchmark/BENCHMARK_REPORT.md)
 - **Coverage**: Measures multi-message stream vector parsing (`parse`), zero-copy stream callback parsing (`parseAsync`), discrete single-message parsing (`parseFromBuffer`), and SDP element counts across stream fixtures.
 
 ---

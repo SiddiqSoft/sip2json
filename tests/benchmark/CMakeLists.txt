@@ -69,20 +69,7 @@ endif()
 if(NOT TARGET nlohmann_json::nlohmann_json)
     CPMAddPackage("gh:nlohmann/json#v3.12.0")
 endif()
-if(NOT TARGET ctre::ctre)
-    CPMAddPackage("gh:hanickadot/compile-time-regular-expressions#v3.11.0")
-endif()
 
 add_executable(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/src/benchmark.cpp)
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_${CMAKE_CXX_STANDARD})
 target_link_libraries(${PROJECT_NAME} PRIVATE sip2json::sip2json)
-
-# Execute stream benchmark post-build to capture local developer machine baseline metrics
-add_custom_command(
-    TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_BINARY_DIR}/benchmarks/results"
-    COMMAND $<TARGET_FILE:${PROJECT_NAME}> "${CMAKE_SOURCE_DIR}/tests/validation/samples" > "${CMAKE_BINARY_DIR}/benchmarks/results/stream_benchmark_summary.txt"
-    WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
-    COMMENT "Executing sip2json stream benchmark to capture local developer machine baseline metrics..."
-    VERBATIM
-)

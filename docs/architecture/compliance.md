@@ -8,30 +8,23 @@
 
 ```mermaid
 graph TD
-    subgraph Core ["📘 SIP Core Standards (RFC 3261 & Extensions)"]
-        A["📜 <b>RFC 3261 Base Grammar</b><br/><i>14 Request Methods & Status Codes</i>"]:::coreNode
-        B["🔤 <b>RFC 3261 §20 Compact Form</b><br/><i>Single-Letter Header Expansion</i>"]:::coreNode
-        C["🔠 <b>RFC 3261 §7.3.1 Normalization</b><br/><i>Case-Insensitive Header Canonicalization</i>"]:::coreNode
+    subgraph Core ["SIP Core Standards"]
+        A["RFC 3261: Base Protocol Grammar"]
+        B["RFC 3261 §20: Compact Header Abbreviations"]
+        C["RFC 3261 §7.3.1: Case-Insensitive Normalization"]
     end
-    
-    subgraph Torture ["🔥 IETF RFC 4475 Torture Corpus (50 .dat Fixtures)"]
-        D["🧪 <b>50 Bit-Exact Corpus Tests</b><br/><i>All Appendix A Torture Files</i>"]:::tortureNode
-        E["🔣 <b>Escaping & Character Sets</b><br/><i>Null-Byte & %-Encoding Parsing</i>"]:::tortureNode
-        F["🛡️ <b>Malformed Safety & Rejection</b><br/><i>Invalid Versions, Short Buffers & MIME Rejection</i>"]:::tortureNode
+    subgraph Torture ["IETF RFC 4475 Torture Corpus"]
+        D["50 Bit-Exact Test Cases (.dat Fixtures)"]
+        E["Escaping, Long Fields & Character Sets"]
+        F["Malformed Frame Safety & Rejection"]
     end
-    
-    subgraph SDP ["📡 SDP & WebRTC Specifications"]
-        G["📋 <b>RFC 4566 / RFC 8866 Session Syntax</b><br/><i>Structured /b/sdp JSON Representation</i>"]:::sdpNode
-        H["🔄 <b>RFC 3264 Offer / Answer</b><br/><i>Direction Attributes (sendrecv, sendonly)</i>"]:::sdpNode
-        I["🌐 <b>RFC 8829 / 8839 WebRTC Extensions</b><br/><i>BUNDLE, ICE Candidates & DTLS Fingerprints</i>"]:::sdpNode
+    subgraph SDP ["SDP & WebRTC Specifications"]
+        G["RFC 4566 / RFC 8866 Session Syntax"]
+        H["RFC 3264 Offer / Answer Model"]
+        I["RFC 8829 / RFC 8839 WebRTC BUNDLE, ICE & DTLS"]
     end
-
-    Core ==> Torture
-    Torture ==> SDP
-
-    classDef coreNode fill:#1565C0,stroke:#0D47A1,stroke-width:2px,color:#FFFFFF;
-    classDef tortureNode fill:#D84315,stroke:#BF360C,stroke-width:2px,color:#FFFFFF;
-    classDef sdpNode fill:#00695C,stroke:#004D40,stroke-width:2px,color:#FFFFFF;
+    Core --> Torture
+    Torture --> SDP
 ```
 
 ---

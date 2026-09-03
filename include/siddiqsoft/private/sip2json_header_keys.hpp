@@ -75,9 +75,9 @@ namespace siddiqsoft
         std::string m_abbreviation {};
 
     public:
-        bool isCanonical {false};
-        bool isMultiLine {false};
-        bool isCustom {false};
+        bool     isCanonical {false};
+        bool     isMultiLine {false};
+        bool     isCustom {false};
 
         constexpr HeaderKeySet() = default;
 
@@ -193,7 +193,7 @@ namespace siddiqsoft
     static const HeaderKeySet HFS_SUBSCRIPTION_STATE {"subscription-state", HF_SUBSCRIPTION_STATE, {}, true, false};
     static const HeaderKeySet HFS_EMPTY {"", "", {}, false, false};
 
-    inline const HeaderKeySet& canonicalizeHeaderKey(const std::string& keyFromPayload)
+    inline const HeaderKeySet& canonicalizeHeaderKey(std::string_view keyFromPayload)
     {
         if (keyFromPayload.empty()) return HFS_EMPTY;
 
@@ -202,7 +202,7 @@ namespace siddiqsoft
             (keyFromPayload[1] == '-' || keyFromPayload[1] == '_'))
         {
             thread_local HeaderKeySet customKey;
-            customKey = HeaderKeySet(keyFromPayload);
+            customKey = HeaderKeySet(std::string(keyFromPayload));
             return customKey;
         }
 
@@ -269,7 +269,7 @@ namespace siddiqsoft
         } // don't replace the string constants!
 
         thread_local HeaderKeySet fallbackKey;
-        fallbackKey = HeaderKeySet(keyFromPayload);
+        fallbackKey = HeaderKeySet(std::string(keyFromPayload));
         return fallbackKey;
     }
 } // namespace siddiqsoft

@@ -1,9 +1,3 @@
-// The objective of this benchmark is to measure the performance of the sip2json library in parsing SIP messages from sample files.
-// It will load a set of sample SIP message files, parse them using the sip2json library,
-// and report the time taken to parse the messages, as well as the number of messages processed per second.
-// These files represent a variety of SIP message types and scenarios, including requests, responses, and multi-message streams.
-// The benchmark will also provide insights into the efficiency of the library in handling different message formats and sizes.
-
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -86,39 +80,6 @@ int main(int argc, char** argv)
     std::cout << "  SIP2JSON Benchmark Harness" << std::endl;
     std::cout << "  Loaded " << sample_files.size() << " sample files (" << (total_sample_bytes / 1024.0) << " KB total)"
               << std::endl;
-#if defined(__APPLE__) && defined(__MACH__)
-    #if defined(__aarch64__) || defined(_M_ARM64)
-    std::cout << "  [HOST INFO] macOS (arm64, AppleClang)" << std::endl;
-    #else
-    std::cout << "  [HOST INFO] macOS (x64, AppleClang)" << std::endl;
-    #endif
-#elif defined(_MSC_VER)
-    #if defined(_M_ARM64) || defined(__aarch64__)
-    std::cout << "  [HOST INFO] Windows (arm64, MSVC)" << std::endl;
-    #elif defined(_M_X64) || defined(_M_AMD64) || defined(__x86_64__)
-    std::cout << "  [HOST INFO] Windows (x64, MSVC)" << std::endl;
-    #else
-    std::cout << "  [HOST INFO] Windows (x86, MSVC)" << std::endl;
-    #endif
-#elif defined(__linux__)
-    #if defined(__clang__)
-        #if defined(__aarch64__) || defined(_M_ARM64)
-        std::cout << "  [HOST INFO] Linux (arm64, Clang)" << std::endl;
-        #elif defined(__x86_64__) || defined(_M_X64)
-        std::cout << "  [HOST INFO] Linux (x64, Clang)" << std::endl;
-        #else
-        std::cout << "  [HOST INFO] Linux (x86, Clang)" << std::endl;
-        #endif
-    #else
-        #if defined(__aarch64__) || defined(_M_ARM64)
-        std::cout << "  [HOST INFO] Linux (arm64, GCC)" << std::endl;
-        #elif defined(__x86_64__) || defined(_M_X64)
-        std::cout << "  [HOST INFO] Linux (x64, GCC)" << std::endl;
-        #else
-        std::cout << "  [HOST INFO] Linux (x86, GCC)" << std::endl;
-        #endif
-    #endif
-#endif
     std::cout << "================================================================================" << std::endl;
 
     constexpr int ITERATIONS            = 300;
@@ -192,7 +153,11 @@ int main(int argc, char** argv)
             try
             {
                 std::string buffer = sf.content;
-                (void)siddiqsoft::sip2json::parseAsync(buffer, [&](siddiqsoft::sipmessage&&) { async_messages_parsed++; });
+                (void)siddiqsoft::sip2json::parseAsync(buffer,
+                                                       [&](siddiqsoft::sipmessage&&)
+                                                       {
+                                                           async_messages_parsed++;
+                                                       });
                 async_bytes_processed += sf.size_bytes;
             }
             catch (...)
@@ -201,7 +166,7 @@ int main(int argc, char** argv)
         }
     }
 
-    auto   end_async      = std::chrono::high_resolution_clock::now();
+    auto   end_async       = std::chrono::high_resolution_clock::now();
     double async_time_ms  = std::chrono::duration<double, std::milli>(end_async - start_async).count();
     double async_time_sec = async_time_ms / 1000.0;
 
@@ -218,7 +183,7 @@ int main(int argc, char** argv)
     std::cout << "  Data Bandwidth      : " << async_mb_per_sec << " MB/sec" << std::endl;
     std::cout << "  Avg Latency/Msg     : " << async_avg_us << " us/msg" << std::endl;
 
-    // Benchmark Pass 2: Single-Message parseFromBuffer
+    // Benchmark Pass 2: Single-Message parseFromBuffer (Iterator)
     size_t single_messages_parsed = 0;
     size_t single_bytes_processed = 0;
 
@@ -265,13 +230,75 @@ int main(int argc, char** argv)
     double single_msg_per_sec = single_messages_parsed / single_time_sec;
     double single_avg_us      = (single_time_ms * 1000.0) / single_messages_parsed;
 
-    std::cout << "\n[BENCHMARK RESULTS - sip2json::parseFromBuffer (Single)]" << std::endl;
+    std::cout << "\n[BENCHMARK RESULTS - sip2json::parseFromBuffer (Single - Iterator)]" << std::endl;
     std::cout << "  Valid Single Files  : " << valid_single_files.size() << std::endl;
     std::cout << "  Single Iterations   : " << SINGLE_ITERATIONS << std::endl;
     std::cout << "  Total Execution Time: " << single_time_ms << " ms" << std::endl;
     std::cout << "  Total Messages      : " << single_messages_parsed << std::endl;
     std::cout << "  Throughput          : " << single_msg_per_sec << " msg/sec" << std::endl;
     std::cout << "  Avg Latency/Msg     : " << single_avg_us << " us/msg" << std::endl;
+
+    // Benchmark Pass 2B: Single-Message parseFromBuffer (std::string_view zero-copy)
+    size_t sv_single_messages = 0;
+    auto   start_sv_single    = std::chrono::high_resolution_clock::now();
+
+    for (int iter = 0; iter < SINGLE_ITERATIONS; ++iter)
+    {
+        for (const auto& sf : valid_single_files)
+        {
+            try
+            {
+                std::string_view sv(sf.content);
+                auto msg = siddiqsoft::sip2json::parseFromBuffer(sv);
+                (void)msg;
+                sv_single_messages++;
+            }
+            catch (...)
+            {
+            }
+        }
+    }
+
+    auto   end_sv_single         = std::chrono::high_resolution_clock::now();
+    double sv_single_time_ms     = std::chrono::duration<double, std::milli>(end_sv_single - start_sv_single).count();
+    double sv_single_time_sec    = sv_single_time_ms / 1000.0;
+    double sv_single_msg_per_sec = sv_single_messages / sv_single_time_sec;
+    double sv_single_avg_us      = (sv_single_time_ms * 1000.0) / sv_single_messages;
+
+    std::cout << "\n[BENCHMARK RESULTS - sip2json::parseFromBuffer (Single - std::string_view)]" << std::endl;
+    std::cout << "  Throughput          : " << sv_single_msg_per_sec << " msg/sec" << std::endl;
+    std::cout << "  Avg Latency/Msg     : " << sv_single_avg_us << " us/msg" << std::endl;
+
+    // Benchmark Pass 1C: Stream parsing using parseAsync(std::string_view&)
+    size_t sv_async_messages = 0;
+    auto   start_sv_async    = std::chrono::high_resolution_clock::now();
+
+    for (int iter = 0; iter < ITERATIONS; ++iter)
+    {
+        for (const auto& sf : sample_files)
+        {
+            try
+            {
+                std::string_view sv(sf.content);
+                (void)siddiqsoft::sip2json::parseAsync(sv, [&](siddiqsoft::sipmessage&&) {
+                    sv_async_messages++;
+                });
+            }
+            catch (...)
+            {
+            }
+        }
+    }
+
+    auto   end_sv_async         = std::chrono::high_resolution_clock::now();
+    double sv_async_time_ms     = std::chrono::duration<double, std::milli>(end_sv_async - start_sv_async).count();
+    double sv_async_time_sec    = sv_async_time_ms / 1000.0;
+    double sv_async_msg_per_sec = sv_async_messages / sv_async_time_sec;
+    double sv_async_avg_us      = (sv_async_time_ms * 1000.0) / sv_async_messages;
+
+    std::cout << "\n[BENCHMARK RESULTS - sip2json::parseAsync (Stream - std::string_view)]" << std::endl;
+    std::cout << "  Throughput          : " << sv_async_msg_per_sec << " msg/sec" << std::endl;
+    std::cout << "  Avg Latency/Msg     : " << sv_async_avg_us << " us/msg" << std::endl;
 
     // Benchmark Pass 3: Stream Inspection & Per-Message SDP Element Metrics
     std::vector<std::string> stream_files = {

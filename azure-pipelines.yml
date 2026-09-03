@@ -6,12 +6,14 @@
 # 1. Builds the library across multiple platforms with a build matrix
 #    - Windows (x64, arm64) with MSVC
 #    - Linux (x64) with Clang and GCC
+#    - Darwin (macOS) with Clang
 # 2. Runs tests on all platforms (configurable)
 # 3. Publishes to NuGet, GitHub Releases, and GitHub Pages (on main/master branches)
 #
 # Pipeline Stages:
 # 1. Windows - Cleanup, build, and test for Windows with matrix for architecture and compiler
 # 2. Linux - Cleanup, build, and test for Linux with matrix for architecture and compiler
+# 3. Darwin - Cleanup, build, and test for macOS with matrix for architecture and compiler
 # 3. PublishNuGet - Publishes NuGet package
 # 4. PublishGitHub - Creates GitHub release with build artifacts
 # 5. PublishDocs - Builds MkDocs site and publishes to GitHub Pages (gh-pages)
@@ -31,8 +33,7 @@ trigger:
   paths:
     exclude:
       - README.md
-      - .azure/*
-      - azure-pipelines.yml # Avoids recursive triggers when modifying the pipeline itself
+      - docs/*
 pr:
   branches:
     include:
@@ -59,9 +60,9 @@ parameters:
   
   - name: Platforms
     type: stringList
-    default: [ Windows, Linux ]
+    default: [ Windows, Linux, Darwin ]
     values: [ Windows, Linux, Darwin ]
-    displayName: "Platforms to build (Windows, Linux)"
+    displayName: "Platforms to build (Windows, Linux, Darwin)"
   
   # Compiler Selection per Platform
   - name: Compilers_Windows
@@ -72,15 +73,15 @@ parameters:
 
   - name: Compilers_Linux
     type: stringList
-    default: [ Clang ]
-    values: [ Clang, GCC ]
-    displayName: "Linux compilers to build (Clang, GCC)"
+    default: [ GCC ]
+    values: [ GCC, Clang ]
+    displayName: "Linux compilers to build (GCC, Clang)"
 
   - name: Compilers_Darwin
     type: stringList
     default: [ Clang ]
     values: [ Clang ]
-    displayName: "Darwin compilers to build (Clang, GCC)"
+    displayName: "Darwin compilers to build (Clang)"
 
   - name: BuildTypes
     type: stringList
@@ -100,10 +101,10 @@ parameters:
     displayName: "Run benchmarks after building"
 
   # Publishing
-  #- name: PublishNuGet
-  #  type: boolean
-  #  default: false
-  #  displayName: "Publish to NuGet (auto-enabled on main/master)"
+  - name: PublishNuGet
+    type: boolean
+    default: false
+    displayName: "Publish to NuGet (auto-enabled on main/master)"
 
   - name: PublishGitHub
     type: boolean
@@ -125,13 +126,13 @@ parameters:
 # VARIABLES
 # ============================================================================
 variables:
-  # Auto-enable publishing on main/master branches (NuGet deprecated, disabled by default)
+  # Auto-enable publishing on main/master branches
   ${{ if and(eq(parameters.PublishGitHub, false), or(eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))) }}:
-    #PublishNuGet: false
+    PublishNuGet: true
     PublishGitHub: true
     PublishDocs: true
   ${{ else }}:
-    #PublishNuGet: ${{ parameters.PublishNuGet }}
+    PublishNuGet: ${{ parameters.PublishNuGet }}
     PublishGitHub: ${{ parameters.PublishGitHub }}
     PublishDocs: ${{ parameters.PublishDocs }}
 
@@ -172,10 +173,10 @@ stages:
         buildTypes: ${{ parameters.BuildTypes }}
         runTests: ${{ parameters.RunTests }}
         runBenchmarks: ${{ parameters.RunBenchmarks }}
-        #publishNuGet: ${{ variables.PublishNuGet }}
+        publishNuGet: ${{ variables.PublishNuGet }}
 
   # ==========================================================================
-  # STAGE 1: LINUX BUILD
+  # STAGE 2: LINUX BUILD
   # ==========================================================================
   - stage: Linux
     displayName: Linux
@@ -190,7 +191,7 @@ stages:
           BuildOperatingSystem: $(Agent.OS)
           CleanupDirectory: ${{ variables.cpmCachePath }}
 
-    - template: .azure/az-build-linux.yml
+    - template: .azure/az-build-unix.yml
       parameters:
         displayName: "Linux Build and Test"
         architectures: ${{ parameters.Architectures }}
@@ -200,29 +201,32 @@ stages:
         runBenchmarks: ${{ parameters.RunBenchmarks }}
 
   # ==========================================================================
-  # STAGE 3: NUGET PUBLICATION (DEPRECATED - DISABLED & COMMENTED OUT)
+  # STAGE 3: DARWIN BUILD
   # ==========================================================================
-  # - stage: PublishNuGet
-  #   displayName: "NuGet Release"
-  #   dependsOn:
-  #     - Windows
-  #     - Linux
-  #   condition: and(eq(${{ variables.PublishNuGet }}, true), succeeded())
-  #   jobs:
-  #     - job: ApproveNuGetRelease
-  #       displayName: "Manual Approval - NuGet Release"
-  #       pool: server
-  #       steps:
-  #         - task: ManualValidation@0
-  #           timeoutInMinutes: 1440
-  #           instructions: 'Please review and approve the publication of the NuGet package.'
-  #           onTimeout: 'reject'
-  #
-  #     - template: .azure/az-publish-nuget.yml
-  #       parameters:
-  #         displayName: NuGet Release
-  #         PublishNuGet: ${{ variables.PublishNuGet }}
-  #         dependsOn: [ ApproveNuGetRelease ]
+  - stage: Darwin
+    displayName: Darwin
+    condition: ${{ containsValue(parameters.Platforms, 'Darwin') }}
+    dependsOn: []
+
+    jobs:
+    - ${{ if eq(parameters.Cleanup, true) }}:
+      - template: .azure/az-cleanup-linux.yml
+        parameters:
+          displayName: "Darwin Cleanup"
+          BuildOperatingSystem: $(Agent.OS)
+          CleanupDirectory: ${{ variables.cpmCachePath }}
+
+    - template: .azure/az-build-unix.yml
+      parameters:
+        displayName: "Darwin Build and Test"
+        platform: Darwin
+        agentOS: Darwin
+        cmakePresetPrefix: Darwin-
+        architectures: ${{ parameters.Architectures }}
+        compilers: ${{ parameters.Compilers_Darwin }}
+        buildTypes: ${{ parameters.BuildTypes }}
+        runTests: ${{ parameters.RunTests }}
+        runBenchmarks: ${{ parameters.RunBenchmarks }}
 
   # ==========================================================================
   # STAGE 4: GITHUB RELEASE PUBLICATION
@@ -232,6 +236,7 @@ stages:
     dependsOn:
       - Windows
       - Linux
+      - Darwin
     condition: and(eq(${{ variables.PublishGitHub }}, true), succeeded())
     jobs:
       - job: ApproveGitHubRelease
@@ -241,7 +246,6 @@ stages:
           - task: ManualValidation@0
             timeoutInMinutes: 1440
             inputs:
-              notifyUsers: ''
               instructions: 'Please review and approve the creation of the GitHub Release.'
               onTimeout: 'reject'
 
@@ -252,13 +256,28 @@ stages:
           dependsOn: [ ApproveGitHubRelease ]
 
   # ==========================================================================
-  # STAGE 5: GITHUB PAGES DOCUMENTATION PUBLICATION
+  # STAGE 5: NUGET PUBLICATION (Gated behind GitHub Release manual approval)
+  # ==========================================================================
+  - stage: PublishNuGet
+    displayName: "NuGet Release"
+    dependsOn:
+      - PublishGitHub
+    condition: and(eq(${{ variables.PublishNuGet }}, true), succeeded())
+    jobs:
+      - template: .azure/az-publish-nuget.yml
+        parameters:
+          displayName: NuGet Release
+          PublishNuGet: ${{ variables.PublishNuGet }}
+
+  # ==========================================================================
+  # STAGE 6: GITHUB PAGES DOCUMENTATION PUBLICATION
   # ==========================================================================
   - stage: PublishDocs
     displayName: "Publish Documentation Site"
     dependsOn:
       - Windows
       - Linux
+      - Darwin
     condition: and(eq(${{ variables.PublishDocs }}, true), succeeded())
     jobs:
       - job: ApproveDocsRelease
@@ -268,7 +287,6 @@ stages:
           - task: ManualValidation@0
             timeoutInMinutes: 1440
             inputs:
-              notifyUsers: ''
               instructions: 'Please review and approve publishing the documentation site to GitHub Pages.'
               onTimeout: 'reject'
 

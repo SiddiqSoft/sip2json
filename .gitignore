@@ -372,6 +372,7 @@ MigrationBackup/
 /src/version.h
 out/**
 build/**
+**/build/**
 /src/version.h
 /test/validation_tests/validation_tests.tlog
 /test/validation_tests/vc.nativecodeanalysis.all.xml

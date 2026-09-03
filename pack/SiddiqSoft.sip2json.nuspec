@@ -13,9 +13,9 @@
         <id>SiddiqSoft.sip2json</id>
         <version>$VERSION$</version>
         <authors>Abdulkareem Siddiq</authors>
-        <description>Modern C++23 SIP parser with bidirectional JSON conversion for distributed systems and NoSQL databases</description>
-        <summary>Header-only C++23 SIP to JSON parser with full SDP support</summary>
-        <tags>sip json sdp protocol parser C++23 header-only native nativepackage</tags>
+        <description>Modern C++20 SIP parser with bidirectional JSON conversion for distributed systems and NoSQL databases</description>
+        <summary>Header-only C++20 SIP to JSON parser with full SDP support</summary>
+        <tags>sip json sdp protocol parser C++20 header-only native nativepackage</tags>
         <projectUrl>https://github.com/siddiqsoftware/sip2json</projectUrl>
         <repository type="git" url="https://github.com/siddiqsoftware/sip2json" />
         <requireLicenseAcceptance>true</requireLicenseAcceptance>
@@ -23,25 +23,13 @@
         <icon>docs\Siddiq-Software-Avatar.png</icon>
         <readme>docs\README.md</readme>
         <releaseNotes>
-## v2.4 Release - Performance and Documentation Enhancements
+## v3.0 Release - Zero-Regex Architecture &amp; C++20 std::string_view Optimizations
 
-### New Features
-- **Constexpr Optimization**: Compile-time string constants for improved performance
-- **Comprehensive Benchmarks**: 30+ benchmark tests including stress tests for large packets
-- **HTML Benchmark Reports**: Professional performance analysis reports
-- **Enhanced Documentation**: Complete API reference, architecture guide, and migration guide
-
-### Improvements
-- Optimized parsing with constexpr patterns
-- High-frequency decode benchmarks for large packets
-- Stress tests (100, 1000+ packet scenarios)
-- Professional HTML and JSON benchmark reporting
-- Streamlined documentation for better navigation
-
-### Documentation
-- **API Reference**: docs/API.md - Complete method documentation with examples
-- **Architecture Guide**: docs/ARCHITECTURE.md - Design patterns and optimization
-- **Documentation Index**: docs/INDEX.md - Quick navigation hub
+### Key Highlights
+- **Zero-Regex Architecture**: Eliminated CTRE and all runtime regex overhead; pure zero-copy C++20 std::string_view tokenization.
+- **Significant Performance Gains**: Up to +97.5% throughput improvement and 49.3% latency reduction compared to v2.x.
+- **Single Dependency**: Only nlohmann.json is required.
+- **Native NuGet Support**: Restored native NuGet package support for MSVC / Visual Studio C++20 projects.
 
 For detailed release notes, visit: https://github.com/siddiqsoftware/sip2json/releases
         </releaseNotes>

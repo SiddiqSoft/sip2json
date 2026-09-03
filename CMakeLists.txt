@@ -31,7 +31,7 @@ include(pack/CMakeCommonHelpers.cmake)
 project(sip2json
         VERSION         "${CURRENT_PROJECT_VERSION}"
         LANGUAGES       CXX
-        HOMEPAGE_URL    "https://siddiqsoft.github.io/sip2json"
+        HOMEPAGE_URL    "%%myurl%%"
         DESCRIPTION     "A SIP Parser for Modern C++. Header-only library to parse and serialize SIP messages to/from JSON.")
 
 if(NOT CMAKE_CXX_STANDARD)
@@ -42,47 +42,40 @@ endif()
 # Options; define and declare defaults
 option(${PROJECT_NAME}_BUILD_TESTS "${PROJECT_NAME} - Build tests. Uncheck for install only runs" OFF)
 option(${PROJECT_NAME}_BUILD_BENCHMARKS "${PROJECT_NAME} - Build benchmarks" OFF)
-option(${PROJECT_NAME}_HEADERKEY_MODE_INSENSITIVE "${PROJECT_NAME} - Use case-insensitive header keys" ON)
 
 # ____________________________________
 #  Library Definition
 add_library(${PROJECT_NAME} INTERFACE)
 add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
+include(GNUInstallDirs)
+
 target_include_directories(${PROJECT_NAME}
                             INTERFACE
                             $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>)
 
-# The following is needed to make the .natvis file available to the IDE for debugging
-target_sources(${PROJECT_NAME} PRIVATE siddiqsoft.${PROJECT_NAME}.natvis)
-# Install natvis file for Visual Studio debugger visualization
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/siddiqsoft.sip2json.natvis
-        DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}
-        COMPONENT natvis
-        OPTIONAL)
+# Natvis debugger visualization support
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/siddiqsoft.${PROJECT_NAME}.natvis")
+    target_sources(${PROJECT_NAME} PRIVATE siddiqsoft.${PROJECT_NAME}.natvis)
+    install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/siddiqsoft.${PROJECT_NAME}.natvis
+            DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}
+            COMPONENT natvis
+            OPTIONAL)
+elseif(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/SiddiqSoft.${PROJECT_NAME}.natvis")
+    target_sources(${PROJECT_NAME} PRIVATE SiddiqSoft.${PROJECT_NAME}.natvis)
+    install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/SiddiqSoft.${PROJECT_NAME}.natvis
+            DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}
+            COMPONENT natvis
+            OPTIONAL)
+endif()
         
 target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_${CMAKE_CXX_STANDARD})
-
-if(MSVC)
-    message(STATUS "${PROJECT_NAME} - MSVC detected; setting /constexpr:depth4096 /constexpr:steps2000000 /templateDepth:4096 to mitigate CTRE template limits")
-    target_compile_options(${PROJECT_NAME} INTERFACE /constexpr:depth4096 /constexpr:steps2000000 /templateDepth:4096)
-else()
-    target_compile_options(${PROJECT_NAME} INTERFACE -ftemplate-depth=4096)
-endif()
-
-if(${PROJECT_NAME}_HEADERKEY_MODE_INSENSITIVE)
-    target_compile_definitions(${PROJECT_NAME} INTERFACE sip2json_HEADERKEY_MODE_INSENSITIVE=1)
-    message(STATUS "${PROJECT_NAME} - Case-insensitive header keys enabled: sip2json_HEADERKEY_MODE_INSENSITIVE=1")
-else()
-    message(STATUS "${PROJECT_NAME} - Case-sensitive header keys enabled (sip2json_HEADERKEY_MODE_INSENSITIVE=OFF)")
-endif()
 
 # ____________________________________
 # Dependencies
 cpmaddpackage("gh:nlohmann/json#v3.12.0")
-cpmaddpackage("gh:hanickadot/compile-time-regular-expressions#v3.11.0")
-target_link_libraries(${PROJECT_NAME} INTERFACE nlohmann_json::nlohmann_json ctre::ctre)
+target_link_libraries(${PROJECT_NAME} INTERFACE nlohmann_json::nlohmann_json)
 
 # ____________________________________
 # Testing

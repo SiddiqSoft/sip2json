@@ -42,8 +42,6 @@
 #include <string>
 #include <string_view>
 
-#include "ctre.hpp"
-
 namespace siddiqsoft
 {
     // Top-Level Message JSON Section Keys
@@ -150,17 +148,22 @@ namespace siddiqsoft
     // Some common elements for building the SIP message
     static inline const std::string SIP_ADDR_PREFIX {"sip:\\s"};
 
-    // Helpers to parse the SIP buffer (CTRE compile-time regular expressions)
-    // Disallow any greedy consumption of the ending as it silently causes exceptions and slows down parsing!
-    // This regex expression supports CRLF and LF
-    static constexpr auto SIP_PATTERN_STARTLINE = ctll::fixed_string {
-            "(MESSAGE|INFO|INVITE|ACK|OPTIONS|BYE|CANCEL|REGISTER|SUBSCRIBE|NOTIFY|REFER|PUBLISH|UPDATE|PRACK|SIP/"
-            "2\\.0)\\s([^\\s]+)\\s([^\\r\\n]*)\\r?\\n"};
-    static constexpr auto SIP_PATTERN_BODY_RE       = ctll::fixed_string {"([vosiuepcbtzkma])=([^\r\n]*)"};
-    static constexpr auto SIP_PATTERN_BODY_ALINE_RE = ctll::fixed_string {"^([^:\r\n]*):(.*)$"};
-    static constexpr auto SIP_PATTERN_BODY_ILINE_RE = ctll::fixed_string {"^(.+) \\(([^\\)]*)\\) ([^\\s\r\n]*)"};
-    static constexpr auto SIP_PATTERN_BODY_CLINE_RE = ctll::fixed_string {"^(.+) (.+) ([^\\s\r\n]*)"};
-    static constexpr auto SIP_PATTERN_BODY_OLINE_RE = ctll::fixed_string {"([^\\s]+) (\\d+) (\\d+) (\\w+) (\\w+) ([^\\s]+)"};
+
+    static constexpr std::string_view SIP_VALID_METHODS[] = {"INVITE",
+                                                             "ACK",
+                                                             "OPTIONS",
+                                                             "BYE",
+                                                             "CANCEL",
+                                                             "REGISTER",
+                                                             "SUBSCRIBE",
+                                                             "NOTIFY",
+                                                             "REFER",
+                                                             "PUBLISH",
+                                                             "UPDATE",
+                                                             "PRACK",
+                                                             "INFO",
+                                                             "MESSAGE"};
+
 } // namespace siddiqsoft
 
 #endif

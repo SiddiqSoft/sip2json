@@ -53,7 +53,6 @@ We benchmarked both models on Apple Silicon (`Apple-Release` `-O3`) executing id
 
 ### Architectural Verdict & Design Choice
 
-!!! note "Why sip2json Chooses nlohmann::json Inheritance"
+!!! note "Why `sip2json` Chooses `nlohmann::json` Inheritance"
     The primary mission of `sip2json` is to convert raw SIP wire streams into **first-class structured JSON data** for modern cloud APIs, log analytics, and microservices.
-    
     Subclassing `nlohmann::json` provides **zero-cost JSON serialization, direct schema compatibility, and dynamic property extensibility**. At **> 105,000 messages/sec per core**, the `nlohmann::json` model easily satisfies high-throughput carrier-grade network requirements while delivering native JSON ergonomics.

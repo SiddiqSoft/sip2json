@@ -1,128 +1,313 @@
-# Azure Pipelines CI/CD & Secrets Management
+# Maintainer Guide
 
-This guide covers the architecture, orchestration, self-hosted agent setup, and external secret management for the `sip2json` CI/CD pipeline on **Azure DevOps**.
+CI/CD architecture, CMake presets, and release workflows.
 
 ---
 
-## 1. CI/CD Architecture Overview
+## Pipeline Architecture
 
-The `sip2json` continuous integration and deployment pipeline is orchestrated by [`azure-pipelines.yml`](https://github.com/SiddiqSoft/sip2json/blob/master/azure-pipelines.yml) across 5 modular stages:
+Defined in [`azure-pipelines.yml`](https://github.com/SiddiqSoft/sip2json/blob/master/azure-pipelines.yml) on self-hosted agents (`Default` pool):
 
 ```mermaid
 flowchart TD
-    subgraph MatrixBuilds ["🏗️ Stage 1 & 2: Multi-Platform Matrix Builds"]
-        direction TB
-        W1["🪟 Windows x64 (MSVC 2022)"]
-        W2["🪟 Windows ARM64 (MSVC 2022)"]
-        L1["🐧 Linux x64 (GCC 14)"]
-        L2["🐧 Linux x64 (Clang 18)"]
-        L3["🐧 Linux ARM64 (GCC 14)"]
-        L4["🐧 Linux ARM64 (Clang 18)"]
+    subgraph Triggers["Trigger"]
+        T1["Push to master / main / release/*"]
+        T2["Pull Request"]
     end
 
-    subgraph Gates ["🛡️ Manual Approval Gates"]
-        direction LR
-        G1{"✋ Approve GitHub Release?"}
-        G2{"✋ Approve Docs Deployment?"}
+    subgraph Matrix["Build Matrix"]
+        W["Windows Stage (MSVC)"]
+        L["Linux Stage (GCC & Clang)"]
+        D["Darwin Stage (AppleClang)"]
     end
 
-    subgraph Publishing ["🚀 Publishing Stages (main/master)"]
-        direction TB
-        P1["📦 GitHub Release (Tagged Binaries & Release Notes)"]
-        P2["🌐 GitHub Pages (Docs & Multi-Platform Matrix)"]
+    subgraph Verification["Verification"]
+        V1["CTest Execution"]
+        V2["Benchmark Collection"]
+        V3["Coverage (gcovr)"]
     end
 
-    W1 & W2 & L1 & L2 & L3 & L4 -->|Publish Benchmark Artifacts| G1 & G2
-    G1 -->|Approved| P1
-    G2 -->|Approved| P2
+    subgraph Publish["Publication (main / master)"]
+        G1{"GitHub Release Approval"}
+        P1["GitHub Release"]
+        P0["NuGet Package"]
+        P2["MkDocs Site"]
+    end
 
-    classDef stageClass fill:#1565C0,stroke:#0D47A1,stroke-width:2px,color:#FFFFFF,font-weight:bold;
-    classDef gateClass fill:#EF6C00,stroke:#E65100,stroke-width:2px,color:#FFFFFF,font-weight:bold;
-    classDef pubClass fill:#2E7D32,stroke:#1B5E20,stroke-width:2px,color:#FFFFFF,font-weight:bold;
-
-    class W1,W2,L1,L2,L3,L4 stageClass;
-    class G1,G2 gateClass;
-    class P1,P2 pubClass;
+    T1 --> Matrix
+    T2 --> Matrix
+    W --> Verification
+    L --> Verification
+    D --> Verification
+    Verification --> G1
+    G1 --> P1
+    P1 --> P0
+    G1 --> P2
 ```
 
 ---
 
-## 2. Pipeline Stages Explained
+## Build Stages & Platform Matrix
 
-| Stage | Trigger Condition | Tasks Performed | Template |
-| :--- | :--- | :--- | :--- |
-| **`Windows`** | PR or Branch Push | Build matrix (x64 / ARM64, MSVC), executes 324 CTests, runs stream benchmarks, publishes benchmark artifacts. | `.azure/az-build-windows.yml` |
-| **`Linux`** | PR or Branch Push | Build matrix (x64 / ARM64, GCC / Clang), executes 324 CTests, runs stream benchmarks, publishes benchmark artifacts. | `.azure/az-build-linux.yml` |
-| **`PublishGitHub`** | Main/Master branch (Manual Approval) | Creates GitHub release tag, attaches release notes and build artifacts. | `.azure/az-publish-github.yml` |
-| **`PublishDocs`** | Main/Master branch (Manual Approval) | Downloads benchmark artifacts from all matrix jobs, runs `publish_benchmarks.py`, builds strict MkDocs, and deploys to `gh-pages` branch. | `.azure/az-publish-docs.yml` |
+The build matrix targets Windows, Linux, and macOS (Darwin) across `x64` and `arm64` architectures:
 
----
+| Platform Stage | Target Architectures | Compilers | CMake Presets Prefix | CI Template | Artifacts Published |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Windows** | `x64`, `arm64` | MSVC (Visual Studio 2022) | `Windows-${arch}-${buildType}` | `.azure/az-build-windows.yml` | Binaries, CTest JUnit XML, Benchmarks |
+| **Linux** | `x64`, `arm64` | Clang (17+), GCC (13+) | `Linux-${compiler}-${buildType}` | `.azure/az-build-unix.yml` | Binaries, CTest JUnit XML, Benchmarks, Coverage XML |
+| **Darwin (macOS)** | `x64`, `arm64` | AppleClang (Xcode / CLT) | `Darwin-Clang-${buildType}` | `.azure/az-build-unix.yml` | Binaries, CTest JUnit XML, Benchmarks |
 
-## 3. Self-Hosted Build Agent Requirements
-
-The pipeline uses the self-hosted **`Default`** agent pool (`pool: name: Default`) and targets specific OS demands:
-
-### Linux Agent Demands (`Agent.OS -equals Linux`)
-- **OS**: Red Hat Enterprise Linux 10.2 / Fedora / Debian (x64 and arm64).
-- **Tools**: GCC 14+, Clang 18+, CMake 3.29+, Ninja 1.11+, Python 3.10+, Git 2.40+.
-- **User Permissions**: Agent process must have read/write access to `$(Agent.HomeDirectory)/.cpmcache`.
-
-### Windows Agent Demands (`Agent.OS -equals Windows_NT`)
-- **OS**: Windows Server 2022 / Windows 11 (x64 and arm64).
-- **Tools**: Visual Studio 2022 (MSVC v143 toolchain), Windows SDK, CMake, Ninja, Git with `core.longpaths = true`, Windows Registry `LongPathsEnabled = 1`.
-- **Setup Script**: Run [`scripts/prep_windows_machine.ps1`](https://github.com/SiddiqSoft/sip2json/blob/master/scripts/prep_windows_machine.ps1) on the agent host prior to running builds.
+!!! note "Unified Unix Pipeline"
+    The Linux and Darwin stages share the parameterized template `.azure/az-build-unix.yml`. It dynamically adapts agent OS demands, compiler flags, and preset names based on the target platform.
 
 ---
 
-## 4. Required Azure DevOps Secrets & Variables
+## CMake Presets Architecture
 
-To configure a new Azure DevOps organization or project pipeline for `sip2json`, maintainers must set up the following secrets and service connections:
+The repository employs a decoupled, highly reusable CMake Presets structure separated across two files:
 
-### 1. Secret Variables & Variable Groups
-In **Azure DevOps** &rarr; **Pipelines** &rarr; **Library** &rarr; create a Variable Group (e.g., pipeline secrets or variable group):
+```mermaid
+flowchart TD
+    subgraph PB["project-base.json (Project-Specific)"]
+        PBase["Project-Base<br/>• sip2json_BUILD_TESTS=ON<br/>• sip2json_BUILD_BENCHMARKS=OFF<br/>• CMAKE_CXX_STANDARD=20<br/>• CI_BUILDID=0.0.0"]
+    end
 
-| Variable Name | Type | Description & Required Permissions |
-| :--- | :---: | :--- |
-| **`GITHUB_TOKEN`** | **Secret** (Locked 🔒) | GitHub Personal Access Token (PAT) used by `ghp-import` and release publishers. **Required Scopes**: `repo` (Full control of private/public repositories) and `workflow` (Update GitHub Action workflows). |
-| **`GITHUB_USER`** | Plain Text | Name or bot identifier for Azure Pipelines git commit actor (e.g. `azure-pipelines[bot]` or maintainer username). |
-| **`System.AccessToken`** | System Secret | Automatically provided by Azure Pipelines; used for downloading build artifacts across jobs (`OAuthToken: $(System.AccessToken)`). |
+    subgraph CP["CMakePresets.json (Generic / Portable)"]
+        CBase["Common-Base<br/>• Generator: Ninja<br/>• binaryDir: build/${presetName}<br/>• installDir: install/${presetName}<br/>• CPM_SOURCE_CACHE"]
 
-### 2. GitHub Service Connection
-In **Project Settings** &rarr; **Pipelines** &rarr; **Service connections** &rarr; **New service connection**:
-1. Select **GitHub**.
-2. Authentication method: **Personal Access Token (PAT)** or **Azure Pipelines GitHub App**.
-3. Service connection name: `github-service-connection` (or your configured GitHub service connection name).
-4. Grant access permission to all pipelines.
+        subgraph Darwin["Darwin / macOS"]
+            ABase["Apple-Base (Darwin condition)"]
+            ADebug["Apple-Debug (Debug)"]
+            ARelease["Apple-Release (Release)"]
+            DCDebug["Darwin-Clang-Debug"]
+            DCRelease["Darwin-Clang-Release"]
+            DDefault["Darwin"]
+        end
 
----
+        subgraph Linux["Linux"]
+            LBase["Linux-Base (Linux condition)"]
+            LClangBase["Linux-Clang-Base (/usr/bin/clang)"]
+            LGCCBase["Linux-GCC-Base (/usr/bin/gcc)"]
+            LCDebug["Linux-Clang-Debug"]
+            LCRelease["Linux-Clang-Release"]
+            LGDebug["Linux-GCC-Debug"]
+            LGRelease["Linux-GCC-Release"]
+        end
 
-## 5. Semantic Versioning & Branch Workflow (`GitVersion.yml`)
+        subgraph Windows["Windows"]
+            WBase["Windows-Base (Windows condition, cl.exe)"]
+            Wx64Base["Windows-x64-Base (host=x64, arch=x64)"]
+            WarmBase["Windows-arm64-Base (arch=arm64)"]
+            Wx64Debug["Windows-x64-Debug"]
+            Wx64Release["Windows-x64-Release"]
+            WarmDebug["Windows-arm64-Debug"]
+            WarmRelease["Windows-arm64-Release"]
+        end
+    end
 
-`sip2json` uses [GitVersion](https://gitversion.net/) for automated semantic versioning calculated directly from git history and branch names:
+    PBase --> CBase
+    CBase --> ABase
+    CBase --> LBase
+    CBase --> WBase
 
-```yaml
-mode: ContinuousDelivery
-branches:
-  master:
-    regex: ^master$|^main$
-    mode: ContinuousDelivery
-    tag: ''
-    increment: Patch
-  release:
-    regex: ^release?[/-]
-    mode: ContinuousDelivery
-    tag: beta
-    increment: Minor
-  feature:
-    regex: ^feature?[/-]
-    mode: ContinuousDelivery
-    tag: alpha
-    increment: Inherit
+    ABase --> ADebug & ARelease
+    ADebug --> DCDebug
+    ARelease --> DCRelease & DDefault
+
+    LBase --> LClangBase & LGCCBase
+    LClangBase --> LCDebug & LCRelease
+    LGCCBase --> LGDebug & LGRelease
+
+    WBase --> Wx64Base & WarmBase
+    Wx64Base --> Wx64Debug & Wx64Release
+    WarmBase --> WarmDebug & WarmRelease
 ```
 
-### Release Procedure for Maintainers:
-1. Create a release branch: `git checkout -b release/2.6.0`
-2. Push commits and open Pull Request to `master`.
-3. Azure Pipelines builds the full Linux & Windows matrix and runs the 324-test suite.
-4. Once PR is merged to `master`, Azure Pipelines triggers `PublishGitHub` and `PublishDocs`.
-5. Maintainers approve the manual validation gates in the Azure DevOps portal to publish the official GitHub Release and update `gh-pages`.
+### Architectural Separation of Concerns
+
+1. **[`project-base.json`](https://github.com/SiddiqSoft/sip2json/blob/master/project-base.json)**:
+   - Holds all **per-project settings** (e.g. `sip2json_BUILD_TESTS`, `CMAKE_CXX_STANDARD: 20`, `CI_BUILDID: 0.0.0`).
+   - Project maintainers configure project-specific variables here without altering toolchain presets.
+
+2. **[`CMakePresets.json`](https://github.com/SiddiqSoft/sip2json/blob/master/CMakePresets.json)**:
+   - Contains **zero project-specific names or flags**.
+   - Fully portable and reusable across any C++20/23 library or service repository.
+   - Defines platform bases (`Apple-Base`, `Linux-Base`, `Windows-Base`) and standardized `Test-Base` execution rules.
+
+---
+
+## Available Presets Quick Reference
+
+### Configure Presets
+
+| Preset Name | Platform | Compiler | Build Type | Notes |
+| :--- | :--- | :--- | :--- | :--- |
+| `Apple-Debug` | macOS | AppleClang | Debug | Native Xcode / Command Line Tools |
+| `Apple-Release` | macOS | AppleClang | Release | Native Xcode / Command Line Tools |
+| `Darwin-Clang-Debug` | macOS | AppleClang | Debug | Inherits `Apple-Debug` |
+| `Darwin-Clang-Release` | macOS | AppleClang | Release | Inherits `Apple-Release` |
+| `Darwin` | macOS | AppleClang | Release | Default macOS alias (inherits `Apple-Release`) |
+| `Linux-Clang-Debug` | Linux | Clang (`/usr/bin/clang++`) | Debug | Clang toolchain |
+| `Linux-Clang-Release` | Linux | Clang (`/usr/bin/clang++`) | Release | Clang toolchain |
+| `Linux-Clang` | Linux | Clang (`/usr/bin/clang++`) | Release | Clang release alias |
+| `Linux-GCC-Debug` | Linux | GCC (`/usr/bin/g++`) | Debug | GCC toolchain |
+| `Linux-GCC-Release` | Linux | GCC (`/usr/bin/g++`) | Release | GCC toolchain |
+| `Linux-GCC` | Linux | GCC (`/usr/bin/g++`) | Release | GCC release alias |
+| `Windows-x64-Debug` | Windows | MSVC (`cl.exe`) | Debug | x64 architecture, host=x64 |
+| `Windows-x64-Release` | Windows | MSVC (`cl.exe`) | Release | x64 architecture, host=x64 |
+| `Windows-x64` | Windows | MSVC (`cl.exe`) | Release | Windows x64 release alias |
+| `Windows-arm64-Debug` | Windows | MSVC (`cl.exe`) | Debug | ARM64 cross/native compilation |
+| `Windows-arm64-Release` | Windows | MSVC (`cl.exe`) | Release | ARM64 cross/native compilation |
+| `Windows-arm64` | Windows | MSVC (`cl.exe`) | Release | Windows ARM64 release alias |
+
+---
+
+## Local Development & Maintainer Workflow
+
+### 1. Configure, Build, and Test
+
+Maintainers can build and execute the full test suite (320+ unit and compliance tests) with standard CMake commands:
+
+```bash
+# Configure with desired preset (e.g. Darwin-Clang-Release, Linux-GCC-Release, Windows-x64-Release)
+cmake --preset <preset-name>
+
+# Build all targets
+cmake --build --preset <preset-name>
+
+# Execute test suite (use -j 4 or higher for fast parallel execution)
+ctest --preset <preset-name> -j 4
+```
+
+!!! tip "Test Execution Parallelism"
+    Specifying `-j <num_workers>` (e.g. `-j 4`) with `ctest` runs tests efficiently across worker threads without hitting operating system process limits.
+
+### 2. Standalone Validation Subproject Testing
+
+To test `sip2json` against historical versions or external CPM consumers, use the subproject located in `tests/validation/`:
+
+```bash
+# Configure standalone validation client
+cd tests/validation
+cmake --preset Apple-Release
+
+# Build and run client test suite
+cmake --build --preset Apple-Release
+ctest --preset Apple-Release -j 4
+```
+
+---
+
+## Self-Hosted Build Agent Requirements
+
+All build agents must be registered in the `Default` pool and expose the required `Agent.OS` demand:
+
+### Darwin (macOS) Agents
+* Demand: `Agent.OS -equals Darwin`
+* OS: macOS Sonoma (14+) on Apple Silicon (`arm64`) or Intel (`x64`).
+* Toolchain: Xcode 15+ / Command Line Tools (`AppleClang 15+`).
+* Utilities: CMake 3.29+, Ninja 1.11+, Python 3.10+.
+* *Note: No external Homebrew LLVM installation required.*
+
+### Linux Agents
+* Demand: `Agent.OS -equals Linux`
+* OS: Ubuntu 22.04+ or Debian 12+ on `x64` or `arm64`.
+* Toolchain: GCC 13+ (`/usr/bin/gcc`, `/usr/bin/g++`) or Clang 17+ (`/usr/bin/clang`, `/usr/bin/clang++`).
+* Utilities: CMake 3.29+, Ninja, Python 3.10+, `gcovr` (for coverage).
+
+### Windows Agents
+* Demand: `Agent.OS -equals Windows_NT`
+* OS: Windows 11 / Windows Server 2022 (`x64` or `arm64`).
+* Toolchain: Visual Studio 2022 (MSVC v143+), Windows 11 SDK.
+* Prerequisites: Execute [`scripts/prep_windows_machine.ps1`](https://github.com/SiddiqSoft/sip2json/blob/master/scripts/prep_windows_machine.ps1) as Administrator to configure `LongPathsEnabled = 1` and `git config --system core.longpaths true`.
+
+---
+
+## Release & Publication Lifecycle
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Maintainer
+    participant Git as Git Repository
+    participant Pipeline as Azure Pipelines
+    participant GitVersion as GitVersion Task
+    participant GitHub as GitHub Releases
+    participant Pages as GitHub Pages (MkDocs)
+
+    Maintainer->>Git: Push tag / merge to master or release/*
+    Git->>Pipeline: Webhook Trigger
+    Pipeline->>GitVersion: Calculate SemVer (GitVersion.yml)
+    GitVersion-->>Pipeline: Major.Minor.Patch & FullSemVer
+    Pipeline->>Pipeline: Run Windows, Linux, Darwin build matrix
+    Pipeline->>Pipeline: Aggregate benchmark outputs & test results
+    Pipeline->>Maintainer: Request Approval for GitHub Release
+    Maintainer->>Pipeline: Approve GitHub Release
+    Pipeline->>GitHub: Create Release with Binaries & Tarballs
+    Pipeline->>NuGet: Push SiddiqSoft.sip2json Package to nuget.org (gated by GitHub Release)
+    Pipeline->>Pages: Build MkDocs Site with Dynamic Version & Benchmarks
+```
+
+### Dynamic Versioning & Documentation Hooks
+1. **[`docs/hooks.py`](https://github.com/SiddiqSoft/sip2json/blob/master/docs/hooks.py)**: Dynamically injects GitVersion SemVer into site metadata (`config['extra']['version']`) and replaces `{{ version }}` / `{{ tag_version }}` placeholders across markdown files.
+2. **[`scripts/publish_benchmarks.py`](https://github.com/SiddiqSoft/sip2json/blob/master/scripts/publish_benchmarks.py)**: Collects benchmark outputs across build matrix platforms, extracts CPU architecture and core count, and renders responsive platform-grouped benchmark tables and visual comparison charts into [`docs/architecture/benchmarks.md`](../architecture/benchmarks.md).
+3. **NuGet Packaging & Publication**: NuGet packaging (`NuGetCommand@2 pack`) runs during the Windows Release job to package header files, `.natvis`, and `.targets`. Publication (`Stage 5: PublishNuGet`) is auto-enabled on `main`/`master` releases and strictly gated behind the manual review and successful completion of `Stage 4: PublishGitHub` before pushing to `nuget.org` via the `sqs-nuget` service connection.
+
+---
+
+## Building & Previewing Documentation Locally
+
+Maintainers can preview and validate documentation changes locally before pushing:
+
+### 1. Live-Reload Development Server
+
+```bash
+# Activate Python environment and install requirements
+source venv/bin/activate
+pip install -r docs/requirements.txt
+
+# Start live-reloading server
+mkdocs serve
+```
+
+* **Local URL**: Open [`http://127.0.0.1:8000/`](http://127.0.0.1:8000/) in your browser.
+* **Live Reload**: Any edits saved in `docs/` files update automatically in real time.
+
+### 2. Strict Build Validation
+
+Verify there are zero broken links or markdown syntax issues:
+
+```bash
+mkdocs build --strict
+```
+
+The output compiles into `site/`. Open `site/index.html` directly in any browser.
+
+### 3. Updating Benchmark Data Prior to Serving
+
+```bash
+python3 scripts/publish_benchmarks.py
+mkdocs serve
+```
+
+---
+
+## Pipeline Parameters Reference
+
+When manually triggering a pipeline in Azure DevOps, maintainers can customize:
+
+| Parameter | Type | Default | Allowed Values | Purpose |
+| :--- | :--- | :--- | :--- | :--- |
+| `Platforms` | `stringList` | `[ Windows, Linux, Darwin ]` | `Windows`, `Linux`, `Darwin` | Target OS platforms to build |
+| `Architectures` | `stringList` | `[ arm64 ]` | `arm64`, `x64` | Target CPU architectures |
+| `Compilers_Windows` | `stringList` | `[ MSVC ]` | `MSVC` | Windows compiler toolsets |
+| `Compilers_Linux` | `stringList` | `[ Clang ]` | `Clang`, `GCC` | Linux compiler toolsets |
+| `Compilers_Darwin` | `stringList` | `[ Clang ]` | `Clang` | macOS compiler toolsets (AppleClang) |
+| `BuildTypes` | `stringList` | `[ Release ]` | `Release`, `Debug` | Build configurations |
+| `RunTests` | `boolean` | `true` | `true`, `false` | Execute unit and compliance test suites |
+| `RunBenchmarks` | `boolean` | `true` | `true`, `false` | Execute performance benchmark harnesses |
+| `PublishNuGet` | `boolean` | `false` | `true`, `false` | Trigger NuGet Release (auto on `master`/`main`) |
+| `PublishGitHub` | `boolean` | `false` | `true`, `false` | Trigger GitHub Release (auto on `master`/`main`) |
+| `PublishDocs` | `boolean` | `false` | `true`, `false` | Publish documentation site (auto on `master`/`main`) |
+| `Cleanup` | `boolean` | `false` | `true`, `false` | Run cache and workspace cleanup only |
+

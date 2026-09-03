@@ -67,3 +67,12 @@ The document uses single-character keys (`s`, `h`, `b`, `meta`) to minimize payl
 * Numeric fields like `Content-Length` are converted to JSON integers.
 * Boolean extensions (e.g., `X-Call-URL: true`) are converted to JSON booleans.
 * Headers occurring multiple times in a SIP message (e.g. `Via`, `Record-Route`) are represented as JSON string arrays.
+
+---
+
+## Related References
+
+* [`sipmessage` Class Reference](sipmessage.md)
+* [`sip2json` Parsing & Serialization Functions](sip2json.md)
+* [SDP Protocol Support](sdp.md)
+* [Error & Exception Types](errors.md)

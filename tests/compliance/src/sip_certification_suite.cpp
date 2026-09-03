@@ -157,7 +157,7 @@ namespace siddiqsoft
                              "tO: <sip:user@example.com>\r\n"
                              "cALL-iD: cert-case-insensitive-999\r\n"
                              "cSEq: 1 REGISTER\r\n"
-                             "uSER-aGENT: Antigravity-Certified-SIP/1.0\r\n"
+                             "uSER-aGENT: Test-Client-SIP/1.0\r\n"
                              "eXPIRES: 3600\r\n"
                              "cONTENT-tYPE: application/sdp\r\n"
                              "cONTENT-lENGTH: 0\r\n"
@@ -171,7 +171,7 @@ namespace siddiqsoft
         EXPECT_EQ(3600, sipm.getExpires());
         EXPECT_EQ(0, sipm.getContentLength());
         EXPECT_EQ("application/sdp", sipm.getContentType());
-        EXPECT_TRUE(sipm.getUserAgent().contains("Antigravity-Certified-SIP"));
+        EXPECT_TRUE(sipm.getUserAgent().find("Test-Client-SIP") != std::string::npos);
     }
 
     //-------------------------------------------------------------------------
@@ -264,12 +264,12 @@ namespace siddiqsoft
     {
         sipmessage originalReq(siddiqsoft::METHOD_INVITE, "sip:bob@biloxi.example.com", "roundtrip-cert-id-555", 101);
         originalReq.setHeader(siddiqsoft::HF_CONTACT, "<sip:alice@pc33.atlanta.com>");
-        originalReq.setHeader(siddiqsoft::HF_USER_AGENT, "Antigravity-Certified/1.0");
+        originalReq.setHeader(siddiqsoft::HF_USER_AGENT, "Test-Client/1.0");
 
         // Serialize
         std::string serializedStr = sip2json::serialize(originalReq);
         EXPECT_FALSE(serializedStr.empty());
-        EXPECT_TRUE(serializedStr.contains("INVITE sip:bob@biloxi.example.com SIP/2.0\r\n"));
+        EXPECT_TRUE(serializedStr.find("INVITE sip:bob@biloxi.example.com SIP/2.0\r\n") != std::string::npos);
 
         // Parse back
         auto       bs              = serializedStr.begin();
@@ -279,6 +279,6 @@ namespace siddiqsoft
         EXPECT_EQ("sip:bob@biloxi.example.com", deserializedReq.getUri());
         EXPECT_EQ("roundtrip-cert-id-555", deserializedReq.getCallID());
         EXPECT_EQ("roundtrip-cert-id-555", deserializedReq.getCallIDView());
-        EXPECT_TRUE(deserializedReq.getUserAgent().contains("Antigravity-Certified"));
+        EXPECT_TRUE(deserializedReq.getUserAgent().find("Test-Client") != std::string::npos);
     }
 } // namespace siddiqsoft

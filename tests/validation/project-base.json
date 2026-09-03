@@ -4,9 +4,9 @@
         {
             "name": "Project-Base",
             "displayName": "Project Base",
-            "description": "Base preset for all project configurations.",
+            "description": "Base preset containing project-specific configurations and cache variables.",
             "cacheVariables": {
-                "sip2json_BUILD_TESTS": "ON",
+                "SIP2JSON_VERSION": "current",
                 "CI_BUILDID": "0.0.0",
                 "CMAKE_CXX_STANDARD": "23",
                 "CMAKE_CXX_STANDARD_REQUIRED": "ON",
