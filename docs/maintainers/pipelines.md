@@ -28,9 +28,9 @@ flowchart TD
     end
 
     subgraph Publish["Publication (main / master)"]
-        G1{"Approval Gate"}
-        P0["NuGet Package"]
+        G1{"GitHub Release Approval"}
         P1["GitHub Release"]
+        P0["NuGet Package"]
         P2["MkDocs Site"]
     end
 
@@ -40,8 +40,8 @@ flowchart TD
     L --> Verification
     D --> Verification
     Verification --> G1
-    G1 --> P0
     G1 --> P1
+    P1 --> P0
     G1 --> P2
 ```
 
@@ -241,21 +241,17 @@ sequenceDiagram
     GitVersion-->>Pipeline: Major.Minor.Patch & FullSemVer
     Pipeline->>Pipeline: Run Windows, Linux, Darwin build matrix
     Pipeline->>Pipeline: Aggregate benchmark outputs & test results
-    Pipeline->>Maintainer: Request Approval for Release
-    Maintainer->>Pipeline: Approve Release
-    par Publish Artifacts
-        Pipeline->>GitHub: Create Release with Binaries & Tarballs
-    and Publish NuGet
-        Pipeline->>NuGet: Push SiddiqSoft.sip2json Package to nuget.org
-    and Publish Documentation
-        Pipeline->>Pages: Build MkDocs Site with Dynamic Version & Benchmarks
-    end
+    Pipeline->>Maintainer: Request Approval for GitHub Release
+    Maintainer->>Pipeline: Approve GitHub Release
+    Pipeline->>GitHub: Create Release with Binaries & Tarballs
+    Pipeline->>NuGet: Push SiddiqSoft.sip2json Package to nuget.org (gated by GitHub Release)
+    Pipeline->>Pages: Build MkDocs Site with Dynamic Version & Benchmarks
 ```
 
 ### Dynamic Versioning & Documentation Hooks
 1. **[`docs/hooks.py`](https://github.com/SiddiqSoft/sip2json/blob/master/docs/hooks.py)**: Dynamically injects GitVersion SemVer into site metadata (`config['extra']['version']`) and replaces `{{ version }}` / `{{ tag_version }}` placeholders across markdown files.
 2. **[`scripts/publish_benchmarks.py`](https://github.com/SiddiqSoft/sip2json/blob/master/scripts/publish_benchmarks.py)**: Collects benchmark outputs across build matrix platforms, extracts CPU architecture and core count, and renders responsive platform-grouped benchmark tables and visual comparison charts into [`docs/architecture/benchmarks.md`](../architecture/benchmarks.md).
-3. **NuGet Packaging & Publication**: NuGet packaging (`NuGetCommand@2 pack`) runs during the Windows Release job to package header files, `.natvis`, and `.targets`. Publication (`Stage 4: PublishNuGet`) is auto-enabled on `main`/`master` releases, guarded by maintainer manual validation approval before pushing to `nuget.org` via the `sqs-nuget` service connection.
+3. **NuGet Packaging & Publication**: NuGet packaging (`NuGetCommand@2 pack`) runs during the Windows Release job to package header files, `.natvis`, and `.targets`. Publication (`Stage 5: PublishNuGet`) is auto-enabled on `main`/`master` releases and strictly gated behind the manual review and successful completion of `Stage 4: PublishGitHub` before pushing to `nuget.org` via the `sqs-nuget` service connection.
 
 ---
 

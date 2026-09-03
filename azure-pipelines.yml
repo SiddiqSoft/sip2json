@@ -229,32 +229,7 @@ stages:
         runBenchmarks: ${{ parameters.RunBenchmarks }}
 
   # ==========================================================================
-  # STAGE 4: NUGET PUBLICATION
-  # ==========================================================================
-  - stage: PublishNuGet
-    displayName: "NuGet Release"
-    dependsOn:
-      - Windows
-      - Linux
-    condition: and(eq(${{ variables.PublishNuGet }}, true), succeeded())
-    jobs:
-      - job: ApproveNuGetRelease
-        displayName: "Manual Approval - NuGet Release"
-        pool: server
-        steps:
-          - task: ManualValidation@0
-            timeoutInMinutes: 1440
-            instructions: 'Please review and approve the publication of the NuGet package.'
-            onTimeout: 'reject'
-
-      - template: .azure/az-publish-nuget.yml
-        parameters:
-          displayName: NuGet Release
-          PublishNuGet: ${{ variables.PublishNuGet }}
-          dependsOn: [ ApproveNuGetRelease ]
-
-  # ==========================================================================
-  # STAGE 5: GITHUB RELEASE PUBLICATION
+  # STAGE 4: GITHUB RELEASE PUBLICATION
   # ==========================================================================
   - stage: PublishGitHub
     displayName: "GitHub Release"
@@ -280,6 +255,20 @@ stages:
           displayName: GitHub Release
           PublishGitHub: ${{ variables.PublishGitHub }}
           dependsOn: [ ApproveGitHubRelease ]
+
+  # ==========================================================================
+  # STAGE 5: NUGET PUBLICATION (Gated behind GitHub Release manual approval)
+  # ==========================================================================
+  - stage: PublishNuGet
+    displayName: "NuGet Release"
+    dependsOn:
+      - PublishGitHub
+    condition: and(eq(${{ variables.PublishNuGet }}, true), succeeded())
+    jobs:
+      - template: .azure/az-publish-nuget.yml
+        parameters:
+          displayName: NuGet Release
+          PublishNuGet: ${{ variables.PublishNuGet }}
 
   # ==========================================================================
   # STAGE 6: GITHUB PAGES DOCUMENTATION PUBLICATION
