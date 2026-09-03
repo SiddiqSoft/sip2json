@@ -1,6 +1,6 @@
 # API Reference
 
-The `siddiqsoft::sip2json` namespace provides data structures, stream parsing utilities, error definitions, and serialization functions for SIP message processing in Modern C++23.
+The `siddiqsoft::sip2json` namespace provides data structures, stream parsing utilities, error definitions, and serialization functions for SIP message processing in Modern C++20.
 
 ---
 

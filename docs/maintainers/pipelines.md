@@ -69,7 +69,7 @@ The repository employs a decoupled, highly reusable CMake Presets structure sepa
 ```mermaid
 flowchart TD
     subgraph PB["project-base.json (Project-Specific)"]
-        PBase["Project-Base<br/>• sip2json_BUILD_TESTS=ON<br/>• sip2json_BUILD_BENCHMARKS=OFF<br/>• CMAKE_CXX_STANDARD=23<br/>• CI_BUILDID=0.0.0"]
+        PBase["Project-Base<br/>• sip2json_BUILD_TESTS=ON<br/>• sip2json_BUILD_BENCHMARKS=OFF<br/>• CMAKE_CXX_STANDARD=20<br/>• CI_BUILDID=0.0.0"]
     end
 
     subgraph CP["CMakePresets.json (Generic / Portable)"]
@@ -126,7 +126,7 @@ flowchart TD
 ### Architectural Separation of Concerns
 
 1. **[`project-base.json`](https://github.com/SiddiqSoft/sip2json/blob/master/project-base.json)**:
-   - Holds all **per-project settings** (e.g. `sip2json_BUILD_TESTS`, `CMAKE_CXX_STANDARD: 23`, `CI_BUILDID: 0.0.0`).
+   - Holds all **per-project settings** (e.g. `sip2json_BUILD_TESTS`, `CMAKE_CXX_STANDARD: 20`, `CI_BUILDID: 0.0.0`).
    - Project maintainers configure project-specific variables here without altering toolchain presets.
 
 2. **[`CMakePresets.json`](https://github.com/SiddiqSoft/sip2json/blob/master/CMakePresets.json)**:

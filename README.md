@@ -5,7 +5,7 @@
 [![NuGet Version](https://img.shields.io/nuget/v/siddiqsoft.sip2json)](https://www.nuget.org/packages/siddiqsoft.sip2json)
 [![NuGet Downloads](https://img.shields.io/nuget/dt/siddiqsoft.sip2json)](https://www.nuget.org/packages/siddiqsoft.sip2json)
 [![Tests](https://img.shields.io/azure-devops/tests/siddiqsoft/siddiqsoft/21/master.svg)](https://dev.azure.com/siddiqsoft/siddiqsoft/_build/latest?definitionId=21&branchName=master)
-[![C++23](https://img.shields.io/badge/C%2B%2B-23-00599C?logo=cplusplus)](https://en.cppreference.com/w/cpp/23)
+[![C++20](https://img.shields.io/badge/C%2B%2B-20-00599C?logo=cplusplus)](https://en.cppreference.com/w/cpp/20)
 [![IETF RFC 3261](https://img.shields.io/badge/IETF-RFC%203261%20(SIP)-003366)](https://datatracker.ietf.org/doc/html/rfc3261)
 [![IETF RFC 4475](https://img.shields.io/badge/IETF-RFC%204475%20(Torture%2050/50)-2ea44f)](https://datatracker.ietf.org/doc/html/rfc4475)
 [![IETF RFC 8866](https://img.shields.io/badge/IETF-RFC%208866%20(SDP)-003366)](https://datatracker.ietf.org/doc/html/rfc8866)
@@ -13,7 +13,7 @@
 [![License BSD-3](https://img.shields.io/badge/License-BSD--3--Clause-blue)](LICENSE)
 <!-- end badges -->
 
-**`sip2json`** is a header-only Modern C++23 SIP protocol parser and serializer library designed with `nlohmann::json` as a first-class API metaphor for seamlessly converting SIP protocol messages to/from JSON for NoSQL databases and distributed event processing.
+**`sip2json`** is a header-only Modern C++20 SIP protocol parser and serializer library designed with `nlohmann::json` as a first-class API metaphor for seamlessly converting SIP protocol messages to/from JSON for NoSQL databases and distributed event processing.
 
 ---
 

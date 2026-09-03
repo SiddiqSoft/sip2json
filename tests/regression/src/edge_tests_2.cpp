@@ -284,11 +284,11 @@ TEST(Issue33_SDPOptionalFields, OmitUnpopulatedOptionalSDPLines)
 
     std::string serialized = siddiqsoft::sip2json::serialize(sipm);
 
-    EXPECT_FALSE(serialized.contains("i=\r\n"));
-    EXPECT_FALSE(serialized.contains("u=\r\n"));
-    EXPECT_FALSE(serialized.contains("e=\r\n"));
-    EXPECT_FALSE(serialized.contains("p=\r\n"));
-    EXPECT_FALSE(serialized.contains("c=\r\n"));
+    EXPECT_TRUE(serialized.find("i=\r\n") == std::string::npos);
+    EXPECT_TRUE(serialized.find("u=\r\n") == std::string::npos);
+    EXPECT_TRUE(serialized.find("e=\r\n") == std::string::npos);
+    EXPECT_TRUE(serialized.find("p=\r\n") == std::string::npos);
+    EXPECT_TRUE(serialized.find("c=\r\n") == std::string::npos);
 }
 
 
@@ -318,9 +318,9 @@ TEST(Issue33_SDPOptionalFields, PreservePopulatedOptionalSDPLines)
 
     std::string serialized = siddiqsoft::sip2json::serialize(sipm);
 
-    EXPECT_TRUE(serialized.contains("i=Session Information Text\r\n"));
-    EXPECT_TRUE(serialized.contains("c=IN IP4 192.0.2.1\r\n"));
-    EXPECT_FALSE(serialized.contains("u=\r\n"));
-    EXPECT_FALSE(serialized.contains("e=\r\n"));
-    EXPECT_FALSE(serialized.contains("p=\r\n"));
+    EXPECT_TRUE(serialized.find("i=Session Information Text\r\n") != std::string::npos);
+    EXPECT_TRUE(serialized.find("c=IN IP4 192.0.2.1\r\n") != std::string::npos);
+    EXPECT_TRUE(serialized.find("u=\r\n") == std::string::npos);
+    EXPECT_TRUE(serialized.find("e=\r\n") == std::string::npos);
+    EXPECT_TRUE(serialized.find("p=\r\n") == std::string::npos);
 }

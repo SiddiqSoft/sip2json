@@ -1,6 +1,6 @@
 # Architecture & Design
 
-`sip2json` is engineered around zero-copy `std::string_view` parsing, stateless execution, 64-bit FNV-1a hash matching, and modern C++23 type safety.
+`sip2json` is engineered around zero-copy `std::string_view` parsing, stateless execution, 64-bit FNV-1a hash matching, and modern C++20 type safety.
 
 ---
 
