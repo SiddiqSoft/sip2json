@@ -16,7 +16,7 @@ sequenceDiagram
 
     Network->>Buffer: Append TCP payload bytes
     Buffer->>Parser: Pass start & end iterators
-    Parser->>Parser: CTRE Regex Frame Detection
+    Parser->>Parser: Zero-Copy Frame Detection
     alt Frame complete
         Parser->>App: Invoke callback with sipmessage&& (move)
         Parser->>Buffer: Advance start iterator past frame

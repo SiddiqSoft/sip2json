@@ -73,13 +73,6 @@ endif()
         
 target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_${CMAKE_CXX_STANDARD})
 
-if(MSVC)
-    message(STATUS "${PROJECT_NAME} - MSVC detected; setting /constexpr:depth4096 /constexpr:steps2000000 /templateDepth:4096 to mitigate CTRE template limits")
-    target_compile_options(${PROJECT_NAME} INTERFACE /constexpr:depth4096 /constexpr:steps2000000 /templateDepth:4096)
-else()
-    target_compile_options(${PROJECT_NAME} INTERFACE -ftemplate-depth=4096)
-endif()
-
 if(${PROJECT_NAME}_HEADERKEY_MODE_INSENSITIVE)
     target_compile_definitions(${PROJECT_NAME} INTERFACE ${PROJECT_NAME}_HEADERKEY_MODE_INSENSITIVE=1)
     message(STATUS "${PROJECT_NAME} - Case-insensitive header keys enabled: ${PROJECT_NAME}_HEADERKEY_MODE_INSENSITIVE=1")
@@ -90,8 +83,7 @@ endif()
 # ____________________________________
 # Dependencies
 cpmaddpackage("gh:nlohmann/json#v3.12.0")
-cpmaddpackage("gh:hanickadot/compile-time-regular-expressions#v3.11.0")
-target_link_libraries(${PROJECT_NAME} INTERFACE nlohmann_json::nlohmann_json ctre::ctre)
+target_link_libraries(${PROJECT_NAME} INTERFACE nlohmann_json::nlohmann_json)
 
 # ____________________________________
 # Testing

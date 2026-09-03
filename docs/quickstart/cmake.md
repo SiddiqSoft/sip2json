@@ -23,7 +23,7 @@ add_executable(MySipApp main.cpp)
 target_link_libraries(MySipApp PRIVATE sip2json::sip2json)
 ```
 
-`CPMAddPackage` automatically resolves dependent packages (`nlohmann_json` and `ctre`).
+`CPMAddPackage` automatically resolves the dependent `nlohmann_json` package.
 
 ---
 
@@ -72,4 +72,4 @@ For full preset architecture, project configuration via `project-base.json`, and
 ---
 
 !!! tip "Windows Environment Setup Note"
-    To prevent CTRE template expansion `filename too long` errors on Windows, run [`scripts/prep_windows_machine.ps1`](https://github.com/SiddiqSoft/sip2json/blob/master/scripts/prep_windows_machine.ps1) as Administrator to enable Registry `LongPathsEnabled = 1` and Git `core.longpaths = true`. See the [Quick Start Guide](index.md#windows-prerequisites-long-paths-ctre-support) for full details.
+    When building on Windows, run [`scripts/prep_windows_machine.ps1`](https://github.com/SiddiqSoft/sip2json/blob/master/scripts/prep_windows_machine.ps1) as Administrator to enable Registry `LongPathsEnabled = 1` and Git `core.longpaths = true` for CPM package caches. See the [Quick Start Guide](index.md#windows-prerequisites-long-paths) for full details.

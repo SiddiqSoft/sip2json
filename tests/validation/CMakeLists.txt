@@ -75,9 +75,6 @@ endif()
 if(NOT TARGET nlohmann_json::nlohmann_json)
     CPMAddPackage("gh:nlohmann/json#v3.12.0")
 endif()
-if(NOT TARGET ctre::ctre)
-    CPMAddPackage("gh:hanickadot/compile-time-regular-expressions#v3.11.0")
-endif()
 
 target_link_libraries(${PROJECT_NAME} PRIVATE GTest::gtest_main
                                                 sip2json::sip2json)

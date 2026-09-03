@@ -112,7 +112,7 @@ Detailed setup guide for CMake, CPM, FetchContent, build options, and CMake pres
 
 ### [Project Dependencies](dependencies.md)
 
-Dependency hierarchy diagram and version breakdown (`nlohmann_json` and `ctre`).
+Dependency hierarchy diagram and version breakdown (`nlohmann_json`).
 
 [View Dependencies :octicons-arrow-right-24:](dependencies.md)
 
@@ -132,12 +132,12 @@ Deprecation notice and migration advice for previous NuGet package consumers.
 
 ---
 
-## Windows Prerequisites & Long Paths (CTRE Support)
+## Windows Prerequisites & Long Paths
 
-When building on Windows, the underlying **CTRE (Compile-Time Regular Expressions)** library and CMake package caches generate deeply nested template expansion paths that can exceed the legacy 260-character Windows path limit (`MAX_PATH`). This can trigger `filename too long` warnings or C1083 compilation errors.
+When building on Windows, CMake package caches (`.cpmcache`) can generate paths that approach the legacy 260-character Windows limit (`MAX_PATH`). Note that previous versions required CTRE compiler template workarounds, which have been completely removed in `v3.0.0+` thanks to zero-copy `std::string_view` parsing.
 
-!!! warning "Windows `filename too long` & MSVC CTRE Setup"
-    Enable Windows Extended Long Paths in the System Registry (`LongPathsEnabled = 1`) and Git configuration (`git config --global core.longpaths true`) before building on Windows.
+!!! tip "Windows Long Paths & CPM Cache"
+    Enable Windows Extended Long Paths in the System Registry (`LongPathsEnabled = 1`) and Git configuration (`git config --global core.longpaths true`) for smooth CPM package caching.
 
     You can automatically configure your Windows machine by running the provided PowerShell script [`scripts/prep_windows_machine.ps1`](https://github.com/SiddiqSoft/sip2json/blob/master/scripts/prep_windows_machine.ps1) as Administrator:
     ```powershell

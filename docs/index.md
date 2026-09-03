@@ -16,7 +16,7 @@
 
 * **Header-Only Library**: Easy integration without compiled binary dependencies; include and build.
 * **JSON as First-Class Metaphor**: Compact and intuitive representation of SIP start lines, headers, and SDP bodies.
-* **Modern C++23**: Built for C++23 standards using concepts, string views, move semantics, and CTRE (Compile-Time Regular Expressions).
+* **Modern C++23**: Built for C++23 standards using concepts, zero-copy string views, and move semantics with zero regex dependencies.
 * **Asynchronous & Streaming Parsing**: High-performance stream iterator parsing with non-blocking callbacks for multi-frame TCP buffers.
 * **Full SDP Support**: Native decoding and encoding of Session Description Protocol (`application/sdp`) payloads.
 
@@ -106,7 +106,7 @@
 | Requirement | Details |
 | :--- | :--- |
 | **Language Standard** | C++23 (`/std:c++latest` on MSVC, `-std=c++23` on Clang/GCC) |
-| **Dependencies** | [`nlohmann/json`](https://github.com/nlohmann/json) v3.12.0+, [`ctre`](https://github.com/hanickadot/compile-time-regular-expressions) v3.11.0+ |
+| **Dependencies** | [`nlohmann/json`](https://github.com/nlohmann/json) v3.12.0+ (zero regex dependencies) |
 | **Platform Support** | Windows (MSVC 2022+), Linux (GCC 14+, Clang 17+), macOS (Apple Clang 15+) |
 
 ---

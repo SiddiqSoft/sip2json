@@ -27,7 +27,7 @@ include/siddiqsoft/
     ├── sip2json_response_codes.hpp    # SIP status code to reason phrase mapping
     ├── sip2json_sdp.hpp               # SDP body parsing & serialization helpers
     ├── sip2json_serializer.hpp        # SIP message wire-format serialization
-    └── sip2json_utils.hpp             # Utilities, CTRE regexes & date formatters
+    └── sip2json_utils.hpp             # Utilities, hashing & date formatters
 ```
 
 ---
@@ -80,7 +80,7 @@ Mechanics of continuous TCP/TLS stream processing, multi-frame batches, and part
 
 ### [Optimization Choices](optimization_choices.md)
 
-64-bit FNV-1a hash matching, compile-time jump tables, in-register case folding, and CTRE template depth reduction.
+64-bit FNV-1a hash matching, compile-time jump tables, in-register case folding, and zero-copy string_view parsing.
 
 [View Optimizations :octicons-arrow-right-24:](optimization_choices.md)
 

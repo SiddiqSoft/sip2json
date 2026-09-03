@@ -108,7 +108,7 @@ namespace siddiqsoft
                 if (keyChar == 'v')
                 {
                     blockIndex++;
-                    auto& sdpArray = sipm["b"s]["sdp"s];
+                    auto& sdpArray            = sipm["b"s]["sdp"s];
                     sdpArray[blockIndex][key] = 0;
                     currentSdpBlock           = &sdpArray[blockIndex];
                 }
@@ -140,46 +140,68 @@ namespace siddiqsoft
                             else
                                 aObj[akey] = nullptr;
                         }
-                        else if (!value.empty())
-                        {
-                            sdpBlock["a"s][value] = true;
-                        }
+                        else if (!value.empty()) { sdpBlock["a"s][value] = true; }
                     }
                     else if (keyChar == 'c')
                     {
-                        auto clineMatcher = ctre::search<SIP_PATTERN_BODY_CLINE_RE>(value);
-                        if (clineMatcher)
+                        // We expect the c= line to have 3 space-separated values: nettype, addrtype, and address.
+                        auto s1 = valueView.find(' ');
+                        auto s2 = (s1 != std::string_view::npos) ? valueView.find(' ', s1 + 1) : std::string_view::npos;
+                        if (s1 != std::string_view::npos && s2 != std::string_view::npos)
                         {
-                            sdpBlock[key] = nlohmann::json {{"type"s, string(clineMatcher.get<1>().to_view())},
-                                                         {"subtype"s, string(clineMatcher.get<2>().to_view())},
-                                                         {"dn"s, string(clineMatcher.get<3>().to_view())}};
+                            auto nettype  = valueView.substr(0, s1);
+                            auto addrtype = valueView.substr(s1 + 1, s2 - (s1 + 1));
+                            auto addr     = valueView.substr(s2 + 1);
+                            sdpBlock[key] = nlohmann::json {
+                                    {"type"s, string(nettype)}, {"subtype"s, string(addrtype)}, {"dn"s, string(addr)}};
                         }
                         else if (!value.empty()) { sdpBlock[key] = value; }
                     }
                     else if (keyChar == 'o')
                     {
-                        auto olineMatcher = ctre::search<SIP_PATTERN_BODY_OLINE_RE>(value);
-                        if (olineMatcher)
+                        // The o= line is expected to have 6 space-separated values: username, session id, session version, nettype, addrtype, and address.
+                        std::string_view rem = valueView;
+                        std::string_view parts[6];
+                        size_t           count = 0;
+                        while (!rem.empty() && count < 6)
                         {
-                            sdpBlock[key] = nlohmann::json {{"user"s, string(olineMatcher.get<1>().to_view())},
-                                                         {"t1"s, string(olineMatcher.get<2>().to_view())},
-                                                         {"t2"s, string(olineMatcher.get<3>().to_view())},
-                                                         {"type"s, string(olineMatcher.get<4>().to_view())},
-                                                         {"subtype"s, string(olineMatcher.get<5>().to_view())},
-                                                         {"host"s, string(olineMatcher.get<6>().to_view())}};
+                            auto sp = (count < 5) ? rem.find(' ') : std::string_view::npos;
+                            if (sp != std::string_view::npos)
+                            {
+                                parts[count++] = rem.substr(0, sp);
+                                rem            = rem.substr(sp + 1);
+                            }
+                            else
+                            {
+                                parts[count++] = rem;
+                                break;
+                            }
+                        }
+                        if (count == 6)
+                        {
+                            sdpBlock[key] = nlohmann::json {{"user"s, string(parts[0])},
+                                                            {"t1"s, string(parts[1])},
+                                                            {"t2"s, string(parts[2])},
+                                                            {"type"s, string(parts[3])},
+                                                            {"subtype"s, string(parts[4])},
+                                                            {"host"s, string(parts[5])}};
                         }
                         else if (!value.empty()) { sdpBlock[key] = value; }
                     }
                     else if (keyChar == 'i')
                     {
-                        auto ilineMatcher = ctre::search<SIP_PATTERN_BODY_ILINE_RE>(value);
-                        if (ilineMatcher)
+                        // The i= line is expected to have the format: "name" (dn) type
+                        auto p1 = valueView.find(" (");
+                        auto p2 = (p1 != std::string_view::npos) ? valueView.find(") ", p1 + 2) : std::string_view::npos;
+                        if (p1 != std::string_view::npos && p2 != std::string_view::npos)
                         {
-                            auto iName = string(ilineMatcher.get<1>().to_view());
-                            sdpBlock[key] = nlohmann::json {
-                                    {"name"s, iName.starts_with("\""s) ? iName.substr(1, iName.length() - 2) : iName},
-                                    {"dn"s, string(ilineMatcher.get<2>().to_view())},
-                                    {"type"s, string(ilineMatcher.get<3>().to_view())}};
+                            auto iName = string(valueView.substr(0, p1));
+                            if (iName.starts_with("\""s) && iName.ends_with("\""s) && iName.length() >= 2)
+                                iName = iName.substr(1, iName.length() - 2);
+
+                            sdpBlock[key] = nlohmann::json {{"name"s, iName},
+                                                            {"dn"s, string(valueView.substr(p1 + 2, p2 - (p1 + 2)))},
+                                                            {"type"s, string(valueView.substr(p2 + 2))}};
                         }
                         else if (!value.empty()) { sdpBlock[key] = value; }
                         else
@@ -218,10 +240,22 @@ namespace siddiqsoft
             }
             else
             {
-                auto matcher = ctre::search<SIP_PATTERN_BODY_RE>(buffer.data(), buffer.data() + buffer.size());
-                if (!matcher) break;
-                auto matchStartOffset = matcher.get<0>().begin() - buffer.data();
-                buffer.remove_prefix(matchStartOffset);
+                // Skip noise until next SDP element (a valid SDP key followed by '=')
+                static constexpr std::string_view validSdpKeys = "vosiuepcbtzkma";
+                size_t                            nextPos      = std::string_view::npos;
+                for (size_t i = 0; i + 1 < buffer.size(); ++i)
+                {
+                    if (buffer[i + 1] == '=' && validSdpKeys.find(buffer[i]) != std::string_view::npos)
+                    {
+                        if (i == 0 || buffer[i - 1] == '\n')
+                        {
+                            nextPos = i;
+                            break;
+                        }
+                    }
+                }
+                if (nextPos == std::string_view::npos) break;
+                buffer.remove_prefix(nextPos);
             }
         }
 
@@ -233,11 +267,11 @@ namespace siddiqsoft
                                        const std::string::iterator& bufferEnd) noexcept(false)
     {
         if (bufferStart == bufferEnd) return false;
-        const char* pStart = std::to_address(bufferStart);
-        const char* pEnd   = std::to_address(bufferEnd);
+        const char*      pStart = std::to_address(bufferStart);
+        const char*      pEnd   = std::to_address(bufferEnd);
         std::string_view sv(pStart, static_cast<size_t>(pEnd - pStart));
-        bool res = parseBodySDP(sipm, sv);
-        size_t consumed = (pEnd - pStart) - sv.size();
+        bool             res      = parseBodySDP(sipm, sv);
+        size_t           consumed = (pEnd - pStart) - sv.size();
         bufferStart += consumed;
         return res;
     }

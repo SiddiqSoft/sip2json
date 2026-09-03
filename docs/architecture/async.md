@@ -17,7 +17,7 @@ sequenceDiagram
     Net->>Buf: Read raw bytes into buffer
     Buf->>Parser: Pass iterators (begin, end)
     loop For each complete SIP message
-        Parser->>Parser: Extract Startline & Headers via CTRE
+        Parser->>Parser: Extract Startline & Headers (zero-copy string_view)
         Parser->>Parser: Parse SDP Body (if present)
         Parser->>App: Invoke Callback with sipmessage&& (Move)
         Parser->>Buf: Advance cursor past parsed message
@@ -67,4 +67,4 @@ void onNetworkBufferReceived(std::string& tcpBuffer)
 
 1. **Move Semantics**: Messages passed to the success callback are moved (`sipmessage&&`), giving zero-copy ownership to the handler.
 2. **Buffer Residuals**: If a partial frame remains at the end of the buffer, `parseAsync` stops without erasing it, allowing next read cycles to append data seamlessly.
-3. **No Allocation Spikes**: Internal parsing uses Compile-Time Regular Expressions (CTRE) and 64-bit integer packed switch statement matching (`pack_key_4`) for ultra-fast header identification.
+3. **No Allocation Spikes**: Internal parsing uses zero-copy `std::string_view` tokenization and 64-bit integer packed switch statement matching (`pack_key_4`) for ultra-fast header identification.

@@ -19,9 +19,9 @@
     <span class="kpi-badge">Zero-Copy Stream</span>
   </div>
   <div class="kpi-card">
-    <div class="kpi-value">~150</div>
-    <div class="kpi-label">CTRE Template Depth</div>
-    <span class="kpi-badge">>85% Reduction</span>
+    <div class="kpi-value">0</div>
+    <div class="kpi-label">Regex Overhead</div>
+    <span class="kpi-badge">Pure string_view</span>
   </div>
 </div>
 

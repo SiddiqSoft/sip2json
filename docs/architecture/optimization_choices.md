@@ -50,7 +50,7 @@ Why is 64-bit FNV-1a integer hash `switch (h)` matching **+74.4% to +93.8% faste
 
 | Optimization Technique | Replaced Pattern | Performance Gain | Hardware Mechanism |
 | :--- | :--- | :--- | :--- |
-| **CTRE Startline Regex Simplification** | `[\r\n|\n]` set-matching character class | **+6.0% to +6.8% throughput** | Replaced character class brackets with `\r?\n`; reduced CTRE compile-time template instantiation depth by **>85%** (~150 vs >1000 depth) resolving MSVC `error C2999` |
+| **Zero-Copy `string_view` Startline Parser** | CTRE compile-time regex (`ctre::search`) | **Zero regex overhead** | Pure `std::string_view` tokenization; eliminated CTRE dependency entirely, reducing template instantiation depth and compile times to 0 |
 | **64-bit FNV-1a Hash `switch(h)`** | Sequential `std::string` `if-else` chain | **+74.4% throughput** | 100% collision-free 64-bit FNV-1a hash matching via 1-cycle $O(1)$ jump table |
 | **`constexpr` Compile-Time Labels** | Dynamic runtime string hashing | **0 ns overhead** | `constexpr` compile-time `hash_header_key(...)` evaluated directly into switch jump table |
 | **Bitwise Register Case-Folding** | `std::transform(::tolower)` | **-42.6% latency** | Converts ASCII case in-register during 64-bit FNV-1a hashing |
