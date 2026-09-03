@@ -12,13 +12,13 @@
         <meta name="author" content="Siddiq Software LLC">
       
       
-        <link rel="canonical" href="https://siddiqsoft.github.io/sip2json/features/optimization_choices/">
+        <link rel="canonical" href="https://siddiqsoft.github.io/sip2json/quickstart/cmake/">
       
       
-        <link rel="prev" href="../benchmarks/">
+        <link rel="prev" href="../">
       
       
-        <link rel="next" href="../json_schema/">
+        <link rel="next" href="../dependencies/">
       
       
         
@@ -29,7 +29,7 @@
     
     
       
-        <title>Optimization Choices - sip2json</title>
+        <title>CMake & CPM - sip2json</title>
       
     
     
@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#high-performance-optimization-choices" class="md-skip">
+        <a href="#cmake-integration" class="md-skip">
           Skip to content
         </a>
       
@@ -121,7 +121,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Optimization Choices
+              CMake & CPM
             
           </span>
         </div>
@@ -260,47 +260,7 @@
           
   
   
-  Features
-
-        </a>
-      </li>
-    
-  
-
-      
-        
-  
-  
-  
-  
-    
-    
-      <li class="md-tabs__item">
-        <a href="../../integration/" class="md-tabs__link">
-          
-  
-  
-  Integration
-
-        </a>
-      </li>
-    
-  
-
-      
-        
-  
-  
-  
-  
-    
-    
-      <li class="md-tabs__item">
-        <a href="../../architecture/" class="md-tabs__link">
-          
-  
-  
-  Architecture & Design
+  Quick Start
 
         </a>
       </li>
@@ -336,11 +296,11 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../examples/" class="md-tabs__link">
+        <a href="../../architecture/" class="md-tabs__link">
           
   
   
-  Examples
+  Architecture & Design
 
         </a>
       </li>
@@ -360,7 +320,7 @@
           
   
   
-  Maintainers
+  Maintainer Guide
 
         </a>
       </li>
@@ -413,7 +373,9 @@
   
 
 
-<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="sip2json" class="md-nav__button md-logo" aria-label="sip2json" data-md-component="logo">
       
@@ -499,7 +461,7 @@
   <span class="md-ellipsis">
     
   
-    Features
+    Quick Start
   
 
     
@@ -515,7 +477,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Features
+    Quick Start
   
 
           </label>
@@ -535,63 +497,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../async/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Async Stream Parsing
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../benchmarks/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Performance & Benchmarks
+    Getting Started
   
 
     
@@ -628,7 +534,7 @@
   <span class="md-ellipsis">
     
   
-    Optimization Choices
+    CMake & CPM
   
 
     
@@ -646,7 +552,7 @@
   <span class="md-ellipsis">
     
   
-    Optimization Choices
+    CMake & CPM
   
 
     
@@ -672,10 +578,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#1-header-lookup-execution-flow" class="md-nav__link">
+  <a href="#cpmcmake-recommended" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Header Lookup Execution Flow
+        CPM.cmake (Recommended)
       
     </span>
   </a>
@@ -683,49 +589,32 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-64-bit-fnv-1a-hash-matching-vs-sso-string-comparison" class="md-nav__link">
+  <a href="#cmake-fetchcontent" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. 64-Bit FNV-1a Hash Matching vs. SSO String Comparison
+        CMake FetchContent
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="2. 64-Bit FNV-1a Hash Matching vs. SSO String Comparison">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#the-architectural-question" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The Architectural Question
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#key-hardware-compiler-factors" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Key Hardware &amp; Compiler Factors
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#3-optimization-summary-table" class="md-nav__link">
+  <a href="#build-options" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3. Optimization Summary Table
+        Build Options
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#building-with-presets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Building with Presets
       
     </span>
   </a>
@@ -748,14 +637,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../json_schema/" class="md-nav__link">
+      <a href="../dependencies/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    JSON Metaphor & Schema
+    Dependencies
   
 
     
@@ -776,70 +665,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../sdp/" class="md-nav__link">
+      <a href="../nuget/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    SDP Support
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../compliance/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Standards Compliance
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../test_suite_sources/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Test Suite Sources & IETF Links
+    NuGet Package
   
 
     
@@ -892,7 +725,7 @@
   <span class="md-ellipsis">
     
   
-    Integration
+    API Reference
   
 
     
@@ -908,7 +741,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Integration
+    API Reference
   
 
           </label>
@@ -921,14 +754,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../integration/" class="md-nav__link">
+      <a href="../../api/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Quick Start
+    Overview
   
 
     
@@ -949,14 +782,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../integration/cmake/" class="md-nav__link">
+      <a href="../../api/sipmessage/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    CMake & Submodules
+    sipmessage
   
 
     
@@ -977,14 +810,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../integration/dependencies/" class="md-nav__link">
+      <a href="../../api/sip2json/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Dependencies Diagram
+    sip2json Functions
   
 
     
@@ -1005,14 +838,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../integration/nuget/" class="md-nav__link">
+      <a href="../../api/errors/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    NuGet Package
+    Exceptions & Errors
   
 
     
@@ -1021,6 +854,208 @@
   
 
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/json_schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    JSON Schema & Metaphor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/sdp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SDP Support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_7" id="__nav_3_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Examples
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/examples/async_parsing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stream Parsing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/examples/serialization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Message Serialization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -1178,6 +1213,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../../architecture/async/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Async Stream Mechanics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/optimization_choices/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Optimization Choices
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../architecture/native_vs_json/" class="md-nav__link">
         
   
@@ -1185,7 +1276,91 @@
   <span class="md-ellipsis">
     
   
-    Native vs JSON Study
+    Native vs. JSON Study
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/benchmarks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Performance & Benchmarks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/compliance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Standards Compliance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/test_suite_sources/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Test Suite & RFC Reference
   
 
     
@@ -1238,7 +1413,7 @@
   <span class="md-ellipsis">
     
   
-    API Reference
+    Maintainer Guide
   
 
     
@@ -1254,325 +1429,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    API Reference
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Overview
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/sipmessage/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    sipmessage
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/sip2json/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    sip2json Functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/errors/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Exceptions & Errors
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
-        
-          
-          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Examples
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_6">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Examples
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../examples/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Overview
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../examples/async_parsing/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Stream Parsing Callback
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../examples/serialization/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Message Serialization
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
-        
-          
-          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Maintainers
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_7">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Maintainers
+    Maintainer Guide
   
 
           </label>
@@ -1592,7 +1449,7 @@
   <span class="md-ellipsis">
     
   
-    Maintainer & CI/CD Guide
+    CI/CD & Presets Architecture
   
 
     
@@ -1647,93 +1504,6 @@
               </div>
             
             
-              
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
-                <div class="md-sidebar__scrollwrap">
-                  <div class="md-sidebar__inner">
-                    
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#1-header-lookup-execution-flow" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        1. Header Lookup Execution Flow
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#2-64-bit-fnv-1a-hash-matching-vs-sso-string-comparison" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2. 64-Bit FNV-1a Hash Matching vs. SSO String Comparison
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="2. 64-Bit FNV-1a Hash Matching vs. SSO String Comparison">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#the-architectural-question" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The Architectural Question
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#key-hardware-compiler-factors" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Key Hardware &amp; Compiler Factors
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#3-optimization-summary-table" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3. Optimization Summary Table
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-                  </div>
-                </div>
-              </div>
-            
           
           
             <div class="md-content" data-md-component="content">
@@ -1773,7 +1543,7 @@
         <a href="../" class="md-path__link">
           
   <span class="md-ellipsis">
-    Features
+    Quick Start
   </span>
 
         </a>
@@ -1795,110 +1565,54 @@
   
 
 
-<h1 id="high-performance-optimization-choices">High-Performance Optimization Choices<a class="headerlink" href="#high-performance-optimization-choices" title="Permanent link">&para;</a></h1>
-<p><code>sip2json</code> incorporates low-level C++23 architectural choices engineered to maximize network throughput and minimize per-message CPU cycles.</p>
+<h1 id="cmake-integration">CMake Integration<a class="headerlink" href="#cmake-integration" title="Permanent link">&para;</a></h1>
+<p>Target: <code>sip2json::sip2json</code> (header-only, C++23).</p>
 <hr />
-<h2 id="1-header-lookup-execution-flow">1. Header Lookup Execution Flow<a class="headerlink" href="#1-header-lookup-execution-flow" title="Permanent link">&para;</a></h2>
-<pre class="mermaid"><code>flowchart TD
-    A["Incoming Header Key (e.g. 'vIa')"] --&gt; B["hash_header_key(key, len)"]
-    B --&gt; C["Compute 64-bit FNV-1a Hash with In-Register Case-Folding"]
-    C --&gt; D{"Fast-Path: Starts with 'X-' or 'X_'?"}
-    D -- "Yes (Custom X-Header)" --&gt; E["Return Custom Header Result (2 cycles)"]
-    D -- "No (Canonical Candidate)" --&gt; F["switch (h) 64-Bit Direct Jump Table (1 cycle)"]
-    F -- "case hash_header_key('via')" --&gt; G["Return static HFS_VIA (hash: 0x68e8f7194eba5d73)"]
-    F -- "case hash_header_key('from')" --&gt; H["Return static HFS_FROM (hash: 0x7f845078d7a5c0b5)"]
-    F -- "case hash_header_key('content-length')" --&gt; I["Return static HFS_CONTENT_LENGTH (hash: 0x2d69a1e6ee916e7d)"]
-    F -- "default (Unrecognized Custom)" --&gt; J["Return Custom KeySet"]</code></pre>
+<h2 id="cpmcmake-recommended">CPM.cmake (Recommended)<a class="headerlink" href="#cpmcmake-recommended" title="Permanent link">&para;</a></h2>
+<div class="language-cmake highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nb">include</span><span class="p">(</span><span class="s">cmake/CPM.cmake</span><span class="p">)</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">CPMAddPackage</span><span class="p">(</span><span class="s2">"gh:SiddiqSoft/sip2json#v3.0.0"</span><span class="p">)</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="nb">target_link_libraries</span><span class="p">(</span><span class="s">your_target</span><span class="w"> </span><span class="s">PRIVATE</span><span class="w"> </span><span class="s">sip2json::sip2json</span><span class="p">)</span>
+</span></code></pre></div>
 <hr />
-<h2 id="2-64-bit-fnv-1a-hash-matching-vs-sso-string-comparison">2. 64-Bit FNV-1a Hash Matching vs. SSO String Comparison<a class="headerlink" href="#2-64-bit-fnv-1a-hash-matching-vs-sso-string-comparison" title="Permanent link">&para;</a></h2>
-<h3 id="the-architectural-question">The Architectural Question<a class="headerlink" href="#the-architectural-question" title="Permanent link">&para;</a></h3>
-<p>Why is 64-bit FNV-1a integer hash <code>switch (h)</code> matching <strong>+74.4% to +93.8% faster</strong> than <code>std::string</code> or <code>std::string_view</code> string comparisons, even when Small String Optimization (SSO) avoids heap allocations?</p>
-<h3 id="key-hardware-compiler-factors">Key Hardware &amp; Compiler Factors<a class="headerlink" href="#key-hardware-compiler-factors" title="Permanent link">&para;</a></h3>
-<ol>
-<li><strong>Zero String Memory Allocations or Copies</strong>:</li>
-<li>
-<p>Computing the 64-bit FNV-1a hash (<code>hash_header_key</code>) operates directly over raw character pointers with inline ASCII lowercasing (<code>c | 0x20</code>). It eliminates <code>std::string lowerKey</code> allocations, string copying, and <code>std::transform</code> loops entirely.</p>
-</li>
-<li>
-<p><strong><code>constexpr</code> Compile-Time Switch Labels</strong>:</p>
-</li>
-<li>
-<p>The switch statement uses <code>case hash_header_key("from"):</code> compile-time constant expressions evaluated directly by the C++23 compiler. <code>HeaderKeySet</code> static objects remain lightweight and decoupled without storing redundant hash member variables.</p>
-</li>
-<li>
-<p><strong>100% Zero Hash Collisions Across All Canonical Headers</strong>:</p>
-</li>
-<li>
-<p>64-bit FNV-1a produces <strong>50 unique 64-bit hash values</strong> with zero collisions across all standard SIP headers, compact field abbreviations (<code>v</code>, <code>f</code>, <code>t</code>, <code>i</code>, <code>c</code>, <code>l</code>, <code>m</code>, <code>s</code>, <code>k</code>, <code>e</code>), and alternate names (<code>uthorization</code>).</p>
-</li>
-<li>
-<p><strong>Jump Table Generation vs. Mispredicted <code>if-else</code> Chains</strong>:</p>
-</li>
-<li><code>std::string</code> / <code>std::string_view</code> sequential comparisons (<code>if (key == "Via") ... else if ...</code>) force the CPU through up to 30 sequential conditional branches. Each mispredicted branch incurs a <strong>15–20 CPU cycle penalty</strong>.</li>
-<li>
-<p>Integer <code>switch (h)</code> statements are compiled into a <strong>Direct Jump Table</strong> (an $O(1)$ indirect branch array). The CPU computes <code>h</code> and jumps directly to the static <code>HFS_*</code> reference in <strong>1 clock cycle</strong> without full-string <code>memcmp</code> checks.</p>
-</li>
-<li>
-<p><strong>Fast-Path Exit for Custom Headers</strong>:</p>
-</li>
-<li>Custom headers (<code>X-</code>) match <code>keyFromPayload[0] == 'x' &amp;&amp; keyFromPayload[1] == '-'</code> in <strong>2 bitwise instructions</strong>, dropping directly to custom key handling without touching canonical string lookup branches.</li>
-</ol>
+<h2 id="cmake-fetchcontent">CMake FetchContent<a class="headerlink" href="#cmake-fetchcontent" title="Permanent link">&para;</a></h2>
+<div class="language-cmake highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">include</span><span class="p">(</span><span class="s">FetchContent</span><span class="p">)</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nb">FetchContent_Declare</span><span class="p">(</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="s">sip2json</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="s">GIT_REPOSITORY</span><span class="w"> </span><span class="s">https://github.com/SiddiqSoft/sip2json.git</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="s">GIT_TAG</span><span class="w">        </span><span class="s">v3.0.0</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="p">)</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="nb">FetchContent_MakeAvailable</span><span class="p">(</span><span class="s">sip2json</span><span class="p">)</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="nb">target_link_libraries</span><span class="p">(</span><span class="s">your_target</span><span class="w"> </span><span class="s">PRIVATE</span><span class="w"> </span><span class="s">sip2json::sip2json</span><span class="p">)</span>
+</span></code></pre></div>
 <hr />
-<h2 id="3-optimization-summary-table">3. Optimization Summary Table<a class="headerlink" href="#3-optimization-summary-table" title="Permanent link">&para;</a></h2>
+<h2 id="build-options">Build Options<a class="headerlink" href="#build-options" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th style="text-align: left;">Optimization Technique</th>
-<th style="text-align: left;">Replaced Pattern</th>
-<th style="text-align: left;">Performance Gain</th>
-<th style="text-align: left;">Hardware Mechanism</th>
+<th style="text-align: left;">Option</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><strong>CTRE Startline Regex Simplification</strong></td>
-<td style="text-align: left;"><code>[\r\n|\n]</code> set-matching character class</td>
-<td style="text-align: left;"><strong>+6.0% to +6.8% throughput</strong></td>
-<td style="text-align: left;">Replaced character class brackets with <code>\r?\n</code>; reduced CTRE compile-time template instantiation depth by <strong>&gt;85%</strong> (~150 vs &gt;1000 depth) resolving MSVC <code>error C2999</code></td>
+<td style="text-align: left;"><code>sip2json_BUILD_TESTS</code></td>
+<td style="text-align: left;"><code>OFF</code></td>
+<td style="text-align: left;">Build unit tests (requires GoogleTest).</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>64-bit FNV-1a Hash <code>switch(h)</code></strong></td>
-<td style="text-align: left;">Sequential <code>std::string</code> <code>if-else</code> chain</td>
-<td style="text-align: left;"><strong>+74.4% throughput</strong></td>
-<td style="text-align: left;">100% collision-free 64-bit FNV-1a hash matching via 1-cycle $O(1)$ jump table</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong><code>constexpr</code> Compile-Time Labels</strong></td>
-<td style="text-align: left;">Dynamic runtime string hashing</td>
-<td style="text-align: left;"><strong>0 ns overhead</strong></td>
-<td style="text-align: left;"><code>constexpr</code> compile-time <code>hash_header_key(...)</code> evaluated directly into switch jump table</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Bitwise Register Case-Folding</strong></td>
-<td style="text-align: left;"><code>std::transform(::tolower)</code></td>
-<td style="text-align: left;"><strong>-42.6% latency</strong></td>
-<td style="text-align: left;">Converts ASCII case in-register during 64-bit FNV-1a hashing</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Merged <code>HeaderKeySet</code> Architecture</strong></td>
-<td style="text-align: left;"><code>CanonicalHeaderKeyResult</code> wrapper</td>
-<td style="text-align: left;"><strong>+4.8% throughput</strong></td>
-<td style="text-align: left;">Eliminates temporary wrapper objects; enables 1-cycle pointer comparison (<code>&amp;keySet == &amp;HFS_CONTENT_LENGTH</code>)</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Inline Stream Callback (<code>parseAsync</code>)</strong></td>
-<td style="text-align: left;">Vector accumulation (<code>std::vector&lt;sipmessage&gt;</code>)</td>
-<td style="text-align: left;"><strong>+93.8% vs master</strong></td>
-<td style="text-align: left;">Zero-copy execution directly on network buffer</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Fast-Path <code>X-</code> Header Branch</strong></td>
-<td style="text-align: left;">Sequential canonical check loop</td>
-<td style="text-align: left;"><strong>2 CPU cycles</strong></td>
-<td style="text-align: left;">Immediate bitmask check for custom headers</td>
+<td style="text-align: left;"><code>sip2json_BUILD_BENCHMARKS</code></td>
+<td style="text-align: left;"><code>OFF</code></td>
+<td style="text-align: left;">Build benchmark suite.</td>
 </tr>
 </tbody>
 </table>
+<hr />
+<h2 id="building-with-presets">Building with Presets<a class="headerlink" href="#building-with-presets" title="Permanent link">&para;</a></h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>cmake<span class="w"> </span>--preset<span class="w"> </span>Darwin-Clang-Release
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>cmake<span class="w"> </span>--build<span class="w"> </span>--preset<span class="w"> </span>Darwin-Clang-Release
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>ctest<span class="w"> </span>--preset<span class="w"> </span>Darwin-Clang-Release<span class="w"> </span>-j<span class="w"> </span><span class="m">4</span>
+</span></code></pre></div>
 
 
 
@@ -1934,7 +1648,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../benchmarks/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Performance &amp; Benchmarks">
+          <a href="../" class="md-footer__link md-footer__link--prev" aria-label="Previous: Getting Started">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1944,20 +1658,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Performance & Benchmarks
+                Getting Started
               </div>
             </div>
           </a>
         
         
           
-          <a href="../json_schema/" class="md-footer__link md-footer__link--next" aria-label="Next: JSON Metaphor &amp; Schema">
+          <a href="../dependencies/" class="md-footer__link md-footer__link--next" aria-label="Next: Dependencies">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                JSON Metaphor & Schema
+                Dependencies
               </div>
             </div>
             <div class="md-footer__button md-icon">
@@ -1994,7 +1708,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.0.0-beta.1"}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "toc.integrate", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.0.0-beta.1"}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>

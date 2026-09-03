@@ -12,13 +12,13 @@
         <meta name="author" content="Siddiq Software LLC">
       
       
-        <link rel="canonical" href="https://siddiqsoft.github.io/sip2json/api/">
+        <link rel="canonical" href="https://siddiqsoft.github.io/sip2json/quickstart/">
       
       
-        <link rel="prev" href="../quickstart/nuget/">
+        <link rel="prev" href="..">
       
       
-        <link rel="next" href="sipmessage/">
+        <link rel="next" href="cmake/">
       
       
         
@@ -29,7 +29,7 @@
     
     
       
-        <title>Overview - sip2json</title>
+        <title>Getting Started - sip2json</title>
       
     
     
@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#api-reference" class="md-skip">
+        <a href="#quick-start" class="md-skip">
           Skip to content
         </a>
       
@@ -121,7 +121,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Overview
+              Getting Started
             
           </span>
         </div>
@@ -250,11 +250,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../quickstart/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
           
   
   
@@ -270,13 +272,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="./" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../api/" class="md-tabs__link">
           
   
   
@@ -430,28 +430,31 @@
       
   
   
+    
   
   
+  
     
     
     
     
+      
+        
+        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
-        
-          
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
             
   
   
@@ -469,7 +472,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -484,10 +487,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../quickstart/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -503,6 +533,120 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-add-to-cmake" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Add to CMake
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-include-header" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Include Header
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-parse-or-serialize" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Parse or Serialize
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#topics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Topics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Topics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cmake-cpm-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CMake &amp; CPM Integration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#project-dependencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Project Dependencies
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nuget-package" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NuGet Package
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#windows-prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Windows Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -515,7 +659,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../quickstart/cmake/" class="md-nav__link">
+      <a href="cmake/" class="md-nav__link">
         
   
   
@@ -543,7 +687,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../quickstart/dependencies/" class="md-nav__link">
+      <a href="dependencies/" class="md-nav__link">
         
   
   
@@ -571,7 +715,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../quickstart/nuget/" class="md-nav__link">
+      <a href="nuget/" class="md-nav__link">
         
   
   
@@ -603,31 +747,28 @@
       
   
   
-    
   
   
-  
     
     
     
     
-      
-        
-        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
             
   
   
@@ -645,7 +786,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
@@ -660,37 +801,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Overview
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../api/" class="md-nav__link">
         
   
   
@@ -706,87 +820,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#core-api-components" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Core API Components
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#code-examples" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Code Examples
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Code Examples">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#asynchronous-stream-parsing" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Asynchronous Stream Parsing
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#message-serialization" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Message Serialization
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#examples-overview" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Examples Overview
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -799,7 +832,7 @@
   
   
     <li class="md-nav__item">
-      <a href="sipmessage/" class="md-nav__link">
+      <a href="../api/sipmessage/" class="md-nav__link">
         
   
   
@@ -827,7 +860,7 @@
   
   
     <li class="md-nav__item">
-      <a href="sip2json/" class="md-nav__link">
+      <a href="../api/sip2json/" class="md-nav__link">
         
   
   
@@ -855,7 +888,7 @@
   
   
     <li class="md-nav__item">
-      <a href="errors/" class="md-nav__link">
+      <a href="../api/errors/" class="md-nav__link">
         
   
   
@@ -883,7 +916,7 @@
   
   
     <li class="md-nav__item">
-      <a href="json_schema/" class="md-nav__link">
+      <a href="../api/json_schema/" class="md-nav__link">
         
   
   
@@ -911,7 +944,7 @@
   
   
     <li class="md-nav__item">
-      <a href="sdp/" class="md-nav__link">
+      <a href="../api/sdp/" class="md-nav__link">
         
   
   
@@ -945,13 +978,10 @@
       
       
         
-          
-          
-        
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
@@ -960,7 +990,7 @@
         <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_7" >
         
           
-          <label class="md-nav__link" for="__nav_3_7" id="__nav_3_7_label" tabindex="">
+          <label class="md-nav__link" for="__nav_3_7" id="__nav_3_7_label" tabindex="0">
             
   
   
@@ -996,7 +1026,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/" class="md-nav__link">
+      <a href="../api/examples/" class="md-nav__link">
         
   
   
@@ -1024,7 +1054,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/async_parsing/" class="md-nav__link">
+      <a href="../api/examples/async_parsing/" class="md-nav__link">
         
   
   
@@ -1052,7 +1082,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/serialization/" class="md-nav__link">
+      <a href="../api/examples/serialization/" class="md-nav__link">
         
   
   
@@ -1563,7 +1593,7 @@
         <a href="./" class="md-path__link">
           
   <span class="md-ellipsis">
-    API Reference
+    Quick Start
   </span>
 
         </a>
@@ -1585,78 +1615,93 @@
   
 
 
-<h1 id="api-reference">API Reference<a class="headerlink" href="#api-reference" title="Permanent link">&para;</a></h1>
-<p>The <code>siddiqsoft::sip2json</code> namespace provides data structures, stream parsing utilities, error definitions, and serialization functions for SIP message processing in Modern C++23.</p>
+<h1 id="quick-start">Quick Start<a class="headerlink" href="#quick-start" title="Permanent link">&para;</a></h1>
+<h2 id="1-add-to-cmake">1. Add to CMake<a class="headerlink" href="#1-add-to-cmake" title="Permanent link">&para;</a></h2>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">CPM.cmake</label><label for="__tabbed_1_2">FetchContent</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-cmake highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nb">include</span><span class="p">(</span><span class="s">cmake/CPM.cmake</span><span class="p">)</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">CPMAddPackage</span><span class="p">(</span><span class="s2">"gh:SiddiqSoft/sip2json#v3.0.0"</span><span class="p">)</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="nb">target_link_libraries</span><span class="p">(</span><span class="s">your_target</span><span class="w"> </span><span class="s">PRIVATE</span><span class="w"> </span><span class="s">sip2json::sip2json</span><span class="p">)</span>
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-cmake highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">include</span><span class="p">(</span><span class="s">FetchContent</span><span class="p">)</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nb">FetchContent_Declare</span><span class="p">(</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="s">sip2json</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="s">GIT_REPOSITORY</span><span class="w"> </span><span class="s">https://github.com/SiddiqSoft/sip2json.git</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="s">GIT_TAG</span><span class="w">        </span><span class="s">v3.0.0</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="p">)</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="nb">FetchContent_MakeAvailable</span><span class="p">(</span><span class="s">sip2json</span><span class="p">)</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="nb">target_link_libraries</span><span class="p">(</span><span class="s">your_target</span><span class="w"> </span><span class="s">PRIVATE</span><span class="w"> </span><span class="s">sip2json::sip2json</span><span class="p">)</span>
+</span></code></pre></div>
+</div>
+</div>
+</div>
 <hr />
-<h2 id="core-api-components">Core API Components<a class="headerlink" href="#core-api-components" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th style="text-align: left;">Component</th>
-<th style="text-align: left;">Category</th>
-<th style="text-align: left;">Description</th>
-<th style="text-align: left;">Reference</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;"><strong><code>sipmessage</code></strong></td>
-<td style="text-align: left;">Primary DTO Class</td>
-<td style="text-align: left;">High-level DTO representing SIP requests and responses. Inherits <code>nlohmann::json</code> for zero-overhead JSON serialization.</td>
-<td style="text-align: left;"><a href="sipmessage/"><code>sipmessage</code></a></td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong><code>sip2json</code></strong></td>
-<td style="text-align: left;">Core Functions</td>
-<td style="text-align: left;">Static methods: <code>parse</code> (single-message), <code>parseAsync</code> (zero-copy iterator stream callback), and <code>serialize</code> (wire format).</td>
-<td style="text-align: left;"><a href="sip2json/"><code>sip2json</code></a></td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong><code>sip2json_exception</code></strong></td>
-<td style="text-align: left;">Exceptions</td>
-<td style="text-align: left;">Custom exception type thrown on parse syntax errors or wire-format validation failures.</td>
-<td style="text-align: left;"><a href="errors/"><code>Errors &amp; Exceptions</code></a></td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong><code>sip2jsonErrors</code></strong></td>
-<td style="text-align: left;">Error Codes</td>
-<td style="text-align: left;">Strongly-typed enum class defining non-fatal and fatal parser status codes.</td>
-<td style="text-align: left;"><a href="errors/"><code>Errors &amp; Exceptions</code></a></td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>JSON Metaphor &amp; Schema</strong></td>
-<td style="text-align: left;">Wire Model</td>
-<td style="text-align: left;">Specification for the compact single-character key schema (<code>s</code>, <code>h</code>, <code>b</code>, <code>meta</code>) mapping SIP frames to JSON.</td>
-<td style="text-align: left;"><a href="json_schema/">JSON Schema</a></td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>SDP Support</strong></td>
-<td style="text-align: left;">Media Descriptors</td>
-<td style="text-align: left;">Native Session Description Protocol parsing and serialization into structured <code>/b/sdp</code> objects.</td>
-<td style="text-align: left;"><a href="sdp/">SDP Support</a></td>
-</tr>
-</tbody>
-</table>
+<h2 id="2-include-header">2. Include Header<a class="headerlink" href="#2-include-header" title="Permanent link">&para;</a></h2>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"siddiqsoft/sip2json.hpp"</span>
+</span></code></pre></div>
 <hr />
-<h2 id="code-examples">Code Examples<a class="headerlink" href="#code-examples" title="Permanent link">&para;</a></h2>
-<p>Practical, ready-to-compile snippets demonstrating primary usage patterns:</p>
+<h2 id="3-parse-or-serialize">3. Parse or Serialize<a class="headerlink" href="#3-parse-or-serialize" title="Permanent link">&para;</a></h2>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Parse Stream</label><label for="__tabbed_2_2">Serialize</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"siddiqsoft/sip2json.hpp"</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">raw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"REGISTER sip:example.com SIP/2.0</span><span class="se">\r\n</span><span class="s">Call-ID: abc-123</span><span class="se">\r\n</span><span class="s">CSeq: 1 REGISTER</span><span class="se">\r\n</span><span class="s">Content-Length: 0</span><span class="se">\r\n\r\n</span><span class="s">"</span><span class="p">;</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">    </span><span class="n">siddiqsoft</span><span class="o">::</span><span class="n">sip2json</span><span class="o">::</span><span class="n">parseAsync</span><span class="p">(</span><span class="n">raw</span><span class="p">,</span><span class="w"> </span><span class="p">[](</span><span class="n">siddiqsoft</span><span class="o">::</span><span class="n">sipmessage</span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">msg</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">msg</span><span class="p">.</span><span class="n">getMethod</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">" "</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">msg</span><span class="p">.</span><span class="n">getUri</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">    </span><span class="p">});</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="p">}</span>
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"siddiqsoft/sip2json.hpp"</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">    </span><span class="n">siddiqsoft</span><span class="o">::</span><span class="n">sipmessage</span><span class="w"> </span><span class="n">msg</span><span class="p">(</span><span class="n">siddiqsoft</span><span class="o">::</span><span class="n">METHOD_INVITE</span><span class="p">,</span><span class="w"> </span><span class="s">"sip:user@example.com"</span><span class="p">,</span><span class="w"> </span><span class="s">"call-id-998"</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">    </span><span class="n">msg</span><span class="p">.</span><span class="n">setHeader</span><span class="p">(</span><span class="n">siddiqsoft</span><span class="o">::</span><span class="n">HF_FROM</span><span class="p">,</span><span class="w"> </span><span class="s">"sip:caller@example.com"</span><span class="p">)</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">       </span><span class="p">.</span><span class="n">setHeader</span><span class="p">(</span><span class="n">siddiqsoft</span><span class="o">::</span><span class="n">HF_TO</span><span class="p">,</span><span class="w"> </span><span class="s">"sip:user@example.com"</span><span class="p">);</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">siddiqsoft</span><span class="o">::</span><span class="n">sip2json</span><span class="o">::</span><span class="n">serialize</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="p">}</span>
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<hr />
+<h2 id="topics">Topics<a class="headerlink" href="#topics" title="Permanent link">&para;</a></h2>
 <div class="grid">
 <div class="card">
-<h3 id="asynchronous-stream-parsing"><a href="examples/async_parsing/">Asynchronous Stream Parsing</a><a class="headerlink" href="#asynchronous-stream-parsing" title="Permanent link">&para;</a></h3>
-<p>Process continuous TCP/TLS stream buffers with multi-frame batches and partial frame preservation using zero-copy callbacks.</p>
-<p><a href="examples/async_parsing/">View Stream Example <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span></a></p>
+<h3 id="cmake-cpm-integration"><a href="cmake/">CMake &amp; CPM Integration</a><a class="headerlink" href="#cmake-cpm-integration" title="Permanent link">&para;</a></h3>
+<p>Detailed CMake, FetchContent, and build options.</p>
+<p><a href="cmake/">CMake Guide <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span></a></p>
 </div>
 <div class="card">
-<h3 id="message-serialization"><a href="examples/serialization/">Message Serialization</a><a class="headerlink" href="#message-serialization" title="Permanent link">&para;</a></h3>
-<p>Construct SIP INVITE requests with headers and SDP media descriptions using fluent builder methods, and serialize to RFC 3261 wire format.</p>
-<p><a href="examples/serialization/">View Serialization Example <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span></a></p>
+<h3 id="project-dependencies"><a href="dependencies/">Project Dependencies</a><a class="headerlink" href="#project-dependencies" title="Permanent link">&para;</a></h3>
+<p>Dependency breakdown (<code>nlohmann_json</code>).</p>
+<p><a href="dependencies/">Dependencies <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span></a></p>
 </div>
 <div class="card">
-<h3 id="examples-overview"><a href="examples/">Examples Overview</a><a class="headerlink" href="#examples-overview" title="Permanent link">&para;</a></h3>
-<p>Full directory of code examples, common usage patterns, and integration recipes.</p>
-<p><a href="examples/">View All Examples <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span></a></p>
+<h3 id="nuget-package"><a href="nuget/">NuGet Package</a><a class="headerlink" href="#nuget-package" title="Permanent link">&para;</a></h3>
+<p>Visual Studio and MSBuild setup.</p>
+<p><a href="nuget/">NuGet Guide <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span></a></p>
 </div>
 </div>
+<hr />
+<h2 id="windows-prerequisites">Windows Prerequisites<a class="headerlink" href="#windows-prerequisites" title="Permanent link">&para;</a></h2>
+<p>Enable long paths for CPM package caching:</p>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c"># Run as Administrator</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="nb">New-ItemProperty</span> <span class="n">-Path</span> <span class="s2">"HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem"</span> <span class="n">-Name</span> <span class="s2">"LongPathsEnabled"</span> <span class="n">-Value</span> <span class="n">1</span> <span class="n">-PropertyType</span> <span class="n">DWORD</span> <span class="n">-Force</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">git</span> <span class="n">config</span> <span class="p">-</span><span class="n">-global</span> <span class="n">core</span><span class="p">.</span><span class="n">longpaths</span> <span class="n">true</span>
+</span></code></pre></div>
 
 
 
@@ -1692,7 +1737,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../quickstart/nuget/" class="md-footer__link md-footer__link--prev" aria-label="Previous: NuGet Package">
+          <a href=".." class="md-footer__link md-footer__link--prev" aria-label="Previous: Home">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1702,20 +1747,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                NuGet Package
+                Home
               </div>
             </div>
           </a>
         
         
           
-          <a href="sipmessage/" class="md-footer__link md-footer__link--next" aria-label="Next: sipmessage">
+          <a href="cmake/" class="md-footer__link md-footer__link--next" aria-label="Next: CMake &amp; CPM">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                sipmessage
+                CMake & CPM
               </div>
             </div>
             <div class="md-footer__button md-icon">

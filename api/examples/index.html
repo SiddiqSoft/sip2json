@@ -12,13 +12,13 @@
         <meta name="author" content="Siddiq Software LLC">
       
       
-        <link rel="canonical" href="https://siddiqsoft.github.io/sip2json/integration/cmake/">
+        <link rel="canonical" href="https://siddiqsoft.github.io/sip2json/api/examples/">
       
       
-        <link rel="prev" href="../">
+        <link rel="prev" href="../sdp/">
       
       
-        <link rel="next" href="../dependencies/">
+        <link rel="next" href="async_parsing/">
       
       
         
@@ -29,7 +29,7 @@
     
     
       
-        <title>CMake & Submodules - sip2json</title>
+        <title>Overview - sip2json</title>
       
     
     
@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#cmake-submodules-integration" class="md-skip">
+        <a href="#code-examples" class="md-skip">
           Skip to content
         </a>
       
@@ -121,7 +121,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              CMake & Submodules
+              Overview
             
           </span>
         </div>
@@ -254,11 +254,11 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../features/" class="md-tabs__link">
+        <a href="../../quickstart/" class="md-tabs__link">
           
   
   
-  Features
+  Quick Start
 
         </a>
       </li>
@@ -280,7 +280,7 @@
           
   
   
-  Integration
+  API Reference
 
         </a>
       </li>
@@ -316,51 +316,11 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../api/" class="md-tabs__link">
-          
-  
-  
-  API Reference
-
-        </a>
-      </li>
-    
-  
-
-      
-        
-  
-  
-  
-  
-    
-    
-      <li class="md-tabs__item">
-        <a href="../../examples/" class="md-tabs__link">
-          
-  
-  
-  Examples
-
-        </a>
-      </li>
-    
-  
-
-      
-        
-  
-  
-  
-  
-    
-    
-      <li class="md-tabs__item">
         <a href="../../maintainers/pipelines/" class="md-tabs__link">
           
   
   
-  Maintainers
+  Maintainer Guide
 
         </a>
       </li>
@@ -413,7 +373,9 @@
   
 
 
-<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="sip2json" class="md-nav__button md-logo" aria-label="sip2json" data-md-component="logo">
       
@@ -496,7 +458,7 @@
   <span class="md-ellipsis">
     
   
-    Features
+    Quick Start
   
 
     
@@ -512,7 +474,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Features
+    Quick Start
   
 
           </label>
@@ -525,14 +487,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/" class="md-nav__link">
+      <a href="../../quickstart/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Overview
+    Getting Started
   
 
     
@@ -553,14 +515,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/async/" class="md-nav__link">
+      <a href="../../quickstart/cmake/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Async Stream Parsing
+    CMake & CPM
   
 
     
@@ -581,14 +543,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/benchmarks/" class="md-nav__link">
+      <a href="../../quickstart/dependencies/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Performance & Benchmarks
+    Dependencies
   
 
     
@@ -609,126 +571,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/optimization_choices/" class="md-nav__link">
+      <a href="../../quickstart/nuget/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Optimization Choices
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../features/json_schema/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    JSON Metaphor & Schema
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../features/sdp/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    SDP Support
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../features/compliance/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Standards Compliance
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../features/test_suite_sources/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Test Suite Sources & IETF Links
+    NuGet Package
   
 
     
@@ -784,7 +634,7 @@
   <span class="md-ellipsis">
     
   
-    Integration
+    API Reference
   
 
     
@@ -800,7 +650,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Integration
+    API Reference
   
 
           </label>
@@ -820,7 +670,7 @@
   <span class="md-ellipsis">
     
   
-    Quick Start
+    Overview
   
 
     
@@ -833,6 +683,203 @@
   
 
               
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sipmessage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    sipmessage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sip2json/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    sip2json Functions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../errors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Exceptions & Errors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../json_schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    JSON Schema & Metaphor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SDP Support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_7" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_7" id="__nav_3_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Examples
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -857,7 +904,7 @@
   <span class="md-ellipsis">
     
   
-    CMake & Submodules
+    Overview
   
 
     
@@ -875,7 +922,7 @@
   <span class="md-ellipsis">
     
   
-    CMake & Submodules
+    Overview
   
 
     
@@ -901,43 +948,49 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#modern-cmake-integration-via-cpm" class="md-nav__link">
+  <a href="#available-examples" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Modern CMake Integration via CPM
+        Available Examples
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Available Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#asynchronous-stream-parsing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Asynchronous Stream Parsing
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#fetchcontent-integration" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#message-construction-serialization" class="md-nav__link">
     <span class="md-ellipsis">
       
-        FetchContent Integration
+        Message Construction &amp; Serialization
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#build-options" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Build Options
-      
-    </span>
-  </a>
+        
+      </ul>
+    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#building-from-source-with-cmake-presets" class="md-nav__link">
+  <a href="#quick-reference-links" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Building from Source with CMake Presets
+        Quick Reference Links
       
     </span>
   </a>
@@ -960,14 +1013,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../dependencies/" class="md-nav__link">
+      <a href="async_parsing/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Dependencies Diagram
+    Stream Parsing
   
 
     
@@ -988,14 +1041,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../nuget/" class="md-nav__link">
+      <a href="serialization/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    NuGet Package
+    Message Serialization
   
 
     
@@ -1004,6 +1057,14 @@
   
 
       </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -1161,6 +1222,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../../architecture/async/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Async Stream Mechanics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/optimization_choices/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Optimization Choices
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../architecture/native_vs_json/" class="md-nav__link">
         
   
@@ -1168,7 +1285,91 @@
   <span class="md-ellipsis">
     
   
-    Native vs JSON Study
+    Native vs. JSON Study
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/benchmarks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Performance & Benchmarks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/compliance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Standards Compliance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/test_suite_sources/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Test Suite & RFC Reference
   
 
     
@@ -1221,7 +1422,7 @@
   <span class="md-ellipsis">
     
   
-    API Reference
+    Maintainer Guide
   
 
     
@@ -1237,325 +1438,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    API Reference
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Overview
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/sipmessage/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    sipmessage
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/sip2json/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    sip2json Functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/errors/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Exceptions & Errors
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
-        
-          
-          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Examples
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_6">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Examples
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../examples/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Overview
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../examples/async_parsing/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Stream Parsing Callback
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../examples/serialization/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Message Serialization
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
-        
-          
-          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Maintainers
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_7">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Maintainers
+    Maintainer Guide
   
 
           </label>
@@ -1575,7 +1458,7 @@
   <span class="md-ellipsis">
     
   
-    Maintainer & CI/CD Guide
+    CI/CD & Presets Architecture
   
 
     
@@ -1630,76 +1513,6 @@
               </div>
             
             
-              
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
-                <div class="md-sidebar__scrollwrap">
-                  <div class="md-sidebar__inner">
-                    
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#modern-cmake-integration-via-cpm" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Modern CMake Integration via CPM
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#fetchcontent-integration" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        FetchContent Integration
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#build-options" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Build Options
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#building-from-source-with-cmake-presets" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Building from Source with CMake Presets
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-                  </div>
-                </div>
-              </div>
-            
           
           
             <div class="md-content" data-md-component="content">
@@ -1739,7 +1552,25 @@
         <a href="../" class="md-path__link">
           
   <span class="md-ellipsis">
-    Integration
+    API Reference
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="./" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Examples
   </span>
 
         </a>
@@ -1761,81 +1592,30 @@
   
 
 
-<h1 id="cmake-submodules-integration">CMake &amp; Submodules Integration<a class="headerlink" href="#cmake-submodules-integration" title="Permanent link">&para;</a></h1>
-<p><code>sip2json</code> provides full CMake target support with exported target <code>sip2json::sip2json</code>.</p>
+<h1 id="code-examples">Code Examples<a class="headerlink" href="#code-examples" title="Permanent link">&para;</a></h1>
+<p>Practical, ready-to-use implementations demonstrating common <code>sip2json</code> tasks. For full class specifications and method signatures, see the <a href="../">API Reference</a>.</p>
 <hr />
-<h2 id="modern-cmake-integration-via-cpm">Modern CMake Integration via CPM<a class="headerlink" href="#modern-cmake-integration-via-cpm" title="Permanent link">&para;</a></h2>
-<p><a href="https://github.com/cpm-cmake/CPM.cmake">CPM.cmake</a> is the recommended package manager for C++ CMake projects:</p>
-<div class="language-cmake highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nb">cmake_minimum_required</span><span class="p">(</span><span class="s">VERSION</span><span class="w"> </span><span class="s">3.23</span><span class="p">)</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">project</span><span class="p">(</span><span class="s">MySipApp</span><span class="w"> </span><span class="s">LANGUAGES</span><span class="w"> </span><span class="s">CXX</span><span class="p">)</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_CXX_STANDARD</span><span class="w"> </span><span class="s">23</span><span class="p">)</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_CXX_STANDARD_REQUIRED</span><span class="w"> </span><span class="s">ON</span><span class="p">)</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="nb">include</span><span class="p">(</span><span class="s">cmake/CPM.cmake</span><span class="p">)</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="nb">CPMAddPackage</span><span class="p">(</span><span class="s2">"gh:SiddiqSoft/sip2json#v3.0.0"</span><span class="p">)</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="nb">add_executable</span><span class="p">(</span><span class="s">MySipApp</span><span class="w"> </span><span class="s">main.cpp</span><span class="p">)</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="nb">target_link_libraries</span><span class="p">(</span><span class="s">MySipApp</span><span class="w"> </span><span class="s">PRIVATE</span><span class="w"> </span><span class="s">sip2json::sip2json</span><span class="p">)</span>
-</span></code></pre></div>
-<p><code>CPMAddPackage</code> automatically resolves dependent packages (<code>nlohmann_json</code> and <code>ctre</code>).</p>
+<h2 id="available-examples">Available Examples<a class="headerlink" href="#available-examples" title="Permanent link">&para;</a></h2>
+<div class="grid">
+<div class="card">
+<h3 id="asynchronous-stream-parsing"><a href="async_parsing/">Asynchronous Stream Parsing</a><a class="headerlink" href="#asynchronous-stream-parsing" title="Permanent link">&para;</a></h3>
+<p>Read continuous TCP/TLS frame streams, handle partial frames, and process messages asynchronously via callbacks with zero buffer copying.</p>
+<p><a href="async_parsing/">View Example <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span></a></p>
+</div>
+<div class="card">
+<h3 id="message-construction-serialization"><a href="serialization/">Message Construction &amp; Serialization</a><a class="headerlink" href="#message-construction-serialization" title="Permanent link">&para;</a></h3>
+<p>Build RFC 3261-compliant SIP INVITE requests with custom headers and SDP bodies using fluent builder chaining, and serialize to wire format.</p>
+<p><a href="serialization/">View Example <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span></a></p>
+</div>
+</div>
 <hr />
-<h2 id="fetchcontent-integration">FetchContent Integration<a class="headerlink" href="#fetchcontent-integration" title="Permanent link">&para;</a></h2>
-<p>If you prefer CMake's built-in <code>FetchContent</code> module:</p>
-<div class="language-cmake highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">include</span><span class="p">(</span><span class="s">FetchContent</span><span class="p">)</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="nb">FetchContent_Declare</span><span class="p">(</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="s">sip2json</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="s">GIT_REPOSITORY</span><span class="w"> </span><span class="s">https://github.com/SiddiqSoft/sip2json.git</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="s">GIT_TAG</span><span class="w">        </span><span class="s">v3.0.0</span>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="p">)</span>
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="nb">FetchContent_MakeAvailable</span><span class="p">(</span><span class="s">sip2json</span><span class="p">)</span>
-</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
-</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="nb">target_link_libraries</span><span class="p">(</span><span class="s">your_target</span><span class="w"> </span><span class="s">PRIVATE</span><span class="w"> </span><span class="s">sip2json::sip2json</span><span class="p">)</span>
-</span></code></pre></div>
-<hr />
-<h2 id="build-options">Build Options<a class="headerlink" href="#build-options" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th style="text-align: left;">Option</th>
-<th style="text-align: left;">Default</th>
-<th style="text-align: left;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;"><code>sip2json_HEADERKEY_MODE_INSENSITIVE</code></td>
-<td style="text-align: left;"><code>ON</code></td>
-<td style="text-align: left;">Enable RFC 3261 case-insensitive header key matching and normalization to canonical Pascal-Kebab-Case keys (<code>Content-Length</code>, <code>Via</code>, <code>Call-ID</code>, etc.) and compact form abbreviations (<code>l</code>, <code>v</code>, <code>i</code>, <code>c</code>, <code>m</code>, <code>f</code>, <code>t</code>, <code>s</code>, <code>e</code>).</td>
-</tr>
-<tr>
-<td style="text-align: left;"><code>sip2json_BUILD_TESTS</code></td>
-<td style="text-align: left;"><code>OFF</code></td>
-<td style="text-align: left;">Build unit tests (requires GoogleTest)</td>
-</tr>
-<tr>
-<td style="text-align: left;"><code>sip2json_BUILD_BENCHMARKS</code></td>
-<td style="text-align: left;"><code>OFF</code></td>
-<td style="text-align: left;">Build performance benchmark suite</td>
-</tr>
-</tbody>
-</table>
-<hr />
-<h2 id="building-from-source-with-cmake-presets">Building from Source with CMake Presets<a class="headerlink" href="#building-from-source-with-cmake-presets" title="Permanent link">&para;</a></h2>
-<p>If you are cloning and developing <code>sip2json</code> directly, the repository provides multi-platform CMake Presets (<code>Apple-Debug</code>, <code>Apple-Release</code>, <code>Darwin-Clang-Release</code>, <code>Linux-Clang-Release</code>, <code>Linux-GCC-Release</code>, <code>Windows-x64-Release</code>):</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Configure, build, and test</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>cmake<span class="w"> </span>--preset<span class="w"> </span>Darwin-Clang-Release
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>cmake<span class="w"> </span>--build<span class="w"> </span>--preset<span class="w"> </span>Darwin-Clang-Release
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>ctest<span class="w"> </span>--preset<span class="w"> </span>Darwin-Clang-Release<span class="w"> </span>-j<span class="w"> </span><span class="m">4</span>
-</span></code></pre></div>
-<p>For full preset architecture, project configuration via <code>project-base.json</code>, and CI/CD workflows, see the <a href="../../maintainers/pipelines/">Maintainer Guide &amp; CI/CD Pipeline</a>.</p>
-<hr />
-<blockquote>
-<p>[!TIP]
-<strong>Windows Environment Setup Note</strong>: To prevent CTRE template expansion <code>filename too long</code> errors on Windows, run <a href="https://github.com/SiddiqSoft/sip2json/blob/master/scripts/prep_windows_machine.ps1"><code>scripts/prep_windows_machine.ps1</code></a> as Administrator to enable Registry <code>LongPathsEnabled = 1</code> and Git <code>core.longpaths = true</code>. See the <a href="../#windows-prerequisites-long-paths-ctre-support">Integration Guide Overview</a> for full details.</p>
-</blockquote>
+<h2 id="quick-reference-links">Quick Reference Links<a class="headerlink" href="#quick-reference-links" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="../sipmessage/"><code>sipmessage</code> Class Specification</a></li>
+<li><a href="../sip2json/"><code>sip2json</code> Static Functions</a></li>
+<li><a href="../errors/">Exception &amp; Error Handling</a></li>
+<li><a href="../json_schema/">JSON Schema Specification</a></li>
+</ul>
 
 
 
@@ -1871,7 +1651,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../" class="md-footer__link md-footer__link--prev" aria-label="Previous: Quick Start">
+          <a href="../sdp/" class="md-footer__link md-footer__link--prev" aria-label="Previous: SDP Support">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1881,20 +1661,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Quick Start
+                SDP Support
               </div>
             </div>
           </a>
         
         
           
-          <a href="../dependencies/" class="md-footer__link md-footer__link--next" aria-label="Next: Dependencies Diagram">
+          <a href="async_parsing/" class="md-footer__link md-footer__link--next" aria-label="Next: Stream Parsing">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Dependencies Diagram
+                Stream Parsing
               </div>
             </div>
             <div class="md-footer__button md-icon">
@@ -1931,7 +1711,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.0.0-beta.1"}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "toc.integrate", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.0.0-beta.1"}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
