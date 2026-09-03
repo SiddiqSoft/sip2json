@@ -1,6 +1,21 @@
 # `sipmessage` Class Reference
 
-The `sipmessage` class represents a parsed or constructed SIP request or response message, extending `nlohmann::json`.
+The `sipmessage` class represents a parsed or constructed SIP request or response message, extending [`nlohmann::json`](json_schema.md). Construct messages via [Constructors](#constructors) or decode them via [`sip2json::parse`](sip2json.md#parse) and [`sip2json::parseAsync`](sip2json.md#parseasync).
+
+---
+
+## Method Summary
+
+| Member / Method | Return Type | Description |
+| :--- | :--- | :--- |
+| [`sipmessage()`](#default-constructor) | Constructor | Creates an empty instance with initialized metadata. |
+| [`sipmessage(...)`](#request-constructor) | Constructor | Initializes a request message with method, URI, Call-ID, and CSeq. |
+| [`getHeader<T>`](#getheader) | `auto` / `T` | Retrieves header value by key with optional fallback. |
+| [`setHeader`](#setheader) | `sipmessage&` | Sets or updates header value (fluent chaining). |
+| [`getMethodView`](#zero-copy-view-accessors) | `std::string_view` | Direct view into internal JSON method string with zero allocations. |
+| [`getUriView`](#zero-copy-view-accessors) | `std::string_view` | Direct view into internal JSON URI string with zero allocations. |
+| [`getReasonView`](#zero-copy-view-accessors) | `std::string_view` | Direct view into internal JSON reason phrase string with zero allocations. |
+| [`getCallIDView`](#zero-copy-view-accessors) | `std::string_view` | Direct view into internal JSON Call-ID string with zero allocations. |
 
 ---
 
@@ -77,3 +92,12 @@ std::string_view getCallIDView() const;
 ```
 
 Returns a `std::string_view` pointing directly into internal JSON string storage with zero allocations.
+
+---
+
+## Related References
+
+* [`sip2json` Parsing & Serialization Functions](sip2json.md)
+* [JSON Schema Specification](json_schema.md)
+* [Error & Exception Types](errors.md)
+* [Message Construction & Serialization Example](examples/serialization.md)

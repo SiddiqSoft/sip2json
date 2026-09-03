@@ -47,3 +47,12 @@ SDP lines (`v=`, `o=`, `s=`, `c=`, `t=`, `m=`, `a=`) are parsed into structured 
 * Flag attributes like `a=sendrecv` are stored as boolean `true`.
 * Repeated attribute keys like `a=rtpmap:...` are accumulated into array values.
 * Key-value attributes like `a=fmtp:101 0-16` are separated into string mappings.
+
+---
+
+## Related References
+
+* [`sipmessage` Class Reference](sipmessage.md)
+* [`sip2json` Parsing & Serialization Functions](sip2json.md)
+* [JSON Schema Specification](json_schema.md)
+* [Message Serialization with SDP Example](examples/serialization.md)
