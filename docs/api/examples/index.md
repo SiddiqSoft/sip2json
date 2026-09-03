@@ -1,6 +1,6 @@
 # Code Examples
 
-Practical, ready-to-use implementations demonstrating common `sip2json` tasks. For full class specifications and method signatures, see the [API Reference](../api/index.md).
+Practical, ready-to-use implementations demonstrating common `sip2json` tasks. For full class specifications and method signatures, see the [API Reference](../index.md).
 
 ---
 
@@ -34,7 +34,7 @@ Build RFC 3261-compliant SIP INVITE requests with custom headers and SDP bodies 
 
 ## Quick Reference Links
 
-* [`sipmessage` Class Specification](../api/sipmessage.md)
-* [`sip2json` Static Functions](../api/sip2json.md)
-* [Exception & Error Handling](../api/errors.md)
-* [JSON Schema Specification](../features/json_schema.md)
+* [`sipmessage` Class Specification](../sipmessage.md)
+* [`sip2json` Static Functions](../sip2json.md)
+* [Exception & Error Handling](../errors.md)
+* [JSON Schema Specification](../json_schema.md)

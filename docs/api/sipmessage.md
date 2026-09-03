@@ -6,10 +6,9 @@ The `sipmessage` class represents a parsed or constructed SIP request or respons
 
 ## Optimal Usage Guidelines
 
-> [!TIP]
-> **Performance Best Practice**:
-> For maximum throughput and zero-allocation key lookups, use the pre-defined library constants (`siddiqsoft::METHOD_*`, `siddiqsoft::HF_*`, `siddiqsoft::CONTENT_TYPE_*`).
-> Passing static string constants yields a **13.2% performance gain for `setHeader`** and a **4.8% gain for `getHeader`** over raw string literals.
+!!! tip "Performance Best Practice"
+    For maximum throughput and zero-allocation key lookups, use the pre-defined library constants (`siddiqsoft::METHOD_*`, `siddiqsoft::HF_*`, `siddiqsoft::CONTENT_TYPE_*`).
+    Passing static string constants yields a **13.2% performance gain for `setHeader`** and a **4.8% gain for `getHeader`** over raw string literals.
 
 ```cpp
 // OPTIMAL (Zero-Allocation Static Reference Path)

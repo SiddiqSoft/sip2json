@@ -220,8 +220,8 @@ def main():
     parser.add_argument(
         "--also-output",
         type=str,
-        default="docs/integration/dependencies.md",
-        help="Additional file path to write to (default: docs/integration/dependencies.md)",
+        default="docs/quickstart/dependencies.md",
+        help="Additional file path to write to (default: docs/quickstart/dependencies.md)",
     )
 
     args = parser.parse_args()

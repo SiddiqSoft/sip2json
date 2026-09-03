@@ -68,21 +68,21 @@ Stream buffer iteration, rvalue move semantics, zero-copy iterator advancement, 
 
 <div class="card" markdown="1">
 
-### [Async Stream Parsing](../features/async.md)
+### [Async Stream Parsing](async.md)
 
 Mechanics of continuous TCP/TLS stream processing, multi-frame batches, and partial frame residual retention.
 
-[Learn Stream Mechanics :octicons-arrow-right-24:](../features/async.md)
+[Learn Stream Mechanics :octicons-arrow-right-24:](async.md)
 
 </div>
 
 <div class="card" markdown="1">
 
-### [Optimization Choices](../features/optimization_choices.md)
+### [Optimization Choices](optimization_choices.md)
 
 64-bit FNV-1a hash matching, compile-time jump tables, in-register case folding, and CTRE template depth reduction.
 
-[View Optimizations :octicons-arrow-right-24:](../features/optimization_choices.md)
+[View Optimizations :octicons-arrow-right-24:](optimization_choices.md)
 
 </div>
 
@@ -98,31 +98,31 @@ Empirical trade-off study comparing standalone native C++ structs against `nlohm
 
 <div class="card" markdown="1">
 
-### [Performance & Benchmarks](../features/benchmarks.md)
+### [Performance & Benchmarks](benchmarks.md)
 
 High-throughput empirical benchmarks (~39.5k msgs/sec), per-message latency, and single-stream vs. thread pool analysis.
 
-[View Benchmarks :octicons-arrow-right-24:](../features/benchmarks.md)
+[View Benchmarks :octicons-arrow-right-24:](benchmarks.md)
 
 </div>
 
 <div class="card" markdown="1">
 
-### [Standards Compliance](../features/compliance.md)
+### [Standards Compliance](compliance.md)
 
 Concurrence with RFC 3261, RFC 4475 (SIP Torture 50 test cases), RFC 4566/8866 (SDP), and WebRTC specifications.
 
-[View Standards :octicons-arrow-right-24:](../features/compliance.md)
+[View Standards :octicons-arrow-right-24:](compliance.md)
 
 </div>
 
 <div class="card" markdown="1">
 
-### [Test Suite & RFC Reference](../features/test_suite_sources.md)
+### [Test Suite & RFC Reference](test_suite_sources.md)
 
 Section-by-section mapping of test runner files, sample fixtures, and direct links to official IETF specifications.
 
-[View Test Sources :octicons-arrow-right-24:](../features/test_suite_sources.md)
+[View Test Sources :octicons-arrow-right-24:](test_suite_sources.md)
 
 </div>
 

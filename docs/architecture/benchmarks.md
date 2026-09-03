@@ -28,10 +28,10 @@
 <!-- PIPELINE_BENCHMARKS_START -->
 ## 1. Multi-Platform & Cross-Architecture Pipeline Benchmark Matrix
 
-> [!NOTE]
-> **Build Release & Version**: `{ version }` | **Branch**: `release/2.6.0`
-> **Host Runner Environment Legend (Derived at Build Time)**:
-> - **Build Runner (Self-Hosted)**: macOS 26.6.2 (arm64, 11 CPU Cores)
+!!! note "Build Release & Runner Environment"
+    **Build Release & Version**: `{ version }` | **Branch**: `release/2.6.0`
+    **Host Runner Environment Legend (Derived at Build Time)**:
+    - **Build Runner (Self-Hosted)**: macOS 26.6.2 (arm64, 11 CPU Cores)
 
 *Empirical build pipeline measurements collected across matrix runners grouped by operating system platform:*
 
@@ -164,9 +164,8 @@ flowchart LR
     end
 ```
 
-> [!TIP]
-> **Zero Mutex Contention**
-> Because `sip2json` parses a message in **~25.3 microseconds**, queue locks (`std::mutex`), condition variable wakeups, and CPU cache invalidations take longer than parsing the message itself. Processing messages directly inside the callback preserves L1/L2 cache locality.
+!!! tip "Zero Mutex Contention"
+    Because `sip2json` parses a message in **~25.3 microseconds**, queue locks (`std::mutex`), condition variable wakeups, and CPU cache invalidations take longer than parsing the message itself. Processing messages directly inside the callback preserves L1/L2 cache locality.
 
 ---
 

@@ -64,45 +64,41 @@ code, kbd, pre {
 /* Navigation Column Highlighting (Glanceable Current Section & Item)        */
 /* -------------------------------------------------------------------------- */
 
-/* Active page link in the left sidebar navigation */
-.md-sidebar--primary .md-nav__link--active,
-.md-sidebar--primary .md-nav__item--active > a.md-nav__link {
+/* Active Section Header in primary navigation */
+.md-sidebar--primary .md-nav__item--section.md-nav__item--active > .md-nav__link,
+.md-sidebar--primary .md-nav__item--nested.md-nav__item--active > .md-nav__link {
+  background-color: var(--s2j-highlight-bg);
+  border-radius: 6px;
+  font-weight: 700;
+  color: var(--md-primary-fg-color, #3f51b5) !important;
+  padding: 0.35rem 0.6rem;
+  margin-bottom: 0.25rem;
+}
+
+/* Current Active Page link in primary navigation */
+.md-sidebar--primary .md-nav__link--active:not(.md-nav__link--passed) {
   background-color: var(--s2j-active-bg) !important;
   color: var(--md-primary-fg-color, #3f51b5) !important;
   font-weight: 600 !important;
-  border-left: 3.5px solid var(--s2j-highlight-border) !important;
-  padding-left: 0.65rem !important;
+  border-left: 3px solid var(--s2j-highlight-border) !important;
+  padding-left: 0.6rem !important;
   border-radius: 0 6px 6px 0 !important;
-  transition: background-color 0.15s ease, border-color 0.15s ease;
 }
 
-/* Active section container label / header in primary nav */
-.md-sidebar--primary .md-nav__item--section.md-nav__item--active > label.md-nav__link,
-.md-sidebar--primary .md-nav__item--section.md-nav__item--active > a.md-nav__link,
-.md-sidebar--primary .md-nav__item--nested.md-nav__item--active > label.md-nav__link {
-  background-color: var(--s2j-highlight-bg);
-  border-left: 3.5px solid var(--s2j-highlight-border);
-  padding-left: 0.65rem;
-  border-radius: 0 6px 6px 0;
-  font-weight: 700;
-  color: var(--md-primary-fg-color, #3f51b5);
-}
-
-/* Hover state for primary sidebar links */
+/* Inactive nav link hover */
 .md-sidebar--primary .md-nav__link:hover:not(.md-nav__link--active) {
   background-color: rgba(63, 81, 181, 0.04);
   border-radius: 4px;
-  transition: background-color 0.15s ease;
 }
 
 [data-md-color-scheme="slate"] .md-sidebar--primary .md-nav__link:hover:not(.md-nav__link--active) {
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: rgba(255, 255, 255, 0.04);
 }
 
-/* Table of contents integration inside active item */
+/* Secondary Table of Contents (nested in sidebar) */
 .md-sidebar--primary .md-nav--secondary {
   border-left: 1.5px solid rgba(63, 81, 181, 0.15);
-  margin-left: 0.85rem;
+  margin-left: 0.75rem;
   padding-left: 0.35rem;
 }
 
@@ -110,8 +106,8 @@ code, kbd, pre {
   background-color: transparent !important;
   color: var(--md-accent-fg-color, #3f51b5) !important;
   font-weight: 600;
-  border-left: 2px solid var(--s2j-highlight-border) !important;
-  padding-left: 0.4rem !important;
+  border-left: none !important;
+  padding-left: 0.25rem !important;
 }
 
 /* -------------------------------------------------------------------------- */

@@ -108,8 +108,8 @@ def get_host_runner_info() -> str:
     return f"{os_detail} ({arch_name}, {cpu_count} CPU Cores)"
 
 def update_benchmarks_doc(repo_root: Path, platform_results: list, require_all: bool = False, required_str: str = ""):
-    """Dynamically update docs/features/benchmarks.md between PIPELINE_BENCHMARKS markers."""
-    doc_path = repo_root / "docs" / "features" / "benchmarks.md"
+    """Dynamically update docs/architecture/benchmarks.md between PIPELINE_BENCHMARKS markers."""
+    doc_path = repo_root / "docs" / "architecture" / "benchmarks.md"
     if not doc_path.exists():
         print(f"[publish_benchmarks] Warning: {doc_path} not found.", flush=True)
         return
@@ -154,13 +154,13 @@ def update_benchmarks_doc(repo_root: Path, platform_results: list, require_all: 
         start_marker,
         "## 1. Multi-Platform & Cross-Architecture Pipeline Benchmark Matrix",
         "",
-        "> [!NOTE]",
-        "> **Build Release & Version**: `{ version }` | **Branch**: `release/2.6.0`",
-        "> **Host Runner Environment Legend (Derived at Build Time)**:"
+        "!!! note \"Build Release & Runner Environment\"",
+        "    **Build Release & Version**: `{ version }` | **Branch**: `release/2.6.0`",
+        "    **Host Runner Environment Legend (Derived at Build Time)**:"
     ]
 
     for leg in host_legends:
-        table_lines.append(f"> {leg}")
+        table_lines.append(f"    {leg}")
 
     table_lines.extend([
         "",

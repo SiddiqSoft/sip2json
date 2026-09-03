@@ -71,5 +71,5 @@ For full preset architecture, project configuration via `project-base.json`, and
 
 ---
 
-> [!TIP]
-> **Windows Environment Setup Note**: To prevent CTRE template expansion `filename too long` errors on Windows, run [`scripts/prep_windows_machine.ps1`](https://github.com/SiddiqSoft/sip2json/blob/master/scripts/prep_windows_machine.ps1) as Administrator to enable Registry `LongPathsEnabled = 1` and Git `core.longpaths = true`. See the [Integration Guide Overview](index.md#windows-prerequisites-long-paths-ctre-support) for full details.
+!!! tip "Windows Environment Setup Note"
+    To prevent CTRE template expansion `filename too long` errors on Windows, run [`scripts/prep_windows_machine.ps1`](https://github.com/SiddiqSoft/sip2json/blob/master/scripts/prep_windows_machine.ps1) as Administrator to enable Registry `LongPathsEnabled = 1` and Git `core.longpaths = true`. See the [Quick Start Guide](index.md#windows-prerequisites-long-paths-ctre-support) for full details.

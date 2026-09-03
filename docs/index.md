@@ -117,11 +117,11 @@
 
 <div class="card" markdown="1">
 
-### [Quick Start](integration/index.md)
+### [Quick Start](quickstart/index.md)
 
 Get up and running in minutes. Includes CMake CPM & FetchContent integration, project dependencies, and Windows environment prerequisites.
 
-[Start Quick Start :octicons-arrow-right-24:](integration/index.md)
+[Start Quick Start :octicons-arrow-right-24:](quickstart/index.md)
 
 </div>
 
@@ -129,7 +129,7 @@ Get up and running in minutes. Includes CMake CPM & FetchContent integration, pr
 
 ### [API Reference](api/index.md)
 
-Comprehensive reference for `sipmessage`, `sip2json` parser/serializer functions, error handling, JSON schema mapping, SDP support, and [**Code Examples**](examples/index.md).
+Comprehensive reference for `sipmessage`, `sip2json` parser/serializer functions, error handling, JSON schema mapping, SDP support, and [**Code Examples**](api/examples/index.md).
 
 [Explore API Reference :octicons-arrow-right-24:](api/index.md)
 
@@ -139,7 +139,7 @@ Comprehensive reference for `sipmessage`, `sip2json` parser/serializer functions
 
 ### [Architecture & Design](architecture/index.md)
 
-Deep-dive into zero-copy data flow, design patterns, 64-bit FNV-1a hash matching, [**Performance Benchmarks**](features/benchmarks.md), and [**Standards Compliance**](features/compliance.md).
+Deep-dive into zero-copy data flow, design patterns, 64-bit FNV-1a hash matching, [**Performance Benchmarks**](architecture/benchmarks.md), and [**Standards Compliance**](architecture/compliance.md).
 
 [Read Architecture Guide :octicons-arrow-right-24:](architecture/index.md)
 

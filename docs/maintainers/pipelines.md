@@ -56,8 +56,8 @@ The build matrix targets Windows, Linux, and macOS (Darwin) across `x64` and `ar
 | **Linux** | `x64`, `arm64` | Clang (17+), GCC (13+) | `Linux-${compiler}-${buildType}` | `.azure/az-build-unix.yml` | Binaries, CTest JUnit XML, Benchmarks, Coverage XML |
 | **Darwin (macOS)** | `x64`, `arm64` | AppleClang (Xcode / CLT) | `Darwin-Clang-${buildType}` | `.azure/az-build-unix.yml` | Binaries, CTest JUnit XML, Benchmarks |
 
-> [!NOTE]
-> **Unified Unix Pipeline**: The Linux and Darwin stages share the parameterized template `.azure/az-build-unix.yml`. It dynamically adapts agent OS demands, compiler flags, and preset names based on the target platform.
+!!! note "Unified Unix Pipeline"
+    The Linux and Darwin stages share the parameterized template `.azure/az-build-unix.yml`. It dynamically adapts agent OS demands, compiler flags, and preset names based on the target platform.
 
 ---
 
@@ -178,8 +178,8 @@ cmake --build --preset <preset-name>
 ctest --preset <preset-name> -j 4
 ```
 
-> [!TIP]
-> **Test Execution Parallelism**: Specifying `-j <num_workers>` (e.g. `-j 4`) with `ctest` runs tests efficiently across worker threads without hitting operating system process limits.
+!!! tip "Test Execution Parallelism"
+    Specifying `-j <num_workers>` (e.g. `-j 4`) with `ctest` runs tests efficiently across worker threads without hitting operating system process limits.
 
 ### 2. Standalone Validation Subproject Testing
 
@@ -251,8 +251,45 @@ sequenceDiagram
 
 ### Dynamic Versioning & Documentation Hooks
 1. **[`docs/hooks.py`](https://github.com/SiddiqSoft/sip2json/blob/master/docs/hooks.py)**: Dynamically injects GitVersion SemVer into site metadata (`config['extra']['version']`) and replaces `{{ version }}` / `{{ tag_version }}` placeholders across markdown files.
-2. **[`scripts/publish_benchmarks.py`](https://github.com/SiddiqSoft/sip2json/blob/master/scripts/publish_benchmarks.py)**: Collects benchmark outputs across build matrix platforms, extracts CPU architecture and core count, and renders responsive platform-grouped benchmark tables and Mermaid charts into [`docs/features/benchmarks.md`](https://siddiqsoft.github.io/sip2json/features/benchmarks/).
+2. **[`scripts/publish_benchmarks.py`](https://github.com/SiddiqSoft/sip2json/blob/master/scripts/publish_benchmarks.py)**: Collects benchmark outputs across build matrix platforms, extracts CPU architecture and core count, and renders responsive platform-grouped benchmark tables and visual comparison charts into [`docs/architecture/benchmarks.md`](../architecture/benchmarks.md).
 3. **NuGet Status**: NuGet packaging and publication have been deprecated and disabled in pipeline definitions. Header-only CMake (`CPMAddPackage` / `FetchContent`) is the standard distribution channel.
+
+---
+
+## Building & Previewing Documentation Locally
+
+Maintainers can preview and validate documentation changes locally before pushing:
+
+### 1. Live-Reload Development Server
+
+```bash
+# Activate Python environment and install requirements
+source venv/bin/activate
+pip install -r docs/requirements.txt
+
+# Start live-reloading server
+mkdocs serve
+```
+
+* **Local URL**: Open [`http://127.0.0.1:8000/`](http://127.0.0.1:8000/) in your browser.
+* **Live Reload**: Any edits saved in `docs/` files update automatically in real time.
+
+### 2. Strict Build Validation
+
+Verify there are zero broken links or markdown syntax issues:
+
+```bash
+mkdocs build --strict
+```
+
+The output compiles into `site/`. Open `site/index.html` directly in any browser.
+
+### 3. Updating Benchmark Data Prior to Serving
+
+```bash
+python3 scripts/publish_benchmarks.py
+mkdocs serve
+```
 
 ---
 
