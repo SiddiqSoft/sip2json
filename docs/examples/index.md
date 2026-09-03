@@ -1,18 +1,18 @@
 # Code Examples
 
-Explore sample implementations demonstrating common `sip2json` tasks.
+Practical, ready-to-use implementations demonstrating common `sip2json` tasks. For full class specifications and method signatures, see the [API Reference](../api/index.md).
 
 ---
 
-## Examples List
+## Available Examples
 
 <div class="grid" markdown="1">
 
 <div class="card" markdown="1">
 
-### Asynchronous Stream Parsing
+### [Asynchronous Stream Parsing](async_parsing.md)
 
-Read TCP frame streams, handle partial frames, and process messages asynchronously via callbacks.
+Read continuous TCP/TLS frame streams, handle partial frames, and process messages asynchronously via callbacks with zero buffer copying.
 
 [View Example :octicons-arrow-right-24:](async_parsing.md)
 
@@ -20,12 +20,21 @@ Read TCP frame streams, handle partial frames, and process messages asynchronous
 
 <div class="card" markdown="1">
 
-### Message Construction & Serialization
+### [Message Construction & Serialization](serialization.md)
 
-Build SIP INVITE requests with headers and SDP bodies, and serialize them to wire format.
+Build RFC 3261-compliant SIP INVITE requests with custom headers and SDP bodies using fluent builder chaining, and serialize to wire format.
 
 [View Example :octicons-arrow-right-24:](serialization.md)
 
 </div>
 
 </div>
+
+---
+
+## Quick Reference Links
+
+* [`sipmessage` Class Specification](../api/sipmessage.md)
+* [`sip2json` Static Functions](../api/sip2json.md)
+* [Exception & Error Handling](../api/errors.md)
+* [JSON Schema Specification](../features/json_schema.md)

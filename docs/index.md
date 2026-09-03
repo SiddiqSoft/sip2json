@@ -111,10 +111,49 @@
 
 ---
 
-## Navigation
+## Documentation Themes
 
-- [**Features**](features/index.md): Streaming parser, JSON schema, SDP body processing, [**Standards Compliance**](features/compliance.md), and [**Test Suite Sources & IETF Links**](features/test_suite_sources.md).
-- [**Integration**](integration/index.md): CMake CPM, Git submodules, and build setup.
-- [**Architecture**](architecture/index.md): Stateless design, iterator processing, and memory layout.
-- [**API Reference**](api/index.md): Comprehensive specifications for `sipmessage`, `sip2json` methods, and exceptions.
-- [**Examples**](examples/index.md): Sample applications and integration snippets.
+<div class="grid" markdown="1">
+
+<div class="card" markdown="1">
+
+### [Quick Start](integration/index.md)
+
+Get up and running in minutes. Includes CMake CPM & FetchContent integration, project dependencies, and Windows environment prerequisites.
+
+[Start Quick Start :octicons-arrow-right-24:](integration/index.md)
+
+</div>
+
+<div class="card" markdown="1">
+
+### [API Reference](api/index.md)
+
+Comprehensive reference for `sipmessage`, `sip2json` parser/serializer functions, error handling, JSON schema mapping, SDP support, and [**Code Examples**](examples/index.md).
+
+[Explore API Reference :octicons-arrow-right-24:](api/index.md)
+
+</div>
+
+<div class="card" markdown="1">
+
+### [Architecture & Design](architecture/index.md)
+
+Deep-dive into zero-copy data flow, design patterns, 64-bit FNV-1a hash matching, [**Performance Benchmarks**](features/benchmarks.md), and [**Standards Compliance**](features/compliance.md).
+
+[Read Architecture Guide :octicons-arrow-right-24:](architecture/index.md)
+
+</div>
+
+<div class="card" markdown="1">
+
+### [Maintainer Guide](maintainers/pipelines.md)
+
+Complete CI/CD workflow guide, cross-platform CMake presets architecture, dynamic versioning hooks, and Azure DevOps release automation.
+
+[View Maintainer Guide :octicons-arrow-right-24:](maintainers/pipelines.md)
+
+</div>
+
+</div>
+

@@ -4,6 +4,30 @@
   --md-font-main: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
   --md-font-code: "JetBrains Mono", SFMono-Regular, Consolas, Menlo, monospace;
   --md-typeset-font-size: 0.85rem;
+
+  /* Theme accent palette */
+  --s2j-primary: #3f51b5;
+  --s2j-primary-hover: #303f9f;
+  --s2j-accent: #4f46e5;
+  --s2j-highlight-bg: rgba(63, 81, 181, 0.08);
+  --s2j-highlight-border: #3f51b5;
+  --s2j-active-bg: rgba(63, 81, 181, 0.12);
+  --s2j-card-border: rgba(0, 0, 0, 0.08);
+  --s2j-pill-success-bg: rgba(16, 185, 129, 0.12);
+  --s2j-pill-success-text: #059669;
+  --s2j-pill-info-bg: rgba(59, 130, 246, 0.12);
+  --s2j-pill-info-text: #2563eb;
+}
+
+[data-md-color-scheme="slate"] {
+  --s2j-highlight-bg: rgba(129, 140, 248, 0.14);
+  --s2j-highlight-border: #818cf8;
+  --s2j-active-bg: rgba(129, 140, 248, 0.22);
+  --s2j-card-border: rgba(255, 255, 255, 0.1);
+  --s2j-pill-success-bg: rgba(52, 211, 153, 0.2);
+  --s2j-pill-success-text: #6ee7b7;
+  --s2j-pill-info-bg: rgba(96, 165, 250, 0.2);
+  --s2j-pill-info-text: #93c5fd;
 }
 
 /* Base typography */
@@ -36,7 +60,63 @@ code, kbd, pre {
   }
 }
 
-/* Badge Container Styling */
+/* -------------------------------------------------------------------------- */
+/* Navigation Column Highlighting (Glanceable Current Section & Item)        */
+/* -------------------------------------------------------------------------- */
+
+/* Active page link in the left sidebar navigation */
+.md-sidebar--primary .md-nav__link--active,
+.md-sidebar--primary .md-nav__item--active > a.md-nav__link {
+  background-color: var(--s2j-active-bg) !important;
+  color: var(--md-primary-fg-color, #3f51b5) !important;
+  font-weight: 600 !important;
+  border-left: 3.5px solid var(--s2j-highlight-border) !important;
+  padding-left: 0.65rem !important;
+  border-radius: 0 6px 6px 0 !important;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+/* Active section container label / header in primary nav */
+.md-sidebar--primary .md-nav__item--section.md-nav__item--active > label.md-nav__link,
+.md-sidebar--primary .md-nav__item--section.md-nav__item--active > a.md-nav__link,
+.md-sidebar--primary .md-nav__item--nested.md-nav__item--active > label.md-nav__link {
+  background-color: var(--s2j-highlight-bg);
+  border-left: 3.5px solid var(--s2j-highlight-border);
+  padding-left: 0.65rem;
+  border-radius: 0 6px 6px 0;
+  font-weight: 700;
+  color: var(--md-primary-fg-color, #3f51b5);
+}
+
+/* Hover state for primary sidebar links */
+.md-sidebar--primary .md-nav__link:hover:not(.md-nav__link--active) {
+  background-color: rgba(63, 81, 181, 0.04);
+  border-radius: 4px;
+  transition: background-color 0.15s ease;
+}
+
+[data-md-color-scheme="slate"] .md-sidebar--primary .md-nav__link:hover:not(.md-nav__link--active) {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Table of contents integration inside active item */
+.md-sidebar--primary .md-nav--secondary {
+  border-left: 1.5px solid rgba(63, 81, 181, 0.15);
+  margin-left: 0.85rem;
+  padding-left: 0.35rem;
+}
+
+.md-sidebar--primary .md-nav--secondary .md-nav__link--active {
+  background-color: transparent !important;
+  color: var(--md-accent-fg-color, #3f51b5) !important;
+  font-weight: 600;
+  border-left: 2px solid var(--s2j-highlight-border) !important;
+  padding-left: 0.4rem !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Badge Container Styling                                                   */
+/* -------------------------------------------------------------------------- */
 .badge-container {
   display: flex;
   flex-wrap: wrap;
@@ -50,54 +130,235 @@ code, kbd, pre {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Table Styling & Overflow Protection                                       */
+/* Modern Table Styling                                                      */
 /* -------------------------------------------------------------------------- */
 .md-typeset table:not([class]) {
-  font-size: 0.85rem; /* Increased table content font size */
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  border-radius: 6px;
+  font-size: 0.85rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border-radius: 8px;
   overflow: hidden;
   border-collapse: separate;
   border-spacing: 0;
-  margin-top: 1em;
-  margin-bottom: 1.5em;
+  margin-top: 1.2em;
+  margin-bottom: 1.8em;
   width: 100%;
+  border: 1px solid var(--s2j-card-border);
 }
 
 .md-typeset table:not([class]) th {
-  background-color: var(--md-primary-bg-color, #3f51b5);
-  color: var(--md-primary-fg-color, #ffffff);
+  background: linear-gradient(180deg, #3f51b5 0%, #303f9f 100%);
+  color: #ffffff;
   font-weight: 600;
-  padding: 0.8rem 1.1rem;
+  letter-spacing: 0.02em;
+  padding: 0.85rem 1.1rem;
   text-align: left;
-  font-size: 0.875rem;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.1);
 }
 
 [data-md-color-scheme="slate"] .md-typeset table:not([class]) th {
-  background-color: rgba(63, 81, 181, 0.25);
-  color: var(--md-default-fg-color);
+  background: linear-gradient(180deg, rgba(63, 81, 181, 0.4) 0%, rgba(48, 63, 159, 0.4) 100%);
+  color: #e0e7ff;
+  border-bottom-color: rgba(255, 255, 255, 0.1);
 }
 
 .md-typeset table:not([class]) td {
-  padding: 0.8rem 1.1rem;
+  padding: 0.85rem 1.1rem;
   border-top: 1px solid var(--md-default-fg-color--lightest, #e0e0e0);
-  vertical-align: top;
+  vertical-align: middle;
 }
 
-/* Prevent unnatural single-character line wraps for inline code in table cells */
-.md-typeset table:not([class]) td code,
-.md-typeset table:not([class]) th code {
-  white-space: nowrap;
-  font-size: 0.875em;
-  padding: 0.15em 0.35em;
-  word-break: keep-all;
+[data-md-color-scheme="slate"] .md-typeset table:not([class]) td {
+  border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+.md-typeset table:not([class]) tr:nth-child(even) td {
+  background-color: rgba(0, 0, 0, 0.015);
+}
+
+[data-md-color-scheme="slate"] .md-typeset table:not([class]) tr:nth-child(even) td {
+  background-color: rgba(255, 255, 255, 0.02);
 }
 
 .md-typeset table:not([class]) tr:hover td {
-  background-color: var(--md-accent-fg-color--transparent, rgba(63, 81, 181, 0.05));
+  background-color: var(--s2j-highlight-bg);
+  transition: background-color 0.15s ease;
 }
 
-/* Enhanced Code Blocks */
+.md-typeset table:not([class]) td code,
+.md-typeset table:not([class]) th code {
+  white-space: nowrap;
+  font-size: 0.85em;
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Modern Metric KPI Stat Cards                                              */
+/* -------------------------------------------------------------------------- */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin: 1.25rem 0 1.75rem 0;
+}
+
+.kpi-card {
+  padding: 1.25rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--s2j-card-border);
+  background-color: var(--md-default-bg-color);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+}
+
+.kpi-value {
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: var(--md-primary-fg-color, #3f51b5);
+  line-height: 1.1;
+  margin-bottom: 0.35rem;
+}
+
+[data-md-color-scheme="slate"] .kpi-value {
+  color: #818cf8;
+}
+
+.kpi-label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--md-default-fg-color--light, #666);
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.kpi-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2em 0.55em;
+  border-radius: 12px;
+  background-color: var(--s2j-pill-success-bg);
+  color: var(--s2j-pill-success-text);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Modern Visual Bar Comparison Chart                                        */
+/* -------------------------------------------------------------------------- */
+.modern-chart {
+  background: var(--md-default-bg-color);
+  border: 1px solid var(--s2j-card-border);
+  border-radius: 8px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  margin: 1.5rem 0;
+}
+
+.chart-row {
+  margin-bottom: 1.1rem;
+}
+
+.chart-row:last-child {
+  margin-bottom: 0;
+}
+
+.chart-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.35rem;
+  font-size: 0.85rem;
+}
+
+.chart-title {
+  font-weight: 600;
+  color: var(--md-default-fg-color);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.chart-val {
+  font-family: var(--md-font-code);
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--md-default-fg-color);
+}
+
+.chart-track {
+  width: 100%;
+  height: 14px;
+  background-color: rgba(0, 0, 0, 0.06);
+  border-radius: 7px;
+  overflow: hidden;
+}
+
+[data-md-color-scheme="slate"] .chart-track {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.chart-bar {
+  height: 100%;
+  border-radius: 7px;
+  transition: width 0.6s ease-out;
+}
+
+.chart-bar-primary {
+  background: linear-gradient(90deg, #4f46e5 0%, #3f51b5 100%);
+}
+
+.chart-bar-secondary {
+  background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+}
+
+.chart-bar-muted {
+  background: linear-gradient(90deg, #94a3b8 0%, #64748b 100%);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Status Pills & Badges                                                     */
+/* -------------------------------------------------------------------------- */
+.pill {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.15rem 0.5rem;
+  border-radius: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.pill-success {
+  background-color: var(--s2j-pill-success-bg);
+  color: var(--s2j-pill-success-text);
+}
+
+.pill-info {
+  background-color: var(--s2j-pill-info-bg);
+  color: var(--s2j-pill-info-text);
+}
+
+.pill-neutral {
+  background-color: rgba(148, 163, 184, 0.2);
+  color: #64748b;
+}
+
+[data-md-color-scheme="slate"] .pill-neutral {
+  background-color: rgba(148, 163, 184, 0.2);
+  color: #94a3b8;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Enhanced Code Blocks & Permalinks                                         */
+/* -------------------------------------------------------------------------- */
 .md-typeset pre > code {
   border-radius: 6px;
   font-size: 0.85em;
@@ -121,7 +382,7 @@ code, kbd, pre {
 .card {
   padding: 1.25rem;
   border-radius: 8px;
-  border: 1px solid var(--md-default-fg-color--lightest);
+  border: 1px solid var(--s2j-card-border);
   background-color: var(--md-default-bg-color);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -145,7 +406,6 @@ code, kbd, pre {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-/* Permalinks */
 .md-typeset .headerlink {
   transition: opacity 0.2s ease;
 }

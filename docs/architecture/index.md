@@ -1,21 +1,21 @@
 # Architecture & Design Overview
 
-`sip2json` is engineered around zero-copy design principles, stateless execution, and modern C++23 type safety.
+`sip2json` is engineered around zero-copy design principles, stateless execution, compile-time regular expression optimization, and modern C++23 type safety.
 
 ---
 
 ## Architectural Principles
 
-1. **Stateless Operations**: Neither `sipmessage` nor `sip2json` maintain internal connection state or state machine logic.
-2. **First-Class JSON Representation**: Data models serialize cleanly to/from `nlohmann::json` objects.
-3. **Iterator-Based Stream Parsing**: Stream functions process iterators directly, supporting non-blocking stream buffer drains.
-4. **Header-Only Implementation**: Zero compiled library artifacts; easily integrated into CMake projects.
+1. **Stateless Operations**: Neither `sipmessage` nor `sip2json` maintain internal connection state or dialog state machine logic.
+2. **First-Class JSON Representation**: Data models serialize cleanly to and from `nlohmann::json` objects with zero transformation layers.
+3. **Iterator-Based Stream Parsing**: Stream functions process raw string iterators directly, supporting non-blocking stream buffer drains.
+4. **Header-Only Implementation**: Zero compiled binary dependencies; single `#include "siddiqsoft/sip2json.hpp"`.
 
 ---
 
 ## Header Layout & Modular Architecture
 
-`sip2json` uses a clean header layout separating public interfaces from private implementation details under `include/siddiqsoft/`:
+`sip2json` separates public interfaces from private implementation details under `include/siddiqsoft/`:
 
 ```
 include/siddiqsoft/
@@ -30,14 +30,100 @@ include/siddiqsoft/
     └── sip2json_utils.hpp             # Utilities, CTRE regexes & date formatters
 ```
 
-* **Single Include Entry**: End-user applications include `#include "siddiqsoft/sip2json.hpp"`.
-* **Decoupled Private Implementations**: Core parsing, SDP processing, serialization, and exception handling are split into focused private headers within `private/`.
-* **Header-Only Library**: Entirely inline implementation requiring no compiled library binaries.
+---
+
+## Out-of-Scope Capabilities
+
+To maintain a zero-dependency header-only architecture and maximum runtime efficiency, `sip2json` deliberately excludes:
+
+* **I/O Facilities**: Network sockets, event loops, and buffer management are handled by your host networking engine (ASIO, libuv, epoll, Windows Sockets).
+* **Dialog State Machine & CSeq Tracking**: The parser is stateless; call states and dialog transactions are tracked at the application layer.
+* **Encryption / TLS**: TLS termination is handled at the transport layer before passing cleartext stream buffers to `sip2json`.
 
 ---
 
-## Section Navigation
+## Architecture & Design Topics
 
-- [**Design Patterns**](patterns.md): Factory methods, strategy patterns, and builder chain mechanics.
-- [**Data Flow & Memory**](dataflow.md): Stream buffer iteration, move semantics, and zero-allocation parsing paths.
-- [**Native vs JSON Study**](native_vs_json.md): Empirical trade-off study comparing standalone native C++ structs against `nlohmann::json` inheritance.
+<div class="grid" markdown="1">
+
+<div class="card" markdown="1">
+
+### [Design Patterns & Idioms](patterns.md)
+
+Factory methods, strategy patterns, fluent builder chaining, and exception-safe move semantics.
+
+[Explore Patterns :octicons-arrow-right-24:](patterns.md)
+
+</div>
+
+<div class="card" markdown="1">
+
+### [Data Flow & Memory Layout](dataflow.md)
+
+Stream buffer iteration, rvalue move semantics, zero-copy iterator advancement, and memory lifetime rules.
+
+[View Data Flow :octicons-arrow-right-24:](dataflow.md)
+
+</div>
+
+<div class="card" markdown="1">
+
+### [Async Stream Parsing](../features/async.md)
+
+Mechanics of continuous TCP/TLS stream processing, multi-frame batches, and partial frame residual retention.
+
+[Learn Stream Mechanics :octicons-arrow-right-24:](../features/async.md)
+
+</div>
+
+<div class="card" markdown="1">
+
+### [Optimization Choices](../features/optimization_choices.md)
+
+64-bit FNV-1a hash matching, compile-time jump tables, in-register case folding, and CTRE template depth reduction.
+
+[View Optimizations :octicons-arrow-right-24:](../features/optimization_choices.md)
+
+</div>
+
+<div class="card" markdown="1">
+
+### [Native Struct vs. JSON Model](native_vs_json.md)
+
+Empirical trade-off study comparing standalone native C++ structs against `nlohmann::json` inheritance.
+
+[Read Architectural Study :octicons-arrow-right-24:](native_vs_json.md)
+
+</div>
+
+<div class="card" markdown="1">
+
+### [Performance & Benchmarks](../features/benchmarks.md)
+
+High-throughput empirical benchmarks (~39.5k msgs/sec), per-message latency, and single-stream vs. thread pool analysis.
+
+[View Benchmarks :octicons-arrow-right-24:](../features/benchmarks.md)
+
+</div>
+
+<div class="card" markdown="1">
+
+### [Standards Compliance](../features/compliance.md)
+
+Concurrence with RFC 3261, RFC 4475 (SIP Torture 50 test cases), RFC 4566/8866 (SDP), and WebRTC specifications.
+
+[View Standards :octicons-arrow-right-24:](../features/compliance.md)
+
+</div>
+
+<div class="card" markdown="1">
+
+### [Test Suite & RFC Reference](../features/test_suite_sources.md)
+
+Section-by-section mapping of test runner files, sample fixtures, and direct links to official IETF specifications.
+
+[View Test Sources :octicons-arrow-right-24:](../features/test_suite_sources.md)
+
+</div>
+
+</div>

@@ -39,6 +39,7 @@ theme:
     code: JetBrains Mono
   features:
     - navigation.tabs
+    - toc.integrate
     - navigation.tabs.sticky
     - navigation.sections
     - navigation.expand
@@ -85,34 +86,32 @@ extra_javascript:
 
 nav:
   - Home: index.md
-  - Features:
-      - Overview: features/index.md
-      - Async Stream Parsing: features/async.md
-      - Performance & Benchmarks: features/benchmarks.md
-      - Optimization Choices: features/optimization_choices.md
-      - JSON Metaphor & Schema: features/json_schema.md
-      - SDP Support: features/sdp.md
-      - Standards Compliance: features/compliance.md
-      - Test Suite Sources & IETF Links: features/test_suite_sources.md
-  - Integration:
-      - Quick Start: integration/index.md
-      - CMake & Submodules: integration/cmake.md
-      - Dependencies Diagram: integration/dependencies.md
-      - NuGet Package: integration/nuget.md
-  - Architecture & Design:
-      - Overview: architecture/index.md
-      - Design Patterns: architecture/patterns.md
-      - Data Flow & Memory: architecture/dataflow.md
-      - Native vs JSON Study: architecture/native_vs_json.md
+  - Quick Start:
+      - Getting Started: integration/index.md
+      - CMake & CPM: integration/cmake.md
+      - Dependencies: integration/dependencies.md
+      - NuGet Migration: integration/nuget.md
   - API Reference:
       - Overview: api/index.md
       - sipmessage: api/sipmessage.md
       - sip2json Functions: api/sip2json.md
       - Exceptions & Errors: api/errors.md
-  - Examples:
-      - Overview: examples/index.md
-      - Stream Parsing Callback: examples/async_parsing.md
-      - Message Serialization: examples/serialization.md
-  - Maintainers:
-      - Maintainer & CI/CD Guide: maintainers/pipelines.md
+      - JSON Schema & Metaphor: features/json_schema.md
+      - SDP Support: features/sdp.md
+      - Examples:
+          - Overview: examples/index.md
+          - Stream Parsing: examples/async_parsing.md
+          - Message Serialization: examples/serialization.md
+  - Architecture & Design:
+      - Overview: architecture/index.md
+      - Design Patterns: architecture/patterns.md
+      - Data Flow & Memory: architecture/dataflow.md
+      - Async Stream Mechanics: features/async.md
+      - Optimization Choices: features/optimization_choices.md
+      - Native vs. JSON Study: architecture/native_vs_json.md
+      - Performance & Benchmarks: features/benchmarks.md
+      - Standards Compliance: features/compliance.md
+      - Test Suite & RFC Reference: features/test_suite_sources.md
+  - Maintainer Guide:
+      - CI/CD & Presets Architecture: maintainers/pipelines.md
   - License: license.md

@@ -1,27 +1,40 @@
-# Integration Guide
+# Quick Start Guide
 
-`sip2json` is a header-only Modern C++23 library designed for fast, seamless integration into build setups on Windows, Linux, and macOS.
+`sip2json` is a header-only Modern C++23 SIP protocol parser and serializer library. It requires zero binary dependencies and integrates into Windows, Linux, and macOS CMake builds in minutes.
 
 ---
 
-## Integration Options
+## 3-Step Rapid Onboarding
 
-Choose your preferred integration method:
+### Step 1: Add to Your CMake Project
 
-=== "CPM / CMake"
+Use [CPM.cmake](https://github.com/cpm-cmake/CPM.cmake) (recommended) or CMake's built-in `FetchContent`:
 
-    Recommended for cross-platform C++23 CMake projects.
+=== "CPM.cmake (Recommended)"
 
     ```cmake
+    include(cmake/CPM.cmake)
+
     CPMAddPackage("gh:SiddiqSoft/sip2json#{ tag_version }")
     target_link_libraries(your_target PRIVATE sip2json::sip2json)
     ```
 
-    [View CMake Integration Guide :octicons-arrow-right-24:](cmake.md)
+=== "FetchContent"
+
+    ```cmake
+    include(FetchContent)
+
+    FetchContent_Declare(
+        sip2json
+        GIT_REPOSITORY https://github.com/SiddiqSoft/sip2json.git
+        GIT_TAG        { tag_version }
+    )
+    FetchContent_MakeAvailable(sip2json)
+
+    target_link_libraries(your_target PRIVATE sip2json::sip2json)
+    ```
 
 === "Git Submodule"
-
-    Ideal for vendored source trees.
 
     ```bash
     git submodule add https://github.com/SiddiqSoft/sip2json.git vendor/sip2json
@@ -32,17 +45,93 @@ Choose your preferred integration method:
     target_link_libraries(your_target PRIVATE sip2json::sip2json)
     ```
 
-    [View CMake Integration Guide :octicons-arrow-right-24:](cmake.md)
+### Step 2: Include the Header
 
-=== "NuGet Package (Deprecated)"
+```cpp
+#include "siddiqsoft/sip2json.hpp"
+```
 
-    > [!WARNING]
-    > **NuGet Distribution Deprecated**
-    > Beginning with `v2.5.0+`, `sip2json` relies on [CTRE](https://github.com/ctre-mc/compile-time-regular-expressions) (Compile-Time Regular Expressions), which is not available via NuGet. NuGet package publication is disabled by default. Please use **CPM / CMake** or **FetchContent** integration instead.
+### Step 3: Parse or Serialize in 5 Lines
 
-    [View NuGet Deprecation Notice :octicons-arrow-right-24:](nuget.md)
+=== "Parse SIP Stream"
+
+    ```cpp
+    #include <iostream>
+    #include "siddiqsoft/sip2json.hpp"
+
+    using namespace siddiqsoft;
+
+    int main() {
+        std::string raw = "REGISTER sip:example.com SIP/2.0\r\nCall-ID: abc-123\r\nCSeq: 1 REGISTER\r\nContent-Length: 0\r\n\r\n";
+        auto it = raw.begin();
+        
+        sip2json::parseAsync(it, raw.end(), [](sipmessage&& msg) {
+            std::cout << "Parsed " << msg.method << " request for " << msg.uri << "\n";
+            std::cout << "Call-ID: " << msg.callid << "\n";
+        });
+        return 0;
+    }
+    ```
+
+=== "Construct & Serialize"
+
+    ```cpp
+    #include <iostream>
+    #include "siddiqsoft/sip2json.hpp"
+
+    using namespace siddiqsoft;
+
+    int main() {
+        sipmessage msg(METHOD_INVITE, "sip:user@example.com", "call-id-998", 1);
+        msg.setHeader(HF_FROM, "sip:caller@example.com")
+           .setHeader(HF_TO, "sip:user@example.com");
+
+        std::string wire = sip2json::serialize(msg);
+        std::cout << wire << std::endl;
+        return 0;
+    }
+    ```
 
 ---
+
+## Quick Start Sections
+
+<div class="grid" markdown="1">
+
+<div class="card" markdown="1">
+
+### [CMake & CPM Integration](cmake.md)
+
+Detailed setup guide for CMake, CPM, FetchContent, build options, and CMake presets.
+
+[View CMake Guide :octicons-arrow-right-24:](cmake.md)
+
+</div>
+
+<div class="card" markdown="1">
+
+### [Project Dependencies](dependencies.md)
+
+Dependency hierarchy diagram and version breakdown (`nlohmann_json` and `ctre`).
+
+[View Dependencies :octicons-arrow-right-24:](dependencies.md)
+
+</div>
+
+<div class="card" markdown="1">
+
+### [NuGet Migration Notice](nuget.md)
+
+Deprecation notice and migration advice for previous NuGet package consumers.
+
+[View Migration Notice :octicons-arrow-right-24:](nuget.md)
+
+</div>
+
+</div>
+
+---
+
 
 ## Primary Header Include
 
