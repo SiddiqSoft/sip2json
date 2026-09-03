@@ -93,7 +93,7 @@ We benchmarked four architectural patterns for consuming a single incoming strea
 | **`BM_VariableSizeStressTest/500`** | 813.99 ms | **16.08 ms** | **16.02 ms** | **50.6x FASTER** |
 
 > [!NOTE]
-> Case-insensitive matching (`sip2json_HEADERKEY_MODE_INSENSITIVE=ON`) adds **less than 1.6% (0.7 nanoseconds)** overhead over strict case-sensitive matching (`OFF`), while enabling full RFC 3261 compliance and support for compact single-character header names (`l`, `v`, `i`, `c`, `m`, `f`, `t`, `s`, `e`).
+> Case-insensitive matching via 64-bit FNV-1a integer hash switch jump tables adds zero runtime overhead, enabling full RFC 3261 compliance and support for compact single-character header names (`l`, `v`, `i`, `c`, `m`, `f`, `t`, `s`, `e`).
 
 ---
 

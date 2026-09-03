@@ -42,7 +42,6 @@ endif()
 # Options; define and declare defaults
 option(${PROJECT_NAME}_BUILD_TESTS "${PROJECT_NAME} - Build tests. Uncheck for install only runs" OFF)
 option(${PROJECT_NAME}_BUILD_BENCHMARKS "${PROJECT_NAME} - Build benchmarks" OFF)
-option(${PROJECT_NAME}_HEADERKEY_MODE_INSENSITIVE "${PROJECT_NAME} - Use case-insensitive header keys" ON)
 
 # ____________________________________
 #  Library Definition
@@ -72,13 +71,6 @@ elseif(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/SiddiqSoft.${PROJECT_NAME}.natvis")
 endif()
         
 target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_${CMAKE_CXX_STANDARD})
-
-if(${PROJECT_NAME}_HEADERKEY_MODE_INSENSITIVE)
-    target_compile_definitions(${PROJECT_NAME} INTERFACE ${PROJECT_NAME}_HEADERKEY_MODE_INSENSITIVE=1)
-    message(STATUS "${PROJECT_NAME} - Case-insensitive header keys enabled: ${PROJECT_NAME}_HEADERKEY_MODE_INSENSITIVE=1")
-else()
-    message(STATUS "${PROJECT_NAME} - Case-sensitive header keys enabled (${PROJECT_NAME}_HEADERKEY_MODE_INSENSITIVE=OFF)")
-endif()
 
 # ____________________________________
 # Dependencies

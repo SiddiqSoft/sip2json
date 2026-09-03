@@ -33,7 +33,6 @@ target_link_libraries(your_target PRIVATE sip2json::sip2json)
 
 | Option | Default | Description |
 | :--- | :--- | :--- |
-| `sip2json_HEADERKEY_MODE_INSENSITIVE` | `ON` | Case-insensitive header matching with canonical Pascal-Kebab-Case keys and compact form abbreviations. |
 | `sip2json_BUILD_TESTS` | `OFF` | Build unit tests (requires GoogleTest). |
 | `sip2json_BUILD_BENCHMARKS` | `OFF` | Build benchmark suite. |
 

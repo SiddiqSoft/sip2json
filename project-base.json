@@ -8,7 +8,6 @@
             "cacheVariables": {
                 "sip2json_BUILD_TESTS": "ON",
                 "sip2json_BUILD_BENCHMARKS": "OFF",
-                "sip2json_HEADERKEY_MODE_INSENSITIVE": "ON",
                 "CI_BUILDID": "0.0.0",
                 "CMAKE_CXX_STANDARD": "23",
                 "CMAKE_CXX_STANDARD_REQUIRED": "ON",
