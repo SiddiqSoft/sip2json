@@ -515,7 +515,7 @@ TEST(stress, Test_parseAsync_partial_message_preserved)
     // (parseAsync erases consumed content)
     // Note: the partial message is shorter than SIP_SAMPLE_MINIMAL_MESSAGE
     // so it will be left in the buffer
-    std::println(std::cerr, "Remaining buffer: {}", buffer);
+    std::cerr << std::format("Remaining buffer: {}\n", buffer);
     EXPECT_EQ(partial, buffer);
 }
 

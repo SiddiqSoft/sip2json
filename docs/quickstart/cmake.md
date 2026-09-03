@@ -1,6 +1,6 @@
 # CMake Integration
 
-Target: `sip2json::sip2json` (header-only, C++23).
+Target: `sip2json::sip2json` (header-only, C++20).
 
 ---
 

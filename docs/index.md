@@ -8,7 +8,7 @@
   <a href="https://dev.azure.com/siddiqsoft/siddiqsoft/_build/latest?definitionId=21&branchName=master"><img src="https://dev.azure.com/siddiqsoft/siddiqsoft/21/master.svg" alt="Tests" /></a>
 </div>
 
-Header-only C++23 SIP protocol parser and serializer. Represents SIP messages, headers, and SDP bodies as `nlohmann::json` documents with zero regex overhead and zero-copy string views.
+Header-only C++20 SIP protocol parser and serializer. Represents SIP messages, headers, and SDP bodies as `nlohmann::json` documents with zero regex overhead and zero-copy string views.
 
 ---
 
@@ -59,9 +59,9 @@ Header-only C++23 SIP protocol parser and serializer. Represents SIP messages, h
 
 | Requirement | Details |
 | :--- | :--- |
-| **Language** | C++23 (`/std:c++latest` on MSVC, `-std=c++23` on Clang/GCC) |
+| **Language** | C++20 (`/std:c++20` on MSVC, `-std=c++20` on Clang/GCC) |
 | **Dependencies** | [`nlohmann/json`](https://github.com/nlohmann/json) v3.12+ (zero regex dependencies) |
-| **Platforms** | Windows (MSVC 2022+), Linux (GCC 14+, Clang 17+), macOS (Apple Clang 15+) |
+| **Platforms** | Windows (MSVC 2019/2022), Linux (GCC 11+, Clang 14+), macOS (Apple Clang 13+) |
 
 ---
 

@@ -37,7 +37,7 @@
     </ItemGroup>
     ```
 
-    *Requires C++23 (`/std:c++latest` or `/std:c++23`). Dependency `nlohmann.json` is resolved automatically.*
+    *Requires C++20 (`/std:c++20`). Dependency `nlohmann.json` is resolved automatically.*
 
 ---
 

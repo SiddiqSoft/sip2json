@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.31)
 if(${${PROJECT_NAME}_BUILD_BENCHMARKS})
     set(BENCHPROJ ${PROJECT_NAME}_benchmarks)
 
-    set( CMAKE_CXX_STANDARD 23)
+    set( CMAKE_CXX_STANDARD 20)
     set( CMAKE_CXX_STANDARD_REQUIRED On)
     set( CMAKE_CXX_EXTENSIONS Off)
     set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -72,7 +72,7 @@ if(${${PROJECT_NAME}_BUILD_BENCHMARKS})
                    PRIVATE
                    ${PROJECT_SOURCE_DIR}/benchmarks/benchmark.cpp)
 
-    target_compile_features(${BENCHPROJ} PRIVATE cxx_std_23)
+    target_compile_features(${BENCHPROJ} PRIVATE cxx_std_20)
 
     target_link_libraries(${BENCHPROJ}
                           PRIVATE

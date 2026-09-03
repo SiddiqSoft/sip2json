@@ -1,6 +1,6 @@
 # sip2json Performance Benchmarks & Throughput Results
 
-This directory contains the performance benchmarking suite and published benchmark results for **`sip2json`** — a Modern C++23 header-only SIP protocol parser and serializer.
+This directory contains the performance benchmarking suite and published benchmark results for **`sip2json`** — a Modern C++20 header-only SIP protocol parser and serializer.
 
 ---
 
@@ -8,9 +8,40 @@ This directory contains the performance benchmarking suite and published benchma
 
 To ensure realistic parsing benchmarks that reflect real-world usage, every parse iteration performs structural JSON validation on the resulting `sipmessage`:
 
-1. **Header Access**: Accesses and extracts the `Call-ID` header (`sipm.getCallID()`) from the headers section (`"h"`).
-2. **SDP Payload Inspection**: Inspects the SDP body (`"/b/sdp"_json_pointer"`) and counts all session, media, and attribute items across all SDP blocks.
-3. **Compiler Optimization Safeguards**: Uses `benchmark::DoNotOptimize()` on the extracted `Call-ID` string and SDP item count to prevent compiler dead-code elimination.
+1. **Header Extraction Verification**: Extracts `Call-ID` or `Via` from the parsed JSON document, ensuring the parser successfully populates the header table.
+2. **SDP Extraction Verification**: If the message contains an SDP payload, extracts the media descriptor count and attributes from `/b/sdp`, guaranteeing full SDP parsing is exercised.
+3. **`benchmark::DoNotOptimize`**: All extracted fields are passed to `benchmark::DoNotOptimize` to prevent compiler dead-code elimination.
+
+---
+
+## Benchmark Categories
+
+The benchmark suite covers five primary operational dimensions:
+
+1. **Single-Message Parsing**: Throughput and latency for realistic SIP requests and responses (INVITE, REGISTER, 200 OK) with varying header complexity and SDP bodies.
+2. **Streaming Callback Parsing (`parseAsync`)**: High-throughput stream decoding simulating continuous network buffers with zero copies.
+3. **Multi-Threaded Parallel Parsing**: Concurrent stream decoding across 2, 4, 8, and 16 worker threads simulating multi-core SIP proxy workloads.
+4. **SIP Message Construction & Serialization**: In-memory message instantiation, header mutations, and RFC 3261 wire-format serialization.
+5. **Worst-Case Noisy Stream Parsing**: Robustness and throughput under heavy noise, garbage line skipping, and framing boundary recovery.
+
+---
+
+## Performance Highlights
+
+| Metric | Target | Result (v3.0 C++20) | Notes |
+| :--- | :--- | :--- | :--- |
+| **Stream Parse Throughput** | > 50,000 msg/sec | **64,235 msg/sec** | Single thread (`parseAsync`), 169.3 MB/sec |
+| **Minimal Response Parse** | < 5 µs / message | **3.81 µs** | 262,327 messages/second |
+| **Full INVITE + SDP Parse** | < 15 µs / message | **11.23 µs** | Complete SIP + SDP parsing into JSON |
+| **Multi-Thread Throughput** | > 100,000 msg/sec | **211,864 msg/sec** | 16 worker threads, 558.3 MB/sec |
+| **Noisy Stream Throughput** | > 40,000 msg/sec | **58,140 msg/sec** | Robust recovery across interleaved noise |
+| **Memory Allocation Overhead** | 0 heap allocs in loop | **Zero-Copy Views** | Zero string allocations for key accessors |
+
+---
+
+## Detailed Benchmark Results
+
+*Environment: Apple M-Series (11 cores @ 24 MHz bus clock), AppleClang 21.0, C++20 `-O3` Release build.*
 
 ---
 

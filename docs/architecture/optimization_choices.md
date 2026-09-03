@@ -1,6 +1,6 @@
 # High-Performance Optimization Choices
 
-`sip2json` incorporates low-level C++23 architectural choices engineered to maximize network throughput and minimize per-message CPU cycles.
+`sip2json` incorporates low-level C++20 architectural choices engineered to maximize network throughput and minimize per-message CPU cycles.
 
 ---
 
@@ -32,7 +32,7 @@ Why is 64-bit FNV-1a integer hash `switch (h)` matching **+74.4% to +93.8% faste
    - Computing the 64-bit FNV-1a hash (`hash_header_key`) operates directly over raw character pointers with inline ASCII lowercasing (`c | 0x20`). It eliminates `std::string lowerKey` allocations, string copying, and `std::transform` loops entirely.
 
 2. **`constexpr` Compile-Time Switch Labels**:
-   - The switch statement uses `case hash_header_key("from"):` compile-time constant expressions evaluated directly by the C++23 compiler. `HeaderKeySet` static objects remain lightweight and decoupled without storing redundant hash member variables.
+   - The switch statement uses `case hash_header_key("from"):` compile-time constant expressions evaluated directly by the C++20 compiler. `HeaderKeySet` static objects remain lightweight and decoupled without storing redundant hash member variables.
 
 3. **100% Zero Hash Collisions Across All Canonical Headers**:
    - 64-bit FNV-1a produces **50 unique 64-bit hash values** with zero collisions across all standard SIP headers, compact field abbreviations (`v`, `f`, `t`, `i`, `c`, `l`, `m`, `s`, `k`, `e`), and alternate names (`uthorization`).

@@ -2,29 +2,6 @@
 
 `sip2json` delivers high-throughput, low-latency SIP stream parsing engineered for high-concurrency VoIP edge proxies, SBCs, and WebRTC media gateways.
 
-<div class="kpi-grid">
-  <div class="kpi-card">
-    <div class="kpi-value">39.5k</div>
-    <div class="kpi-label">Stream msgs / sec</div>
-    <span class="kpi-badge">+84.6% vs v2.4</span>
-  </div>
-  <div class="kpi-card">
-    <div class="kpi-value">25.3 µs</div>
-    <div class="kpi-label">Average Latency</div>
-    <span class="kpi-badge">-45.8% Time</span>
-  </div>
-  <div class="kpi-card">
-    <div class="kpi-value">104 MB/s</div>
-    <div class="kpi-label">Wire Bandwidth</div>
-    <span class="kpi-badge">Zero-Copy Stream</span>
-  </div>
-  <div class="kpi-card">
-    <div class="kpi-value">0</div>
-    <div class="kpi-label">Regex Overhead</div>
-    <span class="kpi-badge">Pure string_view</span>
-  </div>
-</div>
-
 <!-- PIPELINE_BENCHMARKS_START -->
 ## 1. Multi-Platform & Cross-Architecture Pipeline Benchmark Matrix
 
@@ -171,7 +148,7 @@ flowchart LR
 
 ## 5. Resilience to Corrupted / Noisy Buffers
 
-`sip2json` employs Compile-Time Regular Expression forward scanning to skip noise bytes and recover valid SIP start lines automatically:
+`sip2json` employs zero-copy `std::string_view` forward scanning to skip noise bytes and recover valid SIP start lines automatically:
 
 | Stream Buffer Setup | Time / Batch | Effective Parse Rate | Processing Bandwidth |
 | :--- | :--- | :--- | :--- |
@@ -183,7 +160,7 @@ flowchart LR
 ## 6. Running Benchmarks Locally
 
 ```bash
-cmake --preset Apple-Release
-cmake --build --preset Apple-Release
-./build/Apple-Release/tests/benchmark/sip2json_benchmark tests/validation/samples
+cmake --preset Darwin-Clang-Release -Dsip2json_BUILD_BENCHMARKS=ON
+cmake --build --preset Darwin-Clang-Release --target sip2json_benchmarks
+./build/Darwin-Clang-Release/benchmarks/sip2json_benchmarks
 ```
