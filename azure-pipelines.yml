@@ -246,7 +246,6 @@ stages:
           - task: ManualValidation@0
             timeoutInMinutes: 1440
             inputs:
-              notifyUsers: ''
               instructions: 'Please review and approve the creation of the GitHub Release.'
               onTimeout: 'reject'
 
@@ -288,7 +287,6 @@ stages:
           - task: ManualValidation@0
             timeoutInMinutes: 1440
             inputs:
-              notifyUsers: ''
               instructions: 'Please review and approve publishing the documentation site to GitHub Pages.'
               onTimeout: 'reject'
 
