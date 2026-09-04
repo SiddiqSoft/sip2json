@@ -126,15 +126,9 @@ parameters:
 # VARIABLES
 # ============================================================================
 variables:
-  # Auto-enable publishing on main/master branches
-  ${{ if and(eq(parameters.PublishGitHub, false), or(eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))) }}:
-    PublishNuGet: true
-    PublishGitHub: true
-    PublishDocs: true
-  ${{ else }}:
-    PublishNuGet: ${{ parameters.PublishNuGet }}
-    PublishGitHub: ${{ parameters.PublishGitHub }}
-    PublishDocs: ${{ parameters.PublishDocs }}
+  PublishNuGet: ${{ parameters.PublishNuGet }}
+  PublishGitHub: ${{ parameters.PublishGitHub }}
+  PublishDocs: ${{ parameters.PublishDocs }}
 
   # System information
   AgentOS: $(Agent.OS)
@@ -237,7 +231,7 @@ stages:
       - Windows
       - Linux
       - Darwin
-    condition: and(eq(${{ variables.PublishGitHub }}, true), succeeded())
+    condition: and(succeeded(), or(eq('${{ parameters.PublishGitHub }}', 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(variables['Build.SourceBranch'], 'refs/heads/master')))
     jobs:
       - job: ApproveGitHubRelease
         displayName: "Manual Approval - GitHub Release"
@@ -252,7 +246,7 @@ stages:
       - template: .azure/az-publish-github.yml
         parameters:
           displayName: GitHub Release
-          PublishGitHub: ${{ variables.PublishGitHub }}
+          PublishGitHub: true
           dependsOn: [ ApproveGitHubRelease ]
 
   # ==========================================================================
@@ -262,12 +256,12 @@ stages:
     displayName: "NuGet Release"
     dependsOn:
       - PublishGitHub
-    condition: and(eq(${{ variables.PublishNuGet }}, true), succeeded())
+    condition: and(succeeded(), or(eq('${{ parameters.PublishNuGet }}', 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(variables['Build.SourceBranch'], 'refs/heads/master')))
     jobs:
       - template: .azure/az-publish-nuget.yml
         parameters:
           displayName: NuGet Release
-          PublishNuGet: ${{ variables.PublishNuGet }}
+          PublishNuGet: true
 
   # ==========================================================================
   # STAGE 6: GITHUB PAGES DOCUMENTATION PUBLICATION
@@ -278,7 +272,7 @@ stages:
       - Windows
       - Linux
       - Darwin
-    condition: and(eq(${{ variables.PublishDocs }}, true), succeeded())
+    condition: and(succeeded(), or(eq('${{ parameters.PublishDocs }}', 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(variables['Build.SourceBranch'], 'refs/heads/master')))
     jobs:
       - job: ApproveDocsRelease
         displayName: "Manual Approval - Documentation Site"

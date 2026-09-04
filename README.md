@@ -18,9 +18,7 @@
 
 ---
 
-## Documentation Site
-
-The complete documentation, API reference, architecture guides, performance benchmarks, and interactive dependency charts are hosted on our documentation site:
+## Documentation
 
 **[siddiqsoft.github.io/sip2json](https://siddiqsoft.github.io/sip2json/)**
 
@@ -57,36 +55,6 @@ void onNetworkDataReceived(std::string& tcpReadBuffer)
     // Note: sip2json::parseAsync automatically erases decoded messages from tcpReadBuffer.
 }
 ```
-
----
-
-## Quick Integration
-
-> **NOTE**
->
-> On Windows machines, in order to compile this project, please execute the [`prep_windows_machine.ps1`](scripts/prep_windows_machine.ps1) to avoid build errors.
->
-
-
-### Using CPM
-
-```cmake
-CPMAddPackage("gh:SiddiqSoft/sip2json#v0.0.0.0")
-target_link_libraries(${PROJECT_NAME} INTERFACE sip2json::sip2json)
-```
-
-For full setup guides, submodules, and NuGet usage, visit the [Integration Guide](https://siddiqsoft.github.io/sip2json/integration/).
-
----
-
-## Configuration Options
-
-`sip2json` provides the following CMake options when integrated into host projects:
-
-| CMake Option | Default | Description |
-| :--- | :--- | :--- |
-| `sip2json_BUILD_TESTS` | `OFF` | Build CTest unit test suite. |
-| `sip2json_BUILD_BENCHMARKS` | `OFF` | Build Google Benchmark performance test suite. |
 
 ---
 
