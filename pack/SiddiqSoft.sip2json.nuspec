@@ -55,8 +55,6 @@ For detailed release notes, visit: https://github.com/SiddiqSoft/sip2json/releas
         <file src="..\docs\**\*.md" target="docs\" />
 
         <!-- The symbol/reference file for IDE support -->
-        <!-- File is "duplicated" to account for potential issues with case sensitivity on Windows vs Linux/UNIX -->
-        <file src="..\siddiqsoft.sip2json.natvis" target="build\native\SiddiqSoft.sip2json.natvis" />
         <file src="..\siddiqsoft.sip2json.natvis" target="build\native\siddiqsoft.sip2json.natvis" />
 
         <!-- MSBuild .targets files -->
