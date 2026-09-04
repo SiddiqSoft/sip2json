@@ -32,40 +32,86 @@
 
 ## Quick Example
 
-```cpp
-#include <iostream>
-#include "siddiqsoft/sip2json.hpp"
+=== "Stream Parsing"
 
-using namespace siddiqsoft;
+    ```cpp
+    #include <iostream>
+    #include "siddiqsoft/sip2json.hpp"
 
-void onNetworkDataReceived(std::string& tcpReadBuffer)
-{
-    // Asynchronously parse multiple SIP frames from buffer
-    sip2json::parseAsync(
-        tcpReadBuffer,
-        [](sipmessage&& msg) {
-            if (!msg.empty()) {
+    using namespace siddiqsoft;
+
+    void onNetworkDataReceived(std::string& tcpReadBuffer)
+    {
+        // Asynchronously parse multiple SIP frames from buffer (erasing consumed bytes)
+        sip2json::parseAsync(
+            tcpReadBuffer,
+            [](sipmessage&& msg) {
                 std::cout << "Parsed " << msg.getMethod() << " Call-ID: " << msg.getCallID() << "\n";
+                nlohmann::json doc = msg; // First-class JSON metaphor
+            },
+            [](const sip2json_exception& ex, auto& start, const auto& end) {
+                std::cerr << "Parser warning: " << ex.what() << "\n";
             }
-        },
-        [](const sip2json_exception& ex, std::string::iterator& start, const std::string::iterator& end) {
-            std::cerr << "Parser warning: " << ex.what() << "\n";
-        }
-    );
-    // Note: sip2json::parseAsync automatically erases decoded messages from tcpReadBuffer.
-}
-```
+        );
+    }
+    ```
 
+=== "Push to RabbitMQ"
+
+    ```cpp
+    #include "siddiqsoft/sip2json.hpp"
+    #include <SimpleAmqpClient/SimpleAmqpClient.h>
+
+    using namespace siddiqsoft;
+
+    // Stream incoming SIP frames directly into a RabbitMQ exchange as JSON
+    auto channel = AmqpClient::Channel::Create("localhost");
+
+    sip2json::parseAsync(tcpReadBuffer, [&](sipmessage&& msg) {
+        nlohmann::json doc = msg;
+        auto body = AmqpClient::BasicMessage::Create(doc.dump());
+        channel->BasicPublish("sip_events", std::string(msg.getMethod()), body);
+    });
+    ```
+
+=== "Log to DuckDB"
+
+    ```cpp
+    #include "siddiqsoft/sip2json.hpp"
+    #include <duckdb.hpp>
+
+    using namespace siddiqsoft;
+
+    // Stream incoming SIP traffic directly into DuckDB for columnar analytics
+    duckdb::DuckDB db("sip_analytics.db");
+    duckdb::Connection con(db);
+    con.Query("CREATE TABLE IF NOT EXISTS sip_traffic (method VARCHAR, call_id VARCHAR, payload JSON);");
+
+    duckdb::Appender appender(con, "sip_traffic");
+    sip2json::parseAsync(tcpReadBuffer, [&](sipmessage&& msg) {
+        nlohmann::json doc = msg;
+        appender.AppendRow(std::string(msg.getMethod()), std::string(msg.getCallID()), doc.dump());
+    });
+    appender.Flush();
+    ```
+    !!! note "NOTE"
+        Use threadpool or async versions of specific SDK to maximize performance.
 ---
 
-## Standards Compliance & Certification Test Suite
 
-`sip2json` includes an automated test suite featuring dedicated RFC compliance and torture test suites located in `tests/compliance/`:
+## Standards Compliance
 
-- **RFC 3261 Core Compliance** (`tests/compliance/rfc3261_compliance_tests.cpp`): Validates 14 standard RFC request methods, status line classes (1xx-6xx), case-insensitive header canonicalization (`vIa`, `fRoM`, `cALL-id`), 10 compact header abbreviations (`v`, `f`, `t`, `i`, `c`, `l`, `m`, `s`, `k`, `e`), and body framing.
-- **RFC 4475 SIP Torture Tests** (`tests/compliance/rfc4475_torture_tests.cpp`): All **50 official bit-exact IETF torture test cases** (`.dat` files) including multiline header folding with LWSP (`\r\n\t` / `\r\n `), non-ASCII & empty reason phrases, URI escaping, unknown extension header preservation, multiple `Via` header array formatting, negative `Content-Length` rejection, and truncated stream buffer handling.
-- **SIP Standard Certification Suite** (`tests/compliance/sip_certification_suite.cpp`): Full end-to-end certification for RFC 3261, RFC 3262 (`PRACK`), RFC 6665 (`Event`/`Subscription-State`), RFC 3515 (`REFER`), and RFC 3903 (`PUBLISH`).
-- **SDP RFC 4566 / 8866 / 3264 / WebRTC (RFC 8829 / 8839) Compliance Suite** (`tests/compliance/sdp_compliance_tests.cpp`): Complete Session Description Protocol parsing, Offer/Answer direction flags (`sendrecv`, `sendonly`, `recvonly`, `inactive`), WebRTC BUNDLE media grouping (`a=group:BUNDLE`), ICE candidates (`a=candidate`), ICE credentials (`a=ice-ufrag`, `a=ice-pwd`), DTLS fingerprints (`a=fingerprint`), multiple SDP session blocks (`v=0` demarcation), and UNIX `\n` line endings.
+`sip2json` is verified against official IETF specifications across dedicated automated test suites:
+
+- **[RFC 3261](https://datatracker.ietf.org/doc/html/rfc3261)** (Core SIP): [`tests/compliance/src/rfc3261_compliance_tests.cpp`](tests/compliance/src/rfc3261_compliance_tests.cpp)
+- **[RFC 4475](https://datatracker.ietf.org/doc/html/rfc4475)** (Torture Test Suite — 50/50): [`tests/compliance/src/rfc4475_torture_tests.cpp`](tests/compliance/src/rfc4475_torture_tests.cpp)
+- **[RFC 3262](https://datatracker.ietf.org/doc/html/rfc3262)**, **[RFC 3515](https://datatracker.ietf.org/doc/html/rfc3515)**, **[RFC 3903](https://datatracker.ietf.org/doc/html/rfc3903)**, **[RFC 6665](https://datatracker.ietf.org/doc/html/rfc6665)** (SIP Extensions): [`tests/compliance/src/sip_certification_suite.cpp`](tests/compliance/src/sip_certification_suite.cpp)
+- **[RFC 8866](https://datatracker.ietf.org/doc/html/rfc8866)** / **[RFC 4566](https://datatracker.ietf.org/doc/html/rfc4566)**, **[RFC 3264](https://datatracker.ietf.org/doc/html/rfc3264)**, **[RFC 8829](https://datatracker.ietf.org/doc/html/rfc8829)** / **[RFC 8839](https://datatracker.ietf.org/doc/html/rfc8839)** (SDP & WebRTC): [`tests/compliance/src/sdp_compliance_tests.cpp`](tests/compliance/src/sdp_compliance_tests.cpp)
+
+For full coverage matrices, section mappings, and torture test details, see the [**Standards Compliance Guide**](https://siddiqsoft.github.io/sip2json/architecture/compliance/) on our documentation site.
+
+!!! note "Performance"
+    Up to **~40,000 msg/sec** parsing throughput with sub-microsecond latency (+97.5% gain over v2.x) — see our [**Performance & Benchmarks Guide**](https://siddiqsoft.github.io/sip2json/architecture/benchmarks/).
 
 ---
 

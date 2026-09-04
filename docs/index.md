@@ -53,6 +53,35 @@ Header-only C++20 SIP protocol parser and serializer. Represents SIP messages, h
     std::cout << doc.dump(2) << "\n";
     ```
 
+=== "RabbitMQ"
+
+    ```cpp
+    #include "siddiqsoft/sip2json.hpp"
+    #include <SimpleAmqpClient/SimpleAmqpClient.h>
+
+    auto channel = AmqpClient::Channel::Create("localhost");
+    siddiqsoft::sip2json::parseAsync(buffer, [&](siddiqsoft::sipmessage&& msg) {
+        nlohmann::json doc = msg;
+        channel->BasicPublish("sip_events", std::string(msg.getMethod()), AmqpClient::BasicMessage::Create(doc.dump()));
+    });
+    ```
+
+=== "DuckDB"
+
+    ```cpp
+    #include "siddiqsoft/sip2json.hpp"
+    #include <duckdb.hpp>
+
+    duckdb::DuckDB db("sip_analytics.db");
+    duckdb::Connection con(db);
+    duckdb::Appender appender(con, "sip_traffic");
+    siddiqsoft::sip2json::parseAsync(buffer, [&](siddiqsoft::sipmessage&& msg) {
+        nlohmann::json doc = msg;
+        appender.AppendRow(std::string(msg.getMethod()), std::string(msg.getCallID()), doc.dump());
+    });
+    appender.Flush();
+    ```
+
 ---
 
 ## Requirements
