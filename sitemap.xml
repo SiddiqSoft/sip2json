@@ -37,14 +37,6 @@
          <lastmod>2026-09-04</lastmod>
     </url>
     <url>
-         <loc>https://siddiqsoft.github.io/sip2json/api/examples/async_parsing/</loc>
-         <lastmod>2026-09-04</lastmod>
-    </url>
-    <url>
-         <loc>https://siddiqsoft.github.io/sip2json/api/examples/serialization/</loc>
-         <lastmod>2026-09-04</lastmod>
-    </url>
-    <url>
          <loc>https://siddiqsoft.github.io/sip2json/architecture/</loc>
          <lastmod>2026-09-04</lastmod>
     </url>
@@ -61,19 +53,7 @@
          <lastmod>2026-09-04</lastmod>
     </url>
     <url>
-         <loc>https://siddiqsoft.github.io/sip2json/architecture/dataflow/</loc>
-         <lastmod>2026-09-04</lastmod>
-    </url>
-    <url>
-         <loc>https://siddiqsoft.github.io/sip2json/architecture/native_vs_json/</loc>
-         <lastmod>2026-09-04</lastmod>
-    </url>
-    <url>
          <loc>https://siddiqsoft.github.io/sip2json/architecture/optimization_choices/</loc>
-         <lastmod>2026-09-04</lastmod>
-    </url>
-    <url>
-         <loc>https://siddiqsoft.github.io/sip2json/architecture/patterns/</loc>
          <lastmod>2026-09-04</lastmod>
     </url>
     <url>

@@ -15,10 +15,10 @@
         <link rel="canonical" href="https://siddiqsoft.github.io/sip2json/architecture/">
       
       
-        <link rel="prev" href="../api/examples/serialization/">
+        <link rel="prev" href="../api/examples/">
       
       
-        <link rel="next" href="patterns/">
+        <link rel="next" href="benchmarks/">
       
       
         
@@ -827,60 +827,6 @@
   
   
   
-    
-    
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_7" >
-        
-          
-          <label class="md-nav__link" for="__nav_3_7" id="__nav_3_7_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Examples
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3_7">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Examples
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
       <a href="../api/examples/" class="md-nav__link">
         
@@ -889,7 +835,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
+    Code Examples
   
 
     
@@ -898,70 +844,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api/examples/async_parsing/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Stream Parsing
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api/examples/serialization/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Message Serialization
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -1143,10 +1025,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#design-patterns-idioms" class="md-nav__link">
+  <a href="#performance-benchmarks" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Design Patterns &amp; Idioms
+        Performance &amp; Benchmarks
       
     </span>
   </a>
@@ -1154,21 +1036,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#data-flow-memory-layout" class="md-nav__link">
+  <a href="#stream-parsing-buffer-management" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Data Flow &amp; Memory Layout
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#async-stream-parsing" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Async Stream Parsing
+        Stream Parsing &amp; Buffer Management
       
     </span>
   </a>
@@ -1180,28 +1051,6 @@
     <span class="md-ellipsis">
       
         Optimization Choices
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#native-struct-vs-json-model" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Native Struct vs. JSON Model
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#performance-benchmarks" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Performance &amp; Benchmarks
       
     </span>
   </a>
@@ -1251,42 +1100,14 @@
   
   
     <li class="md-nav__item">
-      <a href="patterns/" class="md-nav__link">
+      <a href="benchmarks/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Design Patterns
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="dataflow/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Data Flow & Memory
+    Performance & Benchmarks
   
 
     
@@ -1314,7 +1135,7 @@
   <span class="md-ellipsis">
     
   
-    Async Stream Mechanics
+    Stream Mechanics & Buffer Management
   
 
     
@@ -1343,62 +1164,6 @@
     
   
     Optimization Choices
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="native_vs_json/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Native vs. JSON Study
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="benchmarks/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Performance & Benchmarks
   
 
     
@@ -1695,34 +1460,19 @@
 <h2 id="architecture-design-topics">Architecture &amp; Design Topics<a class="headerlink" href="#architecture-design-topics" title="Permanent link">&para;</a></h2>
 <div class="grid">
 <div class="card">
-<h3 id="design-patterns-idioms"><a href="patterns/">Design Patterns &amp; Idioms</a><a class="headerlink" href="#design-patterns-idioms" title="Permanent link">&para;</a></h3>
-<p>Factory methods, strategy patterns, fluent builder chaining, and exception-safe move semantics.</p>
-<p><a href="patterns/">Explore Patterns <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span></a></p>
+<h3 id="performance-benchmarks"><a href="benchmarks/">Performance &amp; Benchmarks</a><a class="headerlink" href="#performance-benchmarks" title="Permanent link">&para;</a></h3>
+<p>Multi-platform pipeline build benchmarks, per-message processing latency, and cross-platform comparative metrics.</p>
+<p><a href="benchmarks/">View Benchmarks <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span></a></p>
 </div>
 <div class="card">
-<h3 id="data-flow-memory-layout"><a href="dataflow/">Data Flow &amp; Memory Layout</a><a class="headerlink" href="#data-flow-memory-layout" title="Permanent link">&para;</a></h3>
-<p>Stream buffer iteration, rvalue move semantics, zero-copy iterator advancement, and memory lifetime rules.</p>
-<p><a href="dataflow/">View Data Flow <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span></a></p>
-</div>
-<div class="card">
-<h3 id="async-stream-parsing"><a href="async/">Async Stream Parsing</a><a class="headerlink" href="#async-stream-parsing" title="Permanent link">&para;</a></h3>
-<p>Mechanics of continuous TCP/TLS stream processing, multi-frame batches, and partial frame residual retention.</p>
+<h3 id="stream-parsing-buffer-management"><a href="async/">Stream Parsing &amp; Buffer Management</a><a class="headerlink" href="#stream-parsing-buffer-management" title="Permanent link">&para;</a></h3>
+<p>Continuous TCP/TLS stream mechanics, iterator buffer progression, move semantics (<code>sipmessage&amp;&amp;</code>), and memory lifetime rules.</p>
 <p><a href="async/">Learn Stream Mechanics <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span></a></p>
 </div>
 <div class="card">
 <h3 id="optimization-choices"><a href="optimization_choices/">Optimization Choices</a><a class="headerlink" href="#optimization-choices" title="Permanent link">&para;</a></h3>
-<p>64-bit FNV-1a hash matching, compile-time jump tables, in-register case folding, and zero-copy string_view parsing.</p>
-<p><a href="optimization_choices/">View Optimizations <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span></a></p>
-</div>
-<div class="card">
-<h3 id="native-struct-vs-json-model"><a href="native_vs_json/">Native Struct vs. JSON Model</a><a class="headerlink" href="#native-struct-vs-json-model" title="Permanent link">&para;</a></h3>
-<p>Empirical trade-off study comparing standalone native C++ structs against <code>nlohmann::json</code> inheritance.</p>
-<p><a href="native_vs_json/">Read Architectural Study <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span></a></p>
-</div>
-<div class="card">
-<h3 id="performance-benchmarks"><a href="benchmarks/">Performance &amp; Benchmarks</a><a class="headerlink" href="#performance-benchmarks" title="Permanent link">&para;</a></h3>
-<p>Multi-platform benchmarks (&gt;64k msgs/sec), per-message latency (&lt;16 µs), and thread scaling analysis.</p>
-<p><a href="benchmarks/">View Benchmarks <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span></a></p>
+<p>Clean JavaScript-like C++20 API design, FNV-1 header matching, and protocol-specific optimization choices.</p>
+<p><a href="optimization_choices/">Read Design Choices <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span></a></p>
 </div>
 <div class="card">
 <h3 id="standards-compliance"><a href="compliance/">Standards Compliance</a><a class="headerlink" href="#standards-compliance" title="Permanent link">&para;</a></h3>
@@ -1770,7 +1520,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../api/examples/serialization/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Message Serialization">
+          <a href="../api/examples/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Code Examples">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1780,20 +1530,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Message Serialization
+                Code Examples
               </div>
             </div>
           </a>
         
         
           
-          <a href="patterns/" class="md-footer__link md-footer__link--next" aria-label="Next: Design Patterns">
+          <a href="benchmarks/" class="md-footer__link md-footer__link--next" aria-label="Next: Performance &amp; Benchmarks">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Design Patterns
+                Performance & Benchmarks
               </div>
             </div>
             <div class="md-footer__button md-icon">
@@ -1830,7 +1580,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "toc.integrate", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.0.2-2"}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "toc.integrate", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.1.0-4"}</script>
     
     
       <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>

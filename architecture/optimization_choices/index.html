@@ -18,7 +18,7 @@
         <link rel="prev" href="../async/">
       
       
-        <link rel="next" href="../native_vs_json/">
+        <link rel="next" href="../compliance/">
       
       
         
@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#high-performance-optimization-choices" class="md-skip">
+        <a href="#optimization-choices" class="md-skip">
           Skip to content
         </a>
       
@@ -827,60 +827,6 @@
   
   
   
-    
-    
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_7" >
-        
-          
-          <label class="md-nav__link" for="__nav_3_7" id="__nav_3_7_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Examples
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3_7">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Examples
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
       <a href="../../api/examples/" class="md-nav__link">
         
@@ -889,7 +835,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
+    Code Examples
   
 
     
@@ -898,70 +844,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/examples/async_parsing/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Stream Parsing
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/examples/serialization/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Message Serialization
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -1066,42 +948,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../patterns/" class="md-nav__link">
+      <a href="../benchmarks/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Design Patterns
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../dataflow/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Data Flow & Memory
+    Performance & Benchmarks
   
 
     
@@ -1129,7 +983,7 @@
   <span class="md-ellipsis">
     
   
-    Async Stream Mechanics
+    Stream Mechanics & Buffer Management
   
 
     
@@ -1210,10 +1064,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#1-header-lookup-execution-flow" class="md-nav__link">
+  <a href="#1-header-matching-fnv-1-and-the-sip-header-model" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Header Lookup Execution Flow
+        1. Header Matching: FNV-1 and the SIP Header Model
       
     </span>
   </a>
@@ -1221,49 +1075,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-64-bit-fnv-1a-hash-matching-vs-sso-string-comparison" class="md-nav__link">
+  <a href="#2-header-lookup-flow" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. 64-Bit FNV-1a Hash Matching vs. SSO String Comparison
+        2. Header Lookup Flow
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="2. 64-Bit FNV-1a Hash Matching vs. SSO String Comparison">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#the-architectural-question" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The Architectural Question
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#key-hardware-compiler-factors" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Key Hardware &amp; Compiler Factors
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#3-optimization-summary-table" class="md-nav__link">
+  <a href="#3-pragmatic-modern-c20-choices" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3. Optimization Summary Table
+        3. Pragmatic Modern C++20 Choices
       
     </span>
   </a>
@@ -1274,62 +1100,6 @@
   
 </nav>
       
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../native_vs_json/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Native vs. JSON Study
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../benchmarks/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Performance & Benchmarks
-  
-
-    
-  </span>
-  
-  
-
-      </a>
     </li>
   
 
@@ -1582,110 +1352,70 @@
   
 
 
-<h1 id="high-performance-optimization-choices">High-Performance Optimization Choices<a class="headerlink" href="#high-performance-optimization-choices" title="Permanent link">&para;</a></h1>
-<p><code>sip2json</code> incorporates low-level C++20 architectural choices engineered to maximize network throughput and minimize per-message CPU cycles.</p>
+<h1 id="optimization-choices">Optimization Choices<a class="headerlink" href="#optimization-choices" title="Permanent link">&para;</a></h1>
+<p>This is not the best code or the most performant library. It features a very clean and JavaScript-like API inline with the modern C++20 model, designed to make handling SIP payloads intuitive without heavy ceremony.</p>
+<p>Where optimizations are applied, they take advantage of the specific structure of the SIP protocol itself.</p>
 <hr />
-<h2 id="1-header-lookup-execution-flow">1. Header Lookup Execution Flow<a class="headerlink" href="#1-header-lookup-execution-flow" title="Permanent link">&para;</a></h2>
-<pre class="mermaid"><code>flowchart TD
-    A["Incoming Header Key (e.g. 'vIa')"] --&gt; B["hash_header_key(key, len)"]
-    B --&gt; C["Compute 64-bit FNV-1a Hash with In-Register Case-Folding"]
-    C --&gt; D{"Fast-Path: Starts with 'X-' or 'X_'?"}
-    D -- "Yes (Custom X-Header)" --&gt; E["Return Custom Header Result (2 cycles)"]
-    D -- "No (Canonical Candidate)" --&gt; F["switch (h) 64-Bit Direct Jump Table (1 cycle)"]
-    F -- "case hash_header_key('via')" --&gt; G["Return static HFS_VIA (hash: 0x68e8f7194eba5d73)"]
-    F -- "case hash_header_key('from')" --&gt; H["Return static HFS_FROM (hash: 0x7f845078d7a5c0b5)"]
-    F -- "case hash_header_key('content-length')" --&gt; I["Return static HFS_CONTENT_LENGTH (hash: 0x2d69a1e6ee916e7d)"]
-    F -- "default (Unrecognized Custom)" --&gt; J["Return Custom KeySet"]</code></pre>
-<hr />
-<h2 id="2-64-bit-fnv-1a-hash-matching-vs-sso-string-comparison">2. 64-Bit FNV-1a Hash Matching vs. SSO String Comparison<a class="headerlink" href="#2-64-bit-fnv-1a-hash-matching-vs-sso-string-comparison" title="Permanent link">&para;</a></h2>
-<h3 id="the-architectural-question">The Architectural Question<a class="headerlink" href="#the-architectural-question" title="Permanent link">&para;</a></h3>
-<p>Why is 64-bit FNV-1a integer hash <code>switch (h)</code> matching <strong>+74.4% to +93.8% faster</strong> than <code>std::string</code> or <code>std::string_view</code> string comparisons, even when Small String Optimization (SSO) avoids heap allocations?</p>
-<h3 id="key-hardware-compiler-factors">Key Hardware &amp; Compiler Factors<a class="headerlink" href="#key-hardware-compiler-factors" title="Permanent link">&para;</a></h3>
+<h2 id="1-header-matching-fnv-1-and-the-sip-header-model">1. Header Matching: FNV-1 and the SIP Header Model<a class="headerlink" href="#1-header-matching-fnv-1-and-the-sip-header-model" title="Permanent link">&para;</a></h2>
+<p>The SIP protocol has known, standard headers (RFC 3261) along with a well-defined custom header model. I took advantage of this to optimize header matching using the <a href="https://en.wikipedia.org/wiki/Fowler–Noll–Vo_hash_function">FNV-1</a> algorithm.</p>
+<p>In SIP traffic:</p>
 <ol>
-<li><strong>Zero String Memory Allocations or Copies</strong>:</li>
-<li>
-<p>Computing the 64-bit FNV-1a hash (<code>hash_header_key</code>) operates directly over raw character pointers with inline ASCII lowercasing (<code>c | 0x20</code>). It eliminates <code>std::string lowerKey</code> allocations, string copying, and <code>std::transform</code> loops entirely.</p>
-</li>
-<li>
-<p><strong><code>constexpr</code> Compile-Time Switch Labels</strong>:</p>
-</li>
-<li>
-<p>The switch statement uses <code>case hash_header_key("from"):</code> compile-time constant expressions evaluated directly by the C++20 compiler. <code>HeaderKeySet</code> static objects remain lightweight and decoupled without storing redundant hash member variables.</p>
-</li>
-<li>
-<p><strong>100% Zero Hash Collisions Across All Canonical Headers</strong>:</p>
-</li>
-<li>
-<p>64-bit FNV-1a produces <strong>50 unique 64-bit hash values</strong> with zero collisions across all standard SIP headers, compact field abbreviations (<code>v</code>, <code>f</code>, <code>t</code>, <code>i</code>, <code>c</code>, <code>l</code>, <code>m</code>, <code>s</code>, <code>k</code>, <code>e</code>), and alternate names (<code>uthorization</code>).</p>
-</li>
-<li>
-<p><strong>Jump Table Generation vs. Mispredicted <code>if-else</code> Chains</strong>:</p>
-</li>
-<li><code>std::string</code> / <code>std::string_view</code> sequential comparisons (<code>if (key == "Via") ... else if ...</code>) force the CPU through up to 30 sequential conditional branches. Each mispredicted branch incurs a <strong>15–20 CPU cycle penalty</strong>.</li>
-<li>
-<p>Integer <code>switch (h)</code> statements are compiled into a <strong>Direct Jump Table</strong> (an $O(1)$ indirect branch array). The CPU computes <code>h</code> and jumps directly to the static <code>HFS_*</code> reference in <strong>1 clock cycle</strong> without full-string <code>memcmp</code> checks.</p>
-</li>
-<li>
-<p><strong>Fast-Path Exit for Custom Headers</strong>:</p>
-</li>
-<li>Custom headers (<code>X-</code>) match <code>keyFromPayload[0] == 'x' &amp;&amp; keyFromPayload[1] == '-'</code> in <strong>2 bitwise instructions</strong>, dropping directly to custom key handling without touching canonical string lookup branches.</li>
+<li><strong>Well-Defined Custom Headers</strong>: Custom headers conventionally begin with <code>X-</code> or <code>X_</code> (such as <code>X-Call-Info</code>). Checking the first two characters allows immediate dispatch for custom headers without evaluating standard definitions.</li>
+<li><strong>Known Standard Headers</strong>: Core headers (<code>Via</code>, <code>From</code>, <code>To</code>, <code>Call-ID</code>, <code>CSeq</code>, <code>Contact</code>, <code>Content-Length</code>, <code>Content-Type</code>) and their 1-letter compact equivalents (<code>v</code>, <code>f</code>, <code>t</code>, <code>i</code>, <code>m</code>, <code>l</code>, <code>c</code>) form a well-known, finite set.</li>
+<li><strong>In-Line Case Folding</strong>: Header keys are case-insensitive (<code>via</code>, <code>Via</code>, <code>VIA</code> are identical). Rather than allocating a lowercased <code>std::string</code> copy, the FNV-1 hash routine converts ASCII case inline as characters are read.</li>
+<li><strong>Compile-Time Jump Tables</strong>: Because <code>hash_header_key</code> is <code>constexpr</code>, standard header names are hashed by the compiler at compile time:</li>
 </ol>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">// Fast-path: Custom headers starting with X- / x- / X_ / x_</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">keyFromPayload</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">keyFromPayload</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">'X'</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">keyFromPayload</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">'x'</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="p">(</span><span class="n">keyFromPayload</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">'-'</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">keyFromPayload</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">'_'</span><span class="p">))</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="p">{</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="k">thread_local</span><span class="w"> </span><span class="n">HeaderKeySet</span><span class="w"> </span><span class="n">customKey</span><span class="p">;</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">    </span><span class="n">customKey</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HeaderKeySet</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(</span><span class="n">keyFromPayload</span><span class="p">));</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">customKey</span><span class="p">;</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="p">}</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="kt">uint64_t</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hash_header_key</span><span class="p">(</span><span class="n">keyFromPayload</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span><span class="w"> </span><span class="n">keyFromPayload</span><span class="p">.</span><span class="n">size</span><span class="p">());</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="p">{</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">hash_header_key</span><span class="p">(</span><span class="s">"from"</span><span class="p">):</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">hash_header_key</span><span class="p">(</span><span class="s">"f"</span><span class="p">):</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">HFS_FROM</span><span class="p">;</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">hash_header_key</span><span class="p">(</span><span class="s">"to"</span><span class="p">):</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">hash_header_key</span><span class="p">(</span><span class="s">"t"</span><span class="p">):</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">HFS_TO</span><span class="p">;</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">hash_header_key</span><span class="p">(</span><span class="s">"via"</span><span class="p">):</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">hash_header_key</span><span class="p">(</span><span class="s">"v"</span><span class="p">):</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">HFS_VIA</span><span class="p">;</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">hash_header_key</span><span class="p">(</span><span class="s">"call-id"</span><span class="p">):</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">hash_header_key</span><span class="p">(</span><span class="s">"i"</span><span class="p">):</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">HFS_CALLID</span><span class="p">;</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">hash_header_key</span><span class="p">(</span><span class="s">"cseq"</span><span class="p">):</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">HFS_CSEQ</span><span class="p">;</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">hash_header_key</span><span class="p">(</span><span class="s">"content-length"</span><span class="p">):</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">hash_header_key</span><span class="p">(</span><span class="s">"l"</span><span class="p">):</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">HFS_CONTENT_LENGTH</span><span class="p">;</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">hash_header_key</span><span class="p">(</span><span class="s">"content-type"</span><span class="p">):</span>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">hash_header_key</span><span class="p">(</span><span class="s">"c"</span><span class="p">):</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">HFS_CONTENT_TYPE</span><span class="p">;</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="w">    </span><span class="c1">// ...</span>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="w">    </span><span class="k">default</span><span class="o">:</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">customKey</span><span class="p">;</span>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>This effectively reduces header identification to comparing integer values, allowing the compiler to generate a clean, direct jump table.</p>
 <hr />
-<h2 id="3-optimization-summary-table">3. Optimization Summary Table<a class="headerlink" href="#3-optimization-summary-table" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th style="text-align: left;">Optimization Technique</th>
-<th style="text-align: left;">Replaced Pattern</th>
-<th style="text-align: left;">Performance Gain</th>
-<th style="text-align: left;">Hardware Mechanism</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;"><strong>Zero-Copy <code>string_view</code> Startline Parser</strong></td>
-<td style="text-align: left;">CTRE compile-time regex (<code>ctre::search</code>)</td>
-<td style="text-align: left;"><strong>Zero regex overhead</strong></td>
-<td style="text-align: left;">Pure <code>std::string_view</code> tokenization; eliminated CTRE dependency entirely, reducing template instantiation depth and compile times to 0</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>64-bit FNV-1a Hash <code>switch(h)</code></strong></td>
-<td style="text-align: left;">Sequential <code>std::string</code> <code>if-else</code> chain</td>
-<td style="text-align: left;"><strong>+74.4% throughput</strong></td>
-<td style="text-align: left;">100% collision-free 64-bit FNV-1a hash matching via 1-cycle $O(1)$ jump table</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong><code>constexpr</code> Compile-Time Labels</strong></td>
-<td style="text-align: left;">Dynamic runtime string hashing</td>
-<td style="text-align: left;"><strong>0 ns overhead</strong></td>
-<td style="text-align: left;"><code>constexpr</code> compile-time <code>hash_header_key(...)</code> evaluated directly into switch jump table</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Bitwise Register Case-Folding</strong></td>
-<td style="text-align: left;"><code>std::transform(::tolower)</code></td>
-<td style="text-align: left;"><strong>-42.6% latency</strong></td>
-<td style="text-align: left;">Converts ASCII case in-register during 64-bit FNV-1a hashing</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Merged <code>HeaderKeySet</code> Architecture</strong></td>
-<td style="text-align: left;"><code>CanonicalHeaderKeyResult</code> wrapper</td>
-<td style="text-align: left;"><strong>+4.8% throughput</strong></td>
-<td style="text-align: left;">Eliminates temporary wrapper objects; enables 1-cycle pointer comparison (<code>&amp;keySet == &amp;HFS_CONTENT_LENGTH</code>)</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Inline Stream Callback (<code>parseAsync</code>)</strong></td>
-<td style="text-align: left;">Vector accumulation (<code>std::vector&lt;sipmessage&gt;</code>)</td>
-<td style="text-align: left;"><strong>+93.8% vs master</strong></td>
-<td style="text-align: left;">Zero-copy execution directly on network buffer</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Fast-Path <code>X-</code> Header Branch</strong></td>
-<td style="text-align: left;">Sequential canonical check loop</td>
-<td style="text-align: left;"><strong>2 CPU cycles</strong></td>
-<td style="text-align: left;">Immediate bitmask check for custom headers</td>
-</tr>
-</tbody>
-</table>
+<h2 id="2-header-lookup-flow">2. Header Lookup Flow<a class="headerlink" href="#2-header-lookup-flow" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>flowchart TD
+    A["Incoming Header Key (e.g., 'Via')"] --&gt; B{"Starts with 'X-' or 'X_'?"}
+    B -- "Yes (Custom Header)" --&gt; C["Return Custom HeaderKeySet"]
+    B -- "No (Standard Candidate)" --&gt; D["Compute 64-bit FNV-1 Hash (with inline case folding)"]
+    D --&gt; E["switch (h) Direct Jump Table"]
+    E -- "case hash_header_key('via')" --&gt; F["Return static HFS_VIA"]
+    E -- "case hash_header_key('from')" --&gt; G["Return static HFS_FROM"]
+    E -- "case hash_header_key('call-id')" --&gt; H["Return static HFS_CALLID"]
+    E -- "default" --&gt; I["Fallback to Custom HeaderKeySet"]</code></pre>
+<hr />
+<h2 id="3-pragmatic-modern-c20-choices">3. Pragmatic Modern C++20 Choices<a class="headerlink" href="#3-pragmatic-modern-c20-choices" title="Permanent link">&para;</a></h2>
+<p>A few other practical choices keep overhead low while preserving clean ergonomics:</p>
+<ul>
+<li><strong>Zero-Copy <code>std::string_view</code> Tokenization</strong>: Start lines, methods, and header slices use string views where possible to avoid unnecessary temporary allocations.
+This optimization may not have been completed if not for coding agents. One of the lessons I learnt is that <code>std::string_view</code> is good (other languages call these "slices") and actually better than <code>std::string&amp;</code>. Once the benchmarks came in this was an easy switchover!</li>
+<li><strong>Move Semantics (<code>sipmessage&amp;&amp;</code>)</strong>: Streaming callbacks pass decoded messages as rvalues so callers can move them directly into application containers.</li>
+<li><strong>Static Predefined Constants</strong>: Canonical header key sets and method tokens are reused statically rather than constructed dynamically on each message.</li>
+</ul>
 
 
 
@@ -1721,7 +1451,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../async/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Async Stream Mechanics">
+          <a href="../async/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Stream Mechanics &amp; Buffer Management">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1731,20 +1461,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Async Stream Mechanics
+                Stream Mechanics & Buffer Management
               </div>
             </div>
           </a>
         
         
           
-          <a href="../native_vs_json/" class="md-footer__link md-footer__link--next" aria-label="Next: Native vs. JSON Study">
+          <a href="../compliance/" class="md-footer__link md-footer__link--next" aria-label="Next: Standards Compliance">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Native vs. JSON Study
+                Standards Compliance
               </div>
             </div>
             <div class="md-footer__button md-icon">
@@ -1781,7 +1511,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "toc.integrate", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.0.2-2"}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "toc.integrate", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.1.0-4"}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
