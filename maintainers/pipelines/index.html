@@ -1866,7 +1866,7 @@
 <p>The repository employs a decoupled, highly reusable CMake Presets structure separated across two files:</p>
 <pre class="mermaid"><code>flowchart TD
     subgraph PB["project-base.json (Project-Specific)"]
-        PBase["Project-Base&lt;br/&gt;• sip2json_BUILD_TESTS=ON&lt;br/&gt;• sip2json_BUILD_BENCHMARKS=OFF&lt;br/&gt;• CMAKE_CXX_STANDARD=23&lt;br/&gt;• CI_BUILDID=0.0.0"]
+        PBase["Project-Base&lt;br/&gt;• sip2json_BUILD_TESTS=ON&lt;br/&gt;• sip2json_BUILD_BENCHMARKS=OFF&lt;br/&gt;• CMAKE_CXX_STANDARD=20&lt;br/&gt;• CI_BUILDID=0.0.0"]
     end
 
     subgraph CP["CMakePresets.json (Generic / Portable)"]
@@ -1921,7 +1921,7 @@
 <h3 id="architectural-separation-of-concerns">Architectural Separation of Concerns<a class="headerlink" href="#architectural-separation-of-concerns" title="Permanent link">&para;</a></h3>
 <ol>
 <li><strong><a href="https://github.com/SiddiqSoft/sip2json/blob/master/project-base.json"><code>project-base.json</code></a></strong>:</li>
-<li>Holds all <strong>per-project settings</strong> (e.g. <code>sip2json_BUILD_TESTS</code>, <code>CMAKE_CXX_STANDARD: 23</code>, <code>CI_BUILDID: 0.0.0</code>).</li>
+<li>Holds all <strong>per-project settings</strong> (e.g. <code>sip2json_BUILD_TESTS</code>, <code>CMAKE_CXX_STANDARD: 20</code>, <code>CI_BUILDID: 0.0.0</code>).</li>
 <li>
 <p>Project maintainers configure project-specific variables here without altering toolchain presets.</p>
 </li>
@@ -2143,7 +2143,7 @@
     Pipeline-&gt;&gt;Pages: Build MkDocs Site with Dynamic Version &amp; Benchmarks</code></pre>
 <h3 id="dynamic-versioning-documentation-hooks">Dynamic Versioning &amp; Documentation Hooks<a class="headerlink" href="#dynamic-versioning-documentation-hooks" title="Permanent link">&para;</a></h3>
 <ol>
-<li><strong><a href="https://github.com/SiddiqSoft/sip2json/blob/master/docs/hooks.py"><code>docs/hooks.py</code></a></strong>: Dynamically injects GitVersion SemVer into site metadata (<code>config['extra']['version']</code>) and replaces <code>3.0.0-beta.1</code> / <code>v3.0.0</code> placeholders across markdown files.</li>
+<li><strong><a href="https://github.com/SiddiqSoft/sip2json/blob/master/docs/hooks.py"><code>docs/hooks.py</code></a></strong>: Dynamically injects GitVersion SemVer into site metadata (<code>config['extra']['version']</code>) and replaces <code>3.0.0-3</code> / <code>v3.0.0</code> placeholders across markdown files.</li>
 <li><strong><a href="https://github.com/SiddiqSoft/sip2json/blob/master/scripts/publish_benchmarks.py"><code>scripts/publish_benchmarks.py</code></a></strong>: Collects benchmark outputs across build matrix platforms, extracts CPU architecture and core count, and renders responsive platform-grouped benchmark tables and visual comparison charts into <a href="../../architecture/benchmarks/"><code>docs/architecture/benchmarks.md</code></a>.</li>
 <li><strong>NuGet Packaging &amp; Publication</strong>: NuGet packaging (<code>NuGetCommand@2 pack</code>) runs during the Windows Release job to package header files, <code>.natvis</code>, and <code>.targets</code>. Publication (<code>Stage 5: PublishNuGet</code>) is auto-enabled on <code>main</code>/<code>master</code> releases and strictly gated behind the manual review and successful completion of <code>Stage 4: PublishGitHub</code> before pushing to <code>nuget.org</code> via the <code>sqs-nuget</code> service connection.</li>
 </ol>
@@ -2366,7 +2366,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "toc.integrate", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.0.0-beta.1"}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "toc.integrate", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.0.0-3"}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>

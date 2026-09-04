@@ -1656,37 +1656,14 @@
 
 <h1 id="performance-benchmarks">Performance &amp; Benchmarks<a class="headerlink" href="#performance-benchmarks" title="Permanent link">&para;</a></h1>
 <p><code>sip2json</code> delivers high-throughput, low-latency SIP stream parsing engineered for high-concurrency VoIP edge proxies, SBCs, and WebRTC media gateways.</p>
-<div class="kpi-grid">
-  <div class="kpi-card">
-    <div class="kpi-value">39.5k</div>
-    <div class="kpi-label">Stream msgs / sec</div>
-    <span class="kpi-badge">+84.6% vs v2.4</span>
-  </div>
-  <div class="kpi-card">
-    <div class="kpi-value">25.3 µs</div>
-    <div class="kpi-label">Average Latency</div>
-    <span class="kpi-badge">-45.8% Time</span>
-  </div>
-  <div class="kpi-card">
-    <div class="kpi-value">104 MB/s</div>
-    <div class="kpi-label">Wire Bandwidth</div>
-    <span class="kpi-badge">Zero-Copy Stream</span>
-  </div>
-  <div class="kpi-card">
-    <div class="kpi-value">0</div>
-    <div class="kpi-label">Regex Overhead</div>
-    <span class="kpi-badge">Pure string_view</span>
-  </div>
-</div>
-
 <!-- PIPELINE_BENCHMARKS_START -->
 <h2 id="1-multi-platform-cross-architecture-pipeline-benchmark-matrix">1. Multi-Platform &amp; Cross-Architecture Pipeline Benchmark Matrix<a class="headerlink" href="#1-multi-platform-cross-architecture-pipeline-benchmark-matrix" title="Permanent link">&para;</a></h2>
 <div class="admonition note">
 <p class="admonition-title">Build Release &amp; Runner Environment</p>
-<p><strong>Build Release &amp; Version</strong>: <code>3.0.0-beta.1</code> | <strong>Branch</strong>: <code>release/2.6.0</code>
+<p><strong>Build Release &amp; Version</strong>: <code>3.0.0-3</code> | <strong>Branch</strong>: <code>release/2.6.0</code>
 <strong>Host Runner Environment Legend (Derived at Build Time)</strong>:
-- <strong>Linux Runner</strong>: lba4.siddiq.org (4 Cores, 48 MHz)
 - <strong>Windows Runner</strong>: WINDEV (4 Cores, 3072 MHz)
+- <strong>Linux Runner</strong>: lba4.siddiq.org (4 Cores, 48 MHz)
 - <strong>Darwin Runner</strong>: macdev.siddiq.org (4 Cores, 24 MHz)</p>
 </div>
 <p><em>Empirical build pipeline measurements collected across matrix runners grouped by operating system platform:</em></p>
@@ -1707,20 +1684,20 @@
 <tr>
 <td style="text-align: center;"><strong>arm64</strong></td>
 <td style="text-align: center;">GCC</td>
-<td style="text-align: center;"><strong>145,675.12 msg/s</strong></td>
-<td style="text-align: center;"><strong>361.21 MB/s</strong></td>
-<td style="text-align: center;"><strong>15969853.30 ns</strong></td>
-<td style="text-align: center;"><strong>331,007.97 msg/s</strong></td>
-<td style="text-align: center;"><strong>3051032.11 ns</strong></td>
+<td style="text-align: center;"><strong>108,243.57 msg/s</strong></td>
+<td style="text-align: center;"><strong>268.40 MB/s</strong></td>
+<td style="text-align: center;"><strong>21182366.74 ns</strong></td>
+<td style="text-align: center;"><strong>358,368.45 msg/s</strong></td>
+<td style="text-align: center;"><strong>2804352.13 ns</strong></td>
 </tr>
 <tr>
 <td style="text-align: center;"><strong>x64</strong></td>
 <td style="text-align: center;">Clang</td>
-<td style="text-align: center;"><strong>71,350.06 msg/s</strong></td>
-<td style="text-align: center;"><strong>188.05 MB/s</strong></td>
-<td style="text-align: center;"><strong>14.02 us</strong></td>
-<td style="text-align: center;"><strong>75,318.11 msg/s</strong></td>
-<td style="text-align: center;"><strong>13.28 us</strong></td>
+<td style="text-align: center;"><strong>70,953.42 msg/s</strong></td>
+<td style="text-align: center;"><strong>187.01 MB/s</strong></td>
+<td style="text-align: center;"><strong>14.09 us</strong></td>
+<td style="text-align: center;"><strong>75,661.30 msg/s</strong></td>
+<td style="text-align: center;"><strong>13.22 us</strong></td>
 </tr>
 </tbody>
 </table>
@@ -1741,20 +1718,20 @@
 <tr>
 <td style="text-align: center;"><strong>arm64</strong></td>
 <td style="text-align: center;">MSVC</td>
-<td style="text-align: center;"><strong>112,000.00 msg/s</strong></td>
-<td style="text-align: center;"><strong>277.71 MB/s</strong></td>
-<td style="text-align: center;"><strong>9114194.94 ns</strong></td>
-<td style="text-align: center;"><strong>352,000.00 msg/s</strong></td>
-<td style="text-align: center;"><strong>2825296.40 ns</strong></td>
+<td style="text-align: center;"><strong>112,941.18 msg/s</strong></td>
+<td style="text-align: center;"><strong>280.04 MB/s</strong></td>
+<td style="text-align: center;"><strong>9395509.72 ns</strong></td>
+<td style="text-align: center;"><strong>381,276.60 msg/s</strong></td>
+<td style="text-align: center;"><strong>2727230.06 ns</strong></td>
 </tr>
 <tr>
 <td style="text-align: center;"><strong>x64</strong></td>
 <td style="text-align: center;">Clang</td>
-<td style="text-align: center;"><strong>50,811.97 msg/s</strong></td>
-<td style="text-align: center;"><strong>133.92 MB/s</strong></td>
-<td style="text-align: center;"><strong>19.68 us</strong></td>
-<td style="text-align: center;"><strong>39,891.95 msg/s</strong></td>
-<td style="text-align: center;"><strong>25.07 us</strong></td>
+<td style="text-align: center;"><strong>51,018.98 msg/s</strong></td>
+<td style="text-align: center;"><strong>134.47 MB/s</strong></td>
+<td style="text-align: center;"><strong>19.60 us</strong></td>
+<td style="text-align: center;"><strong>55,376.75 msg/s</strong></td>
+<td style="text-align: center;"><strong>18.06 us</strong></td>
 </tr>
 </tbody>
 </table>
@@ -1775,11 +1752,11 @@
 <tr>
 <td style="text-align: center;"><strong>arm64</strong></td>
 <td style="text-align: center;">Clang</td>
-<td style="text-align: center;"><strong>164,721.19 msg/s</strong></td>
-<td style="text-align: center;"><strong>408.43 MB/s</strong></td>
-<td style="text-align: center;"><strong>7415734.47 ns</strong></td>
-<td style="text-align: center;"><strong>512,369.66 msg/s</strong></td>
-<td style="text-align: center;"><strong>1951739.79 ns</strong></td>
+<td style="text-align: center;"><strong>168,651.81 msg/s</strong></td>
+<td style="text-align: center;"><strong>418.18 MB/s</strong></td>
+<td style="text-align: center;"><strong>7394995.73 ns</strong></td>
+<td style="text-align: center;"><strong>507,730.70 msg/s</strong></td>
+<td style="text-align: center;"><strong>1969750.82 ns</strong></td>
 </tr>
 </tbody>
 </table>
@@ -1942,7 +1919,7 @@
 </div>
 <hr />
 <h2 id="5-resilience-to-corrupted-noisy-buffers">5. Resilience to Corrupted / Noisy Buffers<a class="headerlink" href="#5-resilience-to-corrupted-noisy-buffers" title="Permanent link">&para;</a></h2>
-<p><code>sip2json</code> employs Compile-Time Regular Expression forward scanning to skip noise bytes and recover valid SIP start lines automatically:</p>
+<p><code>sip2json</code> employs zero-copy <code>std::string_view</code> forward scanning to skip noise bytes and recover valid SIP start lines automatically:</p>
 <table>
 <thead>
 <tr>
@@ -1969,9 +1946,9 @@
 </table>
 <hr />
 <h2 id="6-running-benchmarks-locally">6. Running Benchmarks Locally<a class="headerlink" href="#6-running-benchmarks-locally" title="Permanent link">&para;</a></h2>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>cmake<span class="w"> </span>--preset<span class="w"> </span>Apple-Release
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>cmake<span class="w"> </span>--build<span class="w"> </span>--preset<span class="w"> </span>Apple-Release
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>./build/Apple-Release/tests/benchmark/sip2json_benchmark<span class="w"> </span>tests/validation/samples
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>cmake<span class="w"> </span>--preset<span class="w"> </span>Darwin-Clang-Release<span class="w"> </span>-Dsip2json_BUILD_BENCHMARKS<span class="o">=</span>ON
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>cmake<span class="w"> </span>--build<span class="w"> </span>--preset<span class="w"> </span>Darwin-Clang-Release<span class="w"> </span>--target<span class="w"> </span>sip2json_benchmarks
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>./build/Darwin-Clang-Release/benchmarks/sip2json_benchmarks
 </span></code></pre></div>
 
 
@@ -2068,7 +2045,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "toc.integrate", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.0.0-beta.1"}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "toc.integrate", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.0.0-3"}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>

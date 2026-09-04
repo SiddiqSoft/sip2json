@@ -845,6 +845,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#related-references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related References
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1564,20 +1575,20 @@
 
 
 <h1 id="errors-exceptions">Errors &amp; Exceptions<a class="headerlink" href="#errors-exceptions" title="Permanent link">&para;</a></h1>
-<p><code>sip2json</code> uses exception-based reporting for synchronous calls and error code callbacks for stream parsing.</p>
+<p><code>sip2json</code> uses exception-based reporting for synchronous calls (<a href="../sip2json/#parsefrombuffer"><code>sip2json::parseFromBuffer</code></a>, <a href="../sip2json/#serialize"><code>sip2json::serialize</code></a>) and error code callbacks for stream parsing (<a href="../sip2json/#parseasync"><code>sip2json::parseAsync</code></a>).</p>
 <hr />
 <h2 id="sip2json_exception-class"><code>sip2json_exception</code> Class<a class="headerlink" href="#sip2json_exception-class" title="Permanent link">&para;</a></h2>
-<p>Derived from <code>std::exception</code>, base exception type thrown when standard parsing or serialization operations encounter invalid data.</p>
+<p>Derived from <code>std::exception</code>, root base exception type thrown when parsing or serialization operations encounter invalid data.</p>
 <h3 id="derived-exception-types">Derived Exception Types<a class="headerlink" href="#derived-exception-types" title="Permanent link">&para;</a></h3>
 <ul>
-<li><code>invalid_startline_error</code>: Thrown when the start line is malformed or uses an unsupported/custom method token.</li>
-<li><code>invalid_document_error</code>: Thrown during serialization when a document is missing required fields, uses an unsupported method, or contains invalid CRLF characters.</li>
-<li><code>incomplete_buffer_for_parse_error</code>: Thrown when buffer contains a partial message framing.</li>
-<li><code>unsupported_contenttype_error</code>: Thrown when payload content-type is unsupported.</li>
-<li><code>empty_message_error</code>: Thrown when attempting to serialize an empty message.</li>
+<li><strong><code>invalid_startline_error</code></strong>: Thrown by <a href="../sip2json/#parsefrombuffer"><code>sip2json::parseFromBuffer</code></a> when the start line is malformed or uses an unsupported/custom method token.</li>
+<li><strong><code>invalid_document_error</code></strong>: Thrown by <a href="../sip2json/#serialize"><code>sip2json::serialize</code></a> when a document is missing required fields, uses an unsupported method, or contains CRLF injection characters.</li>
+<li><strong><code>incomplete_buffer_for_parse_error</code></strong>: Thrown by <a href="../sip2json/#parsefrombuffer"><code>sip2json::parseFromBuffer</code></a> when the input buffer contains a partial message framing.</li>
+<li><strong><code>unsupported_contenttype_error</code></strong>: Thrown when message body has an unsupported payload Content-Type.</li>
+<li><strong><code>empty_message_error</code></strong>: Thrown by <a href="../sip2json/#serialize"><code>sip2json::serialize</code></a> when attempting to serialize an empty <a href="../sipmessage/"><code>sipmessage</code></a>.</li>
 </ul>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">try</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">msg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sip2json</span><span class="o">::</span><span class="n">parseFromBuffer</span><span class="p">(</span><span class="n">startIt</span><span class="p">,</span><span class="w"> </span><span class="n">endIt</span><span class="p">);</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">msg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">siddiqsoft</span><span class="o">::</span><span class="n">sip2json</span><span class="o">::</span><span class="n">parseFromBuffer</span><span class="p">(</span><span class="n">startIt</span><span class="p">,</span><span class="w"> </span><span class="n">endIt</span><span class="p">);</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">siddiqsoft</span><span class="o">::</span><span class="n">invalid_startline_error</span><span class="o">&amp;</span><span class="w"> </span><span class="n">ex</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"Invalid SIP Startline: "</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">ex</span><span class="p">.</span><span class="n">what</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">siddiqsoft</span><span class="o">::</span><span class="n">sip2json_exception</span><span class="o">&amp;</span><span class="w"> </span><span class="n">ex</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
@@ -1586,7 +1597,7 @@
 </span></code></pre></div>
 <hr />
 <h2 id="sip2jsonerrors-enum"><code>sip2jsonErrors</code> Enum<a class="headerlink" href="#sip2jsonerrors-enum" title="Permanent link">&para;</a></h2>
-<p>Enum class defining specific diagnostic error codes returned to stream callbacks:</p>
+<p>Enum class defining specific diagnostic error codes passed to <a href="../sip2json/#parseasync"><code>sip2json::parseAsync</code></a> error callbacks:</p>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">enum</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">sip2jsonErrors</span><span class="w"> </span><span class="p">{</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="n">Success</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
 </span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="n">InvalidStartLine</span><span class="p">,</span>
@@ -1596,6 +1607,14 @@
 </span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="n">InvalidSdpBody</span>
 </span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="p">};</span>
 </span></code></pre></div>
+<hr />
+<h2 id="related-references">Related References<a class="headerlink" href="#related-references" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="../sipmessage/"><code>sipmessage</code> Class Reference</a></li>
+<li><a href="../sip2json/"><code>sip2json</code> Parsing &amp; Serialization Functions</a></li>
+<li><a href="../json_schema/">JSON Schema Specification</a></li>
+<li><a href="../examples/async_parsing/">Asynchronous Stream Parsing Example</a></li>
+</ul>
 
 
 
@@ -1691,7 +1710,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "toc.integrate", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.0.0-beta.1"}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "toc.integrate", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.0.0-3"}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>

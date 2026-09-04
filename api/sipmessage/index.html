@@ -751,6 +751,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#method-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Method Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#optimal-usage-guidelines" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -847,6 +858,17 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related References
+      
+    </span>
+  </a>
   
 </li>
       
@@ -1625,7 +1647,60 @@
 
 
 <h1 id="sipmessage-class-reference"><code>sipmessage</code> Class Reference<a class="headerlink" href="#sipmessage-class-reference" title="Permanent link">&para;</a></h1>
-<p>The <code>sipmessage</code> class represents a parsed or constructed SIP request or response message, extending <code>nlohmann::json</code>.</p>
+<p>The <code>sipmessage</code> class represents a parsed or constructed SIP request or response message, extending <a href="../json_schema/"><code>nlohmann::json</code></a>. Construct messages via <a href="#constructors">Constructors</a> or decode them via <a href="../sip2json/#parse"><code>sip2json::parse</code></a> and <a href="../sip2json/#parseasync"><code>sip2json::parseAsync</code></a>.</p>
+<hr />
+<h2 id="method-summary">Method Summary<a class="headerlink" href="#method-summary" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Member / Method</th>
+<th style="text-align: left;">Return Type</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><a href="#default-constructor"><code>sipmessage()</code></a></td>
+<td style="text-align: left;">Constructor</td>
+<td style="text-align: left;">Creates an empty instance with initialized metadata.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#request-constructor"><code>sipmessage(...)</code></a></td>
+<td style="text-align: left;">Constructor</td>
+<td style="text-align: left;">Initializes a request message with method, URI, Call-ID, and CSeq.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#getheader"><code>getHeader&lt;T&gt;</code></a></td>
+<td style="text-align: left;"><code>auto</code> / <code>T</code></td>
+<td style="text-align: left;">Retrieves header value by key with optional fallback.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#setheader"><code>setHeader</code></a></td>
+<td style="text-align: left;"><code>sipmessage&amp;</code></td>
+<td style="text-align: left;">Sets or updates header value (fluent chaining).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#zero-copy-view-accessors"><code>getMethodView</code></a></td>
+<td style="text-align: left;"><code>std::string_view</code></td>
+<td style="text-align: left;">Direct view into internal JSON method string with zero allocations.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#zero-copy-view-accessors"><code>getUriView</code></a></td>
+<td style="text-align: left;"><code>std::string_view</code></td>
+<td style="text-align: left;">Direct view into internal JSON URI string with zero allocations.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#zero-copy-view-accessors"><code>getReasonView</code></a></td>
+<td style="text-align: left;"><code>std::string_view</code></td>
+<td style="text-align: left;">Direct view into internal JSON reason phrase string with zero allocations.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#zero-copy-view-accessors"><code>getCallIDView</code></a></td>
+<td style="text-align: left;"><code>std::string_view</code></td>
+<td style="text-align: left;">Direct view into internal JSON Call-ID string with zero allocations.</td>
+</tr>
+</tbody>
+</table>
 <hr />
 <h2 id="optimal-usage-guidelines">Optimal Usage Guidelines<a class="headerlink" href="#optimal-usage-guidelines" title="Permanent link">&para;</a></h2>
 <div class="admonition tip">
@@ -1675,6 +1750,14 @@ Passing static string constants yields a <strong>13.2% performance gain for <cod
 </span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="n">std</span><span class="o">::</span><span class="n">string_view</span><span class="w"> </span><span class="nf">getCallIDView</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span>
 </span></code></pre></div>
 <p>Returns a <code>std::string_view</code> pointing directly into internal JSON string storage with zero allocations.</p>
+<hr />
+<h2 id="related-references">Related References<a class="headerlink" href="#related-references" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="../sip2json/"><code>sip2json</code> Parsing &amp; Serialization Functions</a></li>
+<li><a href="../json_schema/">JSON Schema Specification</a></li>
+<li><a href="../errors/">Error &amp; Exception Types</a></li>
+<li><a href="../examples/serialization/">Message Construction &amp; Serialization Example</a></li>
+</ul>
 
 
 
@@ -1770,7 +1853,7 @@ Passing static string constants yields a <strong>13.2% performance gain for <cod
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "toc.integrate", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.0.0-beta.1"}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "toc.integrate", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.0.0-3"}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>

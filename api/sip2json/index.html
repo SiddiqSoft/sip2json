@@ -779,6 +779,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#method-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Method Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#functions" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1605,18 +1616,51 @@
 <h1 id="sip2json-class-functions"><code>sip2json</code> Class Functions<a class="headerlink" href="#sip2json-class-functions" title="Permanent link">&para;</a></h1>
 <p>The <code>siddiqsoft::sip2json</code> class provides static utility functions for parsing and serializing SIP protocol payloads.</p>
 <hr />
+<h2 id="method-summary">Method Summary<a class="headerlink" href="#method-summary" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Method</th>
+<th style="text-align: left;">Return Type</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><a href="#parse"><code>parse</code></a></td>
+<td style="text-align: left;"><code>std::vector&lt;</code><a href="../sipmessage/"><code>sipmessage</code></a><code>&gt;</code></td>
+<td style="text-align: left;">Parses all available messages from iterator buffer range.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#parsefrombuffer"><code>parseFromBuffer</code></a></td>
+<td style="text-align: left;"><a href="../sipmessage/"><code>sipmessage</code></a></td>
+<td style="text-align: left;">Extracts single message from iterator buffer range.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#parseasync"><code>parseAsync</code></a></td>
+<td style="text-align: left;"><code>std::string&amp;</code></td>
+<td style="text-align: left;">Asynchronously decodes continuous stream via zero-copy callback.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#serialize"><code>serialize</code></a></td>
+<td style="text-align: left;"><code>std::string</code></td>
+<td style="text-align: left;">Serializes <a href="../sipmessage/"><code>sipmessage</code></a> into RFC 3261 wire format string.</td>
+</tr>
+</tbody>
+</table>
+<hr />
 <h2 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">&para;</a></h2>
 <h3 id="parse"><code>parse</code><a class="headerlink" href="#parse" title="Permanent link">&para;</a></h3>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">static</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">sipmessage</span><span class="o">&gt;</span><span class="w"> </span><span class="n">parse</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">iterator</span><span class="o">&amp;</span><span class="w"> </span><span class="n">bufferStart</span><span class="p">,</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">                                   </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">iterator</span><span class="o">&amp;</span><span class="w"> </span><span class="n">bufferEnd</span><span class="p">)</span><span class="w"> </span><span class="k">noexcept</span><span class="p">(</span><span class="nb">false</span><span class="p">);</span>
 </span></code></pre></div>
-<p>Parses as many SIP messages as possible from the buffer range <code>[bufferStart, bufferEnd)</code>. Advanced <code>bufferStart</code> past successfully parsed frames. Returns a vector of <code>sipmessage</code> objects. Throws <code>std::invalid_argument</code> if no messages could be decoded.</p>
+<p>Parses as many SIP messages as possible from the buffer range <code>[bufferStart, bufferEnd)</code>. Advances <code>bufferStart</code> past successfully parsed frames. Returns a vector of <a href="../sipmessage/"><code>sipmessage</code></a> objects. Throws <code>std::invalid_argument</code> if no messages could be decoded.</p>
 <hr />
 <h3 id="parsefrombuffer"><code>parseFromBuffer</code><a class="headerlink" href="#parsefrombuffer" title="Permanent link">&para;</a></h3>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">static</span><span class="w"> </span><span class="n">sipmessage</span><span class="w"> </span><span class="nf">parseFromBuffer</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">iterator</span><span class="o">&amp;</span><span class="w"> </span><span class="n">bufferStart</span><span class="p">,</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">                                  </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">iterator</span><span class="o">&amp;</span><span class="w"> </span><span class="n">bufferEnd</span><span class="p">)</span><span class="w"> </span><span class="k">noexcept</span><span class="p">(</span><span class="nb">false</span><span class="p">);</span>
 </span></code></pre></div>
-<p>Extracts and deserializes the first SIP message from the buffer range <code>[bufferStart, bufferEnd)</code>. Advances <code>bufferStart</code> past the parsed message. Validates the start line against standard RFC SIP methods (<code>INVITE</code>, <code>ACK</code>, <code>OPTIONS</code>, <code>BYE</code>, <code>CANCEL</code>, <code>REGISTER</code>, <code>SUBSCRIBE</code>, <code>NOTIFY</code>, <code>MESSAGE</code>, <code>INFO</code>, <code>REFER</code>, <code>PUBLISH</code>, <code>UPDATE</code>, <code>PRACK</code>). Throws a derived <code>sip2json_exception</code> (such as <code>invalid_startline_error</code> for custom/unknown method tokens, <code>incomplete_buffer_for_parse_error</code>, etc.) on syntax or framing errors.</p>
+<p>Extracts and deserializes the first SIP message from the buffer range <code>[bufferStart, bufferEnd)</code>. Advances <code>bufferStart</code> past the parsed message. Validates the start line against standard RFC SIP methods (<code>INVITE</code>, <code>ACK</code>, <code>OPTIONS</code>, <code>BYE</code>, <code>CANCEL</code>, <code>REGISTER</code>, <code>SUBSCRIBE</code>, <code>NOTIFY</code>, <code>MESSAGE</code>, <code>INFO</code>, <code>REFER</code>, <code>PUBLISH</code>, <code>UPDATE</code>, <code>PRACK</code>). Throws a derived <a href="../errors/#sip2json_exception-class"><code>sip2json_exception</code></a> (such as <a href="../errors/#derived-exception-types"><code>invalid_startline_error</code></a> for custom/unknown method tokens, <a href="../errors/#derived-exception-types"><code>incomplete_buffer_for_parse_error</code></a>, etc.) on syntax or framing errors.</p>
 <hr />
 <h3 id="parseasync"><code>parseAsync</code><a class="headerlink" href="#parseasync" title="Permanent link">&para;</a></h3>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">static</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="nf">parseAsync</span><span class="p">(</span>
@@ -1624,19 +1668,19 @@
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">void</span><span class="p">(</span><span class="n">sipmessage</span><span class="o">&amp;&amp;</span><span class="p">)</span><span class="o">&gt;</span><span class="w"> </span><span class="n">parseCallback</span><span class="p">,</span>
 </span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">optional</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">void</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">sip2json_exception</span><span class="o">&amp;</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">iterator</span><span class="o">&amp;</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">iterator</span><span class="o">&amp;</span><span class="p">)</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">errorCallback</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{})</span><span class="w"> </span><span class="k">noexcept</span><span class="p">;</span>
 </span></code></pre></div>
-<p>Asynchronously parses multiple SIP messages from <code>frameBuffer</code>. Decoded messages are moved to <code>parseCallback(sipmessage&amp;&amp;)</code>. Automatically erases decoded bytes from the front of <code>frameBuffer</code>, retaining partial frames for subsequent read cycles.</p>
+<p>Asynchronously parses multiple SIP messages from <code>frameBuffer</code>. Decoded messages are moved to <code>parseCallback(</code><a href="../sipmessage/"><code>sipmessage</code></a><code>&amp;&amp;)</code>. Automatically erases decoded bytes from the front of <code>frameBuffer</code>, retaining partial frames for subsequent read cycles.</p>
 <h4 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h4>
 <ul>
 <li><code>frameBuffer</code>: Reference to input string buffer.</li>
-<li><code>parseCallback</code>: Callable with signature <code>void(sipmessage&amp;&amp; msg)</code>.</li>
-<li><code>errorCallback</code>: Optional error callback with signature <code>void(const sip2json_exception&amp; e, std::string::iterator&amp; start, const std::string::iterator&amp; end)</code>.</li>
+<li><code>parseCallback</code>: Callable with signature <code>void(</code><a href="../sipmessage/"><code>sipmessage</code></a><code>&amp;&amp; msg)</code>.</li>
+<li><code>errorCallback</code>: Optional error callback with signature <code>void(const</code><a href="../errors/#sip2json_exception-class"><code>sip2json_exception</code></a><code>&amp; e, std::string::iterator&amp; start, const std::string::iterator&amp; end)</code>.</li>
 </ul>
 <hr />
 <h3 id="serialize"><code>serialize</code><a class="headerlink" href="#serialize" title="Permanent link">&para;</a></h3>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">static</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="nf">serialize</span><span class="p">(</span><span class="n">sipmessage</span><span class="o">&amp;</span><span class="w"> </span><span class="n">msg</span><span class="p">)</span><span class="w"> </span><span class="k">noexcept</span><span class="p">(</span><span class="nb">false</span><span class="p">);</span>
 </span></code></pre></div>
-<p>Serializes a <code>sipmessage</code> object back into a standard RFC 3261 formatted SIP protocol string complete with headers and SDP body.</p>
-<p>Validates that request messages use a supported standard SIP method (<code>INVITE</code>, <code>ACK</code>, <code>OPTIONS</code>, <code>BYE</code>, <code>CANCEL</code>, <code>REGISTER</code>, <code>SUBSCRIBE</code>, <code>NOTIFY</code>, <code>MESSAGE</code>, <code>INFO</code>, <code>REFER</code>, <code>PUBLISH</code>, <code>UPDATE</code>, <code>PRACK</code>). Throws <code>invalid_document_error</code> if the method is unsupported (e.g. custom token) or if headers/URI contain CRLF injection characters.</p>
+<p>Serializes a <a href="../sipmessage/"><code>sipmessage</code></a> object back into a standard RFC 3261 formatted SIP protocol string complete with headers and SDP body.</p>
+<p>Validates that request messages use a supported standard SIP method (<code>INVITE</code>, <code>ACK</code>, <code>OPTIONS</code>, <code>BYE</code>, <code>CANCEL</code>, <code>REGISTER</code>, <code>SUBSCRIBE</code>, <code>NOTIFY</code>, <code>MESSAGE</code>, <code>INFO</code>, <code>REFER</code>, <code>PUBLISH</code>, <code>UPDATE</code>, <code>PRACK</code>). Throws <a href="../errors/#derived-exception-types"><code>invalid_document_error</code></a> if the method is unsupported (e.g. custom token) or if headers/URI contain CRLF injection characters.</p>
 
 
 
@@ -1732,7 +1776,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "toc.integrate", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.0.0-beta.1"}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "toc.integrate", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.0.0-3"}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>

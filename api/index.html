@@ -723,10 +723,21 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#core-api-components" class="md-nav__link">
+  <a href="#classes-structs" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Core API Components
+        Classes &amp; Structs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#member-functions-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Member Functions &amp; Methods
       
     </span>
   </a>
@@ -1586,54 +1597,157 @@
 
 
 <h1 id="api-reference">API Reference<a class="headerlink" href="#api-reference" title="Permanent link">&para;</a></h1>
-<p>The <code>siddiqsoft::sip2json</code> namespace provides data structures, stream parsing utilities, error definitions, and serialization functions for SIP message processing in Modern C++23.</p>
+<p>The <code>siddiqsoft::sip2json</code> namespace provides data structures, stream parsing utilities, error definitions, and serialization functions for SIP message processing in Modern C++20.</p>
 <hr />
-<h2 id="core-api-components">Core API Components<a class="headerlink" href="#core-api-components" title="Permanent link">&para;</a></h2>
+<h2 id="classes-structs">Classes &amp; Structs<a class="headerlink" href="#classes-structs" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th style="text-align: left;">Component</th>
-<th style="text-align: left;">Category</th>
+<th style="text-align: left;">Type / Symbol</th>
+<th style="text-align: left;">Kind</th>
 <th style="text-align: left;">Description</th>
 <th style="text-align: left;">Reference</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><strong><code>sipmessage</code></strong></td>
-<td style="text-align: left;">Primary DTO Class</td>
-<td style="text-align: left;">High-level DTO representing SIP requests and responses. Inherits <code>nlohmann::json</code> for zero-overhead JSON serialization.</td>
-<td style="text-align: left;"><a href="sipmessage/"><code>sipmessage</code></a></td>
+<td style="text-align: left;"><a href="sipmessage/"><code>siddiqsoft::sipmessage</code></a></td>
+<td style="text-align: left;">Class</td>
+<td style="text-align: left;">Primary DTO representing SIP requests and responses. Extends <a href="json_schema/"><code>nlohmann::json</code></a>.</td>
+<td style="text-align: left;"><a href="sipmessage/"><code>sipmessage.md</code></a></td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong><code>sip2json</code></strong></td>
-<td style="text-align: left;">Core Functions</td>
-<td style="text-align: left;">Static methods: <code>parse</code> (single-message), <code>parseAsync</code> (zero-copy iterator stream callback), and <code>serialize</code> (wire format).</td>
-<td style="text-align: left;"><a href="sip2json/"><code>sip2json</code></a></td>
+<td style="text-align: left;"><a href="sip2json/"><code>siddiqsoft::sip2json</code></a></td>
+<td style="text-align: left;">Static Class</td>
+<td style="text-align: left;">Parsing &amp; serialization engine: <a href="sip2json/#parse"><code>parse</code></a>, <a href="sip2json/#parsefrombuffer"><code>parseFromBuffer</code></a>, <a href="sip2json/#parseasync"><code>parseAsync</code></a>, and <a href="sip2json/#serialize"><code>serialize</code></a>.</td>
+<td style="text-align: left;"><a href="sip2json/"><code>sip2json.md</code></a></td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong><code>sip2json_exception</code></strong></td>
-<td style="text-align: left;">Exceptions</td>
-<td style="text-align: left;">Custom exception type thrown on parse syntax errors or wire-format validation failures.</td>
-<td style="text-align: left;"><a href="errors/"><code>Errors &amp; Exceptions</code></a></td>
+<td style="text-align: left;"><a href="errors/#sip2json_exception-class"><code>siddiqsoft::sip2json_exception</code></a></td>
+<td style="text-align: left;">Exception Base</td>
+<td style="text-align: left;">Root exception class thrown on parse syntax errors or serialization validation failures.</td>
+<td style="text-align: left;"><a href="errors/#sip2json_exception-class"><code>errors.md</code></a></td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong><code>sip2jsonErrors</code></strong></td>
-<td style="text-align: left;">Error Codes</td>
-<td style="text-align: left;">Strongly-typed enum class defining non-fatal and fatal parser status codes.</td>
-<td style="text-align: left;"><a href="errors/"><code>Errors &amp; Exceptions</code></a></td>
+<td style="text-align: left;"><a href="errors/#derived-exception-types"><code>siddiqsoft::invalid_startline_error</code></a></td>
+<td style="text-align: left;">Exception</td>
+<td style="text-align: left;">Thrown when the startline is malformed or uses an unsupported/custom method token.</td>
+<td style="text-align: left;"><a href="errors/#derived-exception-types"><code>errors.md</code></a></td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>JSON Metaphor &amp; Schema</strong></td>
-<td style="text-align: left;">Wire Model</td>
-<td style="text-align: left;">Specification for the compact single-character key schema (<code>s</code>, <code>h</code>, <code>b</code>, <code>meta</code>) mapping SIP frames to JSON.</td>
-<td style="text-align: left;"><a href="json_schema/">JSON Schema</a></td>
+<td style="text-align: left;"><a href="errors/#derived-exception-types"><code>siddiqsoft::invalid_document_error</code></a></td>
+<td style="text-align: left;">Exception</td>
+<td style="text-align: left;">Thrown during serialization when missing required fields or containing CRLF injections.</td>
+<td style="text-align: left;"><a href="errors/#derived-exception-types"><code>errors.md</code></a></td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>SDP Support</strong></td>
-<td style="text-align: left;">Media Descriptors</td>
-<td style="text-align: left;">Native Session Description Protocol parsing and serialization into structured <code>/b/sdp</code> objects.</td>
+<td style="text-align: left;"><a href="errors/#derived-exception-types"><code>siddiqsoft::incomplete_buffer_for_parse_error</code></a></td>
+<td style="text-align: left;">Exception</td>
+<td style="text-align: left;">Thrown when an input buffer contains partial framing.</td>
+<td style="text-align: left;"><a href="errors/#derived-exception-types"><code>errors.md</code></a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="errors/#derived-exception-types"><code>siddiqsoft::unsupported_contenttype_error</code></a></td>
+<td style="text-align: left;">Exception</td>
+<td style="text-align: left;">Thrown when message body has an unsupported payload Content-Type.</td>
+<td style="text-align: left;"><a href="errors/#derived-exception-types"><code>errors.md</code></a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="errors/#derived-exception-types"><code>siddiqsoft::empty_message_error</code></a></td>
+<td style="text-align: left;">Exception</td>
+<td style="text-align: left;">Thrown when attempting to serialize an empty message object.</td>
+<td style="text-align: left;"><a href="errors/#derived-exception-types"><code>errors.md</code></a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="errors/#sip2jsonerrors-enum"><code>siddiqsoft::sip2jsonErrors</code></a></td>
+<td style="text-align: left;">Enum Class</td>
+<td style="text-align: left;">Diagnostic error codes returned to stream callbacks (<code>Success</code>, <code>InvalidStartLine</code>, etc.).</td>
+<td style="text-align: left;"><a href="errors/#sip2jsonerrors-enum"><code>errors.md</code></a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="json_schema/">JSON Metaphor Schema</a></td>
+<td style="text-align: left;">Data Model</td>
+<td style="text-align: left;">Compact single-character key schema (<code>s</code>, <code>h</code>, <code>b</code>, <code>meta</code>) mapping SIP frames to JSON.</td>
+<td style="text-align: left;"><a href="json_schema/"><code>json_schema.md</code></a></td>
+</tr>
+<tr>
 <td style="text-align: left;"><a href="sdp/">SDP Support</a></td>
+<td style="text-align: left;">Descriptors</td>
+<td style="text-align: left;">Native Session Description Protocol parsing and serialization for structured <code>/b/sdp</code> bodies.</td>
+<td style="text-align: left;"><a href="sdp/"><code>sdp.md</code></a></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="member-functions-methods">Member Functions &amp; Methods<a class="headerlink" href="#member-functions-methods" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Function / Method</th>
+<th style="text-align: left;">Defined In</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><a href="sipmessage/#default-constructor"><code>sipmessage::sipmessage()</code></a></td>
+<td style="text-align: left;"><a href="sipmessage/"><code>sipmessage</code></a></td>
+<td style="text-align: left;">Default constructor; initializes empty message with metadata.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="sipmessage/#request-constructor"><code>sipmessage::sipmessage(method, uri, callId, cseq)</code></a></td>
+<td style="text-align: left;"><a href="sipmessage/"><code>sipmessage</code></a></td>
+<td style="text-align: left;">Constructs request with method, URI, optional Call-ID, and CSeq.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="sipmessage/#getheader"><code>sipmessage::getHeader&lt;T&gt;(key, default)</code></a></td>
+<td style="text-align: left;"><a href="sipmessage/"><code>sipmessage</code></a></td>
+<td style="text-align: left;">Retrieves header value by key with optional default fallback.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="sipmessage/#setheader"><code>sipmessage::setHeader(key, value)</code></a></td>
+<td style="text-align: left;"><a href="sipmessage/"><code>sipmessage</code></a></td>
+<td style="text-align: left;">Sets or updates header key-value pair (fluent chaining).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="sipmessage/#zero-copy-view-accessors"><code>sipmessage::getMethodView()</code></a></td>
+<td style="text-align: left;"><a href="sipmessage/"><code>sipmessage</code></a></td>
+<td style="text-align: left;">Zero-copy <code>std::string_view</code> of request method.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="sipmessage/#zero-copy-view-accessors"><code>sipmessage::getUriView()</code></a></td>
+<td style="text-align: left;"><a href="sipmessage/"><code>sipmessage</code></a></td>
+<td style="text-align: left;">Zero-copy <code>std::string_view</code> of request URI.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="sipmessage/#zero-copy-view-accessors"><code>sipmessage::getReasonView()</code></a></td>
+<td style="text-align: left;"><a href="sipmessage/"><code>sipmessage</code></a></td>
+<td style="text-align: left;">Zero-copy <code>std::string_view</code> of response reason phrase.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="sipmessage/#zero-copy-view-accessors"><code>sipmessage::getCallIDView()</code></a></td>
+<td style="text-align: left;"><a href="sipmessage/"><code>sipmessage</code></a></td>
+<td style="text-align: left;">Zero-copy <code>std::string_view</code> of Call-ID.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="sip2json/#parse"><code>sip2json::parse</code></a></td>
+<td style="text-align: left;"><a href="sip2json/"><code>sip2json</code></a></td>
+<td style="text-align: left;">Parses all SIP messages from an iterator range into <code>std::vector&lt;sipmessage&gt;</code>.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="sip2json/#parsefrombuffer"><code>sip2json::parseFromBuffer</code></a></td>
+<td style="text-align: left;"><a href="sip2json/"><code>sip2json</code></a></td>
+<td style="text-align: left;">Extracts single SIP message from iterator buffer range.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="sip2json/#parseasync"><code>sip2json::parseAsync</code></a></td>
+<td style="text-align: left;"><a href="sip2json/"><code>sip2json</code></a></td>
+<td style="text-align: left;">High-throughput callback-driven stream parsing with partial frame retention.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="sip2json/#serialize"><code>sip2json::serialize</code></a></td>
+<td style="text-align: left;"><a href="sip2json/"><code>sip2json</code></a></td>
+<td style="text-align: left;">Serializes a <code>sipmessage</code> back into an RFC 3261 wire format string.</td>
 </tr>
 </tbody>
 </table>
@@ -1752,7 +1866,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "toc.integrate", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.0.0-beta.1"}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "toc.integrate", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.0.0-3"}</script>
     
     
       <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>

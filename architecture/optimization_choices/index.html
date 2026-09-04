@@ -1583,7 +1583,7 @@
 
 
 <h1 id="high-performance-optimization-choices">High-Performance Optimization Choices<a class="headerlink" href="#high-performance-optimization-choices" title="Permanent link">&para;</a></h1>
-<p><code>sip2json</code> incorporates low-level C++23 architectural choices engineered to maximize network throughput and minimize per-message CPU cycles.</p>
+<p><code>sip2json</code> incorporates low-level C++20 architectural choices engineered to maximize network throughput and minimize per-message CPU cycles.</p>
 <hr />
 <h2 id="1-header-lookup-execution-flow">1. Header Lookup Execution Flow<a class="headerlink" href="#1-header-lookup-execution-flow" title="Permanent link">&para;</a></h2>
 <pre class="mermaid"><code>flowchart TD
@@ -1610,7 +1610,7 @@
 <p><strong><code>constexpr</code> Compile-Time Switch Labels</strong>:</p>
 </li>
 <li>
-<p>The switch statement uses <code>case hash_header_key("from"):</code> compile-time constant expressions evaluated directly by the C++23 compiler. <code>HeaderKeySet</code> static objects remain lightweight and decoupled without storing redundant hash member variables.</p>
+<p>The switch statement uses <code>case hash_header_key("from"):</code> compile-time constant expressions evaluated directly by the C++20 compiler. <code>HeaderKeySet</code> static objects remain lightweight and decoupled without storing redundant hash member variables.</p>
 </li>
 <li>
 <p><strong>100% Zero Hash Collisions Across All Canonical Headers</strong>:</p>
@@ -1781,7 +1781,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "toc.integrate", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.0.0-beta.1"}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "toc.integrate", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.0.0-3"}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
