@@ -16,8 +16,8 @@
         <description>Modern C++20 SIP parser with bidirectional JSON conversion for distributed systems and NoSQL databases</description>
         <summary>Header-only C++20 SIP to JSON parser with full SDP support</summary>
         <tags>sip json sdp protocol parser C++20 header-only native nativepackage</tags>
-        <projectUrl>https://github.com/siddiqsoftware/sip2json</projectUrl>
-        <repository type="git" url="https://github.com/siddiqsoftware/sip2json" />
+        <projectUrl>https://github.com/SiddiqSoft/sip2json</projectUrl>
+        <repository type="git" url="https://github.com/SiddiqSoft/sip2json" />
         <requireLicenseAcceptance>true</requireLicenseAcceptance>
         <license type="expression">BSD-3-Clause</license>
         <icon>docs\Siddiq-Software-Avatar.png</icon>
@@ -31,12 +31,12 @@
 - **Single Dependency**: Only nlohmann.json is required.
 - **Native NuGet Support**: Restored native NuGet package support for MSVC / Visual Studio C++20 projects.
 
-For detailed release notes, visit: https://github.com/siddiqsoftware/sip2json/releases
+For detailed release notes, visit: https://github.com/SiddiqSoft/sip2json/releases
         </releaseNotes>
         <copyright>Copyright (c) 2003-2026 Abdulkareem Siddiq</copyright>
         <!-- Dependencies -->
         <dependencies>
-            <dependency id="nlohmann.json" version="3.12"/>
+            <dependency id="nlohmann.json" version="3.12.0"/>
         </dependencies>
     </metadata>
 
@@ -55,7 +55,9 @@ For detailed release notes, visit: https://github.com/siddiqsoftware/sip2json/re
         <file src="..\docs\**\*.md" target="docs\" />
 
         <!-- The symbol/reference file for IDE support -->
-        <file src="..\siddiqsoft.sip2json.natvis" target="build\native" />
+        <!-- File is "duplicated" to account for potential issues with case sensitivity on Windows vs Linux/UNIX -->
+        <file src="..\siddiqsoft.sip2json.natvis" target="build\native\SiddiqSoft.sip2json.natvis" />
+        <file src="..\siddiqsoft.sip2json.natvis" target="build\native\siddiqsoft.sip2json.natvis" />
 
         <!-- MSBuild .targets files -->
         <file src="SiddiqSoft.sip2json.targets" target="build\native" />

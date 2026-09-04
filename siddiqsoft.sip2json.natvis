@@ -3,10 +3,16 @@
   
   <!-- Visualization for sipmessage class -->
   <Type Name="siddiqsoft::sipmessage">
-    <DisplayString Condition="this-&gt;contains(&quot;s&quot;) &amp;&amp; (*this)[&quot;s&quot;].contains(&quot;type&quot;)">
-      {(*this)[&quot;s&quot;][&quot;type&quot;] == 1 ? "SIP Request" : "SIP Response"} - {(*this)[&quot;meta&quot;][&quot;version&quot;]}
+    <DisplayString Condition="this-&gt;contains(&quot;s&quot;) &amp;&amp; (*this)[&quot;s&quot;].contains(&quot;method&quot;)">
+      SIP Request {(*this)[&quot;s&quot;][&quot;method&quot;]} {(*this)[&quot;s&quot;][&quot;uri&quot;]}
     </DisplayString>
-    <DisplayString>SIP Message</DisplayString>
+    <DisplayString Condition="this-&gt;contains(&quot;s&quot;) &amp;&amp; (*this)[&quot;s&quot;].contains(&quot;status&quot;)">
+      SIP Response {(*this)[&quot;s&quot;][&quot;status&quot;]} {(*this)[&quot;s&quot;][&quot;reason&quot;]}
+    </DisplayString>
+    <DisplayString Condition="this-&gt;contains(&quot;s&quot;) &amp;&amp; (*this)[&quot;s&quot;].contains(&quot;type&quot;)">
+      {(*this)[&quot;s&quot;][&quot;type&quot;] == 1 ? "SIP Request" : "SIP Response"}
+    </DisplayString>
+    <DisplayString>SIP Message (empty)</DisplayString>
     <Expand HideRawView="true">
       <Item Name="[Type]" Condition="this-&gt;contains(&quot;s&quot;) &amp;&amp; (*this)[&quot;s&quot;].contains(&quot;type&quot;)">
         (*this)[&quot;s&quot;][&quot;type&quot;] == 1 ? "Request" : "Response"
@@ -36,17 +42,17 @@
         (*this)[&quot;meta&quot;]
       </Item>
       <Item Name="[Raw JSON]">
-        *this
+        *(nlohmann::json*)this
       </Item>
     </Expand>
   </Type>
 
   <!-- Visualization for sip2json class (static utility class) -->
   <Type Name="siddiqsoft::sip2json">
-    <DisplayString>SIP Parser Utility</DisplayString>
+    <DisplayString>sip2json (C++20 Zero-Copy SIP Parser)</DisplayString>
     <Expand HideRawView="true">
       <Item Name="[Description]">
-        "Static utility class for SIP message parsing and serialization"
+        "Static C++20 utility class for SIP message parsing and serialization"
       </Item>
       <Item Name="[Typical Message Size]">
         3072
@@ -63,25 +69,27 @@
 
   <!-- Visualization for sip2jsonErrors enum -->
   <Type Name="siddiqsoft::sip2jsonErrors">
-    <DisplayString Condition="*this == 0">ok</DisplayString>
-    <DisplayString Condition="*this == 1">incomplete_buffer_for_parse</DisplayString>
-    <DisplayString Condition="*this == 2">incomplete_buffer_for_content</DisplayString>
-    <DisplayString Condition="*this == 3">incomplete_buffer_for_header</DisplayString>
-    <DisplayString Condition="*this == 4">invalid_startline</DisplayString>
-    <DisplayString Condition="*this == 5">unsupported_contenttype</DisplayString>
-    <DisplayString Condition="*this == 6">missing_required_element</DisplayString>
-    <DisplayString Condition="*this == 7">invalid_document</DisplayString>
-    <DisplayString Condition="*this == 8">invalid_document_unsupported_method</DisplayString>
-    <DisplayString Condition="*this == 9">invalid_document_unsupported_content</DisplayString>
-    <DisplayString Condition="*this == 10">empty_message</DisplayString>
+    <DisplayString Condition="*this == 0">ok (0)</DisplayString>
+    <DisplayString Condition="*this == 1">incomplete_buffer_for_parse (1)</DisplayString>
+    <DisplayString Condition="*this == 2">incomplete_buffer_for_content (2)</DisplayString>
+    <DisplayString Condition="*this == 3">incomplete_buffer_for_header (3)</DisplayString>
+    <DisplayString Condition="*this == 4">invalid_startline (4)</DisplayString>
+    <DisplayString Condition="*this == 5">unsupported_contenttype (5)</DisplayString>
+    <DisplayString Condition="*this == 6">missing_required_element (6)</DisplayString>
+    <DisplayString Condition="*this == 7">invalid_document (7)</DisplayString>
+    <DisplayString Condition="*this == 8">invalid_document_unsupported_method (8)</DisplayString>
+    <DisplayString Condition="*this == 9">invalid_document_unsupported_content (9)</DisplayString>
+    <DisplayString Condition="*this == 10">empty_message (10)</DisplayString>
+    <DisplayString Condition="*this == 0xFFFFFFFF">unknown (0xFFFFFFFF)</DisplayString>
     <DisplayString>unknown</DisplayString>
   </Type>
 
-  <!-- Visualization for sip2json_exception -->
-  <Type Name="siddiqsoft::sip2json_exception">
-    <DisplayString>Error {errCode}</DisplayString>
+  <!-- Visualization for sip2json_exception and derived hierarchy -->
+  <Type Name="siddiqsoft::sip2json_exception" Inheritable="true">
+    <DisplayString>{errCode}</DisplayString>
     <Expand HideRawView="true">
       <Item Name="[Error Code]">errCode</Item>
+      <Item Name="[Message]">(std::exception*)this,view(simple)</Item>
     </Expand>
   </Type>
 
