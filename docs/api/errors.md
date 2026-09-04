@@ -50,4 +50,4 @@ enum class sip2jsonErrors {
 * [`sipmessage` Class Reference](sipmessage.md)
 * [`sip2json` Parsing & Serialization Functions](sip2json.md)
 * [JSON Schema Specification](json_schema.md)
-* [Asynchronous Stream Parsing Example](examples/async_parsing.md)
+* [Code Examples & Stream Parsing](examples/index.md)

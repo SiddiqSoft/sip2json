@@ -21,9 +21,38 @@ struct SampleFile
 
 int main(int argc, char** argv)
 {
-    std::string samples_dir = "samples";
-    if (argc > 1) { samples_dir = argv[1]; }
-    else if (!fs::exists(samples_dir))
+    std::string samples_dir = "";
+    std::string output_json_file = "";
+    int iterations = 300;
+    int single_iterations = 1000;
+
+    for (int i = 1; i < argc; ++i)
+    {
+        std::string arg = argv[i];
+        if (arg == "--output-json" || arg == "-o" || arg == "--json")
+        {
+            if (i + 1 < argc) { output_json_file = argv[++i]; }
+        }
+        else if (arg == "--iterations" || arg == "-i")
+        {
+            if (i + 1 < argc) { iterations = std::max(1, std::atoi(argv[++i])); }
+        }
+        else if (arg == "--single-iterations")
+        {
+            if (i + 1 < argc) { single_iterations = std::max(1, std::atoi(argv[++i])); }
+        }
+        else if (arg.rfind("--", 0) != 0 && samples_dir.empty())
+        {
+            samples_dir = arg;
+        }
+    }
+
+    if (samples_dir.empty())
+    {
+        samples_dir = "samples";
+    }
+
+    if (!fs::exists(samples_dir))
     {
         auto                  cwd        = fs::current_path();
         std::vector<fs::path> candidates = {cwd / "tests" / "validation" / "samples",
@@ -82,7 +111,7 @@ int main(int argc, char** argv)
               << std::endl;
     std::cout << "================================================================================" << std::endl;
 
-    constexpr int ITERATIONS            = 300;
+    int           ITERATIONS            = iterations;
     size_t        total_messages_parsed = 0;
     size_t        total_bytes_processed = 0;
 
@@ -202,7 +231,7 @@ int main(int argc, char** argv)
         }
     }
 
-    constexpr int SINGLE_ITERATIONS = 1000;
+    int           SINGLE_ITERATIONS = single_iterations;
     auto          start_single      = std::chrono::high_resolution_clock::now();
 
     for (int iter = 0; iter < SINGLE_ITERATIONS; ++iter)
@@ -361,6 +390,66 @@ int main(int argc, char** argv)
         }
     }
     std::cout << "================================================================================" << std::endl;
+
+    if (!output_json_file.empty())
+    {
+        nlohmann::json report;
+        report["benchmark_version"] = "3.0.0";
+        report["iterations"] = iterations;
+        report["single_iterations"] = single_iterations;
+        report["sample_files_count"] = sample_files.size();
+        report["total_sample_bytes"] = total_sample_bytes;
+
+        report["stream_parse"] = {
+            {"throughput_msg_per_sec", msg_per_sec},
+            {"bandwidth_mb_per_sec", mb_per_sec},
+            {"avg_latency_us", avg_us_per_msg},
+            {"total_messages", total_messages_parsed},
+            {"total_bytes", total_bytes_processed},
+            {"total_time_ms", total_time_ms}
+        };
+
+        report["stream_parse_async"] = {
+            {"throughput_msg_per_sec", async_msg_per_sec},
+            {"bandwidth_mb_per_sec", async_mb_per_sec},
+            {"avg_latency_us", async_avg_us},
+            {"total_messages", async_messages_parsed},
+            {"total_bytes", async_bytes_processed},
+            {"total_time_ms", async_time_ms}
+        };
+
+        report["single_message_parse"] = {
+            {"throughput_msg_per_sec", single_msg_per_sec},
+            {"avg_latency_us", single_avg_us},
+            {"total_messages", single_messages_parsed},
+            {"total_time_ms", single_time_ms}
+        };
+
+        report["single_message_string_view"] = {
+            {"throughput_msg_per_sec", sv_single_msg_per_sec},
+            {"avg_latency_us", sv_single_avg_us}
+        };
+
+        report["stream_parse_async_string_view"] = {
+            {"throughput_msg_per_sec", sv_async_msg_per_sec},
+            {"avg_latency_us", sv_async_avg_us}
+        };
+
+        std::filesystem::path out_p(output_json_file);
+        if (out_p.has_parent_path()) {
+            std::filesystem::create_directories(out_p.parent_path());
+        }
+        std::ofstream ofs(output_json_file);
+        if (ofs)
+        {
+            ofs << report.dump(2) << std::endl;
+            std::cout << "\n[Report] Wrote benchmark JSON report to: " << output_json_file << std::endl;
+        }
+        else
+        {
+            std::cerr << "\n[Error] Failed to write benchmark JSON report to: " << output_json_file << std::endl;
+        }
+    }
 
     return 0;
 }

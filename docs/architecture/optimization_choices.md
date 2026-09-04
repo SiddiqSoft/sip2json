@@ -1,59 +1,79 @@
-# High-Performance Optimization Choices
+# Optimization Choices
 
-`sip2json` incorporates low-level C++20 architectural choices engineered to maximize network throughput and minimize per-message CPU cycles.
+This is not the best code or the most performant library. It features a very clean and JavaScript-like API inline with the modern C++20 model, designed to make handling SIP payloads intuitive without heavy ceremony.
+
+Where optimizations are applied, they take advantage of the specific structure of the SIP protocol itself.
 
 ---
 
-## 1. Header Lookup Execution Flow
+## 1. Header Matching: FNV-1 and the SIP Header Model
+
+The SIP protocol has known, standard headers (RFC 3261) along with a well-defined custom header model. I took advantage of this to optimize header matching using the [FNV-1](https://en.wikipedia.org/wiki/Fowler–Noll–Vo_hash_function) algorithm.
+
+In SIP traffic:
+
+1. **Well-Defined Custom Headers**: Custom headers conventionally begin with `X-` or `X_` (such as `X-Call-Info`). Checking the first two characters allows immediate dispatch for custom headers without evaluating standard definitions.
+2. **Known Standard Headers**: Core headers (`Via`, `From`, `To`, `Call-ID`, `CSeq`, `Contact`, `Content-Length`, `Content-Type`) and their 1-letter compact equivalents (`v`, `f`, `t`, `i`, `m`, `l`, `c`) form a well-known, finite set.
+3. **In-Line Case Folding**: Header keys are case-insensitive (`via`, `Via`, `VIA` are identical). Rather than allocating a lowercased `std::string` copy, the FNV-1 hash routine converts ASCII case inline as characters are read.
+4. **Compile-Time Jump Tables**: Because `hash_header_key` is `constexpr`, standard header names are hashed by the compiler at compile time:
+
+```cpp
+// Fast-path: Custom headers starting with X- / x- / X_ / x_
+if (keyFromPayload.size() >= 2 && (keyFromPayload[0] == 'X' || keyFromPayload[0] == 'x') &&
+    (keyFromPayload[1] == '-' || keyFromPayload[1] == '_'))
+{
+    thread_local HeaderKeySet customKey;
+    customKey = HeaderKeySet(std::string(keyFromPayload));
+    return customKey;
+}
+
+uint64_t h = hash_header_key(keyFromPayload.data(), keyFromPayload.size());
+
+switch (h)
+{
+    case hash_header_key("from"):
+    case hash_header_key("f"): return HFS_FROM;
+    case hash_header_key("to"):
+    case hash_header_key("t"): return HFS_TO;
+    case hash_header_key("via"):
+    case hash_header_key("v"): return HFS_VIA;
+    case hash_header_key("call-id"):
+    case hash_header_key("i"): return HFS_CALLID;
+    case hash_header_key("cseq"): return HFS_CSEQ;
+    case hash_header_key("content-length"):
+    case hash_header_key("l"): return HFS_CONTENT_LENGTH;
+    case hash_header_key("content-type"):
+    case hash_header_key("c"): return HFS_CONTENT_TYPE;
+    // ...
+    default: return customKey;
+}
+```
+
+This effectively reduces header identification to comparing integer values, allowing the compiler to generate a clean, direct jump table.
+
+---
+
+## 2. Header Lookup Flow
 
 ```mermaid
 flowchart TD
-    A["Incoming Header Key (e.g. 'vIa')"] --> B["hash_header_key(key, len)"]
-    B --> C["Compute 64-bit FNV-1a Hash with In-Register Case-Folding"]
-    C --> D{"Fast-Path: Starts with 'X-' or 'X_'?"}
-    D -- "Yes (Custom X-Header)" --> E["Return Custom Header Result (2 cycles)"]
-    D -- "No (Canonical Candidate)" --> F["switch (h) 64-Bit Direct Jump Table (1 cycle)"]
-    F -- "case hash_header_key('via')" --> G["Return static HFS_VIA (hash: 0x68e8f7194eba5d73)"]
-    F -- "case hash_header_key('from')" --> H["Return static HFS_FROM (hash: 0x7f845078d7a5c0b5)"]
-    F -- "case hash_header_key('content-length')" --> I["Return static HFS_CONTENT_LENGTH (hash: 0x2d69a1e6ee916e7d)"]
-    F -- "default (Unrecognized Custom)" --> J["Return Custom KeySet"]
+    A["Incoming Header Key (e.g., 'Via')"] --> B{"Starts with 'X-' or 'X_'?"}
+    B -- "Yes (Custom Header)" --> C["Return Custom HeaderKeySet"]
+    B -- "No (Standard Candidate)" --> D["Compute 64-bit FNV-1 Hash (with inline case folding)"]
+    D --> E["switch (h) Direct Jump Table"]
+    E -- "case hash_header_key('via')" --> F["Return static HFS_VIA"]
+    E -- "case hash_header_key('from')" --> G["Return static HFS_FROM"]
+    E -- "case hash_header_key('call-id')" --> H["Return static HFS_CALLID"]
+    E -- "default" --> I["Fallback to Custom HeaderKeySet"]
 ```
 
 ---
 
-## 2. 64-Bit FNV-1a Hash Matching vs. SSO String Comparison
+## 3. Pragmatic Modern C++20 Choices
 
-### The Architectural Question
-Why is 64-bit FNV-1a integer hash `switch (h)` matching **+74.4% to +93.8% faster** than `std::string` or `std::string_view` string comparisons, even when Small String Optimization (SSO) avoids heap allocations?
+A few other practical choices keep overhead low while preserving clean ergonomics:
 
-### Key Hardware & Compiler Factors
-
-1. **Zero String Memory Allocations or Copies**:
-   - Computing the 64-bit FNV-1a hash (`hash_header_key`) operates directly over raw character pointers with inline ASCII lowercasing (`c | 0x20`). It eliminates `std::string lowerKey` allocations, string copying, and `std::transform` loops entirely.
-
-2. **`constexpr` Compile-Time Switch Labels**:
-   - The switch statement uses `case hash_header_key("from"):` compile-time constant expressions evaluated directly by the C++20 compiler. `HeaderKeySet` static objects remain lightweight and decoupled without storing redundant hash member variables.
-
-3. **100% Zero Hash Collisions Across All Canonical Headers**:
-   - 64-bit FNV-1a produces **50 unique 64-bit hash values** with zero collisions across all standard SIP headers, compact field abbreviations (`v`, `f`, `t`, `i`, `c`, `l`, `m`, `s`, `k`, `e`), and alternate names (`uthorization`).
-
-4. **Jump Table Generation vs. Mispredicted `if-else` Chains**:
-   - `std::string` / `std::string_view` sequential comparisons (`if (key == "Via") ... else if ...`) force the CPU through up to 30 sequential conditional branches. Each mispredicted branch incurs a **15–20 CPU cycle penalty**.
-   - Integer `switch (h)` statements are compiled into a **Direct Jump Table** (an $O(1)$ indirect branch array). The CPU computes `h` and jumps directly to the static `HFS_*` reference in **1 clock cycle** without full-string `memcmp` checks.
-
-5. **Fast-Path Exit for Custom Headers**:
-   - Custom headers (`X-`) match `keyFromPayload[0] == 'x' && keyFromPayload[1] == '-'` in **2 bitwise instructions**, dropping directly to custom key handling without touching canonical string lookup branches.
-
----
-
-## 3. Optimization Summary Table
-
-| Optimization Technique | Replaced Pattern | Performance Gain | Hardware Mechanism |
-| :--- | :--- | :--- | :--- |
-| **Zero-Copy `string_view` Startline Parser** | CTRE compile-time regex (`ctre::search`) | **Zero regex overhead** | Pure `std::string_view` tokenization; eliminated CTRE dependency entirely, reducing template instantiation depth and compile times to 0 |
-| **64-bit FNV-1a Hash `switch(h)`** | Sequential `std::string` `if-else` chain | **+74.4% throughput** | 100% collision-free 64-bit FNV-1a hash matching via 1-cycle $O(1)$ jump table |
-| **`constexpr` Compile-Time Labels** | Dynamic runtime string hashing | **0 ns overhead** | `constexpr` compile-time `hash_header_key(...)` evaluated directly into switch jump table |
-| **Bitwise Register Case-Folding** | `std::transform(::tolower)` | **-42.6% latency** | Converts ASCII case in-register during 64-bit FNV-1a hashing |
-| **Merged `HeaderKeySet` Architecture** | `CanonicalHeaderKeyResult` wrapper | **+4.8% throughput** | Eliminates temporary wrapper objects; enables 1-cycle pointer comparison (`&keySet == &HFS_CONTENT_LENGTH`) |
-| **Inline Stream Callback (`parseAsync`)** | Vector accumulation (`std::vector<sipmessage>`) | **+93.8% vs master** | Zero-copy execution directly on network buffer |
-| **Fast-Path `X-` Header Branch** | Sequential canonical check loop | **2 CPU cycles** | Immediate bitmask check for custom headers |
+* **Zero-Copy `std::string_view` Tokenization**: Start lines, methods, and header slices use string views where possible to avoid unnecessary temporary allocations.
+This optimization may not have been completed if not for coding agents. One of the lessons I learnt is that `std::string_view` is good (other languages call these "slices") and actually better than `std::string&`. Once the benchmarks came in this was an easy switchover!
+* **Move Semantics (`sipmessage&&`)**: Streaming callbacks pass decoded messages as rvalues so callers can move them directly into application containers.
+* **Static Predefined Constants**: Canonical header key sets and method tokens are reused statically rather than constructed dynamically on each message.

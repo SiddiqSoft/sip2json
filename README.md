@@ -22,10 +22,10 @@
 
 **[siddiqsoft.github.io/sip2json](https://siddiqsoft.github.io/sip2json/)**
 
-* [**Quick Start & Integration**](https://siddiqsoft.github.io/sip2json/integration/)
-* [**Asynchronous Stream Parsing**](https://siddiqsoft.github.io/sip2json/features/async/)
-* [**Performance & Benchmarks**](https://siddiqsoft.github.io/sip2json/features/benchmarks/)
-* [**JSON Schema Metaphor**](https://siddiqsoft.github.io/sip2json/features/json_schema/)
+* [**Quick Start & Integration**](https://siddiqsoft.github.io/sip2json/quickstart/)
+* [**Performance & Benchmarks**](https://siddiqsoft.github.io/sip2json/architecture/benchmarks/)
+* [**Asynchronous Stream Parsing**](https://siddiqsoft.github.io/sip2json/architecture/async/)
+* [**JSON Schema Metaphor**](https://siddiqsoft.github.io/sip2json/api/json_schema/)
 * [**API Reference**](https://siddiqsoft.github.io/sip2json/api/)
 
 ---
@@ -111,7 +111,7 @@
 For full coverage matrices, section mappings, and torture test details, see the [**Standards Compliance Guide**](https://siddiqsoft.github.io/sip2json/architecture/compliance/) on our documentation site.
 
 !!! note "Performance"
-    Up to **~40,000 msg/sec** parsing throughput with sub-microsecond latency (+97.5% gain over v2.x) — see our [**Performance & Benchmarks Guide**](https://siddiqsoft.github.io/sip2json/architecture/benchmarks/).
+    High-throughput stream parsing with low microsecond latency — see our pipeline-compiled [**Performance & Benchmarks Guide**](https://siddiqsoft.github.io/sip2json/architecture/benchmarks/).
 
 ---
 

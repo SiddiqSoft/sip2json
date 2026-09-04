@@ -100,4 +100,4 @@ Returns a `std::string_view` pointing directly into internal JSON string storage
 * [`sip2json` Parsing & Serialization Functions](sip2json.md)
 * [JSON Schema Specification](json_schema.md)
 * [Error & Exception Types](errors.md)
-* [Message Construction & Serialization Example](examples/serialization.md)
+* [Code Examples & Serialization](examples/index.md)

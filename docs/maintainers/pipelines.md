@@ -211,7 +211,7 @@ All build agents must be registered in the `Default` pool and expose the require
 
 ### Linux Agents
 * Demand: `Agent.OS -equals Linux`
-* OS: Ubuntu 22.04+ or Debian 12+ on `x64` or `arm64`.
+* OS: Red Hat Enterprise Linux (RHEL 9+) on `x64` or `arm64`.
 * Toolchain: GCC 13+ (`/usr/bin/gcc`, `/usr/bin/g++`) or Clang 17+ (`/usr/bin/clang`, `/usr/bin/clang++`).
 * Utilities: CMake 3.29+, Ninja, Python 3.10+, `gcovr` (for coverage).
 

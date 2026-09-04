@@ -55,4 +55,4 @@ SDP lines (`v=`, `o=`, `s=`, `c=`, `t=`, `m=`, `a=`) are parsed into structured 
 * [`sipmessage` Class Reference](sipmessage.md)
 * [`sip2json` Parsing & Serialization Functions](sip2json.md)
 * [JSON Schema Specification](json_schema.md)
-* [Message Serialization with SDP Example](examples/serialization.md)
+* [Code Examples & Serialization with SDP](examples/index.md)

@@ -1,10 +1,10 @@
-# Asynchronous & Stream Parsing
+# Stream Parsing & Buffer Management
 
-SIP traffic over TCP or TLS arrives in continuous stream buffers where multiple SIP frames can be packed together, or where a single frame might be partially received.
+SIP traffic over TCP or TLS arrives in continuous stream buffers where multiple SIP frames can be packed together, or where a single frame might be partially received. `sip2json::parseAsync` processes frames directly off network read buffers with move semantics.
 
 ---
 
-## Async Stream Processing Workflow
+## 1. Stream Buffer Data Flow Workflow
 
 ```mermaid
 sequenceDiagram
@@ -23,18 +23,20 @@ sequenceDiagram
         Parser->>Buf: Advance cursor past parsed message
     end
     alt Incomplete Message / Partial Frame
-        Parser-->>Buf: Stop parsing, leave residual bytes
+        Parser-->>Buf: Stop parsing, leave residual bytes in place
     end
-    Buf->>Buf: Erase processed bytes up to cursor
+    App->>Buf: Erase processed bytes up to cursor
 ```
 
 ---
 
-## Stream Processing Mechanics
+## 2. Stream Processing Mechanics
 
-`sip2json::parseAsync` operates directly over string iterators (`std::string::const_iterator` or `std::string::iterator`), advancing the start iterator as frames are successfully recognized.
+`sip2json::parseAsync` operates directly over string iterators (`std::string::const_iterator` or `std::string::iterator`), advancing the start iterator as complete frames are successfully parsed.
 
 ```cpp
+#include <iostream>
+#include <string>
 #include "siddiqsoft/sip2json.hpp"
 
 using namespace siddiqsoft;
@@ -48,8 +50,9 @@ void onNetworkBufferReceived(std::string& tcpBuffer)
         cursor,
         tcpBuffer.end(),
         [](sipmessage&& msg) {
-            // Processing valid message
-            std::cout << "Method: " << msg.getMethod() << ", Call-ID: " << msg.getCallID() << "\n";
+            // Zero-copy moved rvalue message
+            std::cout << "Method: " << msg.getMethod() 
+                      << ", Call-ID: " << msg.getCallID() << "\n";
         },
         [](sip2json_exception& ex, std::string::iterator& start, const std::string::iterator& end) {
             std::cerr << "Parser warning: " << ex.what() << "\n";
@@ -63,8 +66,9 @@ void onNetworkBufferReceived(std::string& tcpBuffer)
 
 ---
 
-## Performance & Ownership Highlights
+## 3. Memory Layout & Lifetime Rules
 
-1. **Move Semantics**: Messages passed to the success callback are moved (`sipmessage&&`), giving zero-copy ownership to the handler.
-2. **Buffer Residuals**: If a partial frame remains at the end of the buffer, `parseAsync` stops without erasing it, allowing next read cycles to append data seamlessly.
-3. **No Allocation Spikes**: Internal parsing uses zero-copy `std::string_view` tokenization and 64-bit integer packed switch statement matching (`pack_key_4`) for ultra-fast header identification.
+1. **Move Semantics (`std::move`)**: Messages passed to parsing callbacks are rvalue references (`sipmessage&&`). The parser constructs the object in-place and transfers ownership directly to the application callback. If you need to preserve message state beyond callback scope, explicitly copy or move the object.
+2. **Buffer Residuals & In-Place Drainage**: If a partial frame remains at the end of the buffer, `parseAsync` stops and leaves `cursor` pointing to the beginning of the incomplete frame. Draining `tcpBuffer.erase(tcpBuffer.begin(), cursor)` retains residual bytes for subsequent network `recv()` cycles without reallocation.
+3. **Zero Allocation Tokenization**: Header and startline identification uses `std::string_view` slices and 64-bit FNV-1a hash matching (`switch (h)`), completely eliminating intermediate string allocations or `std::transform` loops.
+4. **Predictable Container Layout**: Headers and multi-value header arrays are stored using standard library vectors and maps for predictable memory alignment and cache locality.

@@ -43,37 +43,17 @@ The `siddiqsoft::sip2json` namespace provides data structures, stream parsing ut
 
 ## Code Examples
 
-Practical, ready-to-compile snippets demonstrating primary usage patterns:
+Practical, ready-to-compile snippets and integration patterns:
 
 <div class="grid" markdown="1">
 
 <div class="card" markdown="1">
 
-### [Asynchronous Stream Parsing](examples/async_parsing.md)
+### [Code Examples & Integration Recipes](examples/index.md)
 
-Process continuous TCP/TLS stream buffers with multi-frame batches and partial frame preservation using zero-copy callbacks.
+Interactive examples covering asynchronous stream parsing (`parseAsync`), message serialization (`serialize`), single frame buffer extraction (`parseFromBuffer`), and JSON schema interoperability.
 
-[View Stream Example :octicons-arrow-right-24:](examples/async_parsing.md)
-
-</div>
-
-<div class="card" markdown="1">
-
-### [Message Serialization](examples/serialization.md)
-
-Construct SIP INVITE requests with headers and SDP media descriptions using fluent builder methods, and serialize to RFC 3261 wire format.
-
-[View Serialization Example :octicons-arrow-right-24:](examples/serialization.md)
-
-</div>
-
-<div class="card" markdown="1">
-
-### [Examples Overview](examples/index.md)
-
-Full directory of code examples, common usage patterns, and integration recipes.
-
-[View All Examples :octicons-arrow-right-24:](examples/index.md)
+[View Code Examples :octicons-arrow-right-24:](examples/index.md)
 
 </div>
 

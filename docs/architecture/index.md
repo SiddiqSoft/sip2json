@@ -48,29 +48,19 @@ To maintain a zero-dependency header-only architecture and maximum runtime effic
 
 <div class="card" markdown="1">
 
-### [Design Patterns & Idioms](patterns.md)
+### [Performance & Benchmarks](benchmarks.md)
 
-Factory methods, strategy patterns, fluent builder chaining, and exception-safe move semantics.
+Multi-platform pipeline build benchmarks, per-message processing latency, and cross-platform comparative metrics.
 
-[Explore Patterns :octicons-arrow-right-24:](patterns.md)
-
-</div>
-
-<div class="card" markdown="1">
-
-### [Data Flow & Memory Layout](dataflow.md)
-
-Stream buffer iteration, rvalue move semantics, zero-copy iterator advancement, and memory lifetime rules.
-
-[View Data Flow :octicons-arrow-right-24:](dataflow.md)
+[View Benchmarks :octicons-arrow-right-24:](benchmarks.md)
 
 </div>
 
 <div class="card" markdown="1">
 
-### [Async Stream Parsing](async.md)
+### [Stream Parsing & Buffer Management](async.md)
 
-Mechanics of continuous TCP/TLS stream processing, multi-frame batches, and partial frame residual retention.
+Continuous TCP/TLS stream mechanics, iterator buffer progression, move semantics (`sipmessage&&`), and memory lifetime rules.
 
 [Learn Stream Mechanics :octicons-arrow-right-24:](async.md)
 
@@ -80,31 +70,12 @@ Mechanics of continuous TCP/TLS stream processing, multi-frame batches, and part
 
 ### [Optimization Choices](optimization_choices.md)
 
-64-bit FNV-1a hash matching, compile-time jump tables, in-register case folding, and zero-copy string_view parsing.
+Clean JavaScript-like C++20 API design, FNV-1 header matching, and protocol-specific optimization choices.
 
-[View Optimizations :octicons-arrow-right-24:](optimization_choices.md)
-
-</div>
-
-<div class="card" markdown="1">
-
-### [Native Struct vs. JSON Model](native_vs_json.md)
-
-Empirical trade-off study comparing standalone native C++ structs against `nlohmann::json` inheritance.
-
-[Read Architectural Study :octicons-arrow-right-24:](native_vs_json.md)
+[Read Design Choices :octicons-arrow-right-24:](optimization_choices.md)
 
 </div>
 
-<div class="card" markdown="1">
-
-### [Performance & Benchmarks](benchmarks.md)
-
-Multi-platform benchmarks (>64k msgs/sec), per-message latency (<16 µs), and thread scaling analysis.
-
-[View Benchmarks :octicons-arrow-right-24:](benchmarks.md)
-
-</div>
 
 <div class="card" markdown="1">
 

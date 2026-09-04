@@ -315,6 +315,10 @@ code, kbd, pre {
   background: linear-gradient(90deg, #10b981 0%, #059669 100%);
 }
 
+.chart-bar-info {
+  background: linear-gradient(90deg, #0284c7 0%, #0369a1 100%);
+}
+
 .chart-bar-muted {
   background: linear-gradient(90deg, #94a3b8 0%, #64748b 100%);
 }

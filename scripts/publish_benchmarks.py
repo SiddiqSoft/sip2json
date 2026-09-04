@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
 Publish Benchmarks Script
-Automatically locates benchmark outputs across CI build matrix runners (Windows x64/arm64, Linux x64/arm64, macOS),
-compiles multi-platform performance reports, generates interactive HTML charts, and updates docs/features/benchmarks.md.
+Dynamically discovers benchmark results and host environment metadata emitted by CI build matrix runners,
+compiles multi-platform performance reports, and updates docs/architecture/benchmarks.md strictly from build data.
 
 Usage:
     python3 scripts/publish_benchmarks.py [--root REPO_ROOT] [--skip-build] [--skip-exec]
@@ -18,6 +18,7 @@ import subprocess
 import sys
 from pathlib import Path
 
+
 def run_cmd(cmd, cwd=None):
     """Helper to run command and log output."""
     print(f"[publish_benchmarks] Running: {' '.join(cmd)}", flush=True)
@@ -27,22 +28,78 @@ def run_cmd(cmd, cwd=None):
         return False
     return True
 
-def parse_platform_from_filename(filename_str: str) -> tuple:
-    """Extract OS, Arch, and Compiler from benchmark JSON filename if available."""
-    name = Path(filename_str).stem
-    if name.startswith("benchmark_results_"):
-        parts = name.replace("benchmark_results_", "").split("_")
-        os_name = parts[0] if len(parts) > 0 else "Linux"
-        arch_name = parts[1] if len(parts) > 1 else "x64"
-        compiler_name = parts[2] if len(parts) > 2 else "Clang/MSVC"
+
+def format_latency(val_float: float, unit: str = "us") -> str:
+    """Convert latency into human-readable microseconds or milliseconds uniformly."""
+    unit_lower = unit.lower().strip()
+    if unit_lower in ("ns", "nanoseconds", "nanosecond"):
+        us = val_float / 1000.0
+    elif unit_lower in ("ms", "milliseconds", "millisecond"):
+        us = val_float * 1000.0
+    elif unit_lower in ("s", "sec", "seconds", "second"):
+        us = val_float * 1000000.0
+    else:  # us / µs
+        us = val_float
+
+    if us < 1000.0:
+        return f"{us:.2f} µs"
+    elif us < 1000000.0:
+        return f"{us / 1000.0:.2f} ms"
+    else:
+        return f"{us / 1000000.0:.2f} s"
+
+
+def format_platform_arch_label(os_name: str, arch: str, os_release: str = "") -> str:
+    """Derive clean platform and architecture label using actual host OS release if available."""
+    arch_norm = arch.lower().strip()
+    if os_release:
+        return f"{os_release} ({arch_norm})"
+
+    os_low = os_name.lower().strip()
+    if os_low in ("macos", "darwin", "apple"):
+        return f"Apple macOS ({arch_norm})"
+    elif os_low == "windows":
+        return f"Microsoft Windows ({arch_norm})"
+    elif os_low == "linux":
+        return f"Red Hat Enterprise Linux ({arch_norm})"
+    return f"{os_name} ({arch_norm})"
+
+
+def parse_platform_from_path(file_path: Path) -> tuple:
+    """Extract OS, Arch, and Compiler from file path or parent directories."""
+    path_str = str(file_path).replace("\\", "/")
+
+    m = re.search(r"benchmark[-_]results[-_]([A-Za-z]+)[-_](arm64|x64|x86)[-_]([A-Za-z0-9]+)", path_str, re.IGNORECASE)
+    if m:
+        os_raw = m.group(1)
+        os_name = "macOS" if os_raw.lower() in ("darwin", "apple", "macos") else os_raw.capitalize()
+        arch_name = m.group(2).lower()
+        comp_raw = m.group(3)
+        compiler_name = "AppleClang" if os_name == "macOS" else comp_raw
         return os_name, arch_name, compiler_name
+
+    m = re.search(r"build/([A-Za-z0-9_-]+)", path_str, re.IGNORECASE)
+    if m:
+        preset = m.group(1).lower()
+        if "apple" in preset or "darwin" in preset or "macos" in preset:
+            arch = "arm64" if "arm64" in preset else ("x64" if "x64" in preset else ("arm64" if platform.machine() in ("arm64", "aarch64") else "x64"))
+            return "macOS", arch, "AppleClang"
+        elif "windows" in preset or "win" in preset:
+            arch = "arm64" if "arm64" in preset else "x64"
+            return "Windows", arch, "MSVC"
+        elif "linux" in preset:
+            arch = "arm64" if "arm64" in preset else "x64"
+            compiler = "GCC" if "gcc" in preset else "Clang"
+            return "Linux", arch, compiler
+
     return "Linux", "x64", "Clang"
+
 
 def check_platform_completeness(platform_results: list, required_str: str) -> tuple:
     """Check if all required (OS, Arch) combinations are present in platform_results."""
     if not required_str:
         return True, []
-    
+
     req_tuples = []
     for pair in required_str.split(","):
         pair = pair.strip()
@@ -63,52 +120,102 @@ def check_platform_completeness(platform_results: list, required_str: str) -> tu
     is_complete = len(missing) == 0
     return is_complete, missing
 
-def get_host_runner_info() -> str:
-    """Dynamically derive exact host OS, architecture, CPU count, and release edition at build time."""
-    sys_name = platform.system()
-    arch_name = platform.machine() or platform.processor() or "x64"
-    cpu_count = os.cpu_count() or 1
-    
-    os_detail = f"{sys_name} {platform.release()}"
-    
-    if sys_name == "Linux":
-        try:
-            if hasattr(platform, "freedesktop_os_release"):
-                info = platform.freedesktop_os_release()
-                os_detail = info.get("PRETTY_NAME", os_detail)
-            elif Path("/etc/os-release").exists():
-                for line in Path("/etc/os-release").read_text().splitlines():
-                    if line.startswith("PRETTY_NAME="):
-                        os_detail = line.split("=", 1)[1].strip('"\'')
-                        break
-        except Exception:
-            pass
 
-    elif sys_name == "Windows":
-        try:
-            cmd = ["powershell", "-NoProfile", "-Command", "(Get-CimInstance Win32_OperatingSystem).Caption"]
-            res = subprocess.run(cmd, capture_output=True, text=True, timeout=5)
-            if res.returncode == 0 and res.stdout.strip():
-                os_detail = res.stdout.strip()
-            else:
-                win_ver = platform.win32_ver()
-                if win_ver[0]:
-                    os_detail = f"Windows {win_ver[0]} (Build {win_ver[1]})"
-        except Exception:
-            pass
+def build_charts_html(results: list) -> list:
+    """Dynamically generate visual comparative performance charts from build pipeline measurements."""
+    lines = [
+        "---",
+        "",
+        "## 2. Visual Platform Performance Comparison",
+        "",
+        "Visual comparison of pipeline build results across platform runners.",
+        "",
+        "### Stream Parsing Throughput (`parseAsync` — Messages / Second — Higher is Better)",
+        "",
+        '<div class="modern-chart">'
+    ]
 
-    elif sys_name == "Darwin":
-        try:
-            mac_ver = platform.mac_ver()[0]
-            if mac_ver:
-                os_detail = f"macOS {mac_ver}"
-        except Exception:
-            pass
+    # Chart 1: Stream throughput
+    valid_async = [r for r in results if r.get("async_tput_num", 0) > 0]
+    if valid_async:
+        max_async = max(r["async_tput_num"] for r in valid_async)
+        for i, r in enumerate(sorted(valid_async, key=lambda x: x["async_tput_num"], reverse=True)):
+            tput_num = r["async_tput_num"]
+            width_pct = max(5, int((tput_num / max_async) * 100))
+            is_fastest = (i == 0)
+            pill = '<span class="pill pill-success">Fastest</span>' if is_fastest else ''
+            bar_cls = "chart-bar chart-bar-primary" if is_fastest else ("chart-bar chart-bar-secondary" if i == 1 else ("chart-bar chart-bar-info" if i == 2 else "chart-bar chart-bar-muted"))
 
-    return f"{os_detail} ({arch_name}, {cpu_count} CPU Cores)"
+            lines.append('  <div class="chart-row">')
+            lines.append('    <div class="chart-meta">')
+            lines.append(f'      <span class="chart-title">{r["platform_arch"]} {pill}</span>')
+            lines.append(f'      <span class="chart-val">{tput_num:,.0f} msg/s</span>')
+            lines.append('    </div>')
+            lines.append('    <div class="chart-track">')
+            lines.append(f'      <div class="{bar_cls}" style="width: {width_pct}%;"></div>')
+            lines.append('    </div>')
+            lines.append('  </div>')
+    lines.append('</div>')
+    lines.append('')
+
+    # Chart 2: Per-message processing latency
+    lines.append('### Per-Message Processing Latency (Microseconds — Lower is Better)')
+    lines.append('')
+    lines.append('<div class="modern-chart">')
+    valid_lat = [r for r in results if r.get("async_lat_num", 0) > 0]
+    if valid_lat:
+        max_lat = max(r["async_lat_num"] for r in valid_lat)
+        min_lat = min(r["async_lat_num"] for r in valid_lat)
+        for i, r in enumerate(sorted(valid_lat, key=lambda x: x["async_lat_num"])):
+            lat_num = r["async_lat_num"]
+            width_pct = max(10, int((lat_num / max_lat) * 100))
+            is_lowest = (lat_num == min_lat)
+            pill = '<span class="pill pill-success">Lowest Latency</span>' if is_lowest else ''
+            bar_cls = "chart-bar chart-bar-primary" if is_lowest else ("chart-bar chart-bar-secondary" if i == 1 else ("chart-bar chart-bar-info" if i == 2 else "chart-bar chart-bar-muted"))
+
+            lines.append('  <div class="chart-row">')
+            lines.append('    <div class="chart-meta">')
+            lines.append(f'      <span class="chart-title">{r["platform_arch"]} {pill}</span>')
+            lines.append(f'      <span class="chart-val">{lat_num:.2f} µs</span>')
+            lines.append('    </div>')
+            lines.append('    <div class="chart-track">')
+            lines.append(f'      <div class="{bar_cls}" style="width: {width_pct}%;"></div>')
+            lines.append('    </div>')
+            lines.append('  </div>')
+    lines.append('</div>')
+    lines.append('')
+
+    # Chart 3: Single-message parsing throughput
+    lines.append('### Single-Message Parsing Throughput (`parseFromBuffer` — Messages / Second — Higher is Better)')
+    lines.append('')
+    lines.append('<div class="modern-chart">')
+    valid_single = [r for r in results if r.get("single_tput_num", 0) > 0]
+    if valid_single:
+        max_single = max(r["single_tput_num"] for r in valid_single)
+        for i, r in enumerate(sorted(valid_single, key=lambda x: x["single_tput_num"], reverse=True)):
+            tput_num = r["single_tput_num"]
+            width_pct = max(5, int((tput_num / max_single) * 100))
+            is_fastest = (i == 0)
+            pill = '<span class="pill pill-success">Fastest</span>' if is_fastest else ''
+            bar_cls = "chart-bar chart-bar-primary" if is_fastest else ("chart-bar chart-bar-secondary" if i == 1 else ("chart-bar chart-bar-info" if i == 2 else "chart-bar chart-bar-muted"))
+
+            lines.append('  <div class="chart-row">')
+            lines.append('    <div class="chart-meta">')
+            lines.append(f'      <span class="chart-title">{r["platform_arch"]} {pill}</span>')
+            lines.append(f'      <span class="chart-val">{tput_num:,.0f} msg/s</span>')
+            lines.append('    </div>')
+            lines.append('    <div class="chart-track">')
+            lines.append(f'      <div class="{bar_cls}" style="width: {width_pct}%;"></div>')
+            lines.append('    </div>')
+            lines.append('  </div>')
+    lines.append('</div>')
+    lines.append('')
+
+    return lines
+
 
 def update_benchmarks_doc(repo_root: Path, platform_results: list, require_all: bool = False, required_str: str = ""):
-    """Dynamically update docs/architecture/benchmarks.md between PIPELINE_BENCHMARKS markers."""
+    """Dynamically update docs/architecture/benchmarks.md strictly from pipeline build data."""
     doc_path = repo_root / "docs" / "architecture" / "benchmarks.md"
     if not doc_path.exists():
         print(f"[publish_benchmarks] Warning: {doc_path} not found.", flush=True)
@@ -130,71 +237,91 @@ def update_benchmarks_doc(repo_root: Path, platform_results: list, require_all: 
         print(f"[publish_benchmarks] Warning: Pipeline benchmark markers not found in {doc_path}.", flush=True)
         return
 
-    # Group results by Operating System platform
-    grouped_results = {}
-    host_legends = []
+    # Filter for results with valid throughput data
+    valid_results = [
+        r for r in platform_results
+        if r.get("async_tput_num", 0) > 0 or r.get("single_tput_num", 0) > 0 or (r.get("async_tput", "N/A") != "N/A" and r.get("async_tput") != "0.00 msg/s")
+    ]
 
-    for res in platform_results:
-        os_key = res.get("os", "Linux").capitalize()
-        if os_key not in grouped_results:
-            grouped_results[os_key] = []
-        grouped_results[os_key].append(res)
-        
-        host_str = res.get("host_info", "")
-        if host_str and host_str not in host_legends:
-            host_legends.append(f"- **{os_key} Runner**: {host_str}")
+    def sort_key(r):
+        os_name = r.get("os", "").lower()
+        arch = r.get("arch", "").lower()
+        pair = (os_name, arch)
+        order = [
+            ("macos", "arm64"),
+            ("darwin", "arm64"),
+            ("windows", "arm64"),
+            ("linux", "arm64"),
+            ("linux", "x64"),
+            ("windows", "x64")
+        ]
+        return order.index(pair) if pair in order else 99
 
-    if not host_legends:
-        host_legends.append(f"- **Build Runner (Self-Hosted)**: {get_host_runner_info()}")
-
-    os_order = ["Linux", "Windows", "macOS"]
-    sorted_os_keys = sorted(grouped_results.keys(), key=lambda x: os_order.index(x) if x in os_order else 99)
+    sorted_results = sorted(valid_results, key=sort_key)
 
     table_lines = [
         start_marker,
         "## 1. Multi-Platform & Cross-Architecture Pipeline Benchmark Matrix",
-        "",
-        "!!! note \"Build Release & Runner Environment\"",
-        "    **Build Release & Version**: `{ version }` | **Branch**: `release/2.6.0`",
-        "    **Host Runner Environment Legend (Derived at Build Time)**:"
+        ""
     ]
 
-    for leg in host_legends:
-        table_lines.append(f"    {leg}")
+    if sorted_results:
+        # Collect unique host runners from host_info metadata
+        host_runners = []
+        seen_runners = set()
+        for r in sorted_results:
+            h_info = r.get("host_info", "")
+            os_label = r.get("os", "Host")
+            if h_info and h_info not in seen_runners:
+                seen_runners.add(h_info)
+                host_runners.append(f"    - **{os_label} Runner**: {h_info}")
 
-    table_lines.extend([
-        "",
-        "*Empirical build pipeline measurements collected across matrix runners grouped by operating system platform:*",
-        ""
-    ])
+        table_lines.append('!!! note "Build Release & Runner Environment"')
+        table_lines.append('    **Build Release & Version**: `{ version }`')
+        if host_runners:
+            table_lines.append('    **CI Matrix Host Runners (Derived from Pipeline)**:')
+            table_lines.extend(host_runners)
+        else:
+            table_lines.append('    **CI Matrix Host Runners**: Derived dynamically from pipeline runners.')
+        table_lines.append("")
+        table_lines.append("*Build pipeline measurements collected across matrix runners:*")
+        table_lines.append("")
+        table_lines.append("| Platform & Architecture | Compiler | Stream Throughput (`parseAsync`) | Bandwidth | Per-Msg Latency | Single Message (`parseFromBuffer`) | Single Latency |")
+        table_lines.append("| :--- | :---: | :---: | :---: | :---: | :---: | :---: |")
 
-    if platform_results:
-        for os_key in sorted_os_keys:
-            res_list = grouped_results[os_key]
-            res_list.sort(key=lambda r: (r.get("arch", ""), r.get("compiler", "")))
+        for res in sorted_results:
+            plat_arch = res.get("platform_arch") or format_platform_arch_label(res.get("os", "Linux"), res.get("arch", "x64"), res.get("os_release", ""))
+            compiler = res.get("compiler", "Clang")
+            async_tput = res.get("async_tput", "N/A")
+            bandwidth = res.get("bandwidth", "N/A")
+            async_lat = res.get("async_lat", "N/A")
+            single_tput = res.get("single_tput", "N/A")
+            single_lat = res.get("single_lat", "N/A")
 
-            table_lines.append(f"### {os_key} Platform Benchmarks")
-            table_lines.append("")
-            table_lines.append("| Architecture | Compiler | Stream Throughput (`parseAsync`) | Bandwidth | Per-Msg Latency | Single Message (`parseFromBuffer`) | Single Latency |")
-            table_lines.append("| :---: | :---: | :---: | :---: | :---: | :---: | :---: |")
+            table_lines.append(
+                f"| **{plat_arch}** | {compiler} | **{async_tput}** | **{bandwidth}** | **{async_lat}** | **{single_tput}** | **{single_lat}** |"
+            )
 
-            for res in res_list:
-                arch = res.get("arch", "x64")
-                compiler = res.get("compiler", "Clang")
-                async_tput = res.get("async_tput", "N/A")
-                bandwidth = res.get("bandwidth", "N/A")
-                async_lat = res.get("async_lat", "N/A")
-                single_tput = res.get("single_tput", "N/A")
-                single_lat = res.get("single_lat", "N/A")
+        table_lines.append("")
+        # Add visual comparative charts
+        chart_lines = build_charts_html(sorted_results)
+        table_lines.extend(chart_lines)
 
-                table_lines.append(
-                    f"| **{arch}** | {compiler} | **{async_tput}** | **{bandwidth}** | **{async_lat}** | **{single_tput}** | **{single_lat}** |"
-                )
-            table_lines.append("")
     else:
-        table_lines.append("| Operating System | Architecture | Compiler | Stream Throughput (`parseAsync`) | Bandwidth | Per-Msg Latency | Single Message (`parseFromBuffer`) | Single Latency |")
-        table_lines.append("| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |")
-        table_lines.append("| *Awaiting Pipeline Run* | *x64 / arm64* | CI Runners | *Collected on CI* | *Collected on CI* | *Collected on CI* | *Collected on CI* | *Collected on CI* |")
+        # Awaiting pipeline run - no fabricated data
+        table_lines.append('!!! info "Pipeline-Derived Performance Data"')
+        table_lines.append('    Benchmark metrics and host runner environment details are compiled dynamically from CI/CD pipeline build matrix artifacts across our release matrix runners (Apple macOS, Red Hat Enterprise Linux, and Microsoft Windows). When release builds complete, live benchmark data will populate automatically.')
+        table_lines.append("")
+        table_lines.append("| Platform & Architecture | Compiler | Stream Throughput (`parseAsync`) | Bandwidth | Per-Msg Latency | Single Message (`parseFromBuffer`) | Single Latency |")
+        table_lines.append("| :--- | :---: | :---: | :---: | :---: | :---: | :---: |")
+        table_lines.append("| *Pipeline Build Pending* | *CI Matrix* | *Awaiting CI Run* | *Awaiting CI Run* | *Awaiting CI Run* | *Awaiting CI Run* | *Awaiting CI Run* |")
+        table_lines.append("")
+        table_lines.append("---")
+        table_lines.append("")
+        table_lines.append("## 2. Visual Platform Performance Comparison")
+        table_lines.append("")
+        table_lines.append('!!! info "Comparative Visual Performance Graphs Pending Build"')
+        table_lines.append('    Visual comparative bar charts contrasting throughput and latency across Apple macOS, Red Hat Enterprise Linux (RHEL), and Microsoft Windows runners will render automatically when pipeline benchmark artifacts are compiled.')
         table_lines.append("")
 
     table_lines.append(end_marker)
@@ -205,7 +332,8 @@ def update_benchmarks_doc(repo_root: Path, platform_results: list, require_all: 
     updated_content = pattern.sub(new_section, content)
 
     doc_path.write_text(updated_content, encoding="utf-8")
-    print(f"[publish_benchmarks] Updated {doc_path} with pipeline benchmark metrics.", flush=True)
+    print(f"[publish_benchmarks] Updated {doc_path} with pipeline-derived benchmark metrics.", flush=True)
+
 
 def main():
     parser = argparse.ArgumentParser(description="Publish sip2json benchmark reports")
@@ -221,7 +349,6 @@ def main():
     docs_assets_dir = repo_root / "docs" / "assets"
     docs_assets_dir.mkdir(parents=True, exist_ok=True)
 
-    # 1. Search for benchmark JSON and TXT artifacts collected from build matrix jobs
     json_search_dirs = [
         benchmarks_dir / "artifacts",
         benchmarks_dir / "results",
@@ -235,75 +362,151 @@ def main():
         if not sdir.exists():
             continue
 
-        # Process text summaries (stream_benchmark_summary.txt)
-        for txt_file in sdir.glob("**/stream_benchmark_summary.txt"):
+        # 1. First, search for host_info.json files
+        for host_file in sdir.glob("**/host_info.json"):
             try:
-                os_name, arch, compiler = parse_platform_from_filename(txt_file.parent.name)
-                if os_name == "Linux" and "Windows" in str(txt_file): os_name = "Windows"
-                
-                content = txt_file.read_text(encoding="utf-8", errors="ignore")
-                key = (os_name, arch, compiler)
+                hdata = json.loads(host_file.read_text(encoding="utf-8"))
+                os_raw = hdata.get("platform") or hdata.get("os_name", "")
+                os_name = "macOS" if os_raw.lower() in ("darwin", "apple", "macos") else os_raw.capitalize()
+                arch = hdata.get("arch", "x64").lower()
+                compiler = hdata.get("compiler", "Clang")
+                key = (os_name.lower(), arch.lower(), compiler.lower())
+
                 res = platform_results_map.get(key, {
                     "os": os_name, "arch": arch, "compiler": compiler,
                     "async_tput": "N/A", "bandwidth": "N/A", "async_lat": "N/A",
-                    "single_tput": "N/A", "single_lat": "N/A", "host_info": ""
+                    "single_tput": "N/A", "single_lat": "N/A", "host_info": "",
+                    "async_tput_num": 0.0, "async_lat_num": 0.0,
+                    "single_tput_num": 0.0, "single_lat_num": 0.0
                 })
 
-                host_match = re.search(r"\[HOST INFO\]\s*(.*)", content)
-                if host_match:
-                    res["host_info"] = host_match.group(1).strip()
+                res["host_info"] = hdata.get("host_summary", "")
+                res["os_release"] = hdata.get("os_release", "")
+                res["platform_arch"] = format_platform_arch_label(os_name, arch, res["os_release"])
+                platform_results_map[key] = res
+            except Exception as ex:
+                print(f"[publish_benchmarks] Could not parse host_info.json {host_file}: {ex}", flush=True)
+
+        # 2. Process stream_benchmark_results.json files
+        for stream_json in sdir.glob("**/stream_benchmark_results.json"):
+            try:
+                sdata = json.loads(stream_json.read_text(encoding="utf-8"))
+                os_name, arch, compiler = parse_platform_from_path(stream_json)
+                key = (os_name.lower(), arch.lower(), compiler.lower())
+
+                res = platform_results_map.get(key, {
+                    "os": os_name, "arch": arch, "compiler": compiler,
+                    "async_tput": "N/A", "bandwidth": "N/A", "async_lat": "N/A",
+                    "single_tput": "N/A", "single_lat": "N/A", "host_info": "",
+                    "async_tput_num": 0.0, "async_lat_num": 0.0,
+                    "single_tput_num": 0.0, "single_lat_num": 0.0
+                })
+
+                if "stream_parse_async" in sdata:
+                    spa = sdata["stream_parse_async"]
+                    tput = spa.get("throughput_msg_per_sec", 0.0)
+                    bw = spa.get("bandwidth_mb_per_sec", 0.0)
+                    lat = spa.get("avg_latency_us", 0.0)
+                    res["async_tput_num"] = tput
+                    res["async_lat_num"] = lat
+                    res["async_tput"] = f"{tput:,.2f} msg/s"
+                    res["bandwidth"] = f"{bw:.2f} MB/s"
+                    res["async_lat"] = format_latency(lat, "us")
+
+                if "single_message_parse" in sdata:
+                    smp = sdata["single_message_parse"]
+                    tput = smp.get("throughput_msg_per_sec", 0.0)
+                    lat = smp.get("avg_latency_us", 0.0)
+                    res["single_tput_num"] = tput
+                    res["single_lat_num"] = lat
+                    res["single_tput"] = f"{tput:,.2f} msg/s"
+                    res["single_lat"] = format_latency(lat, "us")
+
+                platform_results_map[key] = res
+            except Exception as ex:
+                print(f"[publish_benchmarks] Could not parse stream json {stream_json}: {ex}", flush=True)
+
+        # 3. Process text summaries (stream_benchmark_summary.txt)
+        for txt_file in sdir.glob("**/stream_benchmark_summary.txt"):
+            try:
+                os_name, arch, compiler = parse_platform_from_path(txt_file)
+                if os_name == "Linux" and "Windows" in str(txt_file): os_name = "Windows"
+
+                content = txt_file.read_text(encoding="utf-8", errors="ignore")
+                key = (os_name.lower(), arch.lower(), compiler.lower())
+                res = platform_results_map.get(key, {
+                    "os": os_name, "arch": arch, "compiler": compiler,
+                    "async_tput": "N/A", "bandwidth": "N/A", "async_lat": "N/A",
+                    "single_tput": "N/A", "single_lat": "N/A", "host_info": "",
+                    "async_tput_num": 0.0, "async_lat_num": 0.0,
+                    "single_tput_num": 0.0, "single_lat_num": 0.0
+                })
 
                 stream_match = re.search(r"parseAsync.*?Throughput\s*:\s*([\d,.]+)\s*msg/sec.*?Data Bandwidth\s*:\s*([\d,.]+)\s*MB/sec.*?Avg Latency/Msg\s*:\s*([\d,.]+)\s*(\w+)/msg", content, re.DOTALL)
                 if stream_match:
                     tput, bw, lat, unit = stream_match.groups()
-                    res["async_tput"] = f"{float(tput.replace(',', '')):,.2f} msg/s"
+                    tput_f = float(tput.replace(',', ''))
+                    lat_f = float(lat.replace(',', ''))
+                    res["async_tput_num"] = tput_f
+                    res["async_lat_num"] = lat_f
+                    res["async_tput"] = f"{tput_f:,.2f} msg/s"
                     res["bandwidth"] = f"{float(bw.replace(',', '')):.2f} MB/s"
-                    res["async_lat"] = f"{float(lat.replace(',', '')):.2f} {unit}"
+                    res["async_lat"] = format_latency(lat_f, unit)
 
                 single_match = re.search(r"parseFromBuffer.*?Throughput\s*:\s*([\d,.]+)\s*msg/sec.*?Avg Latency/Msg\s*:\s*([\d,.]+)\s*(\w+)/msg", content, re.DOTALL)
                 if single_match:
                     tput, lat, unit = single_match.groups()
-                    res["single_tput"] = f"{float(tput.replace(',', '')):,.2f} msg/s"
-                    res["single_lat"] = f"{float(lat.replace(',', '')):.2f} {unit}"
+                    tput_f = float(tput.replace(',', ''))
+                    lat_f = float(lat.replace(',', ''))
+                    res["single_tput_num"] = tput_f
+                    res["single_lat_num"] = lat_f
+                    res["single_tput"] = f"{tput_f:,.2f} msg/s"
+                    res["single_lat"] = format_latency(lat_f, unit)
 
                 platform_results_map[key] = res
             except Exception as ex:
                 print(f"[publish_benchmarks] Could not parse text summary {txt_file}: {ex}", flush=True)
 
-        # Process Google Benchmark JSON files matching benchmark_results_*.json
+        # 4. Process Google Benchmark JSON files matching benchmark_results_*.json
         for jfile in sdir.glob("**/benchmark_results_*.json"):
             try:
                 data = json.loads(jfile.read_text(encoding="utf-8"))
-                os_name, arch, compiler = parse_platform_from_filename(jfile.name)
-                key = (os_name, arch, compiler)
+                os_name, arch, compiler = parse_platform_from_path(jfile)
+                key = (os_name.lower(), arch.lower(), compiler.lower())
                 res = platform_results_map.get(key, {
                     "os": os_name, "arch": arch, "compiler": compiler,
                     "async_tput": "N/A", "bandwidth": "N/A", "async_lat": "N/A",
-                    "single_tput": "N/A", "single_lat": "N/A", "host_info": ""
+                    "single_tput": "N/A", "single_lat": "N/A", "host_info": "",
+                    "async_tput_num": 0.0, "async_lat_num": 0.0,
+                    "single_tput_num": 0.0, "single_lat_num": 0.0
                 })
 
-                if "context" in data:
+                if "context" in data and not res.get("host_info"):
                     ctx = data["context"]
                     res["host_info"] = f"{ctx.get('host_name', os_name)} ({ctx.get('num_cpus', '')} Cores, {ctx.get('mhz_per_cpu', '')} MHz)"
 
                 b_list = data.get("benchmarks", [])
                 for b in b_list:
                     bname = b.get("name", "").lower()
-                    items_sec = b.get("items_per_second", 0)
-                    rtime = b.get("real_time", 0)
+                    items_sec = b.get("items_per_second", 0.0)
+                    rtime = b.get("real_time", 0.0)
                     tunit = b.get("time_unit", "us")
 
                     if "async" in bname or "callback" in bname:
-                        if items_sec > 0:
+                        if items_sec > 0 and res["async_tput_num"] == 0:
+                            res["async_tput_num"] = items_sec
                             res["async_tput"] = f"{items_sec:,.2f} msg/s"
                             res["bandwidth"] = f"{(items_sec * 2600) / 1024 / 1024:.2f} MB/s"
-                        if rtime > 0:
-                            res["async_lat"] = f"{rtime:.2f} {tunit}"
+                        if rtime > 0 and res["async_lat_num"] == 0:
+                            res["async_lat_num"] = rtime
+                            res["async_lat"] = format_latency(rtime, tunit)
                     elif any(k in bname for k in ["single", "parsefrombuffer", "minimalresponse", "registerrequest", "invitewithsdp"]):
-                        if items_sec > 0:
+                        if items_sec > 0 and res["single_tput_num"] == 0:
+                            res["single_tput_num"] = items_sec
                             res["single_tput"] = f"{items_sec:,.2f} msg/s"
-                        if rtime > 0:
-                            res["single_lat"] = f"{rtime:.2f} {tunit}"
+                        if rtime > 0 and res["single_lat_num"] == 0:
+                            res["single_lat_num"] = rtime
+                            res["single_lat"] = format_latency(rtime, tunit)
 
                 platform_results_map[key] = res
             except Exception as ex:
@@ -311,10 +514,10 @@ def main():
 
     platform_results = list(platform_results_map.values())
 
-    # 2. Update docs/features/benchmarks.md with collected platform results
+    # Update docs/architecture/benchmarks.md strictly with collected platform results
     update_benchmarks_doc(repo_root, platform_results, require_all=args.require_all, required_str=args.required_platforms)
 
-    # 3. Locate primary benchmark executable or run generator if JSON exists
+    # Primary benchmark report generator
     json_out_path = benchmarks_dir / "benchmark_results.json"
     generator_script = benchmarks_dir / "benchmark_report_generator.py"
     html_report = benchmarks_dir / "benchmark_report.html"
@@ -328,6 +531,7 @@ def main():
     if html_report.exists():
         shutil.copy2(html_report, published_html)
         print(f"[publish_benchmarks] Published interactive HTML report to: {published_html}", flush=True)
+
 
 if __name__ == "__main__":
     main()
