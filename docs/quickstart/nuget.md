@@ -16,7 +16,7 @@ Package: [`SiddiqSoft.sip2json`](https://www.nuget.org/packages/SiddiqSoft.sip2j
 
     ```xml
     <ItemGroup>
-      <PackageReference Include="SiddiqSoft.sip2json" Version="3.0.0" />
+      <PackageReference Include="SiddiqSoft.sip2json" Version="3.1.0" />
     </ItemGroup>
     ```
 

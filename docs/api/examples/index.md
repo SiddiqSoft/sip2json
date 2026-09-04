@@ -77,7 +77,7 @@ Ready-to-compile modern C++20 code examples demonstrating common `sip2json` pars
            .setHeader(siddiqsoft::HF_TO, "sip:bob@biloxi.example.com")
            .setHeader(siddiqsoft::HF_CONTACT, "<sip:alice@10.0.0.4:5060>")
            .setHeader(siddiqsoft::HF_CONTENT_TYPE, "application/sdp")
-           .setHeader(siddiqsoft::HF_USER_AGENT, "sip2json/3.0");
+           .setHeader(siddiqsoft::HF_USER_AGENT, "sip2json/3.1.0");
 
         // 3. Attach SDP payload directly
         msg.body = {

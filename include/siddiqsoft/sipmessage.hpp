@@ -84,9 +84,9 @@ namespace siddiqsoft
     {
         static const inline std::string MetaLibName {"sip2json"};    ///< Library name for metadata
         static const inline std::string MetaSchemaVersion {"1.0.2"}; ///< Schema version for metadata
-        static const inline std::string MetaParserVersion {"3.0"};   ///< Parser version for metadata
-        static const inline std::string MetaVersionString {"sip2json/3.0/1.0.2"};
-        static const inline std::string MetaUserAgentString {"sip2json/3.0 (schema:1.0.2)"};
+        static const inline std::string MetaParserVersion {"3.1.0"}; ///< Parser version for metadata
+        static const inline std::string MetaVersionString {"sip2json/3.1.0/1.0.2"};
+        static const inline std::string MetaUserAgentString {"sip2json/3.1.0 (schema:1.0.2)"};
 
     public:
         /// @brief Default constructor initializing an empty SIP message with metadata.

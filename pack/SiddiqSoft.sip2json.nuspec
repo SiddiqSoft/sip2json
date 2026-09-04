@@ -23,11 +23,12 @@
         <icon>docs\Siddiq-Software-Avatar.png</icon>
         <readme>docs\README.md</readme>
         <releaseNotes>
-## v3.0 Release - Zero-Regex Architecture &amp; C++20 std::string_view Optimizations
+## v3.1.0 Release - Clean JavaScript-like Modern C++20 API &amp; Streamlined Architecture
 
 ### Key Highlights
-- **Zero-Regex Architecture**: Eliminated CTRE and all runtime regex overhead; pure zero-copy C++20 std::string_view tokenization.
-- **Significant Performance Gains**: Up to +97.5% throughput improvement and 49.3% latency reduction compared to v2.x.
+- **Zero-Regex Architecture**: Pure zero-copy C++20 std::string_view tokenization and FNV-1 header matching.
+- **Clean Ergonomics**: Modern C++20 API design providing intuitive JSON integration via nlohmann.json.
+- **Pipeline-Derived Benchmarks**: Fully dynamic, verifiable benchmark collection directly from CI runners across platforms.
 - **Single Dependency**: Only nlohmann.json is required.
 - **Native NuGet Support**: Restored native NuGet package support for MSVC / Visual Studio C++20 projects.
 

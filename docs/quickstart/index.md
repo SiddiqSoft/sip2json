@@ -33,7 +33,7 @@
     **MSBuild (.vcxproj)**:
     ```xml
     <ItemGroup>
-      <PackageReference Include="SiddiqSoft.sip2json" Version="3.0.0" />
+      <PackageReference Include="SiddiqSoft.sip2json" Version="3.1.0" />
     </ItemGroup>
     ```
 

@@ -394,7 +394,7 @@ int main(int argc, char** argv)
     if (!output_json_file.empty())
     {
         nlohmann::json report;
-        report["benchmark_version"] = "3.0.0";
+        report["benchmark_version"] = "3.1.0";
         report["iterations"] = iterations;
         report["single_iterations"] = single_iterations;
         report["sample_files_count"] = sample_files.size();
