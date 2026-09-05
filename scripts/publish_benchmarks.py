@@ -438,7 +438,7 @@ def main():
     ]
 
     # Include Azure DevOps standard artifact locations if available
-    for env_var in ["SYSTEM_ARTIFACTSDIRECTORY", "BUILD_ARTIFACTSTAGINGDIRECTORY", "AGENT_BUILDDIRECTORY"]:
+    for env_var in ["SYSTEM_ARTIFACTSDIRECTORY", "BUILD_ARTIFACTSTAGINGDIRECTORY", "AGENT_BUILDDIRECTORY", "PIPELINE_WORKSPACE"]:
         env_val = os.environ.get(env_var)
         if env_val:
             p = Path(env_val)
@@ -476,8 +476,29 @@ def main():
         for stream_json in sdir.glob("**/stream_benchmark_results.json"):
             try:
                 sdata = json.loads(stream_json.read_text(encoding="utf-8"))
-                os_name, arch, compiler = parse_platform_from_path(stream_json)
+                host_sibling = stream_json.parent / "host_info.json"
+                if host_sibling.exists():
+                    try:
+                        hdata = json.loads(host_sibling.read_text(encoding="utf-8"))
+                        os_name = hdata.get("platform") or hdata.get("os_name", "")
+                        arch = hdata.get("arch", "x64")
+                        compiler = hdata.get("compiler", "")
+                    except Exception:
+                        os_name, arch, compiler = parse_platform_from_path(stream_json)
+                else:
+                    os_name, arch, compiler = parse_platform_from_path(stream_json)
+
                 res = get_or_create_result(platform_results_map, os_name, arch, compiler)
+
+                if host_sibling.exists():
+                    try:
+                        hdata = json.loads(host_sibling.read_text(encoding="utf-8"))
+                        res["host_info"] = hdata.get("host_summary", "") or res["host_info"]
+                        res["os_release"] = hdata.get("os_release", "") or res["os_release"]
+                        if hdata.get("compiler"):
+                            res["compiler"] = normalize_compiler(hdata["compiler"], res["os"])
+                    except Exception:
+                        pass
 
                 if "stream_parse_async" in sdata:
                     spa = sdata["stream_parse_async"]
@@ -507,9 +528,30 @@ def main():
         # 3. Process text summaries (stream_benchmark_summary.txt)
         for txt_file in sdir.glob("**/stream_benchmark_summary.txt"):
             try:
-                os_name, arch, compiler = parse_platform_from_path(txt_file)
+                host_sibling = txt_file.parent / "host_info.json"
+                if host_sibling.exists():
+                    try:
+                        hdata = json.loads(host_sibling.read_text(encoding="utf-8"))
+                        os_name = hdata.get("platform") or hdata.get("os_name", "")
+                        arch = hdata.get("arch", "x64")
+                        compiler = hdata.get("compiler", "")
+                    except Exception:
+                        os_name, arch, compiler = parse_platform_from_path(txt_file)
+                else:
+                    os_name, arch, compiler = parse_platform_from_path(txt_file)
+
                 content = txt_file.read_text(encoding="utf-8", errors="ignore")
                 res = get_or_create_result(platform_results_map, os_name, arch, compiler)
+
+                if host_sibling.exists():
+                    try:
+                        hdata = json.loads(host_sibling.read_text(encoding="utf-8"))
+                        res["host_info"] = hdata.get("host_summary", "") or res["host_info"]
+                        res["os_release"] = hdata.get("os_release", "") or res["os_release"]
+                        if hdata.get("compiler"):
+                            res["compiler"] = normalize_compiler(hdata["compiler"], res["os"])
+                    except Exception:
+                        pass
 
                 stream_match = re.search(r"parseAsync.*?Throughput\s*:\s*([\d,.]+)\s*msg/sec.*?Data Bandwidth\s*:\s*([\d,.]+)\s*MB/sec.*?Avg Latency/Msg\s*:\s*([\d,.]+)\s*(\w+)/msg", content, re.DOTALL)
                 if stream_match and res["async_tput_num"] == 0:
@@ -540,8 +582,29 @@ def main():
         for jfile in sdir.glob("**/benchmark_results_*.json"):
             try:
                 data = json.loads(jfile.read_text(encoding="utf-8"))
-                os_name, arch, compiler = parse_platform_from_path(jfile)
+                host_sibling = jfile.parent / "host_info.json"
+                if host_sibling.exists():
+                    try:
+                        hdata = json.loads(host_sibling.read_text(encoding="utf-8"))
+                        os_name = hdata.get("platform") or hdata.get("os_name", "")
+                        arch = hdata.get("arch", "x64")
+                        compiler = hdata.get("compiler", "")
+                    except Exception:
+                        os_name, arch, compiler = parse_platform_from_path(jfile)
+                else:
+                    os_name, arch, compiler = parse_platform_from_path(jfile)
+
                 res = get_or_create_result(platform_results_map, os_name, arch, compiler)
+
+                if host_sibling.exists():
+                    try:
+                        hdata = json.loads(host_sibling.read_text(encoding="utf-8"))
+                        res["host_info"] = hdata.get("host_summary", "") or res["host_info"]
+                        res["os_release"] = hdata.get("os_release", "") or res["os_release"]
+                        if hdata.get("compiler"):
+                            res["compiler"] = normalize_compiler(hdata["compiler"], res["os"])
+                    except Exception:
+                        pass
 
                 if "context" in data and not res.get("host_info"):
                     ctx = data["context"]
