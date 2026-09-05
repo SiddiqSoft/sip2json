@@ -39,14 +39,111 @@ if(NOT CMAKE_CXX_STANDARD)
 endif()
 
 # ____________________________________
+# CI & Environment Detection
+set(IS_CI_BUILD FALSE)
+if(DEFINED CI_BUILDID
+   OR DEFINED ENV{CI}
+   OR DEFINED ENV{TF_BUILD}
+   OR DEFINED ENV{GITHUB_ACTIONS}
+   OR DEFINED ENV{AGENT_NAME}
+   OR DEFINED ENV{BUILD_BUILDID})
+    set(IS_CI_BUILD TRUE)
+endif()
+
+# Default clang-format to OFF on CI, and ON for local development
+if(IS_CI_BUILD)
+    set(${PROJECT_NAME}_ENABLE_CLANG_FORMAT_DEFAULT OFF)
+else()
+    set(${PROJECT_NAME}_ENABLE_CLANG_FORMAT_DEFAULT ON)
+endif()
+
+# ____________________________________
 # Options; define and declare defaults
 option(${PROJECT_NAME}_BUILD_TESTS "${PROJECT_NAME} - Build tests. Uncheck for install only runs" OFF)
 option(${PROJECT_NAME}_BUILD_BENCHMARKS "${PROJECT_NAME} - Build benchmarks" OFF)
+option(${PROJECT_NAME}_ENABLE_CLANG_FORMAT "${PROJECT_NAME} - Format source code with clang-format prior to build (local Debug builds only)" ${${PROJECT_NAME}_ENABLE_CLANG_FORMAT_DEFAULT})
 
 # ____________________________________
 #  Library Definition
 add_library(${PROJECT_NAME} INTERFACE)
 add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
+
+# ____________________________________
+# Source Code Formatting (clang-format)
+# Ensures clang-format is applied to our source code prior to build on local Debug builds only
+if(${PROJECT_NAME}_ENABLE_CLANG_FORMAT)
+    find_program(CLANG_FORMAT_EXE
+        NAMES clang-format clang-format-20 clang-format-19 clang-format-18 clang-format-17 clang-format-16 clang-format-15 clang-format-14
+        HINTS
+            "$ENV{VCINSTALLDIR}/Tools/Llvm/bin"
+            "$ENV{VCINSTALLDIR}/Tools/Llvm/x64/bin"
+            "$ENV{VSINSTALLDIR}/VC/Tools/Llvm/bin"
+            "$ENV{VSINSTALLDIR}/VC/Tools/Llvm/x64/bin"
+            "/opt/homebrew/bin"
+            "/usr/local/bin"
+    )
+
+    if(CLANG_FORMAT_EXE)
+        file(GLOB_RECURSE FORMAT_SOURCES CONFIGURE_DEPENDS
+            "${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp"
+            "${CMAKE_CURRENT_SOURCE_DIR}/include/*.h"
+            "${CMAKE_CURRENT_SOURCE_DIR}/tests/*.cpp"
+            "${CMAKE_CURRENT_SOURCE_DIR}/tests/*.hpp"
+            "${CMAKE_CURRENT_SOURCE_DIR}/tests/*.h"
+            "${CMAKE_CURRENT_SOURCE_DIR}/benchmarks/*.cpp"
+            "${CMAKE_CURRENT_SOURCE_DIR}/benchmarks/*.hpp"
+            "${CMAKE_CURRENT_SOURCE_DIR}/benchmarks/*.h"
+        )
+
+        if(FORMAT_SOURCES)
+            file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/run_clang_format.cmake" "
+if(CONFIG AND NOT CONFIG MATCHES \"^[Dd][Ee][Bb][Uu][Gg]$\")
+    message(STATUS \"${PROJECT_NAME} - Skipping clang-format in \${CONFIG} configuration (Debug only).\")
+    return()
+endif()
+
+if(FORMAT_SOURCES)
+    message(STATUS \"${PROJECT_NAME} - Applying clang-format to source files prior to build...\")
+    execute_process(
+        COMMAND \"${CLANG_FORMAT_EXE}\" -i --style=file \${FORMAT_SOURCES}
+        WORKING_DIRECTORY \"${CMAKE_CURRENT_SOURCE_DIR}\"
+        RESULT_VARIABLE res
+    )
+    if(NOT res EQUAL 0)
+        message(WARNING \"${PROJECT_NAME} - clang-format exited with code \${res}\")
+    endif()
+endif()
+")
+
+            add_custom_target(${PROJECT_NAME}_format ALL
+                COMMAND ${CMAKE_COMMAND}
+                    "-DCONFIG=$<CONFIG>"
+                    "-DFORMAT_SOURCES=${FORMAT_SOURCES}"
+                    -P "${CMAKE_CURRENT_BINARY_DIR}/run_clang_format.cmake"
+                WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+                COMMENT "${PROJECT_NAME} - Checking and applying clang-format in Debug mode..."
+                VERBATIM
+            )
+            add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_format)
+
+            if(NOT TARGET clang-format)
+                add_custom_target(clang-format DEPENDS ${PROJECT_NAME}_format)
+            endif()
+            if(NOT TARGET format)
+                add_custom_target(format DEPENDS ${PROJECT_NAME}_format)
+            endif()
+            message(STATUS "${PROJECT_NAME} - clang-format enabled (${CLANG_FORMAT_EXE}); formatting will run for local Debug builds.")
+        endif()
+    else()
+        message(STATUS "${PROJECT_NAME} - clang-format executable not found; skipping automatic code formatting.")
+    endif()
+else()
+    if(IS_CI_BUILD)
+        message(STATUS "${PROJECT_NAME} - CI environment detected; clang-format is disabled.")
+    else()
+        message(STATUS "${PROJECT_NAME} - clang-format is disabled (${PROJECT_NAME}_ENABLE_CLANG_FORMAT=OFF).")
+    endif()
+endif()
 
 include(GNUInstallDirs)
 
