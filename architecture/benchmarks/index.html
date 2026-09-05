@@ -1027,6 +1027,45 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="2. Visual Platform Performance Comparison">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#stream-parsing-throughput-parseasync-messages-second-higher-is-better" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stream Parsing Throughput (parseAsync — Messages / Second — Higher is Better)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#per-message-processing-latency-microseconds-lower-is-better" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Per-Message Processing Latency (Microseconds — Lower is Better)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#single-message-parsing-throughput-parsefrombuffer-messages-second-higher-is-better" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Single-Message Parsing Throughput (parseFromBuffer — Messages / Second — Higher is Better)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1356,10 +1395,15 @@
 <p><code>sip2json</code> delivers high-throughput, low-latency SIP stream parsing engineered for high-concurrency VoIP edge proxies, SBCs, and WebRTC media gateways.</p>
 <!-- PIPELINE_BENCHMARKS_START -->
 <h2 id="1-multi-platform-cross-architecture-pipeline-benchmark-matrix">1. Multi-Platform &amp; Cross-Architecture Pipeline Benchmark Matrix<a class="headerlink" href="#1-multi-platform-cross-architecture-pipeline-benchmark-matrix" title="Permanent link">&para;</a></h2>
-<div class="admonition info">
-<p class="admonition-title">Pipeline-Derived Performance Data</p>
-<p>Benchmark metrics and host runner environment details are compiled dynamically from CI/CD pipeline build matrix artifacts across our release matrix runners (Apple macOS, Red Hat Enterprise Linux, and Microsoft Windows). When release builds complete, live benchmark data will populate automatically.</p>
+<div class="admonition note">
+<p class="admonition-title">Build Release &amp; Runner Environment</p>
+<p><strong>Build Release &amp; Version</strong>: <code>3.1.1-4</code>
+<strong>CI Matrix Host Runners (Derived from Pipeline)</strong>:
+- <strong>macOS Runner</strong>: macdev.siddiq.org (4 Cores, 24 MHz)
+- <strong>Windows Runner</strong>: WINDEV (4 Cores, 3072 MHz)
+- <strong>Linux Runner</strong>: lba4.siddiq.org (4 Cores, 48 MHz)</p>
 </div>
+<p><em>Build pipeline measurements collected across matrix runners:</em></p>
 <table>
 <thead>
 <tr>
@@ -1374,22 +1418,130 @@
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><em>Pipeline Build Pending</em></td>
-<td style="text-align: center;"><em>CI Matrix</em></td>
-<td style="text-align: center;"><em>Awaiting CI Run</em></td>
-<td style="text-align: center;"><em>Awaiting CI Run</em></td>
-<td style="text-align: center;"><em>Awaiting CI Run</em></td>
-<td style="text-align: center;"><em>Awaiting CI Run</em></td>
-<td style="text-align: center;"><em>Awaiting CI Run</em></td>
+<td style="text-align: left;"><strong>Apple macOS (arm64)</strong></td>
+<td style="text-align: center;">AppleClang</td>
+<td style="text-align: center;"><strong>73,839.07 msg/s</strong></td>
+<td style="text-align: center;"><strong>194.61 MB/s</strong></td>
+<td style="text-align: center;"><strong>13.54 µs</strong></td>
+<td style="text-align: center;"><strong>79,645.13 msg/s</strong></td>
+<td style="text-align: center;"><strong>12.56 µs</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Microsoft Windows (arm64)</strong></td>
+<td style="text-align: center;">MSVC</td>
+<td style="text-align: center;"><strong>50,702.20 msg/s</strong></td>
+<td style="text-align: center;"><strong>133.63 MB/s</strong></td>
+<td style="text-align: center;"><strong>19.72 µs</strong></td>
+<td style="text-align: center;"><strong>53,289.20 msg/s</strong></td>
+<td style="text-align: center;"><strong>18.77 µs</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Red Hat Enterprise Linux (arm64)</strong></td>
+<td style="text-align: center;">GCC</td>
+<td style="text-align: center;"><strong>58,455.52 msg/s</strong></td>
+<td style="text-align: center;"><strong>154.07 MB/s</strong></td>
+<td style="text-align: center;"><strong>17.11 µs</strong></td>
+<td style="text-align: center;"><strong>62,295.36 msg/s</strong></td>
+<td style="text-align: center;"><strong>16.05 µs</strong></td>
 </tr>
 </tbody>
 </table>
 <hr />
 <h2 id="2-visual-platform-performance-comparison">2. Visual Platform Performance Comparison<a class="headerlink" href="#2-visual-platform-performance-comparison" title="Permanent link">&para;</a></h2>
-<div class="admonition info">
-<p class="admonition-title">Comparative Visual Performance Graphs Pending Build</p>
-<p>Visual comparative bar charts contrasting throughput and latency across Apple macOS, Red Hat Enterprise Linux (RHEL), and Microsoft Windows runners will render automatically when pipeline benchmark artifacts are compiled.</p>
+<p>Visual comparison of pipeline build results across platform runners.</p>
+<h3 id="stream-parsing-throughput-parseasync-messages-second-higher-is-better">Stream Parsing Throughput (<code>parseAsync</code> — Messages / Second — Higher is Better)<a class="headerlink" href="#stream-parsing-throughput-parseasync-messages-second-higher-is-better" title="Permanent link">&para;</a></h3>
+<div class="modern-chart">
+  <div class="chart-row">
+    <div class="chart-meta">
+      <span class="chart-title">Apple macOS (arm64) <span class="pill pill-success">Fastest</span></span>
+      <span class="chart-val">73,839 msg/s</span>
+    </div>
+    <div class="chart-track">
+      <div class="chart-bar chart-bar-primary" style="width: 100%;"></div>
+    </div>
+  </div>
+  <div class="chart-row">
+    <div class="chart-meta">
+      <span class="chart-title">Red Hat Enterprise Linux (arm64) </span>
+      <span class="chart-val">58,456 msg/s</span>
+    </div>
+    <div class="chart-track">
+      <div class="chart-bar chart-bar-secondary" style="width: 79%;"></div>
+    </div>
+  </div>
+  <div class="chart-row">
+    <div class="chart-meta">
+      <span class="chart-title">Microsoft Windows (arm64) </span>
+      <span class="chart-val">50,702 msg/s</span>
+    </div>
+    <div class="chart-track">
+      <div class="chart-bar chart-bar-info" style="width: 68%;"></div>
+    </div>
+  </div>
 </div>
+
+<h3 id="per-message-processing-latency-microseconds-lower-is-better">Per-Message Processing Latency (Microseconds — Lower is Better)<a class="headerlink" href="#per-message-processing-latency-microseconds-lower-is-better" title="Permanent link">&para;</a></h3>
+<div class="modern-chart">
+  <div class="chart-row">
+    <div class="chart-meta">
+      <span class="chart-title">Apple macOS (arm64) <span class="pill pill-success">Lowest Latency</span></span>
+      <span class="chart-val">13.54 µs</span>
+    </div>
+    <div class="chart-track">
+      <div class="chart-bar chart-bar-primary" style="width: 68%;"></div>
+    </div>
+  </div>
+  <div class="chart-row">
+    <div class="chart-meta">
+      <span class="chart-title">Red Hat Enterprise Linux (arm64) </span>
+      <span class="chart-val">17.11 µs</span>
+    </div>
+    <div class="chart-track">
+      <div class="chart-bar chart-bar-secondary" style="width: 86%;"></div>
+    </div>
+  </div>
+  <div class="chart-row">
+    <div class="chart-meta">
+      <span class="chart-title">Microsoft Windows (arm64) </span>
+      <span class="chart-val">19.72 µs</span>
+    </div>
+    <div class="chart-track">
+      <div class="chart-bar chart-bar-info" style="width: 100%;"></div>
+    </div>
+  </div>
+</div>
+
+<h3 id="single-message-parsing-throughput-parsefrombuffer-messages-second-higher-is-better">Single-Message Parsing Throughput (<code>parseFromBuffer</code> — Messages / Second — Higher is Better)<a class="headerlink" href="#single-message-parsing-throughput-parsefrombuffer-messages-second-higher-is-better" title="Permanent link">&para;</a></h3>
+<div class="modern-chart">
+  <div class="chart-row">
+    <div class="chart-meta">
+      <span class="chart-title">Apple macOS (arm64) <span class="pill pill-success">Fastest</span></span>
+      <span class="chart-val">79,645 msg/s</span>
+    </div>
+    <div class="chart-track">
+      <div class="chart-bar chart-bar-primary" style="width: 100%;"></div>
+    </div>
+  </div>
+  <div class="chart-row">
+    <div class="chart-meta">
+      <span class="chart-title">Red Hat Enterprise Linux (arm64) </span>
+      <span class="chart-val">62,295 msg/s</span>
+    </div>
+    <div class="chart-track">
+      <div class="chart-bar chart-bar-secondary" style="width: 78%;"></div>
+    </div>
+  </div>
+  <div class="chart-row">
+    <div class="chart-meta">
+      <span class="chart-title">Microsoft Windows (arm64) </span>
+      <span class="chart-val">53,289 msg/s</span>
+    </div>
+    <div class="chart-track">
+      <div class="chart-bar chart-bar-info" style="width: 66%;"></div>
+    </div>
+  </div>
+</div>
+
 <!-- PIPELINE_BENCHMARKS_END -->
 
 <hr />
@@ -1505,7 +1657,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "toc.integrate", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.1.0-4"}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "toc.integrate", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.1.1-4"}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
