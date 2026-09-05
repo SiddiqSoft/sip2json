@@ -1320,6 +1320,56 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#3-macos-toolchain-xcode-select-coexistence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. macOS Toolchain &amp; xcode-select Coexistence
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. macOS Toolchain &amp; xcode-select Coexistence">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-problem-xcrun-xcodebuild-and-exit-code-65280" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Problem: xcrun, xcodebuild, and Exit Code 65280
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-sip2json-eliminates-toolchain-flipping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How sip2json Eliminates Toolchain Flipping
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#caveats-best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Caveats &amp; Best Practices
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1892,6 +1942,49 @@
 </span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>cmake<span class="w"> </span>--build<span class="w"> </span>--preset<span class="w"> </span>Apple-Release
 </span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>ctest<span class="w"> </span>--preset<span class="w"> </span>Apple-Release<span class="w"> </span>-j<span class="w"> </span><span class="m">4</span>
 </span></code></pre></div>
+<h3 id="3-macos-toolchain-xcode-select-coexistence">3. macOS Toolchain &amp; xcode-select Coexistence<a class="headerlink" href="#3-macos-toolchain-xcode-select-coexistence" title="Permanent link">&para;</a></h3>
+<div class="admonition tip">
+<p class="admonition-title">Zero-Flipping Workflow: Developing with Xcode and CLI Concurrently</p>
+<p>Maintainers frequently develop native macOS/iOS applications in Xcode IDE while simultaneously working on <code>sip2json</code> via terminal, VS Code, or CLion. You can leave <code>xcode-select</code> permanently set to <code>/Applications/Xcode.app/Contents/Developer</code> without encountering CLI build failures or having to toggle <code>xcode-select</code>.</p>
+</div>
+<h4 id="the-problem-xcrun-xcodebuild-and-exit-code-65280">The Problem: xcrun, xcodebuild, and Exit Code 65280<a class="headerlink" href="#the-problem-xcrun-xcodebuild-and-exit-code-65280" title="Permanent link">&para;</a></h4>
+<p>On macOS, running generic compiler shims such as <code>/usr/bin/c++</code>, <code>/usr/bin/clang++</code>, or <code>/usr/bin/make</code> triggers Apple's <code>/usr/bin/xcrun</code> dispatcher. When <code>xcode-select</code> points to <code>/Applications/Xcode.app</code>, <code>xcrun</code> invokes:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>xcodebuild<span class="w"> </span>-sdk<span class="w"> </span>macosx<span class="w"> </span>-find<span class="w"> </span>clang++
+</span></code></pre></div>
+If there is a version mismatch between macOS system frameworks and installed Xcode system resources (for example, a dyld missing symbol error such as <code>Symbol not found: _XPCTypeBool</code> in <code>Mercury.framework</code> referenced by <code>/Library/Developer/PrivateFrameworks/CoreDevice.framework</code>), <code>xcodebuild</code> crashes with exit code 255 (which the shell surfaces as <code>c++: error: ... failed with exit code 65280</code>).</p>
+<p>Historically, developers were forced to repeatedly flip <code>xcode-select</code>:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Flipping to Command Line Tools for CLI CMake builds:</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>sudo<span class="w"> </span>xcode-select<span class="w"> </span>-s<span class="w"> </span>/Library/Developer/CommandLineTools
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1"># Flipping back to Xcode for GUI/iOS/simulator development:</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>sudo<span class="w"> </span>xcode-select<span class="w"> </span>-s<span class="w"> </span>/Applications/Xcode.app/Contents/Developer
+</span></code></pre></div></p>
+<h4 id="how-sip2json-eliminates-toolchain-flipping">How sip2json Eliminates Toolchain Flipping<a class="headerlink" href="#how-sip2json-eliminates-toolchain-flipping" title="Permanent link">&para;</a></h4>
+<p><code>sip2json</code> handles toolchain resolution automatically through two complementary mechanisms:</p>
+<ol>
+<li>
+<p><strong>Direct Compiler Paths in Presets</strong>:
+   The <code>Apple-Debug</code>, <code>Apple-Release</code>, and <code>Darwin</code> presets in <code>CMakePresets.json</code> explicitly configure <code>CMAKE_C_COMPILER</code> and <code>CMAKE_CXX_COMPILER</code> to direct binary paths (e.g. <code>/Library/Developer/CommandLineTools/usr/bin/clang++</code>). Because the binary path is fully qualified, CMake and Ninja invoke the compiler directly, completely bypassing <code>/usr/bin/xcrun</code> and <code>xcodebuild</code>.</p>
+</li>
+<li>
+<p><strong>Automatic Toolchain Discovery in <code>CMakeLists.txt</code></strong>:
+   If you configure CMake outside presets (e.g. <code>cmake -B build</code> or using IDE plugins), <code>CMakeLists.txt</code> inspects candidate toolchains before <code>project()</code>:</p>
+</li>
+<li>Standalone Command Line Tools (<code>/Library/Developer/CommandLineTools/usr/bin/clang++</code>)</li>
+<li>Xcode Default Toolchain (<code>/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++</code>)</li>
+<li>Homebrew LLVM (<code>/opt/homebrew/opt/llvm/bin/clang++</code>)</li>
+</ol>
+<p>If a developer has only Xcode installed (without standalone CLT), CMake falls back to the internal Xcode toolchain binary automatically.</p>
+<h4 id="caveats-best-practices">Caveats &amp; Best Practices<a class="headerlink" href="#caveats-best-practices" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Environment Override with <code>DEVELOPER_DIR</code></strong>: If you need to temporarily direct Apple toolchains to a specific location for a single terminal session without modifying system-wide settings with <code>sudo xcode-select</code>, export <code>DEVELOPER_DIR</code>:
+  <div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">DEVELOPER_DIR</span><span class="o">=</span>/Library/Developer/CommandLineTools
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="c1"># or</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">DEVELOPER_DIR</span><span class="o">=</span>/Applications/Xcode.app/Contents/Developer
+</span></code></pre></div></li>
+<li><strong>Xcode Generator vs. Ninja</strong>: The repository presets standardly use the <code>Ninja</code> generator. If you explicitly generate an Xcode IDE project (<code>cmake -G Xcode</code>), CMake must interact directly with <code>xcodebuild</code>. Ensure that your installed Xcode version matches your macOS version if using the Xcode generator. For command-line builds, CI, and test execution, Ninja with AppleClang is recommended.</li>
+<li><strong>Homebrew LLVM</strong>: If you prefer building with upstream Clang from Homebrew (<code>brew install llvm</code>), you can override the compiler by setting <code>-DCMAKE_CXX_COMPILER=/opt/homebrew/opt/llvm/bin/clang++</code>.</li>
+</ul>
 <hr />
 <h2 id="self-hosted-build-agent-requirements">Self-Hosted Build Agent Requirements<a class="headerlink" href="#self-hosted-build-agent-requirements" title="Permanent link">&para;</a></h2>
 <p>All build agents must be registered in the <code>Default</code> pool and expose the required <code>Agent.OS</code> demand:</p>
@@ -1899,7 +1992,7 @@
 <ul>
 <li>Demand: <code>Agent.OS -equals Darwin</code></li>
 <li>OS: macOS Sonoma (14+) on Apple Silicon (<code>arm64</code>) or Intel (<code>x64</code>).</li>
-<li>Toolchain: Xcode 15+ / Command Line Tools (<code>AppleClang 15+</code>).</li>
+<li>Toolchain: Xcode 15+ / Command Line Tools (<code>AppleClang 15+</code>). Presets and build files automatically resolve direct compiler binaries, coexisting seamlessly with any <code>xcode-select</code> setting.</li>
 <li>Utilities: CMake 3.29+, Ninja 1.11+, Python 3.10+.</li>
 <li><em>Note: No external Homebrew LLVM installation required.</em></li>
 </ul>
@@ -1941,7 +2034,7 @@
     Pipeline-&gt;&gt;Pages: Build MkDocs Site with Dynamic Version &amp; Benchmarks</code></pre>
 <h3 id="dynamic-versioning-documentation-hooks">Dynamic Versioning &amp; Documentation Hooks<a class="headerlink" href="#dynamic-versioning-documentation-hooks" title="Permanent link">&para;</a></h3>
 <ol>
-<li><strong><a href="https://github.com/SiddiqSoft/sip2json/blob/master/docs/hooks.py"><code>docs/hooks.py</code></a></strong>: Dynamically injects GitVersion SemVer into site metadata (<code>config['extra']['version']</code>) and replaces <code>3.1.1-4</code> / <code>v3.1.1</code> placeholders across markdown files.</li>
+<li><strong><a href="https://github.com/SiddiqSoft/sip2json/blob/master/docs/hooks.py"><code>docs/hooks.py</code></a></strong>: Dynamically injects GitVersion SemVer into site metadata (<code>config['extra']['version']</code>) and replaces <code>3.1.2-5</code> / <code>v3.1.2</code> placeholders across markdown files.</li>
 <li><strong><a href="https://github.com/SiddiqSoft/sip2json/blob/master/scripts/publish_benchmarks.py"><code>scripts/publish_benchmarks.py</code></a></strong>: Collects benchmark outputs across build matrix platforms, extracts CPU architecture and core count, and renders responsive platform-grouped benchmark tables and visual comparison charts into <a href="../../architecture/benchmarks/"><code>docs/architecture/benchmarks.md</code></a>.</li>
 <li><strong>NuGet Packaging &amp; Publication</strong>: NuGet packaging (<code>NuGetCommand@2 pack</code>) runs during the Windows Release job to package header files, <code>.natvis</code>, and <code>.targets</code>. Publication (<code>Stage 5: PublishNuGet</code>) is auto-enabled on <code>main</code>/<code>master</code> releases and strictly gated behind the manual review and successful completion of <code>Stage 4: PublishGitHub</code> before pushing to <code>nuget.org</code> via the <code>sqs-nuget</code> service connection.</li>
 </ol>
@@ -1949,12 +2042,12 @@
 <h2 id="building-previewing-documentation-locally">Building &amp; Previewing Documentation Locally<a class="headerlink" href="#building-previewing-documentation-locally" title="Permanent link">&para;</a></h2>
 <p>Maintainers can preview and validate documentation changes locally before pushing:</p>
 <h3 id="1-live-reload-development-server">1. Live-Reload Development Server<a class="headerlink" href="#1-live-reload-development-server" title="Permanent link">&para;</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Activate Python environment and install requirements</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nb">source</span><span class="w"> </span>venv/bin/activate
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>docs/requirements.txt
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="c1"># Start live-reloading server</span>
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>mkdocs<span class="w"> </span>serve
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Activate Python environment and install requirements</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="nb">source</span><span class="w"> </span>venv/bin/activate
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>docs/requirements.txt
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="c1"># Start live-reloading server</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>mkdocs<span class="w"> </span>serve
 </span></code></pre></div>
 <ul>
 <li><strong>Local URL</strong>: Open <a href="http://127.0.0.1:8000/"><code>http://127.0.0.1:8000/</code></a> in your browser.</li>
@@ -1962,12 +2055,12 @@
 </ul>
 <h3 id="2-strict-build-validation">2. Strict Build Validation<a class="headerlink" href="#2-strict-build-validation" title="Permanent link">&para;</a></h3>
 <p>Verify there are zero broken links or markdown syntax issues:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>mkdocs<span class="w"> </span>build<span class="w"> </span>--strict
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>mkdocs<span class="w"> </span>build<span class="w"> </span>--strict
 </span></code></pre></div>
 <p>The output compiles into <code>site/</code>. Open <code>site/index.html</code> directly in any browser.</p>
 <h3 id="3-updating-benchmark-data-prior-to-serving">3. Updating Benchmark Data Prior to Serving<a class="headerlink" href="#3-updating-benchmark-data-prior-to-serving" title="Permanent link">&para;</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>python3<span class="w"> </span>scripts/publish_benchmarks.py
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>mkdocs<span class="w"> </span>serve
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>python3<span class="w"> </span>scripts/publish_benchmarks.py
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>mkdocs<span class="w"> </span>serve
 </span></code></pre></div>
 <hr />
 <h2 id="pipeline-parameters-reference">Pipeline Parameters Reference<a class="headerlink" href="#pipeline-parameters-reference" title="Permanent link">&para;</a></h2>
@@ -2164,7 +2257,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "toc.integrate", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.1.1-4"}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "toc.integrate", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.1.2-5"}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
