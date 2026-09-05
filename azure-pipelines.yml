@@ -171,11 +171,13 @@ stages:
 
   # ==========================================================================
   # STAGE 2: LINUX BUILD
+  # Serialized after Windows to avoid CPU/memory contention across VMs on the same host
   # ==========================================================================
   - stage: Linux
     displayName: Linux
-    condition: ${{ containsValue(parameters.Platforms, 'Linux') }}
-    dependsOn: []
+    dependsOn:
+      - Windows
+    condition: and(not(canceled()), ${{ containsValue(parameters.Platforms, 'Linux') }})
 
     jobs:
     - ${{ if eq(parameters.Cleanup, true) }}:
@@ -196,11 +198,14 @@ stages:
 
   # ==========================================================================
   # STAGE 3: DARWIN BUILD
+  # Serialized after Windows and Linux to avoid CPU/memory contention across VMs on the same host
   # ==========================================================================
   - stage: Darwin
     displayName: Darwin
-    condition: ${{ containsValue(parameters.Platforms, 'Darwin') }}
-    dependsOn: []
+    dependsOn:
+      - Windows
+      - Linux
+    condition: and(not(canceled()), ${{ containsValue(parameters.Platforms, 'Darwin') }})
 
     jobs:
     - ${{ if eq(parameters.Cleanup, true) }}:
@@ -231,7 +236,7 @@ stages:
       - Windows
       - Linux
       - Darwin
-    condition: and(succeeded(), or(eq('${{ parameters.PublishGitHub }}', 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(variables['Build.SourceBranch'], 'refs/heads/master')))
+    condition: and(not(failed()), not(canceled()), or(eq('${{ parameters.PublishGitHub }}', 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(variables['Build.SourceBranch'], 'refs/heads/master')))
     jobs:
       - job: ApproveGitHubRelease
         displayName: "Manual Approval - GitHub Release"
@@ -272,7 +277,7 @@ stages:
       - Windows
       - Linux
       - Darwin
-    condition: and(succeeded(), or(eq('${{ parameters.PublishDocs }}', 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(variables['Build.SourceBranch'], 'refs/heads/master')))
+    condition: and(not(failed()), not(canceled()), or(eq('${{ parameters.PublishDocs }}', 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(variables['Build.SourceBranch'], 'refs/heads/master')))
     jobs:
       - job: ApproveDocsRelease
         displayName: "Manual Approval - Documentation Site"
