@@ -38,7 +38,7 @@
 
 #include <string>
 #include <random>
-#include <sstream>
+#include <format>
 
 #include "nlohmann/json.hpp"
 #include "sip2json_header_keys.hpp"
@@ -55,26 +55,54 @@ namespace siddiqsoft {
         static thread_local std::uniform_int_distribution ud(0, 15);
         static thread_local std::uniform_int_distribution ud2(8, 11);
 
-        std::stringstream sBuffer;
-
-        sBuffer << std::hex;
-        for (auto i = 0; i < 8; i++)
-            sBuffer << ud(generator);
-        sBuffer << "-";
-        for (auto i = 0; i < 4; i++)
-            sBuffer << ud(generator);
-        sBuffer << "-4";
-        for (auto i = 0; i < 3; i++)
-            sBuffer << ud(generator);
-        sBuffer << "-";
-        for (auto i = 0; i < 3; i++)
-            sBuffer << ud(generator);
-        sBuffer << "-";
-        for (auto i = 0; i < 8; i++)
-            sBuffer << ud(generator);
-        sBuffer << "-";
-        for (auto i = 0; i < 12; i++)
-            sBuffer << ud2(generator);
-        return sBuffer.str();
+        // this took some real effort to get right.
+        // the payoff is big.. but really, we're not going to generate CallId often to make
+        // any meaningful performance impact.
+        // But I like to avoid streams since they're so inefficient and
+        // represent the "old" way.
+        return std::format("{:x}{:x}{:x}{:x}{:x}{:x}{:x}{:x}-"
+                           "{:x}{:x}{:x}{:x}-"
+                           "4{:x}{:x}{:x}-"
+                           "{:x}{:x}{:x}-"
+                           "{:x}{:x}{:x}{:x}{:x}{:x}{:x}{:x}-"
+                           "{:x}{:x}{:x}{:x}{:x}{:x}{:x}{:x}{:x}{:x}{:x}{:x}",
+                           ud(generator),
+                           ud(generator),
+                           ud(generator),
+                           ud(generator),
+                           ud(generator),
+                           ud(generator),
+                           ud(generator),
+                           ud(generator),
+                           ud(generator),
+                           ud(generator),
+                           ud(generator),
+                           ud(generator),
+                           ud(generator),
+                           ud(generator),
+                           ud(generator),
+                           ud(generator),
+                           ud(generator),
+                           ud(generator),
+                           ud(generator),
+                           ud(generator),
+                           ud(generator),
+                           ud(generator),
+                           ud(generator),
+                           ud(generator),
+                           ud(generator),
+                           ud(generator),
+                           ud2(generator),
+                           ud2(generator),
+                           ud2(generator),
+                           ud2(generator),
+                           ud2(generator),
+                           ud2(generator),
+                           ud2(generator),
+                           ud2(generator),
+                           ud2(generator),
+                           ud2(generator),
+                           ud2(generator),
+                           ud2(generator));
     }
 } // namespace siddiqsoft
