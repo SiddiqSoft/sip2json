@@ -16,7 +16,7 @@
             "binaryDir": "${sourceDir}/build/${presetName}",
             "installDir": "${sourceDir}/install/${presetName}",
             "environment": {
-                "CTEST_PARALLEL_LEVEL": "0",
+                "CTEST_PARALLEL_LEVEL": "4",
                 "CMAKE_COLOR_DIAGNOSTICS": "1"
             },
             "cacheVariables": {

@@ -24,6 +24,54 @@ if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/CPM.cmake)
 endif()
 include(${CMAKE_CURRENT_SOURCE_DIR}/CPM.cmake)
 
+# ____________________________________
+# Darwin (macOS) Compiler Resolution
+# Ensures clean standalone builds without requiring maintainers to flip xcode-select between
+# Xcode.app and CommandLineTools.
+if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin")
+    if(NOT DEFINED CMAKE_CXX_COMPILER OR NOT EXISTS "${CMAKE_CXX_COMPILER}")
+        set(_DARWIN_CXX_CANDIDATES
+            "/Library/Developer/CommandLineTools/usr/bin/clang++"
+            "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++"
+            "/opt/homebrew/opt/llvm/bin/clang++"
+        )
+        foreach(_cand IN LISTS _DARWIN_CXX_CANDIDATES)
+            if(EXISTS "${_cand}")
+                set(CMAKE_CXX_COMPILER "${_cand}" CACHE FILEPATH "CXX compiler" FORCE)
+                message(STATUS "tests/validation - Selected macOS CXX compiler: ${CMAKE_CXX_COMPILER}")
+                break()
+            endif()
+        endforeach()
+        unset(_DARWIN_CXX_CANDIDATES)
+    endif()
+
+    if(NOT DEFINED CMAKE_C_COMPILER OR NOT EXISTS "${CMAKE_C_COMPILER}")
+        set(_DARWIN_C_CANDIDATES
+            "/Library/Developer/CommandLineTools/usr/bin/clang"
+            "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang"
+            "/opt/homebrew/opt/llvm/bin/clang"
+        )
+        foreach(_cand IN LISTS _DARWIN_C_CANDIDATES)
+            if(EXISTS "${_cand}")
+                set(CMAKE_C_COMPILER "${_cand}" CACHE FILEPATH "C compiler" FORCE)
+                message(STATUS "tests/validation - Selected macOS C compiler: ${CMAKE_C_COMPILER}")
+                break()
+            endif()
+        endforeach()
+        unset(_DARWIN_C_CANDIDATES)
+    endif()
+
+    if(NOT DEFINED CMAKE_MAKE_PROGRAM)
+        if(CMAKE_GENERATOR STREQUAL "Ninja")
+            if(EXISTS "/opt/homebrew/bin/ninja")
+                set(CMAKE_MAKE_PROGRAM "/opt/homebrew/bin/ninja" CACHE FILEPATH "Ninja program" FORCE)
+            endif()
+        elseif(EXISTS "/Library/Developer/CommandLineTools/usr/bin/make")
+            set(CMAKE_MAKE_PROGRAM "/Library/Developer/CommandLineTools/usr/bin/make" CACHE FILEPATH "Make program" FORCE)
+        endif()
+    endif()
+endif()
+
 # ______________________
 # Project Metadata block
 project(sip2json_client_test

@@ -26,6 +26,58 @@ endif()
 set(CPM_SOURCE_CACHE ${CPM_SOURCE_CACHE} CACHE PATH "CPM source cache")
 include(pack/CMakeCommonHelpers.cmake)
 
+# ____________________________________
+# Darwin (macOS) Compiler Resolution
+# Ensures clean builds without requiring maintainers to flip xcode-select between
+# Xcode.app and CommandLineTools. Directly resolves the clang/clang++ binary to bypass
+# /usr/bin/xcrun and avoid xcodebuild -find clang++ failures (e.g. exit code 65280).
+if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin")
+    # C++ Compiler resolution
+    if(NOT DEFINED CMAKE_CXX_COMPILER OR NOT EXISTS "${CMAKE_CXX_COMPILER}")
+        set(_DARWIN_CXX_CANDIDATES
+            "/Library/Developer/CommandLineTools/usr/bin/clang++"
+            "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++"
+            "/opt/homebrew/opt/llvm/bin/clang++"
+        )
+        foreach(_cand IN LISTS _DARWIN_CXX_CANDIDATES)
+            if(EXISTS "${_cand}")
+                set(CMAKE_CXX_COMPILER "${_cand}" CACHE FILEPATH "CXX compiler" FORCE)
+                message(STATUS "sip2json - Selected macOS CXX compiler: ${CMAKE_CXX_COMPILER}")
+                break()
+            endif()
+        endforeach()
+        unset(_DARWIN_CXX_CANDIDATES)
+    endif()
+
+    # C Compiler resolution (used by dependencies like GoogleTest)
+    if(NOT DEFINED CMAKE_C_COMPILER OR NOT EXISTS "${CMAKE_C_COMPILER}")
+        set(_DARWIN_C_CANDIDATES
+            "/Library/Developer/CommandLineTools/usr/bin/clang"
+            "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang"
+            "/opt/homebrew/opt/llvm/bin/clang"
+        )
+        foreach(_cand IN LISTS _DARWIN_C_CANDIDATES)
+            if(EXISTS "${_cand}")
+                set(CMAKE_C_COMPILER "${_cand}" CACHE FILEPATH "C compiler" FORCE)
+                message(STATUS "sip2json - Selected macOS C compiler: ${CMAKE_C_COMPILER}")
+                break()
+            endif()
+        endforeach()
+        unset(_DARWIN_C_CANDIDATES)
+    endif()
+
+    # Build tool resolution (standalone make or ninja)
+    if(NOT DEFINED CMAKE_MAKE_PROGRAM)
+        if(CMAKE_GENERATOR STREQUAL "Ninja")
+            if(EXISTS "/opt/homebrew/bin/ninja")
+                set(CMAKE_MAKE_PROGRAM "/opt/homebrew/bin/ninja" CACHE FILEPATH "Ninja program" FORCE)
+            endif()
+        elseif(EXISTS "/Library/Developer/CommandLineTools/usr/bin/make")
+            set(CMAKE_MAKE_PROGRAM "/Library/Developer/CommandLineTools/usr/bin/make" CACHE FILEPATH "Make program" FORCE)
+        endif()
+    endif()
+endif()
+
 # ______________________
 # Project Metadata block
 project(sip2json
