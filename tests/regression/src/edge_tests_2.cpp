@@ -1,6 +1,6 @@
 /*
-  A SIP Parser for Modern C++ / Version 2.5.x
-  https://github.com/siddiqsoftware/sip2json/
+  A SIP Parser for Modern C++ / Version 3
+  https://github.com/siddiqsoft/sip2json/
   Copyright 2003-2020 Abdelkareem Siddiq.
   All rights reserved.
 */
@@ -40,8 +40,7 @@ TEST(edge_cases_2, Test_callid_uniqueness)
     constexpr int         numIds = 100;
     std::set<std::string> ids;
 
-    for (int i = 0; i < numIds; i++)
-    {
+    for (int i = 0; i < numIds; i++) {
         auto id = siddiqsoft::createCallId();
         EXPECT_EQ(44, id.length()) << "CallId length mismatch at iteration " << i;
         ids.insert(id);
@@ -64,8 +63,7 @@ TEST(edge_cases_2, Test_create_various_request_methods)
                                         "MESSAGE",
                                         "INFO"};
 
-    for (const auto& method : methods)
-    {
+    for (const auto& method : methods) {
         siddiqsoft::sipmessage sipm(method, "sip:test@example.com", siddiqsoft::createCallId(), 1);
         EXPECT_TRUE(sipm.isMessageRequest()) << "Failed for method: " << method;
         EXPECT_EQ(method, sipm.getMethod()) << "Method mismatch for: " << method;
@@ -80,8 +78,7 @@ TEST(edge_cases_2, Test_create_various_response_codes)
 {
     std::vector<uint32_t> codes = {100, 180, 200, 302, 400, 401, 403, 404, 480, 486, 500, 503, 600, 603, 606};
 
-    for (auto code : codes)
-    {
+    for (auto code : codes) {
         siddiqsoft::sipmessage sipm(code);
         EXPECT_TRUE(sipm.isMessageResponse()) << "Failed for code: " << code;
         EXPECT_EQ(code, sipm.getStatusCode()) << "Status code mismatch for: " << code;
@@ -105,8 +102,7 @@ TEST(edge_cases_2, Test_serialize_roundtrip_response)
 
     siddiqsoft::sipmessage response(200, request);
 
-    try
-    {
+    try {
         auto serialized = siddiqsoft::sip2json::serialize(response);
         EXPECT_FALSE(serialized.empty());
 
@@ -117,9 +113,7 @@ TEST(edge_cases_2, Test_serialize_roundtrip_response)
         EXPECT_EQ(200, parsed.getStatusCode());
         EXPECT_EQ(response.getCallID(), parsed.getCallID());
         EXPECT_EQ(response.getContentLength(), parsed.getContentLength());
-    }
-    catch (const std::exception& e)
-    {
+    } catch (const std::exception& e) {
         FAIL() << "Unexpected exception: " << e.what();
     }
 }
@@ -190,14 +184,11 @@ TEST(edge_cases_2, Test_body_text_plain)
     EXPECT_TRUE(sipm.body().is_string());
     EXPECT_EQ("Hello, World!", sipm.body().get<std::string>());
 
-    try
-    {
+    try {
         auto serialized = siddiqsoft::sip2json::serialize(sipm);
         EXPECT_FALSE(serialized.empty());
         EXPECT_TRUE(serialized.find("Hello, World!") != std::string::npos) << serialized;
-    }
-    catch (const std::exception& e)
-    {
+    } catch (const std::exception& e) {
         FAIL() << "Unexpected exception: " << e.what();
     }
 }

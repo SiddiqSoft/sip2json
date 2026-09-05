@@ -1,7 +1,7 @@
 /*
     A SIP Parser for Modern C++: RFC 3261 Core Compliance Test Suite
     Version 1.0.0
-    https://github.com/siddiqsoftware/sip2json/
+    https://github.com/siddiqsoft/sip2json/
 
     BSD 3-Clause License
     Copyright (c) 2003-2024, Abdelkareem Siddiq
@@ -12,8 +12,7 @@
 #include <string_view>
 #include "siddiqsoft/sip2json.hpp"
 
-namespace siddiqsoft
-{
+namespace siddiqsoft {
     //-------------------------------------------------------------------------
     // RFC 3261 Section 7.1: Request Line Compliance
     //-------------------------------------------------------------------------
@@ -34,8 +33,7 @@ namespace siddiqsoft
                                                           "INFO",
                                                           "MESSAGE"};
 
-        for (auto method : rfcMethods)
-        {
+        for (auto method : rfcMethods) {
             std::string rawMsg =
                     std::format("{} sip:user@example.com SIP/2.0\r\nVia: SIP/2.0/UDP 192.0.2.1:5060;branch=z9hG4bK123\r\nFrom: "
                                 "<sip:user@example.com>;tag=1\r\nTo: <sip:user@example.com>\r\nCall-ID: test-callid-123\r\nCSeq: 1 "
@@ -70,8 +68,7 @@ namespace siddiqsoft
     //-------------------------------------------------------------------------
     TEST(RFC3261_Compliance, StatusLine_StandardResponseCodes)
     {
-        struct TestStatus
-        {
+        struct TestStatus {
             uint32_t    code;
             std::string reason;
         };
@@ -88,8 +85,7 @@ namespace siddiqsoft
                                                      {500, "Server Internal Error"},
                                                      {600, "Busy Everywhere"}};
 
-        for (const auto& tc : statusCases)
-        {
+        for (const auto& tc : statusCases) {
             std::string rawMsg = std::format("SIP/2.0 {} {}\r\nVia: SIP/2.0/UDP 192.0.2.1:5060;branch=z9hG4bK123\r\nFrom: "
                                              "<sip:user@example.com>;tag=1\r\nTo: <sip:user@example.com>;tag=2\r\nCall-ID: "
                                              "test-callid-123\r\nCSeq: 1 INVITE\r\nContent-Length: 0\r\n\r\n",
@@ -111,15 +107,14 @@ namespace siddiqsoft
     //-------------------------------------------------------------------------
     TEST(RFC3261_Compliance, HeaderFields_CaseInsensitivity)
     {
-        std::string rawMsg =
-                "INVITE sip:user@example.com SIP/2.0\r\n"
-                "vIa: SIP/2.0/UDP 192.0.2.1:5060;branch=z9hG4bK123\r\n"
-                "fRoM: <sip:user@example.com>;tag=1\r\n"
-                "tO: <sip:user@example.com>\r\n"
-                "cALL-iD: test-callid-123\r\n"
-                "cSeQ: 1 INVITE\r\n"
-                "cONTENT-lENGTH: 0\r\n\r\n";
-        auto bs = rawMsg.begin();
+        std::string rawMsg = "INVITE sip:user@example.com SIP/2.0\r\n"
+                             "vIa: SIP/2.0/UDP 192.0.2.1:5060;branch=z9hG4bK123\r\n"
+                             "fRoM: <sip:user@example.com>;tag=1\r\n"
+                             "tO: <sip:user@example.com>\r\n"
+                             "cALL-iD: test-callid-123\r\n"
+                             "cSeQ: 1 INVITE\r\n"
+                             "cONTENT-lENGTH: 0\r\n\r\n";
+        auto        bs     = rawMsg.begin();
 
         sipmessage sipm = sip2json::parseFromBuffer(bs, rawMsg.end());
         EXPECT_TRUE(sipm.headers().contains("Via"));

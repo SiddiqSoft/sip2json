@@ -1,7 +1,7 @@
 /*
     A SIP Parser for Modern C++: Comprehensive SIP Standard Certification Suite
     Version 1.0.0
-    https://github.com/siddiqsoftware/sip2json/
+    https://github.com/siddiqsoft/sip2json/
 
     BSD 3-Clause License
     Copyright (c) 2003-2024, Abdelkareem Siddiq
@@ -13,8 +13,7 @@
 #include <vector>
 #include "siddiqsoft/sip2json.hpp"
 
-namespace siddiqsoft
-{
+namespace siddiqsoft {
     //-------------------------------------------------------------------------
     // Certification Group 1: RFC 3261 Core Startline & Method Certification
     //-------------------------------------------------------------------------
@@ -36,8 +35,7 @@ namespace siddiqsoft
                 {"INFO", "sip:user@example.com"},
                 {"MESSAGE", "sip:user@example.com"}};
 
-        for (const auto& [method, uri] : testCases)
-        {
+        for (const auto& [method, uri] : testCases) {
             std::string rawMsg = std::format("{} {} SIP/2.0\r\n"
                                              "Via: SIP/2.0/UDP pc33.atlanta.com:5060;branch=z9hG4bKnashds8\r\n"
                                              "Max-Forwards: 70\r\n"
@@ -87,8 +85,7 @@ namespace siddiqsoft
                 {600, "Busy Everywhere", "6xx Global Failure"},
                 {603, "Decline", "6xx Global Failure"}};
 
-        for (const auto& [code, reason, category] : responseCases)
-        {
+        for (const auto& [code, reason, category] : responseCases) {
             std::string rawMsg = std::format("SIP/2.0 {} {}\r\n"
                                              "Via: SIP/2.0/UDP pc33.atlanta.com:5060;branch=z9hG4bKnashds8\r\n"
                                              "From: Alice <sip:alice@atlanta.example.com>;tag=1928301774\r\n"

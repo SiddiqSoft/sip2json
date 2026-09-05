@@ -1,7 +1,7 @@
 /*
     A SIP Parser for Modern C++: Protocol and Framing Constants
-    Version 2.5.x
-    https://github.com/siddiqsoftware/sip2json/
+    Version 3
+    https://github.com/siddiqsoft/sip2json/
 
     BSD 3-Clause License
 
@@ -42,8 +42,7 @@
 #include <string>
 #include <string_view>
 
-namespace siddiqsoft
-{
+namespace siddiqsoft {
     // Top-Level Message JSON Section Keys
     static inline const std::string JSON_KEY_STARTLINE {"s"};
     static inline const std::string JSON_KEY_HEADERS {"h"};

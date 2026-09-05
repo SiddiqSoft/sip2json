@@ -1,7 +1,7 @@
 /*
     A SIP Parser for Modern C++
-    Version 2.5.x
-    https://github.com/siddiqsoftware/sip2json/
+    Version 3
+    https://github.com/siddiqsoft/sip2json/
 
     BSD 3-Clause License
 
@@ -43,10 +43,8 @@
 #include "nlohmann/json.hpp"
 
 
-namespace siddiqsoft
-{
-    enum class sip2jsonErrors : uint32_t
-    {
+namespace siddiqsoft {
+    enum class sip2jsonErrors : uint32_t {
         ok = 0,
         /* parse errors */
         incomplete_buffer_for_parse,
@@ -78,8 +76,7 @@ namespace siddiqsoft
                                   {sip2jsonErrors::empty_message, "empty_message"},
                                   {sip2jsonErrors::unknown, "unknown"}});
 
-    class sip2json_exception : public std::runtime_error
-    {
+    class sip2json_exception : public std::runtime_error {
     public:
         sip2jsonErrors errCode = sip2jsonErrors::unknown;
 
@@ -94,8 +91,7 @@ namespace siddiqsoft
         }
     };
 
-    class missing_required_element : public sip2json_exception
-    {
+    class missing_required_element : public sip2json_exception {
     public:
         missing_required_element(const std::string& msg)
             : sip2json_exception(msg)
@@ -103,8 +99,7 @@ namespace siddiqsoft
     };
 
 
-    class incomplete_buffer_for_parse_error : public sip2json_exception
-    {
+    class incomplete_buffer_for_parse_error : public sip2json_exception {
     public:
         incomplete_buffer_for_parse_error(const std::string& msg)
             : sip2json_exception(msg)
@@ -112,8 +107,7 @@ namespace siddiqsoft
     };
 
 
-    class incomplete_buffer_for_content_error : public sip2json_exception
-    {
+    class incomplete_buffer_for_content_error : public sip2json_exception {
     public:
         incomplete_buffer_for_content_error(const std::string& msg)
             : sip2json_exception(msg)
@@ -121,8 +115,7 @@ namespace siddiqsoft
     };
 
 
-    class incomplete_buffer_for_header_error : public sip2json_exception
-    {
+    class incomplete_buffer_for_header_error : public sip2json_exception {
     public:
         incomplete_buffer_for_header_error(const std::string& msg)
             : sip2json_exception(msg)
@@ -130,8 +123,7 @@ namespace siddiqsoft
     };
 
 
-    class invalid_startline_error : public sip2json_exception
-    {
+    class invalid_startline_error : public sip2json_exception {
     public:
         invalid_startline_error(const std::string& msg)
             : sip2json_exception(msg)
@@ -139,8 +131,7 @@ namespace siddiqsoft
     };
 
 
-    class unsupported_contenttype_error : public sip2json_exception
-    {
+    class unsupported_contenttype_error : public sip2json_exception {
     public:
         unsupported_contenttype_error(const std::string& msg)
             : sip2json_exception(msg)
@@ -148,8 +139,7 @@ namespace siddiqsoft
     };
 
 
-    class invalid_document_error : public sip2json_exception
-    {
+    class invalid_document_error : public sip2json_exception {
     public:
         invalid_document_error(const std::string& msg)
             : sip2json_exception(msg)
@@ -157,8 +147,7 @@ namespace siddiqsoft
     };
 
 
-    class empty_message_error : public sip2json_exception
-    {
+    class empty_message_error : public sip2json_exception {
     public:
         empty_message_error(const std::string& msg)
             : sip2json_exception(msg)
@@ -167,12 +156,10 @@ namespace siddiqsoft
 } // namespace siddiqsoft
 
 
-template <> struct std::formatter<siddiqsoft::sip2jsonErrors> : std::formatter<std::string>
-{
+template <> struct std::formatter<siddiqsoft::sip2jsonErrors> : std::formatter<std::string> {
     auto format(siddiqsoft::sip2jsonErrors e, std::format_context& ctx) const
     {
-        switch (e)
-        {
+        switch (e) {
         case siddiqsoft::sip2jsonErrors::ok: return std::formatter<std::string>::format("ok", ctx);
         case siddiqsoft::sip2jsonErrors::incomplete_buffer_for_parse:
             return std::formatter<std::string>::format("incomplete_buffer_for_parse", ctx);

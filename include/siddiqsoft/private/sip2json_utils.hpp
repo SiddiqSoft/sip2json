@@ -1,7 +1,7 @@
 /*
     A SIP Parser for Modern C++: Utilities and Helpers
-    Version 2.5.x
-    https://github.com/siddiqsoftware/sip2json/
+    Version 3
+    https://github.com/siddiqsoft/sip2json/
 
     BSD 3-Clause License
 
@@ -45,8 +45,7 @@
 #include "sip2json_constants.hpp"
 #include "sip2json_datetime.hpp"
 
-namespace siddiqsoft
-{
+namespace siddiqsoft {
     /// @brief Creates a pseudo random number generated UUID v4. It is best to use platform-specific method to ensure guid
     /// @return string 44 character of the format: 7792eaf4-456f-4d47-d93-863af0e0-a8b99b9b9988
     static std::string createCallId()

@@ -1,6 +1,6 @@
 /*
   Edge Case Tests for sip2json
-  https://github.com/siddiqsoftware/sip2json/
+  https://github.com/siddiqsoft/sip2json/
 */
 
 #include <string>
@@ -329,8 +329,7 @@ TEST(edge_parsing, Test_parseAsync_invalid_startline_callback)
     auto _ = siddiqsoft::sip2json::parseAsync(
             buffer,
             [](auto&&) { },
-            [&](const siddiqsoft::sip2json_exception& e, std::string::iterator&, const std::string::iterator&)
-            {
+            [&](const siddiqsoft::sip2json_exception& e, std::string::iterator&, const std::string::iterator&) {
                 errorCaught = true;
                 caughtError = e.errCode;
             });

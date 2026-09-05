@@ -42,7 +42,7 @@ BraceWrapping:
 #  SplitEmptyFunction: true
 #  SplitEmptyRecord: true
 
-BreakBeforeBraces: Allman
+BreakBeforeBraces: WebKit
 BreakConstructorInitializers: BeforeComma
 BreakBeforeTernaryOperators : true
 BreakBeforeBinaryOperators : None
@@ -65,7 +65,7 @@ MaxEmptyLinesToKeep: 2
 NamespaceIndentation: All
 CompactNamespaces : false
 FixNamespaceComments : true
-Standard: Cpp11
+Standard: c++20
 TabWidth: 4
 UseTab: Never #Always
 SortIncludes: false

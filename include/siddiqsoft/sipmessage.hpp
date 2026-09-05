@@ -1,7 +1,7 @@
 /*
     A SIP Parser for Modern C++
     Version 1.15.0
-    https://github.com/siddiqsoftware/sip2json/
+    https://github.com/siddiqsoft/sip2json/
 
     BSD 3-Clause License
 
@@ -56,12 +56,10 @@
 #include "private/sip2json_header_keys.hpp"
 
 
-namespace siddiqsoft
-{
+namespace siddiqsoft {
     /// @brief Enumeration representing the type of SIP message.
     /// @details Distinguishes between SIP request messages and SIP response messages.
-    enum class SIPMessageType
-    {
+    enum class SIPMessageType {
         notspecified, ///< Message type not specified or unknown
         request  = 1, ///< SIP request message (e.g., INVITE, REGISTER, BYE)
         response = 2  ///< SIP response message (e.g., 200 OK, 404 Not Found)
@@ -80,8 +78,7 @@ namespace siddiqsoft
     /// with automatic metadata tracking, header management, and body content handling.
     /// The internal structure uses abbreviated keys: "s" for status/start line, "h" for headers,
     /// "b" for body, and "meta" for metadata.
-    class sipmessage : public nlohmann::json
-    {
+    class sipmessage : public nlohmann::json {
         static const inline std::string MetaLibName {"sip2json"};    ///< Library name for metadata
         static const inline std::string MetaSchemaVersion {"1.0.2"}; ///< Schema version for metadata
         static const inline std::string MetaParserVersion {"3.1.0"}; ///< Parser version for metadata
@@ -94,7 +91,7 @@ namespace siddiqsoft
         sipmessage()
             : nlohmann::json(nlohmann::json::value_t::object)
         {
-            auto& meta = (*this)[JSON_KEY_META];
+            auto& meta             = (*this)[JSON_KEY_META];
             meta[JSON_KEY_VERSION] = MetaVersionString;
             meta[JSON_KEY_TIME]    = TimeAsISO8601();
             meta[JSON_KEY_TTX]     = 0;
@@ -173,13 +170,8 @@ namespace siddiqsoft
                       {JSON_KEY_URI, uri},
                       {JSON_KEY_VERSION, SIPVER_20}}},
                     {JSON_KEY_BODY, nullptr},
-                    {JSON_KEY_META,
-                     {{JSON_KEY_VERSION, MetaVersionString},
-                      {JSON_KEY_TIME, TimeAsISO8601()},
-                      {JSON_KEY_TTX, 0}}},
-                    {JSON_KEY_HEADERS,
-                     {{HF_USER_AGENT, MetaUserAgentString},
-                      {HF_DATE, TimeAsRFC1123()}}}});
+                    {JSON_KEY_META, {{JSON_KEY_VERSION, MetaVersionString}, {JSON_KEY_TIME, TimeAsISO8601()}, {JSON_KEY_TTX, 0}}},
+                    {JSON_KEY_HEADERS, {{HF_USER_AGENT, MetaUserAgentString}, {HF_DATE, TimeAsRFC1123()}}}});
 
             // request-line: METHOD Request-URI SIP/2.0
             // message-headers
@@ -197,10 +189,7 @@ namespace siddiqsoft
             update(src);
 
             // Overwrite the source object's values
-            (*this)[JSON_KEY_META] = {
-                    {JSON_KEY_VERSION, MetaVersionString},
-                    {JSON_KEY_TIME, TimeAsISO8601()},
-                    {JSON_KEY_TTX, 0}};
+            (*this)[JSON_KEY_META] = {{JSON_KEY_VERSION, MetaVersionString}, {JSON_KEY_TIME, TimeAsISO8601()}, {JSON_KEY_TTX, 0}};
 
             // "status-line" (Status Reason Version)
             (*this)[JSON_KEY_STARTLINE] = {{JSON_KEY_TYPE, SIPMessageType::response},
@@ -227,13 +216,8 @@ namespace siddiqsoft
                       {JSON_KEY_REASON, getReasonPhrase(statusCode)},
                       {JSON_KEY_VERSION, SIPVER_20}}},
                     {JSON_KEY_BODY, nullptr},
-                    {JSON_KEY_META,
-                     {{JSON_KEY_VERSION, MetaVersionString},
-                      {JSON_KEY_TIME, TimeAsISO8601()},
-                      {JSON_KEY_TTX, 0}}},
-                    {JSON_KEY_HEADERS,
-                     {{HF_USER_AGENT, MetaUserAgentString},
-                      {HF_DATE, TimeAsRFC1123()}}}});
+                    {JSON_KEY_META, {{JSON_KEY_VERSION, MetaVersionString}, {JSON_KEY_TIME, TimeAsISO8601()}, {JSON_KEY_TTX, 0}}},
+                    {JSON_KEY_HEADERS, {{HF_USER_AGENT, MetaUserAgentString}, {HF_DATE, TimeAsRFC1123()}}}});
         }
 
 
@@ -302,7 +286,7 @@ namespace siddiqsoft
         std::string_view getContentTypeView() const noexcept
         {
             const auto& hdrs = headers();
-            auto it = hdrs.find(HF_CONTENT_TYPE);
+            auto        it   = hdrs.find(HF_CONTENT_TYPE);
             if (it != hdrs.end()) return (it->is_string() ? it->get_ref<const std::string&>() : std::string_view {});
             it = hdrs.find("Content-type");
             if (it != hdrs.end()) return (it->is_string() ? it->get_ref<const std::string&>() : std::string_view {});
@@ -342,8 +326,7 @@ namespace siddiqsoft
         std::string_view getMethodView() const
         {
             static const auto ptr = "/s/method"_json_pointer;
-            if (this->contains(ptr))
-            {
+            if (this->contains(ptr)) {
                 const auto& v = (*this)[ptr];
                 if (v.is_string()) return v.get_ref<const std::string&>();
             }
@@ -355,8 +338,7 @@ namespace siddiqsoft
         std::string_view getUriView() const
         {
             static const auto ptr = "/s/uri"_json_pointer;
-            if (this->contains(ptr))
-            {
+            if (this->contains(ptr)) {
                 const auto& v = (*this)[ptr];
                 if (v.is_string()) return v.get_ref<const std::string&>();
             }
@@ -368,8 +350,7 @@ namespace siddiqsoft
         std::string_view getReasonView() const
         {
             static const auto ptr = "/s/reason"_json_pointer;
-            if (this->contains(ptr))
-            {
+            if (this->contains(ptr)) {
                 const auto& v = (*this)[ptr];
                 if (v.is_string()) return v.get_ref<const std::string&>();
             }
@@ -380,8 +361,7 @@ namespace siddiqsoft
         /// @return std::string_view pointing to internal string storage.
         std::string_view getCallIDView() const
         {
-            if (headers().contains(HFS_CALLID.canonical()))
-            {
+            if (headers().contains(HFS_CALLID.canonical())) {
                 const auto& cid = headers().at(HFS_CALLID.canonical());
                 if (cid.is_string()) return cid.get_ref<const std::string&>();
             }
@@ -518,8 +498,7 @@ namespace siddiqsoft
 
 static std::ostream& operator<<(std::ostream& os, const siddiqsoft::SIPMessageType& mt)
 {
-    switch (mt)
-    {
+    switch (mt) {
     case siddiqsoft::SIPMessageType::request: os << "request"; break;
     case siddiqsoft::SIPMessageType::response: os << "response"; break;
     default: os << "unknown";
@@ -530,8 +509,7 @@ static std::ostream& operator<<(std::ostream& os, const siddiqsoft::SIPMessageTy
 
 static std::ostream& operator<<(std::ostream& os, const siddiqsoft::sip2jsonErrors& errs)
 {
-    switch (errs)
-    {
+    switch (errs) {
     case siddiqsoft::sip2jsonErrors::ok: os << "ok"; break;
     case siddiqsoft::sip2jsonErrors::incomplete_buffer_for_parse: os << "incomplete_buffer_for_parse"; break;
     case siddiqsoft::sip2jsonErrors::incomplete_buffer_for_content: os << "incomplete_buffer_for_content"; break;
@@ -550,8 +528,7 @@ static std::ostream& operator<<(std::ostream& os, const siddiqsoft::sip2jsonErro
 }
 
 
-template <> struct std::formatter<siddiqsoft::SIPMessageType> : std::formatter<std::string>
-{
+template <> struct std::formatter<siddiqsoft::SIPMessageType> : std::formatter<std::string> {
     auto format(const siddiqsoft::SIPMessageType& mt, std::format_context& ctx) const
     {
         if (mt == siddiqsoft::SIPMessageType::request)
@@ -563,8 +540,7 @@ template <> struct std::formatter<siddiqsoft::SIPMessageType> : std::formatter<s
 };
 
 
-template <> struct std::formatter<siddiqsoft::sipmessage> : std::formatter<std::string>
-{
+template <> struct std::formatter<siddiqsoft::sipmessage> : std::formatter<std::string> {
     auto format(const siddiqsoft::sipmessage& msg, std::format_context& ctx) const
     { return std::formatter<std::string>::format(msg.dump(), ctx); }
 };

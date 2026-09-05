@@ -20,8 +20,7 @@
 #include "siddiqsoft/sip2json.hpp"
 #include "gtest/gtest.h"
 
-namespace
-{
+namespace {
     // NOLINTNEXTLINE
     TEST(RuleOfFive, DefaultConstructor)
     {

@@ -1,7 +1,7 @@
 /*
     A SIP Parser for Modern C++: SDP Parsing & Serialization Helpers
-    Version 2.5.x
-    https://github.com/siddiqsoftware/sip2json/
+    Version 3
+    https://github.com/siddiqsoft/sip2json/
 
     BSD 3-Clause License
 
@@ -46,15 +46,13 @@
 #include "sip2json_utils.hpp"
 #include "../sipmessage.hpp"
 
-namespace siddiqsoft
-{
+namespace siddiqsoft {
     /// @brief Escapes key tokens for use in nlohmann::json::json_pointer per RFC 6901
     inline std::string sip2json::escapeJsonPointerToken(const std::string& token)
     {
         std::string escaped;
         escaped.reserve(token.size());
-        for (char c : token)
-        {
+        for (char c : token) {
             if (c == '~')
                 escaped += "~0";
             else if (c == '/')
@@ -90,111 +88,93 @@ namespace siddiqsoft
         int32_t         blockIndex      = -1;
         nlohmann::json* currentSdpBlock = nullptr;
 
-        while (!buffer.empty())
-        {
+        while (!buffer.empty()) {
             auto             lfPos       = buffer.find('\n');
             std::string_view line        = (lfPos != std::string_view::npos) ? buffer.substr(0, lfPos) : buffer;
             std::string_view lineContent = line;
             if (!lineContent.empty() && lineContent.back() == '\r') lineContent.remove_suffix(1);
 
-            if (lineContent.size() >= 2 && lineContent[1] == '=')
-            {
+            if (lineContent.size() >= 2 && lineContent[1] == '=') {
                 char             keyChar = lineContent[0];
                 std::string      key(1, keyChar);
                 std::string_view valueView = lineContent.substr(2);
                 std::string      value(valueView);
 
                 found = true;
-                if (keyChar == 'v')
-                {
+                if (keyChar == 'v') {
                     blockIndex++;
                     auto& sdpArray            = sipm["b"s]["sdp"s];
                     sdpArray[blockIndex][key] = 0;
                     currentSdpBlock           = &sdpArray[blockIndex];
-                }
-                else
-                {
+                } else {
                     if (blockIndex < 0 || currentSdpBlock == nullptr)
                         throw invalid_document_error {std::format("{}:SDP block must start with v=0", __func__)};
 
                     auto& sdpBlock = *currentSdpBlock;
 
-                    if (keyChar == 'a')
-                    {
+                    if (keyChar == 'a') {
                         auto colonPos = valueView.find(':');
-                        if (colonPos != std::string_view::npos)
-                        {
+                        if (colonPos != std::string_view::npos) {
                             auto akey = std::string(valueView.substr(0, colonPos));
                             auto aval = std::string(valueView.substr(colonPos + 1));
 
                             auto& aObj = sdpBlock["a"s];
-                            if (aObj.contains(akey) && !aObj[akey].is_array())
-                            {
+                            if (aObj.contains(akey) && !aObj[akey].is_array()) {
                                 auto previousValue = aObj[akey];
                                 aObj[akey]         = {previousValue, aval};
-                            }
-                            else if (aObj[akey].is_array())
+                            } else if (aObj[akey].is_array())
                                 aObj[akey].push_back(aval);
                             else if (!aval.empty())
                                 aObj[akey] = aval;
                             else
                                 aObj[akey] = nullptr;
+                        } else if (!value.empty()) {
+                            sdpBlock["a"s][value] = true;
                         }
-                        else if (!value.empty()) { sdpBlock["a"s][value] = true; }
-                    }
-                    else if (keyChar == 'c')
-                    {
+                    } else if (keyChar == 'c') {
                         // We expect the c= line to have 3 space-separated values: nettype, addrtype, and address.
                         auto s1 = valueView.find(' ');
                         auto s2 = (s1 != std::string_view::npos) ? valueView.find(' ', s1 + 1) : std::string_view::npos;
-                        if (s1 != std::string_view::npos && s2 != std::string_view::npos)
-                        {
+                        if (s1 != std::string_view::npos && s2 != std::string_view::npos) {
                             auto nettype  = valueView.substr(0, s1);
                             auto addrtype = valueView.substr(s1 + 1, s2 - (s1 + 1));
                             auto addr     = valueView.substr(s2 + 1);
                             sdpBlock[key] = nlohmann::json {
                                     {"type"s, string(nettype)}, {"subtype"s, string(addrtype)}, {"dn"s, string(addr)}};
+                        } else if (!value.empty()) {
+                            sdpBlock[key] = value;
                         }
-                        else if (!value.empty()) { sdpBlock[key] = value; }
-                    }
-                    else if (keyChar == 'o')
-                    {
+                    } else if (keyChar == 'o') {
                         // The o= line is expected to have 6 space-separated values: username, session id, session version, nettype, addrtype, and address.
                         std::string_view rem = valueView;
                         std::string_view parts[6];
                         size_t           count = 0;
-                        while (!rem.empty() && count < 6)
-                        {
+                        while (!rem.empty() && count < 6) {
                             auto sp = (count < 5) ? rem.find(' ') : std::string_view::npos;
-                            if (sp != std::string_view::npos)
-                            {
+                            if (sp != std::string_view::npos) {
                                 parts[count++] = rem.substr(0, sp);
                                 rem            = rem.substr(sp + 1);
-                            }
-                            else
-                            {
+                            } else {
                                 parts[count++] = rem;
                                 break;
                             }
                         }
-                        if (count == 6)
-                        {
+                        if (count == 6) {
+                            // Not the most efficient way to do this, but it is clear and readable.
                             sdpBlock[key] = nlohmann::json {{"user"s, string(parts[0])},
                                                             {"t1"s, string(parts[1])},
                                                             {"t2"s, string(parts[2])},
                                                             {"type"s, string(parts[3])},
                                                             {"subtype"s, string(parts[4])},
                                                             {"host"s, string(parts[5])}};
+                        } else if (!value.empty()) {
+                            sdpBlock[key] = value;
                         }
-                        else if (!value.empty()) { sdpBlock[key] = value; }
-                    }
-                    else if (keyChar == 'i')
-                    {
+                    } else if (keyChar == 'i') {
                         // The i= line is expected to have the format: "name" (dn) type
                         auto p1 = valueView.find(" (");
                         auto p2 = (p1 != std::string_view::npos) ? valueView.find(") ", p1 + 2) : std::string_view::npos;
-                        if (p1 != std::string_view::npos && p2 != std::string_view::npos)
-                        {
+                        if (p1 != std::string_view::npos && p2 != std::string_view::npos) {
                             auto iName = string(valueView.substr(0, p1));
                             if (iName.starts_with("\""s) && iName.ends_with("\""s) && iName.length() >= 2)
                                 iName = iName.substr(1, iName.length() - 2);
@@ -202,15 +182,12 @@ namespace siddiqsoft
                             sdpBlock[key] = nlohmann::json {{"name"s, iName},
                                                             {"dn"s, string(valueView.substr(p1 + 2, p2 - (p1 + 2)))},
                                                             {"type"s, string(valueView.substr(p2 + 2))}};
-                        }
-                        else if (!value.empty()) { sdpBlock[key] = value; }
-                        else
-                        {
+                        } else if (!value.empty()) {
+                            sdpBlock[key] = value;
+                        } else {
                             sdpBlock[key] = "";
                         }
-                    }
-                    else if (keyChar == 't')
-                    {
+                    } else if (keyChar == 't') {
                         uint32_t ts = 0, te = 0;
                         int      parsed = 0;
 #if defined(_WIN32) || defined(_WIN64) || defined(WINDOWS) || defined(WIN32)
@@ -218,37 +195,31 @@ namespace siddiqsoft
 #else
                         parsed = std::sscanf(value.c_str(), "%u %u", &ts, &te);
 #endif
-                        if (parsed == 2)
-                        {
+                        if (parsed == 2) {
                             sdpBlock[key].push_back(ts);
                             sdpBlock[key].push_back(te);
-                        }
-                        else if (parsed > 0)
-                        {
+                        } else if (parsed > 0) {
                             throw invalid_document_error {
                                     std::format("{}:Timing element must have exactly 2 values, got {}", __func__, parsed)};
                         }
+                    } else if (!key.empty() && value.empty()) {
+                        sdpBlock[key] = "";
+                    } else if (!key.empty()) {
+                        sdpBlock[key] = value;
                     }
-                    else if (!key.empty() && value.empty()) { sdpBlock[key] = ""; }
-                    else if (!key.empty()) { sdpBlock[key] = value; }
                 }
 
                 if (lfPos != std::string_view::npos)
                     buffer.remove_prefix(lfPos + 1);
                 else
                     buffer = {};
-            }
-            else
-            {
+            } else {
                 // Skip noise until next SDP element (a valid SDP key followed by '=')
                 static constexpr std::string_view validSdpKeys = "vosiuepcbtzkma";
                 size_t                            nextPos      = std::string_view::npos;
-                for (size_t i = 0; i + 1 < buffer.size(); ++i)
-                {
-                    if (buffer[i + 1] == '=' && validSdpKeys.find(buffer[i]) != std::string_view::npos)
-                    {
-                        if (i == 0 || buffer[i - 1] == '\n')
-                        {
+                for (size_t i = 0; i + 1 < buffer.size(); ++i) {
+                    if (buffer[i + 1] == '=' && validSdpKeys.find(buffer[i]) != std::string_view::npos) {
+                        if (i == 0 || buffer[i - 1] == '\n') {
                             nextPos = i;
                             break;
                         }
@@ -289,21 +260,15 @@ namespace siddiqsoft
             throw missing_required_element {std::format("{}:Required Element {} not present.", __func__, element)};
 
         // If we donot have it then just return..
-        if (sdpBlock.contains(element))
-        {
+        if (sdpBlock.contains(element)) {
             // Continue to build
-            if (auto item = sdpBlock.at(element); item.is_object())
-            {
-                if (element == "a"s)
-                {
+            if (auto item = sdpBlock.at(element); item.is_object()) {
+                if (element == "a"s) {
                     std::string ret {};
 
-                    for (auto& [kv, v] : item.items())
-                    {
-                        if (v.is_array())
-                        {
-                            for (auto& i : v.items())
-                            {
+                    for (auto& [kv, v] : item.items()) {
+                        if (v.is_array()) {
+                            for (auto& i : v.items()) {
                                 auto& vi = i.value();
                                 if (vi.is_string())
                                     std::format_to(std::back_inserter(ret), "a={}:{}\r\n", kv, vi.get<std::string>());
@@ -318,8 +283,7 @@ namespace siddiqsoft
                                 else
                                     std::format_to(std::back_inserter(ret), "a={}\r\n", kv);
                             }
-                        }
-                        else if (v.is_string())
+                        } else if (v.is_string())
                             std::format_to(std::back_inserter(ret), "a={}:{}\r\n", kv, v.get<std::string>());
                         else if (v.is_number() || v.is_number_integer())
                             std::format_to(std::back_inserter(ret), "a={}:{}\r\n", kv, v.get<int64_t>());
@@ -335,8 +299,7 @@ namespace siddiqsoft
 
                     return ret;
                 }
-                if (element == "o"s)
-                {
+                if (element == "o"s) {
                     return std::format("{} {} {} {} {} {}",
                                        item.value("user"s, ""s),
                                        item.value("t1"s, ""s),
@@ -345,28 +308,21 @@ namespace siddiqsoft
                                        item.value("subtype"s, ""s),
                                        item.value("host"s, ""s));
                 }
-                if (element == "i"s)
-                {
+                if (element == "i"s) {
                     return std::format("\"{}\" ({}) {}", item.value("name"s, ""), item.value("dn"s, ""), item.value("type"s, ""));
                 }
-                if (element == "c"s)
-                {
+                if (element == "c"s) {
                     return std::format("{} {} {}", item.value("type"s, ""), item.value("subtype"s, ""), item.value("dn"s, ""));
                 }
-            }
-            else if (item.is_array())
-            {
-                if (element == "t"s)
-                {
+            } else if (item.is_array()) {
+                if (element == "t"s) {
                     // FIX: Add bounds check before accessing array elements
                     if (item.size() < 2)
                         throw missing_required_element {
                                 std::format("{}:Timing element must have 2 values, got {}", __func__, item.size())};
                     return std::format("{} {}", item[0].get<uint32_t>(), item[1].get<uint32_t>());
                 }
-            }
-            else if (item.is_string())
-            {
+            } else if (item.is_string()) {
                 // In case the parse wasn't able to split properly, it will store it as a string value.
                 // Serialize the as-is case.
                 return item.get<std::string>();
@@ -399,16 +355,12 @@ namespace siddiqsoft
         // ..skip them if they are empty.
         // The only required elements are v=, o=, s=, t=, m=
         // NOTE: we extract the contentType value during the header serialization.
-        if (contentType == CONTENT_TYPE_APP_SDP)
-        {
-            if (sipm.contains(JSON_KEY_BODY) && !sipm.body().is_null())
-            {
-                if (sipm.contains("/b/sdp"_json_pointer))
-                {
+        if (contentType == CONTENT_TYPE_APP_SDP) {
+            if (sipm.contains(JSON_KEY_BODY) && !sipm.body().is_null()) {
+                if (sipm.contains("/b/sdp"_json_pointer)) {
                     // the sdp is stored as an array of objects
                     auto sdp = sipm.at("/b/sdp"_json_pointer);
-                    for (auto& block : sdp)
-                    {
+                    for (auto& block : sdp) {
                         // Build each block; order is critical.
                         // We do not support session-level attributes (only media-level attributes)
                         std::format_to(std::back_inserter(buffer),
@@ -440,20 +392,15 @@ namespace siddiqsoft
                         // Media a-lines
                         buffer += serializeSDPelement(block, "a"s);
                     }
-                }
-                else
-                {
+                } else {
                     throw invalid_document_error {std::format("{}:sipm `b`ody does not have sdp element.", __func__)};
                 }
-            }
-            else
-            {
+            } else {
                 // This should not be an error; there are live SIP messages where the client sets the Content-Type
                 // but also sets the Content-Length to `0` so we should avoid encoding anything.
             }
-        }
-        else if ((contentType.compare(CONTENT_TYPE_TEXT_PLAIN) == 0) && (sipm.contains(JSON_KEY_BODY) && sipm.body().is_string()))
-        {
+        } else if ((contentType.compare(CONTENT_TYPE_TEXT_PLAIN) == 0) &&
+                   (sipm.contains(JSON_KEY_BODY) && sipm.body().is_string())) {
             buffer += sipm.body();
         }
 

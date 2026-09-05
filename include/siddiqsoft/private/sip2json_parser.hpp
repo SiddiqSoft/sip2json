@@ -1,7 +1,7 @@
 /*
     A SIP Parser for Modern C++: SIP Message Parser Implementation
-    Version 2.5.x
-    https://github.com/siddiqsoftware/sip2json/
+    Version 3
+    https://github.com/siddiqsoft/sip2json/
 
     BSD 3-Clause License
 
@@ -50,19 +50,16 @@
 #include "sip2json_utils.hpp"
 #include "../sipmessage.hpp"
 
-namespace siddiqsoft
-{
+namespace siddiqsoft {
     /// @brief Parse the start line from buffer view
     /// @param sipm Destination sipmessage
     /// @param buffer Buffer view (advanced past start line on return)
     /// @return true if valid start line decoded
     inline bool sip2json::parseStartLine(sipmessage& sipm, std::string_view& buffer) noexcept(false)
     {
-        while (!buffer.empty())
-        {
+        while (!buffer.empty()) {
             // Skip leading empty lines (RFC 3261 §7.5 allows CRLF between messages)
-            while (!buffer.empty() && (buffer.front() == '\r' || buffer.front() == '\n'))
-            {
+            while (!buffer.empty() && (buffer.front() == '\r' || buffer.front() == '\n')) {
                 buffer.remove_prefix(1);
             }
 
@@ -77,8 +74,7 @@ namespace siddiqsoft
             if (!line.empty() && line.back() == '\r') line.remove_suffix(1);
 
             // 1. Response check: starts with "SIP/2.0 " or "SIP/2.0\t"
-            if (line.starts_with("SIP/2.0 ") || line.starts_with("SIP/2.0\t"))
-            {
+            if (line.starts_with("SIP/2.0 ") || line.starts_with("SIP/2.0\t")) {
                 auto rem = line.substr(7); // Skip over "SIP/2.0"
                 while (!rem.empty() && (rem.front() == ' ' || rem.front() == '\t'))
                     rem.remove_prefix(1);
@@ -87,8 +83,7 @@ namespace siddiqsoft
                 // SIP resonse always start with a number.
                 uint32_t statusCode = 0;
                 auto [ptr, ec]      = std::from_chars(rem.data(), rem.data() + rem.size(), statusCode);
-                if (ec == std::errc() && ptr != rem.data())
-                {
+                if (ec == std::errc() && ptr != rem.data()) {
                     // Get the reason..
                     std::string_view reason(ptr, static_cast<size_t>((rem.data() + rem.size()) - ptr));
                     while (!reason.empty() && (reason.front() == ' ' || reason.front() == '\t'))
@@ -106,9 +101,7 @@ namespace siddiqsoft
                         buffer.remove_prefix(1);
                     return true;
                 }
-            }
-            else if (line.starts_with("SIP/"))
-            {
+            } else if (line.starts_with("SIP/")) {
                 // We have a SIP message/request.. make sure we have a valid SIP/2.0 and throw otherwise.
                 auto             sp  = line.find_first_of(" \t");
                 std::string_view ver = (sp != std::string_view::npos) ? line.substr(0, sp) : line;
@@ -118,15 +111,13 @@ namespace siddiqsoft
 
             // 2. Request check: split line into 3 tokens: <Method> <URI> <Version>
             auto sp1 = line.find_first_of(" \t"); // fold on space or tab
-            if (sp1 != std::string_view::npos)
-            {
+            if (sp1 != std::string_view::npos) {
                 std::string_view method = line.substr(0, sp1);
                 while (!method.empty() && (method.front() == ' ' || method.front() == '\t'))
                     method.remove_prefix(1);
 
                 auto sp2 = line.find_last_of(" \t");
-                if (sp2 != std::string_view::npos && sp1 < sp2)
-                {
+                if (sp2 != std::string_view::npos && sp1 < sp2) {
                     std::string_view uri = line.substr(sp1 + 1, sp2 - (sp1 + 1));
                     while (!uri.empty() && (uri.front() == ' ' || uri.front() == '\t'))
                         uri.remove_prefix(1);
@@ -138,17 +129,14 @@ namespace siddiqsoft
                         version.remove_prefix(1);
 
                     bool isMethodValid = false;
-                    for (const auto& vm : SIP_VALID_METHODS)
-                    {
-                        if (method == vm)
-                        {
+                    for (const auto& vm : SIP_VALID_METHODS) {
+                        if (method == vm) {
                             isMethodValid = true;
                             break;
                         }
                     }
 
-                    if (isMethodValid && version == SIPVER_20)
-                    {
+                    if (isMethodValid && version == SIPVER_20) {
                         auto& sl             = sipm[JSON_KEY_STARTLINE];
                         sl[JSON_KEY_TYPE]    = SIPMessageType::request;
                         sl[JSON_KEY_METHOD]  = std::string(method);
@@ -160,9 +148,7 @@ namespace siddiqsoft
                         while (!buffer.empty() && (buffer.front() == '\r' || buffer.front() == '\n'))
                             buffer.remove_prefix(1);
                         return true;
-                    }
-                    else if (version.starts_with("SIP/"))
-                    {
+                    } else if (version.starts_with("SIP/")) {
                         throw invalid_startline_error {
                                 std::format("{}:Unsupported SIP version in startline: '{}'", __func__, std::string(version))};
                     }
@@ -198,18 +184,14 @@ namespace siddiqsoft
     inline void storeMultiLineHeader(nlohmann::json& headersJson, const std::string& targetKey, std::string value)
     {
         auto it = headersJson.find(targetKey);
-        if (it != headersJson.end())
-        {
+        if (it != headersJson.end()) {
             if (it->is_array())
                 it->push_back(std::move(value));
-            else
-            {
+            else {
                 auto existing = *it;
                 *it           = nlohmann::json::array({existing, std::move(value)});
             }
-        }
-        else
-        {
+        } else {
             headersJson.emplace(targetKey, nlohmann::json::array({std::move(value)}));
         }
     }
@@ -265,24 +247,22 @@ namespace siddiqsoft
         const HeaderKeySet& keySet      = canonicalizeHeaderKey(key);
         const std::string&  keyStr      = keySet.canonical();
 
-        if (keySet.isMultiLine) { storeMultiLineHeader(headersJson, keyStr, std::string(value)); }
-        else if (&keySet == &HFS_CONTENT_LENGTH) { headersJson[keyStr] = parseContentLengthValue(value); }
-        else if (&keySet == &HFS_EXPIRES) { headersJson[keyStr] = parseExpiresValue(value); }
-        else
-        {
+        if (keySet.isMultiLine) {
+            storeMultiLineHeader(headersJson, keyStr, std::string(value));
+        } else if (&keySet == &HFS_CONTENT_LENGTH) {
+            headersJson[keyStr] = parseContentLengthValue(value);
+        } else if (&keySet == &HFS_EXPIRES) {
+            headersJson[keyStr] = parseExpiresValue(value);
+        } else {
             auto it = headersJson.find(keyStr);
-            if (it != headersJson.end())
-            {
+            if (it != headersJson.end()) {
                 if (it->is_array())
                     it->push_back(std::string(value));
-                else
-                {
+                else {
                     auto existing = *it;
                     *it           = nlohmann::json::array({existing, std::string(value)});
                 }
-            }
-            else
-            {
+            } else {
                 headersJson.emplace(keyStr, std::string(value));
             }
         }
@@ -301,8 +281,7 @@ namespace siddiqsoft
     {
         auto   delimPos            = buffer.find("\r\n\r\n");
         size_t headerDelimiterSize = 4;
-        if (delimPos == std::string_view::npos)
-        {
+        if (delimPos == std::string_view::npos) {
             delimPos            = buffer.find("\n\n");
             headerDelimiterSize = 2;
         }
@@ -314,8 +293,7 @@ namespace siddiqsoft
         buffer.remove_prefix(delimPos + headerDelimiterSize);
 
         bool found = false;
-        while (!headerSection.empty())
-        {
+        while (!headerSection.empty()) {
             auto colonPos = headerSection.find(':');
             if (colonPos == std::string_view::npos) break;
 
@@ -328,49 +306,36 @@ namespace siddiqsoft
 
             std::string foldedValue;
             bool        headerDone = false;
-            while (!headerDone)
-            {
+            while (!headerDone) {
                 auto lfPos = headerSection.find('\n');
-                if (lfPos != std::string_view::npos)
-                {
+                if (lfPos != std::string_view::npos) {
                     std::string_view lineVal = headerSection.substr(0, lfPos);
                     if (!lineVal.empty() && lineVal.back() == '\r') lineVal.remove_suffix(1);
 
                     headerSection.remove_prefix(lfPos + 1);
 
-                    if (!headerSection.empty() && (headerSection.front() == ' ' || headerSection.front() == '\t'))
-                    {
+                    if (!headerSection.empty() && (headerSection.front() == ' ' || headerSection.front() == '\t')) {
                         foldedValue.append(lineVal);
                         while (!headerSection.empty() && (headerSection.front() == ' ' || headerSection.front() == '\t'))
                             headerSection.remove_prefix(1);
-                    }
-                    else
-                    {
-                        if (!foldedValue.empty())
-                        {
+                    } else {
+                        if (!foldedValue.empty()) {
                             foldedValue.append(lineVal);
                             found = storeHeaderValue(sipm, keyView, foldedValue);
-                        }
-                        else
-                        {
+                        } else {
                             found = storeHeaderValue(sipm, keyView, lineVal);
                         }
                         headerDone = true;
                     }
-                }
-                else
-                {
+                } else {
                     std::string_view lineVal = headerSection;
                     if (!lineVal.empty() && lineVal.back() == '\r') lineVal.remove_suffix(1);
                     headerSection = {};
 
-                    if (!foldedValue.empty())
-                    {
+                    if (!foldedValue.empty()) {
                         foldedValue.append(lineVal);
                         found = storeHeaderValue(sipm, keyView, foldedValue);
-                    }
-                    else
-                    {
+                    } else {
                         found = storeHeaderValue(sipm, keyView, lineVal);
                     }
                     headerDone = true;
@@ -408,34 +373,23 @@ namespace siddiqsoft
         size_t initialSize = frameBuffer.size();
         size_t decodedMessageCount {0};
 
-        while (!frameBuffer.empty())
-        {
-            try
-            {
-                if (auto&& sipm {parseFromBuffer(frameBuffer)}; !sipm.empty())
-                {
+        while (!frameBuffer.empty()) {
+            try {
+                if (auto&& sipm {parseFromBuffer(frameBuffer)}; !sipm.empty()) {
                     decodedMessageCount++;
                     sipm["meta"]["parseCountThisBuffer"] = decodedMessageCount;
                     if (parseCallback) parseCallback(std::move(sipm));
-                }
-                else
-                {
+                } else {
                     break;
                 }
-            }
-            catch (const sip2json_exception& e)
-            {
+            } catch (const sip2json_exception& e) {
                 if (errorCallback.has_value()) errorCallback.value()(e, frameBuffer);
                 break;
-            }
-            catch (const std::exception& e)
-            {
+            } catch (const std::exception& e) {
                 sip2json_exception ex(e);
                 if (errorCallback.has_value()) errorCallback.value()(ex, frameBuffer);
                 break;
-            }
-            catch (...)
-            {
+            } catch (...) {
                 sip2json_exception ex("Unknown generic error");
                 if (errorCallback.has_value()) errorCallback.value()(ex, frameBuffer);
                 break;
@@ -461,8 +415,7 @@ namespace siddiqsoft
                                      std::move(parseCallback),
                                      errorCallback.has_value()
                                              ? std::optional<std::function<void(const sip2json_exception&, std::string_view)>>(
-                                                       [&](const sip2json_exception& ex, std::string_view rem)
-                                                       {
+                                                       [&](const sip2json_exception& ex, std::string_view rem) {
                                                            auto curStart = frameBuffer.begin() + (frameBuffer.size() - rem.size());
                                                            errorCallback.value()(ex, curStart, frameBuffer.end());
                                                        })
@@ -478,26 +431,20 @@ namespace siddiqsoft
     inline std::vector<sipmessage> sip2json::parse(std::string_view& buffer) noexcept(false)
     {
         std::vector<sipmessage> msgs;
-        if (!buffer.empty())
-        {
+        if (!buffer.empty()) {
             size_t estCount = std::max<size_t>(1, buffer.size() / 1024);
             msgs.reserve(std::min<size_t>(estCount, 64));
         }
         size_t decodedMessageCount {0};
 
-        while (!buffer.empty())
-        {
-            try
-            {
-                if (auto&& sipm {parseFromBuffer(buffer)}; !sipm.empty())
-                {
+        while (!buffer.empty()) {
+            try {
+                if (auto&& sipm {parseFromBuffer(buffer)}; !sipm.empty()) {
                     decodedMessageCount++;
                     sipm["meta"]["parseCountThisBuffer"] = decodedMessageCount;
                     msgs.emplace_back(std::move(sipm));
                 }
-            }
-            catch (std::exception& ex)
-            {
+            } catch (std::exception& ex) {
                 if (msgs.empty()) throw std::invalid_argument("Nothing was parsed.");
                 break;
             }
@@ -528,28 +475,18 @@ namespace siddiqsoft
         auto       initialBuffer = buffer;
         sipmessage sipm;
 
-        if (!buffer.empty())
-        {
-            if (buffer.size() > SIP_SAMPLE_MINIMAL_MESSAGE.length())
-            {
-                try
-                {
-                    if (auto foundRequest = parseStartLine(sipm, buffer); foundRequest)
-                    {
-                        if (auto foundHeaders = parseHeaders(sipm, buffer); foundHeaders)
-                        {
-                            if (sipm.getContentTypeView() == CONTENT_TYPE_APP_SDP)
-                            {
-                                if (sipm.getContentLength() > 0)
-                                {
-                                    if (buffer.size() >= sipm.getContentLength())
-                                    {
+        if (!buffer.empty()) {
+            if (buffer.size() > SIP_SAMPLE_MINIMAL_MESSAGE.length()) {
+                try {
+                    if (auto foundRequest = parseStartLine(sipm, buffer); foundRequest) {
+                        if (auto foundHeaders = parseHeaders(sipm, buffer); foundHeaders) {
+                            if (sipm.getContentTypeView() == CONTENT_TYPE_APP_SDP) {
+                                if (sipm.getContentLength() > 0) {
+                                    if (buffer.size() >= sipm.getContentLength()) {
                                         std::string_view sdpBuffer = buffer.substr(0, sipm.getContentLength());
                                         buffer.remove_prefix(sipm.getContentLength());
                                         parseBodySDP(sipm, sdpBuffer);
-                                    }
-                                    else
-                                    {
+                                    } else {
                                         size_t avail = buffer.size();
                                         buffer       = initialBuffer;
                                         throw incomplete_buffer_for_content_error {
@@ -559,24 +496,18 @@ namespace siddiqsoft
                                                             sipm.getContentLength())};
                                     }
                                 }
-                            }
-                            else if (!sipm.getContentTypeView().empty())
-                            {
+                            } else if (!sipm.getContentTypeView().empty()) {
                                 buffer = initialBuffer;
                                 throw unsupported_contenttype_error {
                                         std::format("{}:Content-Type {} not supported", __func__, sipm.getContentType())};
                             }
                         }
                     }
-                }
-                catch (...)
-                {
+                } catch (...) {
                     buffer = initialBuffer;
                     throw;
                 }
-            }
-            else
-            {
+            } else {
                 buffer = initialBuffer;
                 throw incomplete_buffer_for_parse_error {std::format("{}:Incomplete Buffer for parse to continue.", __func__)};
             }

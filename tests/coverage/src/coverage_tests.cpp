@@ -1,6 +1,6 @@
 /*
   Additional Coverage Tests for sip2json
-  https://github.com/siddiqsoftware/sip2json/
+  https://github.com/siddiqsoft/sip2json/
 */
 
 #include <string>
@@ -287,12 +287,10 @@ TEST(coverage_parsing, Test_parseAsync_multiple_messages)
     int                      parseCount = 0;
     std::vector<std::string> methods;
 
-    auto remaining = siddiqsoft::sip2json::parseAsync(buffer,
-                                                      [&](auto&& sipm)
-                                                      {
-                                                          parseCount++;
-                                                          methods.push_back(sipm.getMethod());
-                                                      });
+    auto remaining = siddiqsoft::sip2json::parseAsync(buffer, [&](auto&& sipm) {
+        parseCount++;
+        methods.push_back(sipm.getMethod());
+    });
 
     EXPECT_EQ(2, parseCount);
     EXPECT_EQ(0, remaining.length());
@@ -404,8 +402,7 @@ TEST(coverage_parsing, Test_all_supported_methods)
                                         "UPDATE",
                                         "PRACK"};
 
-    for (const auto& method : methods)
-    {
+    for (const auto& method : methods) {
         std::string buffer = std::format("{} sip:test@test.com SIP/2.0\r\n"
                                          "Via: SIP/2.0/TCP client.com:5060;branch=z9hG4bK776asdhds\r\n"
                                          "To: sip:test@test.com\r\n"
@@ -436,8 +433,7 @@ TEST(coverage_parsing, Test_custom_method_tokens_rejected)
 {
     std::vector<std::string> customTokens = {"CUSTOMMETHOD", "FOOBAR", "BENCHMARK", "HEARTBEAT", "GET", "POST", "UNKNOWN"};
 
-    for (const auto& customMethod : customTokens)
-    {
+    for (const auto& customMethod : customTokens) {
         std::string buffer = std::format("{} sip:test@test.com SIP/2.0\r\n"
                                          "Via: SIP/2.0/TCP client.com:5060;branch=z9hG4bK776asdhds\r\n"
                                          "To: sip:test@test.com\r\n"
@@ -461,8 +457,7 @@ TEST(coverage_serialization, Test_custom_method_tokens_serialize_rejected)
 {
     std::vector<std::string> customTokens = {"CUSTOMMETHOD", "FOOBAR", "BENCHMARK", "HEARTBEAT", "GET", "POST", "UNKNOWN"};
 
-    for (const auto& customMethod : customTokens)
-    {
+    for (const auto& customMethod : customTokens) {
         siddiqsoft::sipmessage sipm(customMethod, "sip:user@example.com", "call-id-custom", 1);
         EXPECT_THROW(siddiqsoft::sip2json::serialize(sipm), siddiqsoft::invalid_document_error)
                 << "Expected custom method to be rejected in serialization: " << customMethod;
@@ -538,8 +533,7 @@ TEST(coverage_errors, Test_parseAsync_unsupported_contenttype_callback)
     auto _ = siddiqsoft::sip2json::parseAsync(
             buffer,
             [](auto&&) { },
-            [&](const siddiqsoft::sip2json_exception& e, std::string::iterator&, const std::string::iterator&)
-            {
+            [&](const siddiqsoft::sip2json_exception& e, std::string::iterator&, const std::string::iterator&) {
                 errorCaught = true;
                 caughtError = e.errCode;
             });
@@ -566,8 +560,7 @@ TEST(coverage_errors, Test_parseAsync_incomplete_content_callback)
     auto _ = siddiqsoft::sip2json::parseAsync(
             buffer,
             [](auto&&) { },
-            [&](const siddiqsoft::sip2json_exception& e, std::string::iterator&, const std::string::iterator&)
-            {
+            [&](const siddiqsoft::sip2json_exception& e, std::string::iterator&, const std::string::iterator&) {
                 errorCaught = true;
                 caughtError = e.errCode;
             });
@@ -806,8 +799,7 @@ TEST(coverage_serialize, Test_serialize_all_methods)
                                         "MESSAGE",
                                         "INFO"};
 
-    for (const auto& method : methods)
-    {
+    for (const auto& method : methods) {
         siddiqsoft::sipmessage sipm(method, "sip:test@test.com", siddiqsoft::createCallId(), 1);
         sipm.setHeader(siddiqsoft::HF_TO, "sip:test@test.com");
         sipm.setHeader(siddiqsoft::HF_FROM, "sip:sender@sender.com");
@@ -852,8 +844,7 @@ TEST(coverage_utils, Test_createCallId_uniqueness)
     std::set<std::string> callIds;
     const int             numIds = 100;
 
-    for (int i = 0; i < numIds; i++)
-    {
+    for (int i = 0; i < numIds; i++) {
         auto id = siddiqsoft::createCallId();
         EXPECT_EQ(44, id.length());
         callIds.insert(id);

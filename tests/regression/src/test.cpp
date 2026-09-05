@@ -1,6 +1,6 @@
 /*
-  A SIP Parser for Modern C++ / Version 2.5.x
-  https://github.com/siddiqsoftware/sip2json/
+  A SIP Parser for Modern C++ / Version 3
+  https://github.com/siddiqsoft/sip2json/
   Copyright 2003-2020 Abdelkareem Siddiq.
   All rights reserved.
 */
@@ -42,15 +42,12 @@ TEST(core_parser_tests, Test_UserAgent)
     auto                   ua = __func__; //NOLINT
     siddiqsoft::sipmessage sipm(METHOD_REGISTER, "sip:hello@world.com");
 
-    try
-    {
+    try {
         sipm.setUserAgent(ua);
         std::cerr << sip2json::serialize(sipm);
         EXPECT_TRUE(sipm.getUserAgent().find(ua) != std::string::npos);
         EXPECT_TRUE(sipm.getUserAgent().find("sip2json") != std::string::npos);
-    }
-    catch (const std::exception& e)
-    {
+    } catch (const std::exception& e) {
         EXPECT_TRUE(true) << L"Got exception. " << e.what();
     }
 }
@@ -60,13 +57,10 @@ TEST(core_parser_tests, Test_meta_element)
 {
     siddiqsoft::sipmessage sipm(siddiqsoft::METHOD_REGISTER, "sip:hello@world.com");
 
-    try
-    {
+    try {
         std::clog << siddiqsoft::sip2json::serialize(sipm);
         EXPECT_TRUE(sipm.contains("meta"));
-    }
-    catch (const std::exception& e)
-    {
+    } catch (const std::exception& e) {
         EXPECT_TRUE(true) << L"Got exception. " << e.what();
     }
 }
@@ -334,16 +328,16 @@ TEST(Issue32_HeaderRefactoring, PrivateSDPAndAsyncParserExecution)
     std::string buffer      = sipWithSDP;
     auto        _           = sip2json::parseAsync(
             buffer,
-            [&parsedCount](sipmessage&& msg)
-            {
+            [&parsedCount](sipmessage&& msg) {
                 parsedCount++;
                 EXPECT_EQ(siddiqsoft::METHOD_INVITE, msg.getMethod());
                 EXPECT_EQ("a84b4c76e66710@pc33.atlanta.com", msg.getCallID());
                 EXPECT_TRUE(msg.contains("b"));
                 EXPECT_TRUE(msg.contains("/b/sdp"_json_pointer));
             },
-            [](const sip2json_exception& ex, std::string::iterator&, const std::string::iterator&)
-            { FAIL() << "Unexpected parse exception: " << ex.what(); });
+            [](const sip2json_exception& ex, std::string::iterator&, const std::string::iterator&) {
+                FAIL() << "Unexpected parse exception: " << ex.what();
+            });
 
     EXPECT_EQ(1u, parsedCount);
     EXPECT_TRUE(buffer.empty()); // Check that consumed bytes were erased

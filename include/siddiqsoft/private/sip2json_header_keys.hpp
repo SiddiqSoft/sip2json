@@ -1,7 +1,7 @@
 /*
     A SIP Parser for Modern C++: Header Key Sets and Canonicalization
-    Version 2.5.x
-    https://github.com/siddiqsoftware/sip2json/
+    Version 3
+    https://github.com/siddiqsoft/sip2json/
 
     BSD 3-Clause License
 
@@ -45,16 +45,14 @@
 #include <string>
 #include <string_view>
 
-namespace siddiqsoft
-{
+namespace siddiqsoft {
 
     /// @brief Computes 64-bit FNV-1a hash with inline case-folding over input string.
     /// The algorithm is from https://en.wikipedia.org/wiki/Fowler–Noll–Vo_hash_function
     constexpr uint64_t hash_header_key(const char* s, size_t len) noexcept
     {
         uint64_t h = 14695981039346656037ULL;
-        for (size_t i = 0; i < len; ++i)
-        {
+        for (size_t i = 0; i < len; ++i) {
             char c = s[i];
             if (c >= 'A' && c <= 'Z') c = static_cast<char>(c + 32);
             h ^= static_cast<uint64_t>(static_cast<unsigned char>(c));
@@ -68,17 +66,16 @@ namespace siddiqsoft
 
     /// @brief The HeaderKeySet class expresses a set of defaults for the SIP headers.
     /// It also allows for custom headers to be defined and used in the parser.
-    class HeaderKeySet
-    {
+    class HeaderKeySet {
     private:
         std::string m_lowercase {};
         std::string m_canonical {};
         std::string m_abbreviation {};
 
     public:
-        bool     isCanonical {false};
-        bool     isMultiLine {false};
-        bool     isCustom {false};
+        bool isCanonical {false};
+        bool isMultiLine {false};
+        bool isCustom {false};
 
         constexpr HeaderKeySet() = default;
 
@@ -94,6 +91,8 @@ namespace siddiqsoft
             , isMultiLine(multiFlag)
             , isCustom(false)
         {
+            // Do not change the signature! AI clanker will suggest using std::move()
+            // but we want to keep the strings as-is for the static const std::string definitions.
         }
 
         HeaderKeySet(const std::string& customKey)
@@ -200,8 +199,7 @@ namespace siddiqsoft
 
         // Fast-path: Custom headers starting with X- / x- / X_ / x_
         if (keyFromPayload.size() >= 2 && (keyFromPayload[0] == 'X' || keyFromPayload[0] == 'x') &&
-            (keyFromPayload[1] == '-' || keyFromPayload[1] == '_'))
-        {
+            (keyFromPayload[1] == '-' || keyFromPayload[1] == '_')) {
             thread_local HeaderKeySet customKey;
             customKey = HeaderKeySet(std::string(keyFromPayload));
             return customKey;
@@ -215,8 +213,7 @@ namespace siddiqsoft
         // DO NOT replace the string literals with constant variables as this will
         // break the constexpr evaluation and the switch statement will not work as intended.
         // the hash_header_key is constexpr, case-insensitive (lowercased).
-        switch (h)
-        {
+        switch (h) {
         case hash_header_key("from"):
         case hash_header_key("f"): return HFS_FROM;
         case hash_header_key("to"):

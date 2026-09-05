@@ -1,6 +1,6 @@
 /*
-  A SIP Parser for Modern C++ / Version 2.5.x
-  https://github.com/siddiqsoftware/sip2json/
+  A SIP Parser for Modern C++ / Version 3
+  https://github.com/siddiqsoft/sip2json/
   Copyright 2003-2020 Abdelkareem Siddiq.
   All rights reserved.
 */
@@ -52,10 +52,7 @@ TEST(synthetics, Check_async_invalid_startline_CRLF)
     auto bs       = buffer.begin();
 
     auto remainingBuffer = siddiqsoft::sip2json::parseAsync(
-            buffer,
-            {},
-            [&](const siddiqsoft::sip2json_exception& e, std::string::iterator&, const std::string::iterator&)
-            {
+            buffer, {}, [&](const siddiqsoft::sip2json_exception& e, std::string::iterator&, const std::string::iterator&) {
                 std::cerr << "errCode: " << e.errCode << " what: " << e.what() << std::endl;
                 EXPECT_TRUE(e.errCode == siddiqsoft::sip2jsonErrors::invalid_startline);
                 passTest = true;
@@ -91,8 +88,7 @@ TEST(synthetics, Check_header_array_CRLF)
         std::cerr << "Log the parseFromBuffer output: " << sipm.dump(1) << std::endl;
         EXPECT_TRUE(via.is_array()) << via.dump(1);
 
-        if (via.is_string())
-        {
+        if (via.is_string()) {
             // swap out an push to array
             auto previous = via.get<std::string>();
             sipm["h"].erase("Via");
@@ -101,9 +97,7 @@ TEST(synthetics, Check_header_array_CRLF)
             EXPECT_EQ(sipm["h"]["Via"].get<std::vector<std::string>>().size(), 4) << sipm["h"]["Via"].dump();
             auto elemJustAdded = sipm["h"]["Via"].get<std::vector<std::string>>()[1];
             EXPECT_TRUE(elemJustAdded.find("x@y.z") != std::string::npos) << sipm["h"]["Via"].dump();
-        }
-        else if (via.is_array())
-        {
+        } else if (via.is_array()) {
             // Add another element..
             sipm["h"]["Via"].push_back(std::format("SIP/2.0/TCP {}", "a@b.c"));
             EXPECT_EQ(sipm["h"]["Via"].get<std::vector<std::string>>().size(), 5) << sipm["h"]["Via"].dump();
@@ -138,8 +132,7 @@ TEST(synthetics, Check_header_array_LF)
         std::cerr << "Log the parseFromBuffer output: " << sipm.dump(1) << std::endl;
         EXPECT_TRUE(via.is_array()) << via.dump(1);
 
-        if (via.is_string())
-        {
+        if (via.is_string()) {
             // swap out an push to array
             auto previous = via.get<std::string>();
             sipm["h"].erase("Via");
@@ -148,9 +141,7 @@ TEST(synthetics, Check_header_array_LF)
             EXPECT_EQ(sipm["h"]["Via"].get<std::vector<std::string>>().size(), 4) << sipm["h"]["Via"].dump();
             auto elemJustAdded = sipm["h"]["Via"].get<std::vector<std::string>>()[1];
             EXPECT_TRUE(elemJustAdded.find("x@y.z") != std::string::npos) << sipm["h"]["Via"].dump();
-        }
-        else if (via.is_array())
-        {
+        } else if (via.is_array()) {
             // Add another element..
             sipm["h"]["Via"].push_back(std::format("SIP/2.0/TCP {}", "a@b.c"));
             EXPECT_EQ(sipm["h"]["Via"].get<std::vector<std::string>>().size(), 5) << sipm["h"]["Via"].dump();
@@ -187,8 +178,7 @@ TEST(synthetics, Check_startline_precedingjunk_CRLF)
         std::cerr << "Log the parseFromBuffer output: " << sipm.dump(1) << std::endl;
         EXPECT_TRUE(via.is_array()) << via.dump(1);
 
-        if (via.is_string())
-        {
+        if (via.is_string()) {
             // swap out an push to array
             auto previous = via.get<std::string>();
             sipm["h"].erase("Via");
@@ -197,9 +187,7 @@ TEST(synthetics, Check_startline_precedingjunk_CRLF)
             EXPECT_EQ(sipm["h"]["Via"].get<std::vector<std::string>>().size(), 4) << sipm["h"]["Via"].dump();
             auto elemJustAdded = sipm["h"]["Via"].get<std::vector<std::string>>()[1];
             EXPECT_TRUE(elemJustAdded.find("x@y.z") != std::string::npos) << sipm["h"]["Via"].dump();
-        }
-        else if (via.is_array())
-        {
+        } else if (via.is_array()) {
             // Add another element..
             sipm["h"]["Via"].push_back(std::format("SIP/2.0/TCP {}", "a@b.c"));
             EXPECT_EQ(sipm["h"]["Via"].get<std::vector<std::string>>().size(), 5) << sipm["h"]["Via"].dump();

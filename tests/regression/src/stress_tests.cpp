@@ -1,6 +1,6 @@
 /*
   Stress Tests for sip2json
-  https://github.com/siddiqsoftware/sip2json/
+  https://github.com/siddiqsoft/sip2json/
 */
 
 #include <string>
@@ -46,13 +46,10 @@ static std::string makeRequest(const std::string& method,
                                   cseq,
                                   method);
 
-    if (!contentType.empty())
-    {
+    if (!contentType.empty()) {
         msg += std::format("Content-Type: {}\r\n", contentType);
         msg += std::format("Content-Length: {}\r\n", body.size());
-    }
-    else
-    {
+    } else {
         msg += "Content-Length: 0\r\n";
     }
 
@@ -90,8 +87,7 @@ makeResponse(uint32_t statusCode, const std::string& callId, uint32_t cseq = 1, 
 
 TEST(stress, Test_parse_1000_requests)
 {
-    for (int i = 0; i < 1000; i++)
-    {
+    for (int i = 0; i < 1000; i++) {
         auto        callId = std::format("stress-req-{}", i);
         std::string buffer = makeRequest(siddiqsoft::METHOD_INVITE, callId, i + 1);
         auto        bs     = buffer.begin();
@@ -107,8 +103,7 @@ TEST(stress, Test_parse_1000_responses)
 {
     std::vector<uint32_t> codes = {100, 180, 200, 302, 400, 401, 404, 486, 500, 503};
 
-    for (int i = 0; i < 1000; i++)
-    {
+    for (int i = 0; i < 1000; i++) {
         auto        code   = codes[i % codes.size()];
         auto        callId = std::format("stress-resp-{}", i);
         std::string buffer = makeResponse(code, callId);
@@ -134,8 +129,7 @@ TEST(stress, Test_serialize_1000_messages)
                                         "MESSAGE",
                                         "INFO"};
 
-    for (int i = 0; i < 1000; i++)
-    {
+    for (int i = 0; i < 1000; i++) {
         auto& method = methods[i % methods.size()];
         auto  callId = siddiqsoft::createCallId();
 
@@ -157,8 +151,7 @@ TEST(stress, Test_serialize_1000_messages)
 
 TEST(stress, Test_roundtrip_100_requests)
 {
-    for (int i = 0; i < 100; i++)
-    {
+    for (int i = 0; i < 100; i++) {
         auto        callId = std::format("rt-{}", i);
         std::string buffer = makeRequest(siddiqsoft::METHOD_REGISTER, callId, i + 1);
         auto        bs     = buffer.begin();
@@ -193,8 +186,7 @@ TEST(stress, Test_roundtrip_sdp_50_messages)
                              "m=audio {2} RTP/AVP 0\r\n"
                              "a=rtpmap:0 PCMU/8000\r\n"};
 
-    for (int i = 0; i < 50; i++)
-    {
+    for (int i = 0; i < 50; i++) {
         auto sdpBody = std::format("v=0\r\n"
                                    "o=user{0} {0} {0} IN IP4 10.0.0.{1}\r\n"
                                    "s=Call {0}\r\n"
@@ -233,8 +225,7 @@ TEST(stress, Test_parseAsync_20_concatenated_messages)
     std::string buffer;
     const int   msgCount = 20;
 
-    for (int i = 0; i < msgCount; i++)
-    {
+    for (int i = 0; i < msgCount; i++) {
         auto callId = std::format("concat-{}", i);
         if (i % 2 == 0)
             buffer += makeRequest("OPTIONS", callId, i + 1);
@@ -245,12 +236,10 @@ TEST(stress, Test_parseAsync_20_concatenated_messages)
     int                      parseCount = 0;
     std::vector<std::string> callIds;
 
-    auto remaining = siddiqsoft::sip2json::parseAsync(buffer,
-                                                      [&](auto&& sipm)
-                                                      {
-                                                          parseCount++;
-                                                          callIds.push_back(sipm.getCallID());
-                                                      });
+    auto remaining = siddiqsoft::sip2json::parseAsync(buffer, [&](auto&& sipm) {
+        parseCount++;
+        callIds.push_back(sipm.getCallID());
+    });
 
     EXPECT_EQ(msgCount, parseCount) << "Expected " << msgCount << " messages, got " << parseCount;
     EXPECT_EQ(0u, remaining.length()) << "Expected empty remaining buffer";
@@ -274,8 +263,7 @@ TEST(stress, Test_parseAsync_mixed_methods_10)
                                         "INFO"};
     std::string              buffer;
 
-    for (int i = 0; i < 10; i++)
-    {
+    for (int i = 0; i < 10; i++) {
         auto callId = std::format("mixed-{}", i);
         buffer += makeRequest(methods[i], callId, i + 1);
     }
@@ -283,16 +271,13 @@ TEST(stress, Test_parseAsync_mixed_methods_10)
     int                      parseCount = 0;
     std::vector<std::string> parsedMethods;
 
-    auto _ = siddiqsoft::sip2json::parseAsync(buffer,
-                                              [&](auto&& sipm)
-                                              {
-                                                  parseCount++;
-                                                  parsedMethods.push_back(sipm.getMethod());
-                                              });
+    auto _ = siddiqsoft::sip2json::parseAsync(buffer, [&](auto&& sipm) {
+        parseCount++;
+        parsedMethods.push_back(sipm.getMethod());
+    });
 
     EXPECT_EQ(10, parseCount);
-    for (int i = 0; i < 10; i++)
-    {
+    for (int i = 0; i < 10; i++) {
         EXPECT_EQ(methods[i], parsedMethods[i]) << "Method mismatch at index " << i;
     }
 }
@@ -313,8 +298,7 @@ TEST(stress, Test_parse_many_custom_headers)
                         "CSeq: 1 OPTIONS\r\n"
                         "Contact: sip:sender@client.com\r\n"};
 
-    for (int i = 0; i < 50; i++)
-    {
+    for (int i = 0; i < 50; i++) {
         buffer += std::format("X-Custom-Header-{}: value-{}\r\n", i, i);
     }
     buffer += "Content-Length: 0\r\n\r\n";
@@ -327,8 +311,7 @@ TEST(stress, Test_parse_many_custom_headers)
     EXPECT_EQ("manyheaders@client.com", sipm.getCallID());
 
     // Verify all custom headers were parsed
-    for (int i = 0; i < 50; i++)
-    {
+    for (int i = 0; i < 50; i++) {
         auto key      = std::format("X-Custom-Header-{}", i);
         auto expected = std::format("value-{}", i);
         EXPECT_EQ(expected, sipm.getHeader<std::string>(key)) << "Header mismatch for " << key;
@@ -439,8 +422,7 @@ TEST(stress, Test_parse_sdp_with_many_attributes)
 TEST(stress, Test_createCallId_1000_unique)
 {
     std::set<std::string> ids;
-    for (int i = 0; i < 1000; i++)
-    {
+    for (int i = 0; i < 1000; i++) {
         auto id = siddiqsoft::createCallId();
         ASSERT_EQ(44u, id.length()) << "Wrong length at iteration " << i;
         auto [it, inserted] = ids.insert(id);
@@ -502,12 +484,10 @@ TEST(stress, Test_parseAsync_partial_message_preserved)
     std::string buffer = msg1 + partial;
 
     int  parseCount = 0;
-    auto _          = siddiqsoft::sip2json::parseAsync(buffer,
-                                                       [&](auto&& sipm)
-                                                       {
-                                                  parseCount++;
-                                                  EXPECT_EQ(callId1, sipm.getCallID());
-                                                       });
+    auto _          = siddiqsoft::sip2json::parseAsync(buffer, [&](auto&& sipm) {
+        parseCount++;
+        EXPECT_EQ(callId1, sipm.getCallID());
+    });
 
     // Should have parsed exactly 1 message
     EXPECT_EQ(1, parseCount);
@@ -528,8 +508,7 @@ TEST(stress, Test_serialize_parse_response_codes)
 {
     std::vector<uint32_t> codes = {100, 180, 200, 302, 400, 401, 403, 404, 408, 486, 500, 503, 603, 608};
 
-    for (auto code : codes)
-    {
+    for (auto code : codes) {
         siddiqsoft::sipmessage sipm(code);
         sipm.setHeader(siddiqsoft::HF_CALLID, std::format("code-{}", code));
         sipm.setHeader(siddiqsoft::HF_CSEQ, "1 INVITE");

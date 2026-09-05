@@ -1,7 +1,7 @@
 /*
     A SIP Parser for Modern C++: SIP Message Serializer Implementation
-    Version 2.5.x
-    https://github.com/siddiqsoftware/sip2json/
+    Version 3
+    https://github.com/siddiqsoft/sip2json/
 
     BSD 3-Clause License
 
@@ -48,8 +48,7 @@
 #include "sip2json_utils.hpp"
 #include "../sipmessage.hpp"
 
-namespace siddiqsoft
-{
+namespace siddiqsoft {
     /// @brief Serializes the sipmessage document
     /// @param sipm Source sipmessage
     /// @return Return serialized sipmessage
@@ -76,6 +75,9 @@ namespace siddiqsoft
         std::string                                contentType {};
 
         // Reserve the size of a typical SIP Message. Typical message size of 3K
+        // NOTE:
+        // We really should surface this as a configuration option. This value is based on
+        // our production experience with SIP messages.
         buffer.reserve(3 * 1024);
 
         // Assert: non-empty json document
@@ -88,94 +90,76 @@ namespace siddiqsoft
         if (!sipm.contains(JSON_KEY_HEADERS))
             throw invalid_document_error {std::format("{}:sipm does not contain `h`eaders.", __func__)};
 
-        if (sipm.isMessageRequest())
-        {
+        if (sipm.isMessageRequest()) {
             auto method = sipm.getMethod();
             auto uri    = sipm.getUri();
 
+            // validate method against our supported list.
             if (method.find('\r') != std::string::npos || method.find('\n') != std::string::npos ||
                 std::find(supportedMethodsList.begin(), supportedMethodsList.end(), method) == supportedMethodsList.end())
                 throw invalid_document_error {std::format("{}:Unsupported method:{}", __func__, method)};
 
+            // validate URI for line breaks.
             if (uri.find('\r') != std::string::npos || uri.find('\n') != std::string::npos)
                 throw invalid_document_error {std::format("{}:URI contains line breaks:{}", __func__, uri)};
 
             // Request Line
             std::format_to(std::back_inserter(buffer), "{} {} {}\r\n", method, uri, SIPVER_20);
-        }
-        else if (sipm.isMessageResponse())
-        {
+        } else if (sipm.isMessageResponse()) {
             auto reason = sipm.getReason();
             if (reason.find('\r') != std::string::npos || reason.find('\n') != std::string::npos)
                 throw invalid_document_error {std::format("{}:Reason phrase contains line breaks:{}", __func__, reason)};
             // Status Line
             std::format_to(std::back_inserter(buffer), "{} {} {}\r\n", SIPVER_20, sipm.getStatusCode(), reason);
-        }
-        else
-        {
+        } else {
             throw invalid_document_error {
                     std::format("{}:sipm /type is neither `SIPMessageType::request` nor `SIPMessageType::response`.", __func__)};
         }
 
+        // CAUTION!
         // Encode the body first so we can get the content-length properly.
         auto body = serializeSDP(sipm);
         sipm.setHeader(HF_CONTENT_LENGTH, body.length());
 
-        // Headers
-        if (auto mh = sipm.headers(); mh.size() > 0)
-        {
+        // Next we build the headers
+        if (auto mh = sipm.headers(); mh.size() > 0) {
             // NOTE: Header order is not preserved during serialization.
             // The nlohmann::json library does not maintain insertion order.
             // This is acceptable for SIP as header order is not significant per RFC 3261.
-            for (auto& [key, val] : sipm.headers().items())
-            {
+            for (auto& [key, val] : sipm.headers().items()) {
                 if (key.find('\r') != std::string::npos || key.find('\n') != std::string::npos)
                     throw invalid_document_error {std::format("{}:Header key contains line breaks:{}", __func__, key)};
 
                 if (contentType.empty() && (key == HF_CONTENT_TYPE) && val.is_string()) contentType = val;
 
-                if (val.is_null())
-                {
+                if (val.is_null()) {
                     // For null entries, put a blank entry. This is the same as our decode
                     std::format_to(std::back_inserter(buffer), "{}: \r\n", key);
-                }
-                else if (val.is_number_unsigned())
-                {
+                } else if (val.is_number_unsigned()) {
                     std::format_to(std::back_inserter(buffer), "{}: {}\r\n", key, val.get<uint64_t>());
-                }
-                else if (val.is_number_integer() || val.is_number())
-                {
+                } else if (val.is_number_integer() || val.is_number()) {
                     std::format_to(std::back_inserter(buffer), "{}: {}\r\n", key, val.get<int64_t>());
-                }
-                else if (val.is_number_float()) { std::format_to(std::back_inserter(buffer), "{}: {}\r\n", key, val.get<float>()); }
-                else if (val.is_string())
-                {
+                } else if (val.is_number_float()) {
+                    std::format_to(std::back_inserter(buffer), "{}: {}\r\n", key, val.get<float>());
+                } else if (val.is_string()) {
                     std::string sval = val.get<std::string>();
                     if (sval.find('\r') != std::string::npos || sval.find('\n') != std::string::npos)
                         throw invalid_document_error {std::format("{}:Header value contains line breaks:{}", __func__, key)};
                     std::format_to(std::back_inserter(buffer), "{}: {}\r\n", key, sval);
-                }
-                else if (val.is_boolean())
-                {
+                } else if (val.is_boolean()) {
                     std::format_to(std::back_inserter(buffer), "{}: {}\r\n", key, val ? "true" : "false");
-                }
-                else if (val.is_array())
-                {
+                } else if (val.is_array()) {
                     // Special handling for arrays.
                     // We serialize with the same key and the various values follow.
-                    for (auto& item : val.items())
-                    {
+                    for (auto& item : val.items()) {
                         auto iv = item.value();
-                        if (iv.is_string())
-                        {
+                        if (iv.is_string()) {
                             std::string sval = iv.get<std::string>();
                             if (sval.find('\r') != std::string::npos || sval.find('\n') != std::string::npos)
                                 throw invalid_document_error {
                                         std::format("{}:Header array value contains line breaks:{}", __func__, key)};
                             std::format_to(std::back_inserter(buffer), "{}: {}\r\n", key, sval);
-                        }
-                        else
-                        {
+                        } else {
                             std::format_to(std::back_inserter(buffer), "{}: {}\r\n", key, iv.dump());
                         }
                     }

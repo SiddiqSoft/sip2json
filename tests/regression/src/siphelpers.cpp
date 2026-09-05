@@ -1,6 +1,6 @@
 /*
-  A SIP Parser for Modern C++ / Version 2.5.x
-  https://github.com/siddiqsoftware/sip2json/
+  A SIP Parser for Modern C++ / Version 3
+  https://github.com/siddiqsoft/sip2json/
   Copyright 2003-2020 Abdelkareem Siddiq.
   All rights reserved.
 */
@@ -99,8 +99,7 @@ TEST(siphelpers, Test_serialize)
     ll = __LINE__;
     registerMessage.setHeader(siddiqsoft::HF_TO, "sip:hello@world.com").setHeader(siddiqsoft::HF_CONTACT, "sip:hello@world.com");
 
-    try
-    {
+    try {
         ll           = __LINE__;
         auto strsipm = siddiqsoft::sip2json::serialize(registerMessage);
 
@@ -122,9 +121,7 @@ TEST(siphelpers, Test_serialize)
         std::clog << "\n============^^^=\n";
 
         EXPECT_EQ(strsipm.length(), siddiqsoft::sip2json::serialize(sipm2).length());
-    }
-    catch (const std::exception& e)
-    {
+    } catch (const std::exception& e) {
         std::clog << std::format("{}:Exception lastline:{} --> {}\n", __func__, ll, e.what());
         EXPECT_TRUE(true) << L"Unexpected exception.";
     }
@@ -186,8 +183,7 @@ TEST(siphelpers, Test_serialize_empty_mb_valid_2)
 TEST(siphelpers, Test_incomplete_buffer_for_parse)
 {
     EXPECT_THROW(
-            []()
-            {
+            []() {
                 auto buffer = std::string {siddiqsoft::SIP_SAMPLE_MINIMAL_MESSAGE};
                 auto bs     = buffer.begin();
                 auto dummy  = siddiqsoft::sip2json::parseFromBuffer(bs, buffer.end());
@@ -211,8 +207,7 @@ TEST(siphelpers, Test_invalid_document)
 TEST(siphelpers, Test_invalid_document_startline)
 {
     EXPECT_THROW(
-            []()
-            {
+            []() {
                 siddiqsoft::sipmessage sipm("ROR", "sip:dummy@world.com");
                 siddiqsoft::sip2json::serialize(sipm);
             }(),
@@ -434,19 +429,14 @@ TEST(siphelpers, Test_empty_message)
 {
     siddiqsoft::sipmessage emptyMessage;
 
-    try
-    {
+    try {
         siddiqsoft::sip2json::serialize(emptyMessage);
 
         ASSERT_FALSE(false) << L"Expect exception: empty_message\n";
-    }
-    catch (siddiqsoft::empty_message_error& e)
-    {
+    } catch (siddiqsoft::empty_message_error& e) {
         std::clog << e.what();
         EXPECT_TRUE(e.errCode == siddiqsoft::sip2jsonErrors::empty_message);
-    }
-    catch (std::exception& e)
-    {
+    } catch (std::exception& e) {
         std::clog << e.what();
         ASSERT_FALSE(false) << L"unknown/unhandled exception.";
     }
@@ -550,8 +540,7 @@ TEST(siphelpers, Test_body_method)
     EXPECT_EQ(100001, sipm.body()["sdp"][0]["t"][0].get<int>());
     EXPECT_EQ(200002, sipm.body()["sdp"][0]["t"][1].get<int>());
 
-    try
-    {
+    try {
         auto buffer = siddiqsoft::sip2json::serialize(sipm);
 
         std::cerr << "Serialized:\n" << buffer << "\n";
@@ -560,28 +549,22 @@ TEST(siphelpers, Test_body_method)
         // We will attempt to parse it back into a new message.
         // The callback will be invoked and this is where we will check
         // for our correctness.
-        buffer = siddiqsoft::sip2json::parseAsync(buffer,
-                                                  [&](auto&& dsipm)
-                                                  {
-                                                      // We Should check for the iline
-                                                      EXPECT_EQ(iName, dsipm.body().value("/sdp/0/i/name"_json_pointer, ""))
-                                                              << dsipm.dump(2);
+        buffer = siddiqsoft::sip2json::parseAsync(buffer, [&](auto&& dsipm) {
+            // We Should check for the iline
+            EXPECT_EQ(iName, dsipm.body().value("/sdp/0/i/name"_json_pointer, "")) << dsipm.dump(2);
 
-                                                      int expected_v = dsipm.body()["sdp"][0]["v"].template get<int>();
-                                                      EXPECT_EQ(0, expected_v);
-                                                      std::string expected_s =
-                                                              dsipm.body()["sdp"][0]["s"].template get<std::string>();
-                                                      EXPECT_EQ("subject", expected_s);
-                                                      int expected_t0 = dsipm.body()["sdp"][0]["t"][0].template get<int>();
-                                                      EXPECT_EQ(100001, expected_t0);
-                                                      int expected_t1 = dsipm.body()["sdp"][0]["t"][1].template get<int>();
-                                                      EXPECT_EQ(200002, expected_t1);
-                                                  });
+            int expected_v = dsipm.body()["sdp"][0]["v"].template get<int>();
+            EXPECT_EQ(0, expected_v);
+            std::string expected_s = dsipm.body()["sdp"][0]["s"].template get<std::string>();
+            EXPECT_EQ("subject", expected_s);
+            int expected_t0 = dsipm.body()["sdp"][0]["t"][0].template get<int>();
+            EXPECT_EQ(100001, expected_t0);
+            int expected_t1 = dsipm.body()["sdp"][0]["t"][1].template get<int>();
+            EXPECT_EQ(200002, expected_t1);
+        });
         // All the message buffer should be consumed with no lef-overs.
         EXPECT_EQ(0, buffer.length()) << buffer;
-    }
-    catch (const std::exception& e)
-    {
+    } catch (const std::exception& e) {
         std::clog << std::format("{}:Exception: {}\n", __func__, e.what());
         EXPECT_FALSE(false) << L"Unexpected exception.";
     }
@@ -596,10 +579,7 @@ TEST(siphelpers, Test_async_incomplete_buffer_for_parse)
     auto bs       = buffer.begin();
 
     auto remainingBuffer = siddiqsoft::sip2json::parseAsync(
-            buffer,
-            {},
-            [&](const siddiqsoft::sip2json_exception& e, std::string::iterator&, const std::string::iterator&)
-            {
+            buffer, {}, [&](const siddiqsoft::sip2json_exception& e, std::string::iterator&, const std::string::iterator&) {
                 EXPECT_TRUE(e.errCode == siddiqsoft::sip2jsonErrors::incomplete_buffer_for_parse);
                 passTest = true;
             });

@@ -1,7 +1,7 @@
 /*
     A SIP Parser for Modern C++
-    Version 2.5.x
-    https://github.com/siddiqsoftware/sip2json/
+    Version 3
+    https://github.com/siddiqsoft/sip2json/
 
     BSD 3-Clause License
 
@@ -59,11 +59,9 @@
 
 #include "sipmessage.hpp"
 
-namespace siddiqsoft
-{
+namespace siddiqsoft {
     /// @brief SIP message encoder and decoder utility class
-    class sip2json final
-    {
+    class sip2json final {
     private:
         // Named constants for magic numbers
         static constexpr size_t TYPICAL_SIP_MESSAGE_SIZE = 3 * 1024; ///< Typical SIP message buffer size
@@ -79,7 +77,7 @@ namespace siddiqsoft
         static bool        parseHeaders(sipmessage& sipm, std::string_view& buffer) noexcept(false);
         static bool
         parseHeaders(sipmessage& sipm, std::string::iterator& bufferStart, const std::string::iterator& bufferEnd) noexcept(false);
-        static bool        parseBodySDP(sipmessage& sipm, std::string_view& buffer) noexcept(false);
+        static bool parseBodySDP(sipmessage& sipm, std::string_view& buffer) noexcept(false);
         static bool
         parseBodySDP(sipmessage& sipm, std::string::iterator& bufferStart, const std::string::iterator& bufferEnd) noexcept(false);
         static std::string serializeSDP(sipmessage& sipm) noexcept(false);
@@ -93,10 +91,10 @@ namespace siddiqsoft
         /// @param parseCallback Callback which takes a reference to the sipmessage just decoded.
         /// @param errorCallback Optional callback to handle errors during parsing.
         /// @return Returns the number of bytes consumed from the buffer.
-        static size_t parseAsync(
-                std::string_view&                 frameBuffer,
-                std::function<void(sipmessage&&)> parseCallback,
-                std::optional<std::function<void(const sip2json_exception&, std::string_view)>> errorCallback = {}) noexcept;
+        static size_t
+        parseAsync(std::string_view&                                                               frameBuffer,
+                   std::function<void(sipmessage&&)>                                               parseCallback,
+                   std::optional<std::function<void(const sip2json_exception&, std::string_view)>> errorCallback = {}) noexcept;
 
         /// @brief Given a buffer view, parse all complete frames and return the vector of messages. Advances the view in-place.
         /// @param buffer std::string_view reference; upon return, advanced past all successfully parsed messages.

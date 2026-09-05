@@ -1,7 +1,7 @@
 /*
     A SIP Parser for Modern C++: Error Code Definitions
-    Version 2.5.x
-    https://github.com/siddiqsoftware/sip2json/
+    Version 3
+    https://github.com/siddiqsoft/sip2json/
 
     BSD 3-Clause License
 
@@ -49,8 +49,7 @@
 #include <string_view>
 #include "nlohmann/json.hpp"
 
-namespace siddiqsoft
-{
+namespace siddiqsoft {
 #pragma region SIP Response Codes
     static const uint32_t INVALID_SIP_RESPONSE_CODE = 999;
 

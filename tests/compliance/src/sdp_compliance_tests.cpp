@@ -1,7 +1,7 @@
 /*
     A SIP Parser for Modern C++: SDP Compliance Test Suite (RFC 4566 / RFC 8866 / RFC 3264 / RFC 8829)
     Version 1.0.0
-    https://github.com/siddiqsoftware/sip2json/
+    https://github.com/siddiqsoft/sip2json/
 
     BSD 3-Clause License
     Copyright (c) 2003-2026, Abdelkareem Siddiq
@@ -14,8 +14,7 @@
 #include <format>
 #include "siddiqsoft/sip2json.hpp"
 
-namespace siddiqsoft
-{
+namespace siddiqsoft {
     //-------------------------------------------------------------------------
     // SDP Compliance Group 1: RFC 4566 / RFC 8866 Session-Level Syntax
     //-------------------------------------------------------------------------
@@ -114,8 +113,7 @@ namespace siddiqsoft
     {
         const std::vector<std::string_view> directionAttributes = {"sendrecv", "sendonly", "recvonly", "inactive"};
 
-        for (auto dir : directionAttributes)
-        {
+        for (auto dir : directionAttributes) {
             std::string sdpBody = std::format("v=0\r\n"
                                               "o=alice 2890844526 2890844526 IN IP4 192.0.2.1\r\n"
                                               "s=Offer Answer Test\r\n"
