@@ -32,6 +32,10 @@
                 "type": "equals",
                 "lhs": "${hostSystemName}",
                 "rhs": "Darwin"
+            },
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "/Library/Developer/CommandLineTools/usr/bin/clang",
+                "CMAKE_CXX_COMPILER": "/Library/Developer/CommandLineTools/usr/bin/clang++"
             }
         },
         {
