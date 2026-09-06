@@ -171,13 +171,12 @@ stages:
 
   # ==========================================================================
   # STAGE 2: LINUX BUILD
-  # Serialized after Windows to avoid CPU/memory contention across VMs on the same host
+  # Runs in parallel with Windows and Darwin on independent runner machines
   # ==========================================================================
   - stage: Linux
     displayName: Linux
-    dependsOn:
-      - Windows
-    condition: and(not(canceled()), ${{ containsValue(parameters.Platforms, 'Linux') }})
+    dependsOn: []
+    condition: ${{ containsValue(parameters.Platforms, 'Linux') }}
 
     jobs:
     - ${{ if eq(parameters.Cleanup, true) }}:
@@ -198,14 +197,12 @@ stages:
 
   # ==========================================================================
   # STAGE 3: DARWIN BUILD
-  # Serialized after Windows and Linux to avoid CPU/memory contention across VMs on the same host
+  # Runs in parallel with Windows and Linux on independent runner machines
   # ==========================================================================
   - stage: Darwin
     displayName: Darwin
-    dependsOn:
-      - Windows
-      - Linux
-    condition: and(not(canceled()), ${{ containsValue(parameters.Platforms, 'Darwin') }})
+    dependsOn: []
+    condition: ${{ containsValue(parameters.Platforms, 'Darwin') }}
 
     jobs:
     - ${{ if eq(parameters.Cleanup, true) }}:
