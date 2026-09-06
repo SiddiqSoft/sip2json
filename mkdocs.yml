@@ -81,8 +81,6 @@ markdown_extensions:
 extra_css:
   - css/custom.css
 
-extra_javascript:
-  - https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js
 
 nav:
   - Home: index.md

@@ -4,10 +4,7 @@
 ## Performance & Benchmarks
 
 !!! info "Pipeline-Derived Performance Data"
-    Benchmark metrics and host runner environment details are compiled dynamically from CI/CD pipeline build matrix artifacts across our release matrix runners (Apple macOS, Red Hat Enterprise Linux, and Microsoft Windows — both GCC and Clang for Linux).
-    
-    When release builds complete, live benchmark data will populate automatically.
-
+    Benchmark metrics and host runner environment details are compiled dynamically from CI/CD pipeline build matrix artifacts across our release matrix runners (Apple macOS, Red Hat Enterprise Linux, and Microsoft Windows — both GCC and Clang for Linux). When release builds complete, live benchmark data will populate automatically.
 
 | Platform & Architecture | Compiler | Stream Throughput<br>`parseAsync` | Bandwidth | Per-Msg Latency | Single Msg Throughput<br>`parseFromBuffer` | Single Msg Latency |
 | :--- | :---: | :--- | :---: | :--- | :--- | :--- |
@@ -15,7 +12,7 @@
 
 <!-- PIPELINE_BENCHMARKS_END -->
 
-!!! "**Host Architecture Context**"
+!!! note "**Host Architecture Context**"
     While all matrix runners reside on the same physical host hardware (Apple Mac Mini M4 Pro, 24 GB RAM, external NVMe SSD) <u>direct comparision is not meaningful.</u>
     
     Benchmarks are not directly comprable (especially Mac and other platforms--you cannot run MacOS baremetal on non Apple platforms) and are provided here to get a sense of the numbers.
