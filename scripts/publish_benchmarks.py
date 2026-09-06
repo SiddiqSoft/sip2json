@@ -273,104 +273,42 @@ def check_platform_completeness(platform_results: list, required_str: str) -> tu
     return is_complete, missing
 
 
-def build_charts_html(results: list) -> list:
-    """Dynamically generate visual comparative performance charts from build pipeline measurements."""
-    lines = [
-        "---",
-        "",
-        "## 2. Visual Platform Performance Comparison",
-        "",
-        "Visual comparison of pipeline build results across platform runners.",
-        "",
-        "### Stream Parsing Throughput (`parseAsync` — Messages / Second — Higher is Better)",
-        "",
-        '<div class="modern-chart">'
-    ]
+def _inline_bar(value: float, max_value: float, higher_is_better: bool, bar_cls: str) -> str:
+    """Render a compact inline bar graph as an HTML <div> with the numeric label above."""
+    if max_value <= 0:
+        return ""
+    width_pct = max(4, int((value / max_value) * 100))
+    return f'<div class="{bar_cls}" style="width:{width_pct}%;min-width:4px;height:8px;border-radius:3px;display:inline-block;vertical-align:middle;"></div>'
 
-    # Chart 1: Stream throughput
-    valid_async = [r for r in results if r.get("async_tput_num", 0) > 0]
-    if valid_async:
-        max_async = max(r["async_tput_num"] for r in valid_async)
-        for i, r in enumerate(sorted(valid_async, key=lambda x: x["async_tput_num"], reverse=True)):
-            tput_num = r["async_tput_num"]
-            width_pct = max(5, int((tput_num / max_async) * 100))
-            is_fastest = (i == 0)
-            pill = '<span class="pill pill-success">Fastest</span>' if is_fastest else ''
-            bar_cls = "chart-bar chart-bar-primary" if is_fastest else ("chart-bar chart-bar-secondary" if i == 1 else ("chart-bar chart-bar-info" if i == 2 else "chart-bar chart-bar-muted"))
-            title = r.get("platform_arch") or format_platform_arch_label(r.get("os", "Linux"), r.get("arch", "x64"), r.get("os_release", ""))
 
-            lines.append('  <div class="chart-row">')
-            lines.append('    <div class="chart-meta">')
-            lines.append(f'      <span class="chart-title">{title} {pill}</span>')
-            lines.append(f'      <span class="chart-val">{tput_num:,.0f} msg/s</span>')
-            lines.append('    </div>')
-            lines.append('    <div class="chart-track">')
-            lines.append(f'      <div class="{bar_cls}" style="width: {width_pct}%;"></div>')
-            lines.append('    </div>')
-            lines.append('  </div>')
-    lines.append('</div>')
-    lines.append('')
+def _tput_cell(value_str: str, value_num: float, max_val: float, rank: int) -> str:
+    """Compose a table cell with numeric figure + inline bar for throughput (higher = better)."""
+    bar_classes = ["chart-bar chart-bar-primary", "chart-bar chart-bar-secondary",
+                   "chart-bar chart-bar-info", "chart-bar chart-bar-muted"]
+    bar_cls = bar_classes[min(rank, len(bar_classes) - 1)]
+    bar = _inline_bar(value_num, max_val, True, bar_cls)
+    badge = '<span class="pill pill-success">⬆ Best</span>' if rank == 0 else ""
+    return f"**{value_str}** {badge}<br>{bar}"
 
-    # Chart 2: Per-Message processing latency
-    lines.append('### Per-Message Processing Latency (Microseconds — Lower is Better)')
-    lines.append('')
-    lines.append('<div class="modern-chart">')
-    valid_lat = [r for r in results if r.get("async_lat_num", 0) > 0]
-    if valid_lat:
-        max_lat = max(r["async_lat_num"] for r in valid_lat)
-        min_lat = min(r["async_lat_num"] for r in valid_lat)
-        for i, r in enumerate(sorted(valid_lat, key=lambda x: x["async_lat_num"])):
-            lat_num = r["async_lat_num"]
-            width_pct = max(10, int((lat_num / max_lat) * 100))
-            is_lowest = (lat_num == min_lat)
-            pill = '<span class="pill pill-success">Lowest Latency</span>' if is_lowest else ''
-            bar_cls = "chart-bar chart-bar-primary" if is_lowest else ("chart-bar chart-bar-secondary" if i == 1 else ("chart-bar chart-bar-info" if i == 2 else "chart-bar chart-bar-muted"))
-            title = r.get("platform_arch") or format_platform_arch_label(r.get("os", "Linux"), r.get("arch", "x64"), r.get("os_release", ""))
 
-            lines.append('  <div class="chart-row">')
-            lines.append('    <div class="chart-meta">')
-            lines.append(f'      <span class="chart-title">{title} {pill}</span>')
-            lines.append(f'      <span class="chart-val">{lat_num:.2f} µs</span>')
-            lines.append('    </div>')
-            lines.append('    <div class="chart-track">')
-            lines.append(f'      <div class="{bar_cls}" style="width: {width_pct}%;"></div>')
-            lines.append('    </div>')
-            lines.append('  </div>')
-    lines.append('</div>')
-    lines.append('')
-
-    # Chart 3: Single-Message parsing throughput
-    lines.append('### Single-Message Parsing Throughput (`parseFromBuffer` — Messages / Second — Higher is Better)')
-    lines.append('')
-    lines.append('<div class="modern-chart">')
-    valid_single = [r for r in results if r.get("single_tput_num", 0) > 0]
-    if valid_single:
-        max_single = max(r["single_tput_num"] for r in valid_single)
-        for i, r in enumerate(sorted(valid_single, key=lambda x: x["single_tput_num"], reverse=True)):
-            tput_num = r["single_tput_num"]
-            width_pct = max(5, int((tput_num / max_single) * 100))
-            is_fastest = (i == 0)
-            pill = '<span class="pill pill-success">Fastest</span>' if is_fastest else ''
-            bar_cls = "chart-bar chart-bar-primary" if is_fastest else ("chart-bar chart-bar-secondary" if i == 1 else ("chart-bar chart-bar-info" if i == 2 else "chart-bar chart-bar-muted"))
-            title = r.get("platform_arch") or format_platform_arch_label(r.get("os", "Linux"), r.get("arch", "x64"), r.get("os_release", ""))
-
-            lines.append('  <div class="chart-row">')
-            lines.append('    <div class="chart-meta">')
-            lines.append(f'      <span class="chart-title">{title} {pill}</span>')
-            lines.append(f'      <span class="chart-val">{tput_num:,.0f} msg/s</span>')
-            lines.append('    </div>')
-            lines.append('    <div class="chart-track">')
-            lines.append(f'      <div class="{bar_cls}" style="width: {width_pct}%;"></div>')
-            lines.append('    </div>')
-            lines.append('  </div>')
-    lines.append('</div>')
-    lines.append('')
-
-    return lines
+def _lat_cell(value_str: str, value_num: float, max_val: float, rank: int) -> str:
+    """Compose a table cell with numeric figure + inline bar for latency (lower = better)."""
+    bar_classes = ["chart-bar chart-bar-primary", "chart-bar chart-bar-secondary",
+                   "chart-bar chart-bar-info", "chart-bar chart-bar-muted"]
+    bar_cls = bar_classes[min(rank, len(bar_classes) - 1)]
+    bar = _inline_bar(value_num, max_val, False, bar_cls)
+    badge = '<span class="pill pill-success">⬇ Best</span>' if rank == 0 else ""
+    return f"**{value_str}** {badge}<br>{bar}"
 
 
 def update_benchmarks_doc(repo_root: Path, platform_results: list, require_all: bool = False, required_str: str = ""):
-    """Dynamically update docs/architecture/benchmarks.md strictly from pipeline build data."""
+    """Dynamically update docs/architecture/benchmarks.md strictly from pipeline build data.
+
+    The benchmark section is rendered as a single unified table that combines numeric figures
+    with inline proportional bar graphs — so figures and visual comparisons are co-located.
+    The separate "Visual Platform Performance Comparison" section has been removed to avoid
+    redundancy; all visual information now lives inside the table itself.
+    """
     doc_path = repo_root / "docs" / "architecture" / "benchmarks.md"
     if not doc_path.exists():
         print(f"[publish_benchmarks] Warning: {doc_path} not found.", flush=True)
@@ -395,28 +333,25 @@ def update_benchmarks_doc(repo_root: Path, platform_results: list, require_all: 
     # Filter for results with valid throughput data
     valid_results = [
         r for r in platform_results
-        if r.get("async_tput_num", 0) > 0 or r.get("single_tput_num", 0) > 0 or (r.get("async_tput", "N/A") != "N/A" and r.get("async_tput") != "0.00 msg/s")
+        if r.get("async_tput_num", 0) > 0 or r.get("single_tput_num", 0) > 0
+        or (r.get("async_tput", "N/A") not in ("N/A", "0.00 msg/s"))
     ]
 
     def sort_key(r):
+        """Sort by (OS priority, arch priority, compiler name) so GCC/Clang appear as adjacent rows."""
         os_name = normalize_os(r.get("os", "")).lower()
         arch = normalize_arch(r.get("arch", "")).lower()
-        pair = (os_name, arch)
-        order = [
-            ("macos", "arm64"),
-            ("windows", "arm64"),
-            ("linux", "arm64"),
-            ("linux", "x64"),
-            ("windows", "x64"),
-            ("macos", "x64")
-        ]
-        return order.index(pair) if pair in order else 99
+        compiler = r.get("compiler", "").lower()
+        os_order = {"macos": 0, "windows": 1, "linux": 2}
+        arch_order = {"arm64": 0, "x64": 1, "x86": 2}
+        # Within the same OS+arch group, sort compilers alphabetically so GCC < Clang etc.
+        return (os_order.get(os_name, 9), arch_order.get(arch, 9), compiler)
 
     sorted_results = sorted(valid_results, key=sort_key)
 
     table_lines = [
         start_marker,
-        "## 1. Multi-Platform & Cross-Architecture Pipeline Benchmark Matrix",
+        "## Performance & Benchmarks",
         ""
     ]
 
@@ -439,50 +374,74 @@ def update_benchmarks_doc(repo_root: Path, platform_results: list, require_all: 
         else:
             table_lines.append('    **CI Matrix Host Runners**: Derived dynamically from pipeline runners.')
         table_lines.append("")
-        table_lines.append("*Build pipeline measurements collected across matrix runners:*")
+        table_lines.append("*Build pipeline measurements collected across all matrix runners. "
+                           "Bar graphs show relative performance — each bar is proportional to the "
+                           "column-maximum across all rows (⬆ Best = highest throughput / ⬇ Best = lowest latency).*")
         table_lines.append("")
-        table_lines.append("| Platform & Architecture | Compiler | Stream Throughput (`parseAsync`) | Bandwidth | Per-Msg Latency | Single Message (`parseFromBuffer`) | Single Latency |")
-        table_lines.append("| :--- | :---: | :---: | :---: | :---: | :---: | :---: |")
+
+        # Pre-compute per-metric maxima for proportional bar scaling
+        max_async_tput  = max((r.get("async_tput_num",  0) for r in sorted_results), default=1) or 1
+        max_async_lat   = max((r.get("async_lat_num",   0) for r in sorted_results), default=1) or 1
+        max_single_tput = max((r.get("single_tput_num", 0) for r in sorted_results), default=1) or 1
+        max_single_lat  = max((r.get("single_lat_num",  0) for r in sorted_results), default=1) or 1
+
+        # Pre-rank each metric for bar colour (0 = best)
+        ranked_async_tput  = {id(r): i for i, r in enumerate(sorted(sorted_results, key=lambda x: -x.get("async_tput_num", 0)))}
+        ranked_async_lat   = {id(r): i for i, r in enumerate(sorted(sorted_results, key=lambda x:  x.get("async_lat_num",  0)))}
+        ranked_single_tput = {id(r): i for i, r in enumerate(sorted(sorted_results, key=lambda x: -x.get("single_tput_num", 0)))}
+        ranked_single_lat  = {id(r): i for i, r in enumerate(sorted(sorted_results, key=lambda x:  x.get("single_lat_num",  0)))}
+
+        table_lines.append("| Platform & Architecture | Compiler | Stream Throughput<br>`parseAsync` | Bandwidth | Per-Msg Latency | Single Msg Throughput<br>`parseFromBuffer` | Single Msg Latency |")
+        table_lines.append("| :--- | :---: | :--- | :---: | :--- | :--- | :--- |")
 
         for res in sorted_results:
             plat_arch = format_platform_arch_label(res.get("os", "Linux"), res.get("arch", "x64"), res.get("os_release", ""))
             os_ver = format_os_version_label(res.get("os", ""), res.get("os_release", ""), res.get("os_version", ""), res.get("kernel", ""))
             plat_cell = f"**{plat_arch}**<br><small>{os_ver}</small>" if os_ver else f"**{plat_arch}**"
 
-            compiler = res.get("compiler", "Clang")
+            compiler = res.get("compiler", "GCC")
             comp_ver = format_compiler_version_label(res.get("compiler_version", ""))
             compiler_cell = f"{compiler}<br><small>{comp_ver}</small>" if comp_ver else compiler
 
-            async_tput = res.get("async_tput", "N/A")
-            bandwidth = res.get("bandwidth", "N/A")
-            async_lat = res.get("async_lat", "N/A")
-            single_tput = res.get("single_tput", "N/A")
-            single_lat = res.get("single_lat", "N/A")
+            # Build metric cells with inline bars
+            rid = id(res)
+
+            if res.get("async_tput_num", 0) > 0:
+                async_tput_cell = _tput_cell(res["async_tput"], res["async_tput_num"], max_async_tput, ranked_async_tput[rid])
+            else:
+                async_tput_cell = res.get("async_tput", "N/A")
+
+            bandwidth_cell = f"**{res.get('bandwidth', 'N/A')}**"
+
+            if res.get("async_lat_num", 0) > 0:
+                async_lat_cell = _lat_cell(res["async_lat"], res["async_lat_num"], max_async_lat, ranked_async_lat[rid])
+            else:
+                async_lat_cell = res.get("async_lat", "N/A")
+
+            if res.get("single_tput_num", 0) > 0:
+                single_tput_cell = _tput_cell(res["single_tput"], res["single_tput_num"], max_single_tput, ranked_single_tput[rid])
+            else:
+                single_tput_cell = res.get("single_tput", "N/A")
+
+            if res.get("single_lat_num", 0) > 0:
+                single_lat_cell = _lat_cell(res["single_lat"], res["single_lat_num"], max_single_lat, ranked_single_lat[rid])
+            else:
+                single_lat_cell = res.get("single_lat", "N/A")
 
             table_lines.append(
-                f"| {plat_cell} | {compiler_cell} | **{async_tput}** | **{bandwidth}** | **{async_lat}** | **{single_tput}** | **{single_lat}** |"
+                f"| {plat_cell} | {compiler_cell} | {async_tput_cell} | {bandwidth_cell} | {async_lat_cell} | {single_tput_cell} | {single_lat_cell} |"
             )
 
         table_lines.append("")
-        # Add visual comparative charts
-        chart_lines = build_charts_html(sorted_results)
-        table_lines.extend(chart_lines)
 
     else:
         # Awaiting pipeline run - no fabricated data
         table_lines.append('!!! info "Pipeline-Derived Performance Data"')
-        table_lines.append('    Benchmark metrics and host runner environment details are compiled dynamically from CI/CD pipeline build matrix artifacts across our release matrix runners (Apple macOS, Red Hat Enterprise Linux, and Microsoft Windows). When release builds complete, live benchmark data will populate automatically.')
+        table_lines.append('    Benchmark metrics and host runner environment details are compiled dynamically from CI/CD pipeline build matrix artifacts across our release matrix runners (Apple macOS, Red Hat Enterprise Linux, and Microsoft Windows — both GCC and Clang for Linux). When release builds complete, live benchmark data will populate automatically.')
         table_lines.append("")
-        table_lines.append("| Platform & Architecture | Compiler | Stream Throughput (`parseAsync`) | Bandwidth | Per-Msg Latency | Single Message (`parseFromBuffer`) | Single Latency |")
-        table_lines.append("| :--- | :---: | :---: | :---: | :---: | :---: | :---: |")
+        table_lines.append("| Platform & Architecture | Compiler | Stream Throughput<br>`parseAsync` | Bandwidth | Per-Msg Latency | Single Msg Throughput<br>`parseFromBuffer` | Single Msg Latency |")
+        table_lines.append("| :--- | :---: | :--- | :---: | :--- | :--- | :--- |")
         table_lines.append("| *Pipeline Build Pending* | *CI Matrix* | *Awaiting CI Run* | *Awaiting CI Run* | *Awaiting CI Run* | *Awaiting CI Run* | *Awaiting CI Run* |")
-        table_lines.append("")
-        table_lines.append("---")
-        table_lines.append("")
-        table_lines.append("## 2. Visual Platform Performance Comparison")
-        table_lines.append("")
-        table_lines.append('!!! info "Comparative Visual Performance Graphs Pending Build"')
-        table_lines.append('    Visual comparative bar charts contrasting throughput and latency across Apple macOS, Red Hat Enterprise Linux (RHEL), and Microsoft Windows runners will render automatically when pipeline benchmark artifacts are compiled.')
         table_lines.append("")
 
     table_lines.append(end_marker)
@@ -497,14 +456,19 @@ def update_benchmarks_doc(repo_root: Path, platform_results: list, require_all: 
 
 
 def get_or_create_result(platform_results_map: dict, os_name: str, arch: str, compiler: str = "") -> dict:
-    """Retrieve or initialize a platform runner entry cleanly keyed by normalized OS and Arch."""
+    """Retrieve or initialize a platform runner entry cleanly keyed by normalized OS, Arch, and Compiler.
+
+    Each distinct (OS, architecture, compiler) triple gets its own entry so that, for example,
+    Linux/arm64/GCC and Linux/arm64/Clang are tracked and rendered as separate rows.
+    """
     os_norm = normalize_os(os_name)
     arch_norm = normalize_arch(arch)
     comp_norm = normalize_compiler(compiler, os_norm) if compiler else ""
-    key = (os_norm.lower(), arch_norm.lower())
+    default_comp = comp_norm or ("AppleClang" if os_norm == "macOS" else ("MSVC" if os_norm == "Windows" else "GCC"))
+    # Include compiler in the key so GCC and Clang on the same OS/arch are separate rows
+    key = (os_norm.lower(), arch_norm.lower(), default_comp.lower())
 
     if key not in platform_results_map:
-        default_comp = comp_norm or ("AppleClang" if os_norm == "macOS" else ("MSVC" if os_norm == "Windows" else "GCC"))
         platform_results_map[key] = {
             "os": os_norm,
             "arch": arch_norm,
@@ -526,11 +490,7 @@ def get_or_create_result(platform_results_map: dict, os_name: str, arch: str, co
             "single_lat_num": 0.0,
         }
 
-    entry = platform_results_map[key]
-    if comp_norm:
-        if entry["compiler"] in ("Clang", "GCC", "") or comp_norm == "AppleClang" or comp_norm == "MSVC":
-            entry["compiler"] = comp_norm
-    return entry
+    return platform_results_map[key]
 
 
 def main():
