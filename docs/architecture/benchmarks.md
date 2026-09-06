@@ -1,7 +1,5 @@
 # Performance & Benchmarks
 
-`sip2json` delivers high-throughput, low-latency SIP stream parsing engineered for high-concurrency VoIP edge proxies, SBCs, and WebRTC media gateways.
-
 <!-- PIPELINE_BENCHMARKS_START -->
 ## 1. Multi-Platform & Cross-Architecture Pipeline Benchmark Matrix
 

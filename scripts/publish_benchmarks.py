@@ -90,23 +90,131 @@ def normalize_compiler(compiler_raw: str, os_name: str) -> str:
 
 
 def format_platform_arch_label(os_name: str, arch: str, os_release: str = "") -> str:
-    """Derive clean platform and architecture label using actual host OS release if available."""
+    """Derive clean platform and architecture label without OS version clutter."""
     arch_norm = normalize_arch(arch)
     os_norm = normalize_os(os_name)
-
-    if os_release:
-        clean_rel = os_release.strip()
-        if os_norm == "macOS" and "apple" not in clean_rel.lower():
-            clean_rel = f"Apple {clean_rel}"
-        return f"{clean_rel} ({arch_norm})"
 
     if os_norm == "macOS":
         return f"Apple macOS ({arch_norm})"
     elif os_norm == "Windows":
         return f"Microsoft Windows ({arch_norm})"
     elif os_norm == "Linux":
+        if os_release and any(k in os_release.lower() for k in ("ubuntu", "debian", "fedora", "arch", "centos")):
+            distro = "Ubuntu" if "ubuntu" in os_release.lower() else ("Debian" if "debian" in os_release.lower() else "Linux")
+            return f"{distro} Linux ({arch_norm})"
         return f"Red Hat Enterprise Linux ({arch_norm})"
     return f"{os_name} ({arch_norm})"
+
+
+def format_os_version_label(os_name: str, os_release: str = "", os_version: str = "", kernel: str = "") -> str:
+    """Derive clean OS version label for display beneath Platform & Architecture."""
+    os_norm = normalize_os(os_name).lower()
+    rel = (os_release or "").strip()
+    ver = (os_version or "").strip()
+    kern = (kernel or "").strip()
+
+    if "macos" in os_norm or "darwin" in os_norm:
+        for candidate in [rel, ver]:
+            m = re.search(r"macOS\s+([0-9]+(?:\.[0-9]+)+)", candidate, re.I)
+            if m:
+                return f"macOS {m.group(1)}"
+            m = re.search(r"([0-9]+(?:\.[0-9]+)+)", candidate)
+            if m and not candidate.startswith("Darwin"):
+                return f"macOS {m.group(1)}"
+        if ver and "darwin" in ver.lower():
+            return ver
+        if kern:
+            return f"Darwin {kern}"
+        return rel or ver
+
+    if "windows" in os_norm or "win" in os_norm:
+        rel_clean = re.sub(r"^Microsoft\s+", "", rel, flags=re.I)
+        rel_clean = re.sub(r"\s+Datacenter", "", rel_clean, flags=re.I).strip()
+        b_num = kern
+        if not b_num and ver:
+            m = re.search(r"10\.0\.([0-9]+)", ver)
+            if m:
+                b_num = m.group(1)
+        if rel_clean and b_num and b_num not in rel_clean:
+            return f"{rel_clean} (Build {b_num})"
+        return rel_clean or (f"Build {b_num}" if b_num else ver)
+
+    if "linux" in os_norm or "rhel" in os_norm:
+        if "red hat" in rel.lower() or "rhel" in rel.lower():
+            m = re.search(r"([0-9]+(?:\.[0-9]+)?)", rel)
+            if m:
+                return f"RHEL {m.group(1)}"
+            return "RHEL"
+        if "ubuntu" in rel.lower():
+            m = re.search(r"Ubuntu\s+([0-9]+\.[0-9]+(?:\.[0-9]+)?)", rel, re.I)
+            if m:
+                return f"Ubuntu {m.group(1)} LTS" if "lts" in rel.lower() else f"Ubuntu {m.group(1)}"
+            return rel
+        rel_clean = re.sub(r"\s*\([^)]*\)", "", rel).strip()
+        return rel_clean or ver
+
+    return rel or ver
+
+
+def format_compiler_version_label(compiler_version: str) -> str:
+    """Format clean compiler version label."""
+    if not compiler_version:
+        return ""
+    ver = compiler_version.strip()
+    m = re.search(r"([0-9]+(?:\.[0-9]+)+)", ver)
+    if m:
+        return m.group(1)
+    return ver
+
+
+def detect_compiler_version_from_path_or_host(hdata: dict, file_path: Path = None, repo_root: Path = None) -> str:
+    """Attempt to extract or infer compiler version from metadata or nearby CMakeCache."""
+    if hdata.get("compiler_version"):
+        return hdata["compiler_version"]
+
+    h_summary = hdata.get("host_summary", "")
+    if h_summary:
+        m = re.search(r"(?:AppleClang|Clang|GCC|MSVC)\s+([0-9]+(?:\.[0-9]+)+)", h_summary, re.I)
+        if m:
+            return m.group(1)
+
+    search_dirs = []
+    if file_path:
+        search_dirs.extend([file_path.parent, file_path.parent.parent, file_path.parent.parent.parent])
+    if repo_root:
+        build_dir = repo_root / "build"
+        if build_dir.exists():
+            search_dirs.extend(list(build_dir.glob("*")))
+
+    for d in search_dirs:
+        cache_file = d / "CMakeCache.txt"
+        if cache_file.is_file():
+            try:
+                for line in cache_file.read_text(encoding="utf-8", errors="ignore").splitlines():
+                    if line.startswith("CMAKE_CXX_COMPILER_VERSION:STRING="):
+                        return line.split("=", 1)[1].strip()
+            except Exception:
+                pass
+
+    return ""
+
+
+def merge_host_info_into_result(res: dict, hdata: dict, file_path: Path = None, repo_root: Path = None):
+    """Merge host metadata, compiler version, and OS version into result dict."""
+    if not hdata:
+        return
+    res["host_info"] = hdata.get("host_summary", "") or res.get("host_info", "")
+    res["os_release"] = hdata.get("os_release", "") or res.get("os_release", "")
+    res["os_version"] = hdata.get("os_version", "") or res.get("os_version", "")
+    res["kernel"] = hdata.get("kernel", "") or res.get("kernel", "")
+
+    comp_ver = hdata.get("compiler_version", "") or detect_compiler_version_from_path_or_host(hdata, file_path, repo_root)
+    if comp_ver:
+        res["compiler_version"] = comp_ver
+
+    if hdata.get("compiler"):
+        res["compiler"] = normalize_compiler(hdata["compiler"], res.get("os", "Linux"))
+    res["platform_arch"] = format_platform_arch_label(res.get("os", "Linux"), res.get("arch", "x64"), res.get("os_release", ""))
 
 
 def parse_platform_from_path(file_path: Path) -> tuple:
@@ -337,8 +445,14 @@ def update_benchmarks_doc(repo_root: Path, platform_results: list, require_all: 
         table_lines.append("| :--- | :---: | :---: | :---: | :---: | :---: | :---: |")
 
         for res in sorted_results:
-            plat_arch = res.get("platform_arch") or format_platform_arch_label(res.get("os", "Linux"), res.get("arch", "x64"), res.get("os_release", ""))
+            plat_arch = format_platform_arch_label(res.get("os", "Linux"), res.get("arch", "x64"), res.get("os_release", ""))
+            os_ver = format_os_version_label(res.get("os", ""), res.get("os_release", ""), res.get("os_version", ""), res.get("kernel", ""))
+            plat_cell = f"**{plat_arch}**<br><small>{os_ver}</small>" if os_ver else f"**{plat_arch}**"
+
             compiler = res.get("compiler", "Clang")
+            comp_ver = format_compiler_version_label(res.get("compiler_version", ""))
+            compiler_cell = f"{compiler}<br><small>{comp_ver}</small>" if comp_ver else compiler
+
             async_tput = res.get("async_tput", "N/A")
             bandwidth = res.get("bandwidth", "N/A")
             async_lat = res.get("async_lat", "N/A")
@@ -346,7 +460,7 @@ def update_benchmarks_doc(repo_root: Path, platform_results: list, require_all: 
             single_lat = res.get("single_lat", "N/A")
 
             table_lines.append(
-                f"| **{plat_arch}** | {compiler} | **{async_tput}** | **{bandwidth}** | **{async_lat}** | **{single_tput}** | **{single_lat}** |"
+                f"| {plat_cell} | {compiler_cell} | **{async_tput}** | **{bandwidth}** | **{async_lat}** | **{single_tput}** | **{single_lat}** |"
             )
 
         table_lines.append("")
@@ -395,7 +509,10 @@ def get_or_create_result(platform_results_map: dict, os_name: str, arch: str, co
             "os": os_norm,
             "arch": arch_norm,
             "compiler": default_comp,
+            "compiler_version": "",
             "os_release": "",
+            "os_version": "",
+            "kernel": "",
             "platform_arch": format_platform_arch_label(os_norm, arch_norm),
             "async_tput": "N/A",
             "bandwidth": "N/A",
@@ -462,11 +579,7 @@ def main():
                 comp_raw = hdata.get("compiler", "")
 
                 res = get_or_create_result(platform_results_map, os_raw, arch_raw, comp_raw)
-                res["host_info"] = hdata.get("host_summary", "") or res["host_info"]
-                res["os_release"] = hdata.get("os_release", "") or res["os_release"]
-                res["platform_arch"] = format_platform_arch_label(res["os"], res["arch"], res["os_release"])
-                if comp_raw:
-                    res["compiler"] = normalize_compiler(comp_raw, res["os"])
+                merge_host_info_into_result(res, hdata, host_file, repo_root)
 
                 print(f"[publish_benchmarks] Discovered host_info: {res['platform_arch']} -> {res['host_info']} (from {host_file})", flush=True)
             except Exception as ex:
@@ -493,10 +606,7 @@ def main():
                 if host_sibling.exists():
                     try:
                         hdata = json.loads(host_sibling.read_text(encoding="utf-8"))
-                        res["host_info"] = hdata.get("host_summary", "") or res["host_info"]
-                        res["os_release"] = hdata.get("os_release", "") or res["os_release"]
-                        if hdata.get("compiler"):
-                            res["compiler"] = normalize_compiler(hdata["compiler"], res["os"])
+                        merge_host_info_into_result(res, hdata, host_sibling, repo_root)
                     except Exception:
                         pass
 
@@ -546,10 +656,7 @@ def main():
                 if host_sibling.exists():
                     try:
                         hdata = json.loads(host_sibling.read_text(encoding="utf-8"))
-                        res["host_info"] = hdata.get("host_summary", "") or res["host_info"]
-                        res["os_release"] = hdata.get("os_release", "") or res["os_release"]
-                        if hdata.get("compiler"):
-                            res["compiler"] = normalize_compiler(hdata["compiler"], res["os"])
+                        merge_host_info_into_result(res, hdata, host_sibling, repo_root)
                     except Exception:
                         pass
 
@@ -599,10 +706,7 @@ def main():
                 if host_sibling.exists():
                     try:
                         hdata = json.loads(host_sibling.read_text(encoding="utf-8"))
-                        res["host_info"] = hdata.get("host_summary", "") or res["host_info"]
-                        res["os_release"] = hdata.get("os_release", "") or res["os_release"]
-                        if hdata.get("compiler"):
-                            res["compiler"] = normalize_compiler(hdata["compiler"], res["os"])
+                        merge_host_info_into_result(res, hdata, host_sibling, repo_root)
                     except Exception:
                         pass
 
@@ -646,25 +750,40 @@ def main():
             p_root = Path(root)
             if "host_info.json" in files:
                 try:
-                    hdata = json.loads((p_root / "host_info.json").read_text(encoding="utf-8"))
+                    host_file = p_root / "host_info.json"
+                    hdata = json.loads(host_file.read_text(encoding="utf-8"))
                     os_raw = hdata.get("platform") or hdata.get("os_name", "")
                     arch_raw = hdata.get("arch", "x64")
                     comp_raw = hdata.get("compiler", "")
                     res = get_or_create_result(platform_results_map, os_raw, arch_raw, comp_raw)
-                    res["host_info"] = hdata.get("host_summary", "") or res["host_info"]
-                    res["os_release"] = hdata.get("os_release", "") or res["os_release"]
-                    res["platform_arch"] = format_platform_arch_label(res["os"], res["arch"], res["os_release"])
-                    if comp_raw:
-                        res["compiler"] = normalize_compiler(comp_raw, res["os"])
+                    merge_host_info_into_result(res, hdata, host_file, repo_root)
                 except Exception:
                     pass
 
             if "stream_benchmark_results.json" in files:
                 try:
                     stream_json = p_root / "stream_benchmark_results.json"
-                    sdata = json.loads(stream_json.read_text(encoding="utf-8"))
-                    os_name, arch, compiler = parse_platform_from_path(stream_json)
+                    host_sibling = p_root / "host_info.json"
+                    if host_sibling.exists():
+                        try:
+                            hdata = json.loads(host_sibling.read_text(encoding="utf-8"))
+                            os_name = hdata.get("platform") or hdata.get("os_name", "")
+                            arch = hdata.get("arch", "x64")
+                            compiler = hdata.get("compiler", "")
+                        except Exception:
+                            os_name, arch, compiler = parse_platform_from_path(stream_json)
+                    else:
+                        os_name, arch, compiler = parse_platform_from_path(stream_json)
+
                     res = get_or_create_result(platform_results_map, os_name, arch, compiler)
+                    if host_sibling.exists():
+                        try:
+                            hdata = json.loads(host_sibling.read_text(encoding="utf-8"))
+                            merge_host_info_into_result(res, hdata, host_sibling, repo_root)
+                        except Exception:
+                            pass
+
+                    sdata = json.loads(stream_json.read_text(encoding="utf-8"))
                     if "stream_parse_async" in sdata:
                         spa = sdata["stream_parse_async"]
                         tput = float(spa.get("throughput_msg_per_sec", 0.0))
