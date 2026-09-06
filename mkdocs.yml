@@ -39,7 +39,7 @@ theme:
     code: JetBrains Mono
   features:
     - navigation.tabs
-    - toc.integrate
+    # - toc.integrate # everything in the left side nav bar, but not great for large docs
     - navigation.tabs.sticky
     - navigation.sections
     - navigation.expand
