@@ -13,7 +13,7 @@
 <!-- PIPELINE_BENCHMARKS_END -->
 
 > [!NOTE]
-> **Host Architecture Context**: All matrix runners reside on the same physical host hardware (Apple Mac Mini M4 Pro, 24 GB RAM, external NVMe SSD). For an analysis of bare-metal host vs. guest virtual machine execution and compiler code generation, see [Platform Performance Variance & Host Architecture](#3-platform-performance-variance--host-architecture).
+> **Host Architecture Context**: All matrix runners reside on the same physical host hardware (Apple Mac Mini M4 Pro, 24 GB RAM, external NVMe SSD). For an analysis of bare-metal host vs. guest virtual machine execution and compiler code generation, see [Platform Performance Variance & Host Architecture](#platform-performance-variance-host-architecture).
 
 ---
 
@@ -45,7 +45,7 @@ cmake --build --preset Windows-x64-Release --target sip2json_benchmarks
 
 ---
 
-## 3. Platform Performance Variance & Host Architecture
+## Platform Performance Variance & Host Architecture
 
 All CI/CD release matrix runners execute on the same physical host machine:
 - **Physical Host**: Apple Mac Mini (Apple M4 Pro, 24 GB Unified Memory, 273 GB/s memory bandwidth, external NVMe SSD storage).

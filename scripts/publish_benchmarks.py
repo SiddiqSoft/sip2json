@@ -282,17 +282,13 @@ def _inline_bar(value: float, max_value: float, higher_is_better: bool, bar_cls:
 
 
 def _tput_cell(value_str: str, value_num: float, max_val: float, rank: int) -> str:
-    """Compose a table cell with numeric figure + inline bar for throughput."""
-    bar_cls = "chart-bar chart-bar-primary"
-    bar = _inline_bar(value_num, max_val, True, bar_cls)
-    return f"**{value_str}**<br>{bar}"
+    """Compose a table cell with numeric figure for throughput."""
+    return f"**{value_str}**"
 
 
 def _lat_cell(value_str: str, value_num: float, max_val: float, rank: int) -> str:
-    """Compose a table cell with numeric figure + inline bar for latency."""
-    bar_cls = "chart-bar chart-bar-primary"
-    bar = _inline_bar(value_num, max_val, False, bar_cls)
-    return f"**{value_str}**<br>{bar}"
+    """Compose a table cell with numeric figure for latency."""
+    return f"**{value_str}**"
 
 
 def update_benchmarks_doc(repo_root: Path, platform_results: list, require_all: bool = False, required_str: str = ""):
@@ -368,8 +364,7 @@ def update_benchmarks_doc(repo_root: Path, platform_results: list, require_all: 
         else:
             table_lines.append('    **CI Matrix Host Runners**: Derived dynamically from pipeline runners.')
         table_lines.append("")
-        table_lines.append("*Build pipeline measurements collected across all matrix runners. "
-                           "Bar graphs show relative performance normalized to the column maximum.*")
+        table_lines.append("*Build pipeline measurements collected across all matrix runners.*")
         table_lines.append("")
 
         # Pre-compute per-metric maxima for proportional bar scaling

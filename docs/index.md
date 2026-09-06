@@ -1,12 +1,18 @@
 # sip2json
 
-<div class="badge-container">
-  <img src="https://img.shields.io/badge/version-v{{ version }}-4f46e5.svg" alt="Version {{ version }}"/>
-  <a href="https://dev.azure.com/siddiqsoft/siddiqsoft/_build/latest?definitionId=21&branchName=master"><img src="https://dev.azure.com/siddiqsoft/siddiqsoft/_apis/build/status/siddiqsoftware.sip2json?branchName=master" alt="Build Status"></a>
-  <a href="https://www.nuget.org/packages/SiddiqSoft.sip2json/"><img src="https://img.shields.io/nuget/v/SiddiqSoft.sip2json?logo=nuget" alt="NuGet Version"></a>
-  <a href="https://www.nuget.org/packages/SiddiqSoft.sip2json/"><img src="https://img.shields.io/nuget/dt/SiddiqSoft.sip2json?logo=nuget" alt="NuGet Downloads"></a>
-  <a href="https://dev.azure.com/siddiqsoft/siddiqsoft/_build/latest?definitionId=21&branchName=master"><img src="https://dev.azure.com/siddiqsoft/siddiqsoft/21/master.svg" alt="Tests" /></a>
-</div>
+<!-- badges -->
+[![Build Status](https://dev.azure.com/siddiqsoft/siddiqsoft/_apis/build/status/siddiqsoftware.sip2json?branchName=master)](https://dev.azure.com/siddiqsoft/siddiqsoft/_build/latest?definitionId=21&branchName=master)
+[![NuGet Version](https://img.shields.io/nuget/v/SiddiqSoft.sip2json?logo=nuget)](https://www.nuget.org/packages/SiddiqSoft.sip2json/)
+[![NuGet Downloads](https://img.shields.io/nuget/dt/SiddiqSoft.sip2json?logo=nuget)](https://www.nuget.org/packages/SiddiqSoft.sip2json/)
+[![Tests](https://img.shields.io/azure-devops/tests/siddiqsoft/siddiqsoft/21/master.svg)](https://dev.azure.com/siddiqsoft/siddiqsoft/_build/latest?definitionId=21&branchName=master)
+[![C++20](https://img.shields.io/badge/C%2B%2B-20-00599C?logo=cplusplus)](https://en.cppreference.com/w/cpp/20)
+[![License BSD-3](https://img.shields.io/badge/License-BSD--3--Clause-blue)](license.md)
+
+[![IETF RFC 3261](https://img.shields.io/badge/IETF-RFC%203261%20(SIP)-003366)](https://datatracker.ietf.org/doc/html/rfc3261)
+[![IETF RFC 4475](https://img.shields.io/badge/IETF-RFC%204475%20(Torture%2050/50)-2ea44f)](https://datatracker.ietf.org/doc/html/rfc4475)
+[![IETF RFC 8866](https://img.shields.io/badge/IETF-RFC%208866%20(SDP)-003366)](https://datatracker.ietf.org/doc/html/rfc8866)
+[![W3C WebRTC SDP](https://img.shields.io/badge/W3C-WebRTC%20SDP-1488C6)](https://datatracker.ietf.org/doc/html/rfc8829)
+<!-- end badges -->
 
 Header-only C++20 SIP protocol parser and serializer. Represents SIP messages, headers, and SDP bodies as `nlohmann::json` documents with zero regex overhead and zero-copy string views.
 
