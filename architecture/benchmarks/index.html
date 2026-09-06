@@ -1008,10 +1008,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#1-multi-platform-cross-architecture-pipeline-benchmark-matrix" class="md-nav__link">
+  <a href="#performance-benchmarks_1" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Multi-Platform &amp; Cross-Architecture Pipeline Benchmark Matrix
+        Performance &amp; Benchmarks
       
     </span>
   </a>
@@ -1019,60 +1019,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-visual-platform-performance-comparison" class="md-nav__link">
+  <a href="#2-running-benchmarks-locally" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. Visual Platform Performance Comparison
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="2. Visual Platform Performance Comparison">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#stream-parsing-throughput-parseasync-messages-second-higher-is-better" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Stream Parsing Throughput (parseAsync — Messages / Second — Higher is Better)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#per-message-processing-latency-microseconds-lower-is-better" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Per-Message Processing Latency (Microseconds — Lower is Better)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#single-message-parsing-throughput-parsefrombuffer-messages-second-higher-is-better" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Single-Message Parsing Throughput (parseFromBuffer — Messages / Second — Higher is Better)
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#3-running-benchmarks-locally" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3. Running Benchmarks Locally
+        2. Running Benchmarks Locally
       
     </span>
   </a>
@@ -1393,173 +1343,91 @@
 
 <h1 id="performance-benchmarks">Performance &amp; Benchmarks<a class="headerlink" href="#performance-benchmarks" title="Permanent link">&para;</a></h1>
 <!-- PIPELINE_BENCHMARKS_START -->
-<h2 id="1-multi-platform-cross-architecture-pipeline-benchmark-matrix">1. Multi-Platform &amp; Cross-Architecture Pipeline Benchmark Matrix<a class="headerlink" href="#1-multi-platform-cross-architecture-pipeline-benchmark-matrix" title="Permanent link">&para;</a></h2>
+<h2 id="performance-benchmarks_1">Performance &amp; Benchmarks<a class="headerlink" href="#performance-benchmarks_1" title="Permanent link">&para;</a></h2>
 <div class="admonition note">
 <p class="admonition-title">Build Release &amp; Runner Environment</p>
-<p><strong>Build Release &amp; Version</strong>: <code>3.1.3-1</code>
+<p><strong>Build Release &amp; Version</strong>: <code>3.1.4-1</code>
 <strong>CI Matrix Host Runners (Derived from Pipeline)</strong>:
 - <strong>macOS Runner</strong>: macdev.siddiq.org (4 Cores, 24 MHz)
 - <strong>Windows Runner</strong>: WINDEV (4 Cores, 3072 MHz)
 - <strong>Linux Runner</strong>: lba4.siddiq.org (4 Cores, 48 MHz)</p>
 </div>
-<p><em>Build pipeline measurements collected across matrix runners:</em></p>
+<p><em>Build pipeline measurements collected across all matrix runners. Bar graphs show relative performance — each bar is proportional to the column-maximum across all rows (⬆ Best = highest throughput / ⬇ Best = lowest latency).</em></p>
 <table>
 <thead>
 <tr>
 <th style="text-align: left;">Platform &amp; Architecture</th>
 <th style="text-align: center;">Compiler</th>
-<th style="text-align: center;">Stream Throughput (<code>parseAsync</code>)</th>
+<th style="text-align: left;">Stream Throughput<br><code>parseAsync</code></th>
 <th style="text-align: center;">Bandwidth</th>
-<th style="text-align: center;">Per-Msg Latency</th>
-<th style="text-align: center;">Single Message (<code>parseFromBuffer</code>)</th>
-<th style="text-align: center;">Single Latency</th>
+<th style="text-align: left;">Per-Msg Latency</th>
+<th style="text-align: left;">Single Msg Throughput<br><code>parseFromBuffer</code></th>
+<th style="text-align: left;">Single Msg Latency</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align: left;"><strong>Apple macOS (arm64)</strong></td>
 <td style="text-align: center;">AppleClang</td>
-<td style="text-align: center;"><strong>73,289.34 msg/s</strong></td>
-<td style="text-align: center;"><strong>193.16 MB/s</strong></td>
-<td style="text-align: center;"><strong>13.64 µs</strong></td>
-<td style="text-align: center;"><strong>78,100.81 msg/s</strong></td>
-<td style="text-align: center;"><strong>12.80 µs</strong></td>
+<td style="text-align: left;"><strong>73,099.19 msg/s</strong> <span class="pill pill-success">⬆ Best</span><br><div class="chart-bar chart-bar-primary" style="width:100%;min-width:4px;height:8px;border-radius:3px;display:inline-block;vertical-align:middle;"></div></td>
+<td style="text-align: center;"><strong>192.66 MB/s</strong></td>
+<td style="text-align: left;"><strong>13.68 µs</strong> <span class="pill pill-success">⬇ Best</span><br><div class="chart-bar chart-bar-primary" style="width:69%;min-width:4px;height:8px;border-radius:3px;display:inline-block;vertical-align:middle;"></div></td>
+<td style="text-align: left;"><strong>77,679.50 msg/s</strong> <span class="pill pill-success">⬆ Best</span><br><div class="chart-bar chart-bar-primary" style="width:100%;min-width:4px;height:8px;border-radius:3px;display:inline-block;vertical-align:middle;"></div></td>
+<td style="text-align: left;"><strong>12.87 µs</strong> <span class="pill pill-success">⬇ Best</span><br><div class="chart-bar chart-bar-primary" style="width:69%;min-width:4px;height:8px;border-radius:3px;display:inline-block;vertical-align:middle;"></div></td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>Microsoft Windows (arm64)</strong></td>
 <td style="text-align: center;">MSVC</td>
-<td style="text-align: center;"><strong>50,966.18 msg/s</strong></td>
-<td style="text-align: center;"><strong>134.33 MB/s</strong></td>
-<td style="text-align: center;"><strong>19.62 µs</strong></td>
-<td style="text-align: center;"><strong>45,637.46 msg/s</strong></td>
-<td style="text-align: center;"><strong>21.91 µs</strong></td>
+<td style="text-align: left;"><strong>50,924.37 msg/s</strong> <br><div class="chart-bar chart-bar-muted" style="width:69%;min-width:4px;height:8px;border-radius:3px;display:inline-block;vertical-align:middle;"></div></td>
+<td style="text-align: center;"><strong>134.22 MB/s</strong></td>
+<td style="text-align: left;"><strong>19.64 µs</strong> <br><div class="chart-bar chart-bar-muted" style="width:100%;min-width:4px;height:8px;border-radius:3px;display:inline-block;vertical-align:middle;"></div></td>
+<td style="text-align: left;"><strong>54,134.91 msg/s</strong> <br><div class="chart-bar chart-bar-muted" style="width:69%;min-width:4px;height:8px;border-radius:3px;display:inline-block;vertical-align:middle;"></div></td>
+<td style="text-align: left;"><strong>18.47 µs</strong> <br><div class="chart-bar chart-bar-muted" style="width:100%;min-width:4px;height:8px;border-radius:3px;display:inline-block;vertical-align:middle;"></div></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Red Hat Enterprise Linux (arm64)</strong></td>
+<td style="text-align: center;">Clang</td>
+<td style="text-align: left;"><strong>60,150.01 msg/s</strong> <br><div class="chart-bar chart-bar-secondary" style="width:82%;min-width:4px;height:8px;border-radius:3px;display:inline-block;vertical-align:middle;"></div></td>
+<td style="text-align: center;"><strong>158.53 MB/s</strong></td>
+<td style="text-align: left;"><strong>16.63 µs</strong> <br><div class="chart-bar chart-bar-secondary" style="width:84%;min-width:4px;height:8px;border-radius:3px;display:inline-block;vertical-align:middle;"></div></td>
+<td style="text-align: left;"><strong>63,844.12 msg/s</strong> <br><div class="chart-bar chart-bar-secondary" style="width:82%;min-width:4px;height:8px;border-radius:3px;display:inline-block;vertical-align:middle;"></div></td>
+<td style="text-align: left;"><strong>15.66 µs</strong> <br><div class="chart-bar chart-bar-secondary" style="width:84%;min-width:4px;height:8px;border-radius:3px;display:inline-block;vertical-align:middle;"></div></td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>Red Hat Enterprise Linux (arm64)</strong></td>
 <td style="text-align: center;">GCC</td>
-<td style="text-align: center;"><strong>58,371.39 msg/s</strong></td>
-<td style="text-align: center;"><strong>153.84 MB/s</strong></td>
-<td style="text-align: center;"><strong>17.13 µs</strong></td>
-<td style="text-align: center;"><strong>62,218.00 msg/s</strong></td>
-<td style="text-align: center;"><strong>16.07 µs</strong></td>
+<td style="text-align: left;"><strong>57,938.57 msg/s</strong> <br><div class="chart-bar chart-bar-info" style="width:79%;min-width:4px;height:8px;border-radius:3px;display:inline-block;vertical-align:middle;"></div></td>
+<td style="text-align: center;"><strong>152.70 MB/s</strong></td>
+<td style="text-align: left;"><strong>17.26 µs</strong> <br><div class="chart-bar chart-bar-info" style="width:87%;min-width:4px;height:8px;border-radius:3px;display:inline-block;vertical-align:middle;"></div></td>
+<td style="text-align: left;"><strong>62,046.86 msg/s</strong> <br><div class="chart-bar chart-bar-info" style="width:79%;min-width:4px;height:8px;border-radius:3px;display:inline-block;vertical-align:middle;"></div></td>
+<td style="text-align: left;"><strong>16.12 µs</strong> <br><div class="chart-bar chart-bar-info" style="width:87%;min-width:4px;height:8px;border-radius:3px;display:inline-block;vertical-align:middle;"></div></td>
 </tr>
 </tbody>
 </table>
-<hr />
-<h2 id="2-visual-platform-performance-comparison">2. Visual Platform Performance Comparison<a class="headerlink" href="#2-visual-platform-performance-comparison" title="Permanent link">&para;</a></h2>
-<p>Visual comparison of pipeline build results across platform runners.</p>
-<h3 id="stream-parsing-throughput-parseasync-messages-second-higher-is-better">Stream Parsing Throughput (<code>parseAsync</code> — Messages / Second — Higher is Better)<a class="headerlink" href="#stream-parsing-throughput-parseasync-messages-second-higher-is-better" title="Permanent link">&para;</a></h3>
-<div class="modern-chart">
-  <div class="chart-row">
-    <div class="chart-meta">
-      <span class="chart-title">Apple macOS (arm64) <span class="pill pill-success">Fastest</span></span>
-      <span class="chart-val">73,289 msg/s</span>
-    </div>
-    <div class="chart-track">
-      <div class="chart-bar chart-bar-primary" style="width: 100%;"></div>
-    </div>
-  </div>
-  <div class="chart-row">
-    <div class="chart-meta">
-      <span class="chart-title">Red Hat Enterprise Linux (arm64) </span>
-      <span class="chart-val">58,371 msg/s</span>
-    </div>
-    <div class="chart-track">
-      <div class="chart-bar chart-bar-secondary" style="width: 79%;"></div>
-    </div>
-  </div>
-  <div class="chart-row">
-    <div class="chart-meta">
-      <span class="chart-title">Microsoft Windows (arm64) </span>
-      <span class="chart-val">50,966 msg/s</span>
-    </div>
-    <div class="chart-track">
-      <div class="chart-bar chart-bar-info" style="width: 69%;"></div>
-    </div>
-  </div>
-</div>
-
-<h3 id="per-message-processing-latency-microseconds-lower-is-better">Per-Message Processing Latency (Microseconds — Lower is Better)<a class="headerlink" href="#per-message-processing-latency-microseconds-lower-is-better" title="Permanent link">&para;</a></h3>
-<div class="modern-chart">
-  <div class="chart-row">
-    <div class="chart-meta">
-      <span class="chart-title">Apple macOS (arm64) <span class="pill pill-success">Lowest Latency</span></span>
-      <span class="chart-val">13.64 µs</span>
-    </div>
-    <div class="chart-track">
-      <div class="chart-bar chart-bar-primary" style="width: 69%;"></div>
-    </div>
-  </div>
-  <div class="chart-row">
-    <div class="chart-meta">
-      <span class="chart-title">Red Hat Enterprise Linux (arm64) </span>
-      <span class="chart-val">17.13 µs</span>
-    </div>
-    <div class="chart-track">
-      <div class="chart-bar chart-bar-secondary" style="width: 87%;"></div>
-    </div>
-  </div>
-  <div class="chart-row">
-    <div class="chart-meta">
-      <span class="chart-title">Microsoft Windows (arm64) </span>
-      <span class="chart-val">19.62 µs</span>
-    </div>
-    <div class="chart-track">
-      <div class="chart-bar chart-bar-info" style="width: 100%;"></div>
-    </div>
-  </div>
-</div>
-
-<h3 id="single-message-parsing-throughput-parsefrombuffer-messages-second-higher-is-better">Single-Message Parsing Throughput (<code>parseFromBuffer</code> — Messages / Second — Higher is Better)<a class="headerlink" href="#single-message-parsing-throughput-parsefrombuffer-messages-second-higher-is-better" title="Permanent link">&para;</a></h3>
-<div class="modern-chart">
-  <div class="chart-row">
-    <div class="chart-meta">
-      <span class="chart-title">Apple macOS (arm64) <span class="pill pill-success">Fastest</span></span>
-      <span class="chart-val">78,101 msg/s</span>
-    </div>
-    <div class="chart-track">
-      <div class="chart-bar chart-bar-primary" style="width: 100%;"></div>
-    </div>
-  </div>
-  <div class="chart-row">
-    <div class="chart-meta">
-      <span class="chart-title">Red Hat Enterprise Linux (arm64) </span>
-      <span class="chart-val">62,218 msg/s</span>
-    </div>
-    <div class="chart-track">
-      <div class="chart-bar chart-bar-secondary" style="width: 79%;"></div>
-    </div>
-  </div>
-  <div class="chart-row">
-    <div class="chart-meta">
-      <span class="chart-title">Microsoft Windows (arm64) </span>
-      <span class="chart-val">45,637 msg/s</span>
-    </div>
-    <div class="chart-track">
-      <div class="chart-bar chart-bar-info" style="width: 58%;"></div>
-    </div>
-  </div>
-</div>
-
 <!-- PIPELINE_BENCHMARKS_END -->
 
 <hr />
-<h2 id="3-running-benchmarks-locally">3. Running Benchmarks Locally<a class="headerlink" href="#3-running-benchmarks-locally" title="Permanent link">&para;</a></h2>
+<h2 id="2-running-benchmarks-locally">2. Running Benchmarks Locally<a class="headerlink" href="#2-running-benchmarks-locally" title="Permanent link">&para;</a></h2>
 <p>To compile and execute the benchmark suite on your local machine:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># macOS (AppleClang Release)</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>cmake<span class="w"> </span>--preset<span class="w"> </span>Darwin-Clang-Release<span class="w"> </span>-Dsip2json_BUILD_BENCHMARKS<span class="o">=</span>ON
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>cmake<span class="w"> </span>--build<span class="w"> </span>--preset<span class="w"> </span>Darwin-Clang-Release<span class="w"> </span>--target<span class="w"> </span>sip2json_benchmarks
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>./build/Darwin-Clang-Release/benchmarks/sip2json_benchmarks
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="c1"># Linux (GCC Release)</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="c1"># Linux — GCC Release</span>
 </span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>cmake<span class="w"> </span>--preset<span class="w"> </span>Linux-GCC-Release<span class="w"> </span>-Dsip2json_BUILD_BENCHMARKS<span class="o">=</span>ON
 </span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>cmake<span class="w"> </span>--build<span class="w"> </span>--preset<span class="w"> </span>Linux-GCC-Release<span class="w"> </span>--target<span class="w"> </span>sip2json_benchmarks
 </span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>./build/Linux-GCC-Release/benchmarks/sip2json_benchmarks
 </span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="c1"># Windows (MSVC Release)</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>cmake<span class="w"> </span>--preset<span class="w"> </span>Windows-x64-Release<span class="w"> </span>-Dsip2json_BUILD_BENCHMARKS<span class="o">=</span>ON
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>cmake<span class="w"> </span>--build<span class="w"> </span>--preset<span class="w"> </span>Windows-x64-Release<span class="w"> </span>--target<span class="w"> </span>sip2json_benchmarks
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>.<span class="se">\b</span>uild<span class="se">\W</span>indows-x64-Release<span class="se">\b</span>enchmarks<span class="se">\s</span>ip2json_benchmarks.exe
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="c1"># Linux — Clang Release</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>cmake<span class="w"> </span>--preset<span class="w"> </span>Linux-Clang-Release<span class="w"> </span>-Dsip2json_BUILD_BENCHMARKS<span class="o">=</span>ON
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>cmake<span class="w"> </span>--build<span class="w"> </span>--preset<span class="w"> </span>Linux-Clang-Release<span class="w"> </span>--target<span class="w"> </span>sip2json_benchmarks
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>./build/Linux-Clang-Release/benchmarks/sip2json_benchmarks
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="c1"># Windows (MSVC Release)</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>cmake<span class="w"> </span>--preset<span class="w"> </span>Windows-x64-Release<span class="w"> </span>-Dsip2json_BUILD_BENCHMARKS<span class="o">=</span>ON
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>cmake<span class="w"> </span>--build<span class="w"> </span>--preset<span class="w"> </span>Windows-x64-Release<span class="w"> </span>--target<span class="w"> </span>sip2json_benchmarks
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>.<span class="se">\b</span>uild<span class="se">\W</span>indows-x64-Release<span class="se">\b</span>enchmarks<span class="se">\s</span>ip2json_benchmarks.exe
 </span></code></pre></div>
 
 
@@ -1656,7 +1524,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "toc.integrate", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.1.3-1"}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "toc.integrate", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.1.4-1"}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
