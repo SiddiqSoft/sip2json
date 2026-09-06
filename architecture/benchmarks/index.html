@@ -1392,12 +1392,11 @@
 
 
 <h1 id="performance-benchmarks">Performance &amp; Benchmarks<a class="headerlink" href="#performance-benchmarks" title="Permanent link">&para;</a></h1>
-<p><code>sip2json</code> delivers high-throughput, low-latency SIP stream parsing engineered for high-concurrency VoIP edge proxies, SBCs, and WebRTC media gateways.</p>
 <!-- PIPELINE_BENCHMARKS_START -->
 <h2 id="1-multi-platform-cross-architecture-pipeline-benchmark-matrix">1. Multi-Platform &amp; Cross-Architecture Pipeline Benchmark Matrix<a class="headerlink" href="#1-multi-platform-cross-architecture-pipeline-benchmark-matrix" title="Permanent link">&para;</a></h2>
 <div class="admonition note">
 <p class="admonition-title">Build Release &amp; Runner Environment</p>
-<p><strong>Build Release &amp; Version</strong>: <code>3.1.2</code>
+<p><strong>Build Release &amp; Version</strong>: <code>3.1.3-1</code>
 <strong>CI Matrix Host Runners (Derived from Pipeline)</strong>:
 - <strong>macOS Runner</strong>: macdev.siddiq.org (4 Cores, 24 MHz)
 - <strong>Windows Runner</strong>: WINDEV (4 Cores, 3072 MHz)
@@ -1420,29 +1419,29 @@
 <tr>
 <td style="text-align: left;"><strong>Apple macOS (arm64)</strong></td>
 <td style="text-align: center;">AppleClang</td>
-<td style="text-align: center;"><strong>72,433.75 msg/s</strong></td>
-<td style="text-align: center;"><strong>190.91 MB/s</strong></td>
-<td style="text-align: center;"><strong>13.81 µs</strong></td>
-<td style="text-align: center;"><strong>77,633.15 msg/s</strong></td>
-<td style="text-align: center;"><strong>12.88 µs</strong></td>
+<td style="text-align: center;"><strong>73,289.34 msg/s</strong></td>
+<td style="text-align: center;"><strong>193.16 MB/s</strong></td>
+<td style="text-align: center;"><strong>13.64 µs</strong></td>
+<td style="text-align: center;"><strong>78,100.81 msg/s</strong></td>
+<td style="text-align: center;"><strong>12.80 µs</strong></td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>Microsoft Windows (arm64)</strong></td>
 <td style="text-align: center;">MSVC</td>
-<td style="text-align: center;"><strong>53,078.28 msg/s</strong></td>
-<td style="text-align: center;"><strong>139.89 MB/s</strong></td>
-<td style="text-align: center;"><strong>18.84 µs</strong></td>
-<td style="text-align: center;"><strong>56,210.04 msg/s</strong></td>
-<td style="text-align: center;"><strong>17.79 µs</strong></td>
+<td style="text-align: center;"><strong>50,966.18 msg/s</strong></td>
+<td style="text-align: center;"><strong>134.33 MB/s</strong></td>
+<td style="text-align: center;"><strong>19.62 µs</strong></td>
+<td style="text-align: center;"><strong>45,637.46 msg/s</strong></td>
+<td style="text-align: center;"><strong>21.91 µs</strong></td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>Red Hat Enterprise Linux (arm64)</strong></td>
 <td style="text-align: center;">GCC</td>
-<td style="text-align: center;"><strong>58,051.36 msg/s</strong></td>
-<td style="text-align: center;"><strong>153.00 MB/s</strong></td>
-<td style="text-align: center;"><strong>17.23 µs</strong></td>
-<td style="text-align: center;"><strong>60,704.88 msg/s</strong></td>
-<td style="text-align: center;"><strong>16.47 µs</strong></td>
+<td style="text-align: center;"><strong>58,371.39 msg/s</strong></td>
+<td style="text-align: center;"><strong>153.84 MB/s</strong></td>
+<td style="text-align: center;"><strong>17.13 µs</strong></td>
+<td style="text-align: center;"><strong>62,218.00 msg/s</strong></td>
+<td style="text-align: center;"><strong>16.07 µs</strong></td>
 </tr>
 </tbody>
 </table>
@@ -1454,7 +1453,7 @@
   <div class="chart-row">
     <div class="chart-meta">
       <span class="chart-title">Apple macOS (arm64) <span class="pill pill-success">Fastest</span></span>
-      <span class="chart-val">72,434 msg/s</span>
+      <span class="chart-val">73,289 msg/s</span>
     </div>
     <div class="chart-track">
       <div class="chart-bar chart-bar-primary" style="width: 100%;"></div>
@@ -1463,19 +1462,19 @@
   <div class="chart-row">
     <div class="chart-meta">
       <span class="chart-title">Red Hat Enterprise Linux (arm64) </span>
-      <span class="chart-val">58,051 msg/s</span>
+      <span class="chart-val">58,371 msg/s</span>
     </div>
     <div class="chart-track">
-      <div class="chart-bar chart-bar-secondary" style="width: 80%;"></div>
+      <div class="chart-bar chart-bar-secondary" style="width: 79%;"></div>
     </div>
   </div>
   <div class="chart-row">
     <div class="chart-meta">
       <span class="chart-title">Microsoft Windows (arm64) </span>
-      <span class="chart-val">53,078 msg/s</span>
+      <span class="chart-val">50,966 msg/s</span>
     </div>
     <div class="chart-track">
-      <div class="chart-bar chart-bar-info" style="width: 73%;"></div>
+      <div class="chart-bar chart-bar-info" style="width: 69%;"></div>
     </div>
   </div>
 </div>
@@ -1485,25 +1484,25 @@
   <div class="chart-row">
     <div class="chart-meta">
       <span class="chart-title">Apple macOS (arm64) <span class="pill pill-success">Lowest Latency</span></span>
-      <span class="chart-val">13.81 µs</span>
+      <span class="chart-val">13.64 µs</span>
     </div>
     <div class="chart-track">
-      <div class="chart-bar chart-bar-primary" style="width: 73%;"></div>
+      <div class="chart-bar chart-bar-primary" style="width: 69%;"></div>
     </div>
   </div>
   <div class="chart-row">
     <div class="chart-meta">
       <span class="chart-title">Red Hat Enterprise Linux (arm64) </span>
-      <span class="chart-val">17.23 µs</span>
+      <span class="chart-val">17.13 µs</span>
     </div>
     <div class="chart-track">
-      <div class="chart-bar chart-bar-secondary" style="width: 91%;"></div>
+      <div class="chart-bar chart-bar-secondary" style="width: 87%;"></div>
     </div>
   </div>
   <div class="chart-row">
     <div class="chart-meta">
       <span class="chart-title">Microsoft Windows (arm64) </span>
-      <span class="chart-val">18.84 µs</span>
+      <span class="chart-val">19.62 µs</span>
     </div>
     <div class="chart-track">
       <div class="chart-bar chart-bar-info" style="width: 100%;"></div>
@@ -1516,7 +1515,7 @@
   <div class="chart-row">
     <div class="chart-meta">
       <span class="chart-title">Apple macOS (arm64) <span class="pill pill-success">Fastest</span></span>
-      <span class="chart-val">77,633 msg/s</span>
+      <span class="chart-val">78,101 msg/s</span>
     </div>
     <div class="chart-track">
       <div class="chart-bar chart-bar-primary" style="width: 100%;"></div>
@@ -1525,19 +1524,19 @@
   <div class="chart-row">
     <div class="chart-meta">
       <span class="chart-title">Red Hat Enterprise Linux (arm64) </span>
-      <span class="chart-val">60,705 msg/s</span>
+      <span class="chart-val">62,218 msg/s</span>
     </div>
     <div class="chart-track">
-      <div class="chart-bar chart-bar-secondary" style="width: 78%;"></div>
+      <div class="chart-bar chart-bar-secondary" style="width: 79%;"></div>
     </div>
   </div>
   <div class="chart-row">
     <div class="chart-meta">
       <span class="chart-title">Microsoft Windows (arm64) </span>
-      <span class="chart-val">56,210 msg/s</span>
+      <span class="chart-val">45,637 msg/s</span>
     </div>
     <div class="chart-track">
-      <div class="chart-bar chart-bar-info" style="width: 72%;"></div>
+      <div class="chart-bar chart-bar-info" style="width: 58%;"></div>
     </div>
   </div>
 </div>
@@ -1657,7 +1656,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "toc.integrate", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.1.2"}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "toc.integrate", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.1.3-1"}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
