@@ -373,9 +373,7 @@
   
 
 
-  
-
-<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="sip2json" class="md-nav__button md-logo" aria-label="sip2json" data-md-component="logo">
       
@@ -1347,6 +1345,121 @@
               </div>
             
             
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#performance-benchmarks_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Performance &amp; Benchmarks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-running-benchmarks-locally" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Running Benchmarks Locally
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#platform-performance-variance-host-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Platform Performance Variance &amp; Host Architecture
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Platform Performance Variance &amp; Host Architecture">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-factors-influencing-cross-platform-measurements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Factors Influencing Cross-Platform Measurements
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Key Factors Influencing Cross-Platform Measurements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-bare-metal-vs-hypervisor-virtualization-memory-address-translation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Bare-Metal vs. Hypervisor Virtualization (Memory &amp; Address Translation)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-heterogeneous-core-scheduling-performance-vs-efficiency-cores" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Heterogeneous Core Scheduling (Performance vs. Efficiency Cores)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-microarchitecture-target-defaults-build-optimization-flags" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Microarchitecture Target Defaults &amp; Build Optimization Flags
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
           
           
             <div class="md-content" data-md-component="content">
@@ -1413,10 +1526,11 @@
 <h2 id="performance-benchmarks_1">Performance &amp; Benchmarks<a class="headerlink" href="#performance-benchmarks_1" title="Permanent link">&para;</a></h2>
 <div class="admonition note">
 <p class="admonition-title">Build Release &amp; Runner Environment</p>
-<p><strong>Build Release &amp; Version</strong>: <code>3.1.5-2</code>
+<p><strong>Build Release &amp; Version</strong>: <code>3.1.5-7</code>
 <strong>CI Matrix Host Runners (Derived from Pipeline)</strong>:
 - <strong>macOS Runner</strong>: macdev.siddiq.org (4 Cores, 24 MHz)
 - <strong>Windows Runner</strong>: WINDEV (4 Cores, 3072 MHz)
+- <strong>Windows Runner</strong>: PC1 (4 Cores, 1997 MHz)
 - <strong>Linux Runner</strong>: lba4.siddiq.org (4 Cores, 48 MHz)</p>
 </div>
 <p><em>Build pipeline measurements collected across all matrix runners.</em></p>
@@ -1436,38 +1550,86 @@
 <tr>
 <td style="text-align: left;"><strong>Apple macOS (arm64)</strong></td>
 <td style="text-align: center;">AppleClang</td>
-<td style="text-align: left;"><strong>74,019.58 msg/s</strong></td>
-<td style="text-align: center;"><strong>195.09 MB/s</strong></td>
-<td style="text-align: left;"><strong>13.51 µs</strong></td>
-<td style="text-align: left;"><strong>80,648.81 msg/s</strong></td>
-<td style="text-align: left;"><strong>12.40 µs</strong></td>
+<td style="text-align: left;"><strong>72,639.67 msg/s</strong></td>
+<td style="text-align: center;"><strong>191.45 MB/s</strong></td>
+<td style="text-align: left;"><strong>13.77 µs</strong></td>
+<td style="text-align: left;"><strong>76,889.25 msg/s</strong></td>
+<td style="text-align: left;"><strong>13.01 µs</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Apple macOS (x64)</strong></td>
+<td style="text-align: center;">AppleClang</td>
+<td style="text-align: left;"><strong>74,428.05 msg/s</strong></td>
+<td style="text-align: center;"><strong>196.16 MB/s</strong></td>
+<td style="text-align: left;"><strong>13.44 µs</strong></td>
+<td style="text-align: left;"><strong>80,109.66 msg/s</strong></td>
+<td style="text-align: left;"><strong>12.48 µs</strong></td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>Microsoft Windows (arm64)</strong></td>
 <td style="text-align: center;">MSVC</td>
-<td style="text-align: left;"><strong>51,208.24 msg/s</strong></td>
-<td style="text-align: center;"><strong>134.97 MB/s</strong></td>
-<td style="text-align: left;"><strong>19.53 µs</strong></td>
-<td style="text-align: left;"><strong>55,327.83 msg/s</strong></td>
-<td style="text-align: left;"><strong>18.07 µs</strong></td>
+<td style="text-align: left;"><strong>45,290.38 msg/s</strong></td>
+<td style="text-align: center;"><strong>119.37 MB/s</strong></td>
+<td style="text-align: left;"><strong>22.08 µs</strong></td>
+<td style="text-align: left;"><strong>42,217.03 msg/s</strong></td>
+<td style="text-align: left;"><strong>23.69 µs</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Microsoft Windows (x64)</strong></td>
+<td style="text-align: center;">MSVC</td>
+<td style="text-align: left;"><strong>8,951.25 msg/s</strong></td>
+<td style="text-align: center;"><strong>23.59 MB/s</strong></td>
+<td style="text-align: left;"><strong>111.72 µs</strong></td>
+<td style="text-align: left;"><strong>8,391.51 msg/s</strong></td>
+<td style="text-align: left;"><strong>119.17 µs</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Red Hat Enterprise Linux (arm64)</strong></td>
+<td style="text-align: center;">Clang</td>
+<td style="text-align: left;"><strong>58,128.06 msg/s</strong></td>
+<td style="text-align: center;"><strong>153.20 MB/s</strong></td>
+<td style="text-align: left;"><strong>17.20 µs</strong></td>
+<td style="text-align: left;"><strong>62,571.48 msg/s</strong></td>
+<td style="text-align: left;"><strong>15.98 µs</strong></td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>Red Hat Enterprise Linux (arm64)</strong></td>
 <td style="text-align: center;">GCC</td>
-<td style="text-align: left;"><strong>57,585.97 msg/s</strong></td>
-<td style="text-align: center;"><strong>151.77 MB/s</strong></td>
-<td style="text-align: left;"><strong>17.37 µs</strong></td>
-<td style="text-align: left;"><strong>61,805.19 msg/s</strong></td>
-<td style="text-align: left;"><strong>16.18 µs</strong></td>
+<td style="text-align: left;"><strong>58,283.93 msg/s</strong></td>
+<td style="text-align: center;"><strong>153.61 MB/s</strong></td>
+<td style="text-align: left;"><strong>17.16 µs</strong></td>
+<td style="text-align: left;"><strong>62,894.15 msg/s</strong></td>
+<td style="text-align: left;"><strong>15.90 µs</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Red Hat Enterprise Linux (x64)</strong></td>
+<td style="text-align: center;">Clang</td>
+<td style="text-align: left;"><strong>61,424.12 msg/s</strong></td>
+<td style="text-align: center;"><strong>161.89 MB/s</strong></td>
+<td style="text-align: left;"><strong>16.28 µs</strong></td>
+<td style="text-align: left;"><strong>65,341.25 msg/s</strong></td>
+<td style="text-align: left;"><strong>15.30 µs</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Red Hat Enterprise Linux (x64)</strong></td>
+<td style="text-align: center;">GCC</td>
+<td style="text-align: left;"><strong>56,819.61 msg/s</strong></td>
+<td style="text-align: center;"><strong>149.75 MB/s</strong></td>
+<td style="text-align: left;"><strong>17.60 µs</strong></td>
+<td style="text-align: left;"><strong>59,802.22 msg/s</strong></td>
+<td style="text-align: left;"><strong>16.72 µs</strong></td>
 </tr>
 </tbody>
 </table>
 <!-- PIPELINE_BENCHMARKS_END -->
 
-<blockquote>
-<p>[!NOTE]
-<strong>Host Architecture Context</strong>: All matrix runners reside on the same physical host hardware (Apple Mac Mini M4 Pro, 24 GB RAM, external NVMe SSD). For an analysis of bare-metal host vs. guest virtual machine execution and compiler code generation, see <a href="#platform-performance-variance-host-architecture">Platform Performance Variance &amp; Host Architecture</a>.</p>
-</blockquote>
+<div class="admonition note">
+<p class="admonition-title"><strong>Host Architecture Context</strong></p>
+<p>While all matrix runners reside on the same physical host hardware (Apple Mac Mini M4 Pro, 24 GB RAM, external NVMe SSD) <u>direct comparision is not meaningful.</u></p>
+<p>Benchmarks are not directly comprable (especially Mac and other platforms--you cannot run MacOS baremetal on non Apple platforms) and are provided here to get a sense of the numbers.</p>
+<p>They serve to inform the user on how much headroom this library provides on their platform. You're likely limited by downstream processing than this library.</p>
+<p>For an analysis of bare-metal host vs. guest virtual machine execution and compiler code generation, see <a href="#platform-performance-variance-host-architecture">Platform Performance Variance &amp; Host Architecture</a>.</p>
+</div>
 <hr />
 <h2 id="2-running-benchmarks-locally">2. Running Benchmarks Locally<a class="headerlink" href="#2-running-benchmarks-locally" title="Permanent link">&para;</a></h2>
 <p>To compile and execute the benchmark suite on your local machine:</p>
@@ -1613,12 +1775,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "toc.integrate", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.1.5-2"}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.1.5-7"}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
-      
-        <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
       
     
   </body>

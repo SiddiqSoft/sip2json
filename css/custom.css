@@ -17,6 +17,28 @@
   --s2j-pill-success-text: #059669;
   --s2j-pill-info-bg: rgba(59, 130, 246, 0.12);
   --s2j-pill-info-text: #2563eb;
+
+  /* Mermaid Diagram Integration (matching sip2json Indigo/Slate) */
+  --md-mermaid-font-family: var(--md-font-main);
+  --md-mermaid-edge-color: #5c6bc0;
+  --md-mermaid-node-bg-color: rgba(63, 81, 181, 0.08);
+  --md-mermaid-node-fg-color: #3f51b5;
+  --md-mermaid-label-bg-color: var(--md-default-bg-color);
+  --md-mermaid-label-fg-color: var(--md-default-fg-color);
+  --md-mermaid-sequence-actor-bg-color: rgba(63, 81, 181, 0.08);
+  --md-mermaid-sequence-actor-border-color: #3f51b5;
+  --md-mermaid-sequence-actor-fg-color: #1e1b4b;
+  --md-mermaid-sequence-actor-line-color: rgba(63, 81, 181, 0.3);
+  --md-mermaid-sequence-message-fg-color: #303f9f;
+  --md-mermaid-sequence-message-line-color: #5c6bc0;
+  --md-mermaid-sequence-note-bg-color: rgba(79, 70, 229, 0.08);
+  --md-mermaid-sequence-note-border-color: #818cf8;
+  --md-mermaid-sequence-note-fg-color: #1e1b4b;
+  --md-mermaid-sequence-box-bg-color: rgba(63, 81, 181, 0.03);
+  --md-mermaid-sequence-loop-bg-color: rgba(63, 81, 181, 0.04);
+  --md-mermaid-sequence-loop-border-color: rgba(63, 81, 181, 0.25);
+  --md-mermaid-sequence-number-bg-color: #3f51b5;
+  --md-mermaid-sequence-number-fg-color: #ffffff;
 }
 
 [data-md-color-scheme="slate"] {
@@ -28,6 +50,27 @@
   --s2j-pill-success-text: #6ee7b7;
   --s2j-pill-info-bg: rgba(96, 165, 250, 0.2);
   --s2j-pill-info-text: #93c5fd;
+
+  /* Mermaid Diagram Dark Mode */
+  --md-mermaid-edge-color: #94a3b8;
+  --md-mermaid-node-bg-color: rgba(129, 140, 248, 0.16);
+  --md-mermaid-node-fg-color: #818cf8;
+  --md-mermaid-label-bg-color: var(--md-default-bg-color);
+  --md-mermaid-label-fg-color: #e2e8f0;
+  --md-mermaid-sequence-actor-bg-color: rgba(129, 140, 248, 0.18);
+  --md-mermaid-sequence-actor-border-color: #818cf8;
+  --md-mermaid-sequence-actor-fg-color: #e0e7ff;
+  --md-mermaid-sequence-actor-line-color: rgba(129, 140, 248, 0.35);
+  --md-mermaid-sequence-message-fg-color: #cbd5e1;
+  --md-mermaid-sequence-message-line-color: #818cf8;
+  --md-mermaid-sequence-note-bg-color: rgba(30, 27, 75, 0.6);
+  --md-mermaid-sequence-note-border-color: #6366f1;
+  --md-mermaid-sequence-note-fg-color: #e0e7ff;
+  --md-mermaid-sequence-box-bg-color: rgba(15, 23, 42, 0.6);
+  --md-mermaid-sequence-loop-bg-color: rgba(129, 140, 248, 0.08);
+  --md-mermaid-sequence-loop-border-color: rgba(129, 140, 248, 0.3);
+  --md-mermaid-sequence-number-bg-color: #818cf8;
+  --md-mermaid-sequence-number-fg-color: #0f172a;
 }
 
 /* Base typography */
@@ -408,4 +451,32 @@ code, kbd, pre {
 
 .md-typeset .headerlink {
   transition: opacity 0.2s ease;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Mermaid Diagram Framing & Container Layout                                */
+/* -------------------------------------------------------------------------- */
+.mermaid {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  background-color: var(--md-default-bg-color) !important;
+  border: 1px solid var(--s2j-card-border) !important;
+  border-radius: 8px !important;
+  padding: 1.5rem 1.25rem !important;
+  margin: 1.5rem 0 2rem 0 !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+  overflow-x: auto !important;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.mermaid:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07) !important;
+}
+
+.mermaid > svg,
+.mermaid svg {
+  max-width: 100% !important;
+  height: auto !important;
+  font-family: var(--md-font-main) !important;
 }
