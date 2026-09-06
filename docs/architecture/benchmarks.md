@@ -12,6 +12,8 @@
 
 <!-- PIPELINE_BENCHMARKS_END -->
 
+> [!NOTE]
+> **Host Architecture Context**: All matrix runners reside on the same physical host hardware (Apple Mac Mini M4 Pro, 24 GB RAM, external NVMe SSD). For an analysis of bare-metal host vs. guest virtual machine execution and compiler code generation, see [Platform Performance Variance & Host Architecture](#3-platform-performance-variance--host-architecture).
 
 ---
 
@@ -40,3 +42,31 @@ cmake --preset Windows-x64-Release -Dsip2json_BUILD_BENCHMARKS=ON
 cmake --build --preset Windows-x64-Release --target sip2json_benchmarks
 .\build\Windows-x64-Release\benchmarks\sip2json_benchmarks.exe
 ```
+
+---
+
+## 3. Platform Performance Variance & Host Architecture
+
+All CI/CD release matrix runners execute on the same physical host machine:
+- **Physical Host**: Apple Mac Mini (Apple M4 Pro, 24 GB Unified Memory, 273 GB/s memory bandwidth, external NVMe SSD storage).
+- **Execution Topology**:
+  - **macOS Runner**: Runs natively on the bare-metal Darwin host kernel.
+  - **Linux & Windows Runners**: Run inside guest virtual machines allocated 4 vCPUs and 6 GB RAM managed by the host hypervisor.
+
+### Key Factors Influencing Cross-Platform Measurements
+
+#### 1. Bare-Metal vs. Hypervisor Virtualization (Memory & Address Translation)
+- **Bare-Metal Execution (macOS)**: Memory address translation is direct ($L1 \rightarrow L2 \rightarrow \text{RAM}$). The parser accesses buffer pages with zero hypervisor intervention and utilizes the full 273 GB/s host memory bus.
+- **Virtualized Execution (Linux & Windows)**: Every memory access requires **Two-Stage Address Translation (SLAT)** through the hypervisor (Guest Virtual $\rightarrow$ Guest Physical $\rightarrow$ Host Physical). In buffer-scanning, pointer-chasing, and allocation workloads, TLB misses and page table traversals incur hypervisor trap-and-emulate overhead.
+- **Guest Buffer Cache Capacity**: The guest VMs are allocated 6 GB of RAM, of which 2–3 GB is consumed by the guest OS kernel and background services, leaving constrained memory for filesystem and buffer caching compared to the host's 24 GB pool.
+
+#### 2. Heterogeneous Core Scheduling (Performance vs. Efficiency Cores)
+- The M4 Pro features an asymmetric core topology comprising high-frequency Performance (P) cores (~4.4 GHz, 8-wide decode) and Efficiency (E) cores (~2.8 GHz, narrow execution pipelines).
+- On bare-metal macOS, the Darwin thread scheduler pins CPU-intensive benchmark loops to P-cores.
+- Inside virtual machines with 4 unpinned vCPUs, the host hypervisor worker threads may be context-switched between P-cores and E-cores by the host scheduler under background host activity, introducing variance in measured throughput.
+
+#### 3. Microarchitecture Target Defaults & Build Optimization Flags
+- **Compiler Target Defaults**:
+  - **AppleClang (macOS)**: Automatically emits instruction scheduling tuned for Apple Silicon core pipelines, and links against Apple's `libc++` which features vectorized NEON implementations of `std::string_view` search operations (`memchr`, `std::char_traits::find`).
+  - **GCC / Clang (Linux)**: By default, compilers target baseline `armv8-a` to preserve distribution portability across generic ARM hardware. Build optimization flags (`-O3 -mcpu=native -flto=auto -fno-semantic-interposition -fomit-frame-pointer`) are applied to enable host-specific instruction scheduling and eliminate PLT indirection overhead.
+  - **MSVC (Windows)**: Uses `/O2 /Oi /Ot /Ob3 /GL` and `/LTCG` for Whole Program Optimization and intrinsic expansion.

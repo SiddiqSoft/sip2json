@@ -37,13 +37,14 @@ Refer to the live, pipeline-generated performance matrix at [**docs/architecture
 
 ### 1. Build Benchmarks in Release Mode
 ```bash
-cmake -B build/Apple-Release -S . -DCMAKE_BUILD_TYPE=Release -Dsip2json_BUILD_BENCHMARKS=ON
-cmake --build build/Apple-Release --config Release
+# Using CMake Presets for your platform (e.g. Darwin-Clang-Release, Linux-GCC-Release, Windows-x64-Release)
+cmake --preset <Preset-Name> -Dsip2json_BUILD_BENCHMARKS=ON
+cmake --build --preset <Preset-Name> --target sip2json_benchmarks
 ```
 
 ### 2. Execute Benchmark Suite & Export JSON Results
 ```bash
-./build/Apple-Release/benchmarks/sip2json_benchmarks --benchmark_out=benchmarks/benchmark_results.json --benchmark_out_format=json
+./build/<Preset-Name>/benchmarks/sip2json_benchmarks --benchmark_out=benchmarks/benchmark_results.json --benchmark_out_format=json
 ```
 
 ### 3. Generate HTML and JUnit XML Reports

@@ -282,23 +282,17 @@ def _inline_bar(value: float, max_value: float, higher_is_better: bool, bar_cls:
 
 
 def _tput_cell(value_str: str, value_num: float, max_val: float, rank: int) -> str:
-    """Compose a table cell with numeric figure + inline bar for throughput (higher = better)."""
-    bar_classes = ["chart-bar chart-bar-primary", "chart-bar chart-bar-secondary",
-                   "chart-bar chart-bar-info", "chart-bar chart-bar-muted"]
-    bar_cls = bar_classes[min(rank, len(bar_classes) - 1)]
+    """Compose a table cell with numeric figure + inline bar for throughput."""
+    bar_cls = "chart-bar chart-bar-primary"
     bar = _inline_bar(value_num, max_val, True, bar_cls)
-    badge = '<span class="pill pill-success">⬆ Best</span>' if rank == 0 else ""
-    return f"**{value_str}** {badge}<br>{bar}"
+    return f"**{value_str}**<br>{bar}"
 
 
 def _lat_cell(value_str: str, value_num: float, max_val: float, rank: int) -> str:
-    """Compose a table cell with numeric figure + inline bar for latency (lower = better)."""
-    bar_classes = ["chart-bar chart-bar-primary", "chart-bar chart-bar-secondary",
-                   "chart-bar chart-bar-info", "chart-bar chart-bar-muted"]
-    bar_cls = bar_classes[min(rank, len(bar_classes) - 1)]
+    """Compose a table cell with numeric figure + inline bar for latency."""
+    bar_cls = "chart-bar chart-bar-primary"
     bar = _inline_bar(value_num, max_val, False, bar_cls)
-    badge = '<span class="pill pill-success">⬇ Best</span>' if rank == 0 else ""
-    return f"**{value_str}** {badge}<br>{bar}"
+    return f"**{value_str}**<br>{bar}"
 
 
 def update_benchmarks_doc(repo_root: Path, platform_results: list, require_all: bool = False, required_str: str = ""):
@@ -375,8 +369,7 @@ def update_benchmarks_doc(repo_root: Path, platform_results: list, require_all: 
             table_lines.append('    **CI Matrix Host Runners**: Derived dynamically from pipeline runners.')
         table_lines.append("")
         table_lines.append("*Build pipeline measurements collected across all matrix runners. "
-                           "Bar graphs show relative performance — each bar is proportional to the "
-                           "column-maximum across all rows (⬆ Best = highest throughput / ⬇ Best = lowest latency).*")
+                           "Bar graphs show relative performance normalized to the column maximum.*")
         table_lines.append("")
 
         # Pre-compute per-metric maxima for proportional bar scaling
@@ -385,7 +378,7 @@ def update_benchmarks_doc(repo_root: Path, platform_results: list, require_all: 
         max_single_tput = max((r.get("single_tput_num", 0) for r in sorted_results), default=1) or 1
         max_single_lat  = max((r.get("single_lat_num",  0) for r in sorted_results), default=1) or 1
 
-        # Pre-rank each metric for bar colour (0 = best)
+        # Pre-rank each metric
         ranked_async_tput  = {id(r): i for i, r in enumerate(sorted(sorted_results, key=lambda x: -x.get("async_tput_num", 0)))}
         ranked_async_lat   = {id(r): i for i, r in enumerate(sorted(sorted_results, key=lambda x:  x.get("async_lat_num",  0)))}
         ranked_single_tput = {id(r): i for i, r in enumerate(sorted(sorted_results, key=lambda x: -x.get("single_tput_num", 0)))}

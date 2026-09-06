@@ -39,17 +39,51 @@ if(${${PROJECT_NAME}_BUILD_BENCHMARKS})
     endif()
 
     if( CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" )
-        message(STATUS "  >> MSVC benchmark flags..")
-        set(OPTIMIZE_FLAGS "/O2")
-        set(OTHER_FLAGS "")
+        message(STATUS "  >> MSVC benchmark optimization flags..")
+        set(OPTIMIZE_FLAGS
+            "/O2"
+            "/Oi"
+            "/Ot"
+            "/Ob3"
+            "/GL"
+            "/DNDEBUG"
+        )
+        set(LINK_FLAGS
+            "/LTCG"
+            "/OPT:REF"
+            "/OPT:ICF"
+        )
+        target_compile_options(${BENCHPROJ} PRIVATE ${OPTIMIZE_FLAGS})
+        target_link_options(${BENCHPROJ} PRIVATE ${LINK_FLAGS})
     else()
-        set(OPTIMIZE_FLAGS "-O3")
-        set(OTHER_FLAGS "-g")
-    endif()
+        message(STATUS "  >> GCC/Clang benchmark optimization flags..")
+        set(ARCH_FLAGS "-mcpu=native")
+        if(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64|AMD64")
+            set(ARCH_FLAGS "-march=native")
+        endif()
 
-    message(STATUS "  >> Enable compile options for ${BENCHPROJ} -- ${OPTIMIZE_FLAGS} ${OTHER_FLAGS}")
-    target_compile_options(${BENCHPROJ} PRIVATE ${OPTIMIZE_FLAGS} ${OTHER_FLAGS})
-    target_link_options(${BENCHPROJ} PRIVATE ${OPTIMIZE_FLAGS} ${OTHER_FLAGS})
+        include(CheckCXXCompilerFlag)
+        check_cxx_compiler_flag("${ARCH_FLAGS}" COMPILER_SUPPORTS_ARCH_NATIVE)
+        if(NOT COMPILER_SUPPORTS_ARCH_NATIVE)
+            set(ARCH_FLAGS "")
+        endif()
+
+        set(OPTIMIZE_FLAGS
+            "-O3"
+            ${ARCH_FLAGS}
+            "-flto=auto"
+            "-fomit-frame-pointer"
+            "-DNDEBUG"
+        )
+        if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+            list(APPEND OPTIMIZE_FLAGS "-fno-semantic-interposition")
+        endif()
+
+        set(LINK_FLAGS "-flto=auto")
+
+        target_compile_options(${BENCHPROJ} PRIVATE ${OPTIMIZE_FLAGS})
+        target_link_options(${BENCHPROJ} PRIVATE ${LINK_FLAGS})
+    endif()
 
     if( CMAKE_BUILD_TYPE MATCHES [Dd][Ee][Bb][Uu][Gg])
         message(STATUS "  >> Setting DEBUG macro..")
