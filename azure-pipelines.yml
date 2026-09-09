@@ -295,8 +295,5 @@ stages:
       - template: .azure/az-publish-docs.yml
         parameters:
           displayName: Publish Documentation Site
-          ${{ if and(not(containsValue(parameters.Platforms, 'Linux')), containsValue(parameters.Platforms, 'Darwin')) }}:
-            agentOS: Darwin
-          ${{ if or(containsValue(parameters.Platforms, 'Linux'), not(containsValue(parameters.Platforms, 'Darwin'))) }}:
-            agentOS: ${{ parameters.DocAgentOS }}
+          agentOS: ${{ parameters.DocAgentOS }}
           dependsOn: [ ApproveDocsRelease ]
