@@ -1035,8 +1035,93 @@
   
   
   
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Maintainer Guide
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Maintainer Guide
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
     <li class="md-nav__item">
-      <a href="../../maintainers/pipelines/" class="md-nav__link">
+      <a href="../../maintainers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintainers/maintainer_guide/" class="md-nav__link">
         
   
   
@@ -1052,6 +1137,182 @@
   
 
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintainers/pipelines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CI/CD Pipelines
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintainers/cmake_presets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CMake Presets
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintainers/workflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development Workflow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintainers/build_agents/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Build Agent Requirements
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintainers/releases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Release Lifecycle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintainers/documentation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -1280,7 +1541,7 @@
 <h2 id="performance-benchmarks_1">Performance &amp; Benchmarks<a class="headerlink" href="#performance-benchmarks_1" title="Permanent link">&para;</a></h2>
 <div class="admonition note">
 <p class="admonition-title">Build Release &amp; Runner Environment</p>
-<p><strong>Build Release &amp; Version</strong>: <code>3.1.5</code>
+<p><strong>Build Release &amp; Version</strong>: <code>3.2.0-17</code>
 <strong>CI Matrix Host Runners (Derived from Pipeline)</strong>:
 - <strong>macOS Runner</strong>: macdev.siddiq.org (4 Cores, 24 MHz)
 - <strong>Windows Runner</strong>: WINDEV (4 Cores, 3072 MHz)
@@ -1303,38 +1564,29 @@
 <tr>
 <td style="text-align: left;"><strong>Apple macOS (arm64)</strong></td>
 <td style="text-align: center;">AppleClang</td>
-<td style="text-align: left;"><strong>72,348.99 msg/s</strong></td>
-<td style="text-align: center;"><strong>190.68 MB/s</strong></td>
-<td style="text-align: left;"><strong>13.82 us</strong></td>
-<td style="text-align: left;"><strong>77,649.75 msg/s</strong></td>
-<td style="text-align: left;"><strong>12.88 us</strong></td>
+<td style="text-align: left;"><strong>72,785.61 msg/s</strong></td>
+<td style="text-align: center;"><strong>191.84 MB/s</strong></td>
+<td style="text-align: left;"><strong>13.74 us</strong></td>
+<td style="text-align: left;"><strong>76,663.03 msg/s</strong></td>
+<td style="text-align: left;"><strong>13.04 us</strong></td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>Microsoft Windows (arm64)</strong></td>
 <td style="text-align: center;">MSVC</td>
-<td style="text-align: left;"><strong>49,915.94 msg/s</strong></td>
-<td style="text-align: center;"><strong>131.56 MB/s</strong></td>
-<td style="text-align: left;"><strong>20.03 us</strong></td>
-<td style="text-align: left;"><strong>53,826.39 msg/s</strong></td>
-<td style="text-align: left;"><strong>18.58 us</strong></td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Red Hat Enterprise Linux (arm64)</strong></td>
-<td style="text-align: center;">Clang</td>
-<td style="text-align: left;"><strong>61,494.10 msg/s</strong></td>
-<td style="text-align: center;"><strong>162.07 MB/s</strong></td>
-<td style="text-align: left;"><strong>16.26 us</strong></td>
-<td style="text-align: left;"><strong>65,643.19 msg/s</strong></td>
-<td style="text-align: left;"><strong>15.23 us</strong></td>
+<td style="text-align: left;"><strong>51,653.58 msg/s</strong></td>
+<td style="text-align: center;"><strong>136.14 MB/s</strong></td>
+<td style="text-align: left;"><strong>19.36 us</strong></td>
+<td style="text-align: left;"><strong>41,638.07 msg/s</strong></td>
+<td style="text-align: left;"><strong>24.02 us</strong></td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>Red Hat Enterprise Linux (arm64)</strong></td>
 <td style="text-align: center;">GCC</td>
-<td style="text-align: left;"><strong>53,925.36 msg/s</strong></td>
-<td style="text-align: center;"><strong>142.13 MB/s</strong></td>
-<td style="text-align: left;"><strong>18.54 us</strong></td>
-<td style="text-align: left;"><strong>58,579.83 msg/s</strong></td>
-<td style="text-align: left;"><strong>17.07 us</strong></td>
+<td style="text-align: left;"><strong>50,706.90 msg/s</strong></td>
+<td style="text-align: center;"><strong>133.64 MB/s</strong></td>
+<td style="text-align: left;"><strong>19.72 us</strong></td>
+<td style="text-align: left;"><strong>60,532.20 msg/s</strong></td>
+<td style="text-align: left;"><strong>16.52 us</strong></td>
 </tr>
 </tbody>
 </table>
@@ -1350,9 +1602,9 @@
 <h2 id="2-running-benchmarks-locally">2. Running Benchmarks Locally<a class="headerlink" href="#2-running-benchmarks-locally" title="Permanent link">&para;</a></h2>
 <p>To compile and execute the benchmark suite on your local machine:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># macOS (AppleClang Release)</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>cmake<span class="w"> </span>--preset<span class="w"> </span>Darwin-Clang-Release<span class="w"> </span>-Dsip2json_BUILD_BENCHMARKS<span class="o">=</span>ON
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>cmake<span class="w"> </span>--build<span class="w"> </span>--preset<span class="w"> </span>Darwin-Clang-Release<span class="w"> </span>--target<span class="w"> </span>sip2json_benchmarks
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>./build/Darwin-Clang-Release/benchmarks/sip2json_benchmarks
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>cmake<span class="w"> </span>--preset<span class="w"> </span>Apple-Clang-Release<span class="w"> </span>-Dsip2json_BUILD_BENCHMARKS<span class="o">=</span>ON
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>cmake<span class="w"> </span>--build<span class="w"> </span>--preset<span class="w"> </span>Apple-Clang-Release<span class="w"> </span>--target<span class="w"> </span>sip2json_benchmarks
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>./build/Apple-Clang-Release/benchmarks/sip2json_benchmarks
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="c1"># Linux - GCC Release</span>
 </span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>cmake<span class="w"> </span>--preset<span class="w"> </span>Linux-GCC-Release<span class="w"> </span>-Dsip2json_BUILD_BENCHMARKS<span class="o">=</span>ON
@@ -1490,7 +1742,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.1.5"}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.2.0-17"}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>

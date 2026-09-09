@@ -1,0 +1,2219 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="SIP Parser for Modern C++">
+      
+      
+        <meta name="author" content="Siddiq Software LLC">
+      
+      
+        <link rel="canonical" href="https://siddiqsoft.github.io/sip2json/maintainers/documentation/">
+      
+      
+        <link rel="prev" href="../releases/">
+      
+      
+        <link rel="next" href="../../license/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/Siddiq-Software-Avatar.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Documentation Architecture - sip2json</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../css/custom.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#documentation-architecture-customization-guide" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="sip2json" class="md-header__button md-logo" aria-label="sip2json" data-md-component="logo">
+      
+  <img src="../../assets/Siddiq-Software-Avatar.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            sip2json
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Documentation Architecture
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/SiddiqSoft/sip2json" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    SiddiqSoft/sip2json
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../quickstart/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../api/" class="md-tabs__link">
+          
+  
+  
+  API Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../architecture/benchmarks/" class="md-tabs__link">
+          
+  
+  
+  Related Pages
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="sip2json" class="md-nav__button md-logo" aria-label="sip2json" data-md-component="logo">
+      
+  <img src="../../assets/Siddiq-Software-Avatar.png" alt="logo">
+
+    </a>
+    sip2json
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/SiddiqSoft/sip2json" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    SiddiqSoft/sip2json
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/sip2json/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    sip2json
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/sipmessage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    sipmessage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/constants/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Constants & Header Keys
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/errors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Exceptions & Errors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/json_schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    JSON Schema & SDP
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Code Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Related Pages
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Related Pages
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/benchmarks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Benchmarks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/async/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stream Mechanics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/optimization_choices/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Optimization Choices
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/compliance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Standards Compliance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/test_suite_sources/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Test Suite & RFC Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_7" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Maintainer Guide
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Maintainer Guide
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../maintainer_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Maintainer Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pipelines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CI/CD Pipelines
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cmake_presets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CMake Presets
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development Workflow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../build_agents/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Build Agent Requirements
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../releases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Release Lifecycle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation Architecture
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-documentation-pipeline-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Documentation Pipeline Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-building-previewing-documentation-locally" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Building &amp; Previewing Documentation Locally
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Building &amp; Previewing Documentation Locally">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#live-reload-development-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Live-Reload Development Server
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#strict-build-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Strict Build Validation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#updating-benchmark-data-prior-to-serving" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Updating Benchmark Data Prior to Serving
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-typography-sizing-tokens" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Typography &amp; Sizing Tokens
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Typography &amp; Sizing Tokens">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#browser-accessibility-native-zoom-compatibility" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Browser Accessibility &amp; Native Zoom Compatibility
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#high-dpi-retina-desktop-scaling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        High-DPI / Retina Desktop Scaling
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-brand-colors-light-dark-themes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Brand Colors &amp; Light / Dark Themes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-standard-c-syntax-highlighting-tokens" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Standard C++ Syntax Highlighting Tokens
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-doxygen-xml-pipeline-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Doxygen XML Pipeline Configuration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-api-reference-generator-parameter-folding-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. API Reference Generator &amp; Parameter Folding Rules
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-dynamic-build-hooks-docshookspy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Dynamic Build Hooks (docs/hooks.py)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-multi-platform-cicd-documentation-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Multi-Platform CI/CD Documentation Pipeline
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-porting-to-other-repositories-via-cxxtemplate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Porting to Other Repositories via cxxtemplate
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-topics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related Topics
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../license/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    License
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-documentation-pipeline-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Documentation Pipeline Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-building-previewing-documentation-locally" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Building &amp; Previewing Documentation Locally
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Building &amp; Previewing Documentation Locally">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#live-reload-development-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Live-Reload Development Server
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#strict-build-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Strict Build Validation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#updating-benchmark-data-prior-to-serving" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Updating Benchmark Data Prior to Serving
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-typography-sizing-tokens" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Typography &amp; Sizing Tokens
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Typography &amp; Sizing Tokens">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#browser-accessibility-native-zoom-compatibility" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Browser Accessibility &amp; Native Zoom Compatibility
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#high-dpi-retina-desktop-scaling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        High-DPI / Retina Desktop Scaling
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-brand-colors-light-dark-themes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Brand Colors &amp; Light / Dark Themes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-standard-c-syntax-highlighting-tokens" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Standard C++ Syntax Highlighting Tokens
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-doxygen-xml-pipeline-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Doxygen XML Pipeline Configuration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-api-reference-generator-parameter-folding-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. API Reference Generator &amp; Parameter Folding Rules
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-dynamic-build-hooks-docshookspy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Dynamic Build Hooks (docs/hooks.py)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-multi-platform-cicd-documentation-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Multi-Platform CI/CD Documentation Pipeline
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-porting-to-other-repositories-via-cxxtemplate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Porting to Other Repositories via cxxtemplate
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-topics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related Topics
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation" >
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../../architecture/benchmarks/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Related Pages
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Maintainer Guide
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="documentation-architecture-customization-guide">Documentation Architecture &amp; Customization Guide<a class="headerlink" href="#documentation-architecture-customization-guide" title="Permanent link">&para;</a></h1>
+<p>Architecture, Doxygen XML extraction pipeline, design tokens, syntax highlighting, and local preview workflow.</p>
+<hr />
+<h2 id="1-documentation-pipeline-architecture">1. Documentation Pipeline Architecture<a class="headerlink" href="#1-documentation-pipeline-architecture" title="Permanent link">&para;</a></h2>
+<p>The documentation system implements a standardized, accessible architecture powered by <strong>Doxygen XML</strong>, <strong>MkDocs Material</strong>, and a tokenized <strong>CSS Design System</strong>. It is designed to be extractable and reusable across all projects via the <a href="https://github.com/SiddiqSoft/cxxtemplate"><code>cxxtemplate</code></a> repository.</p>
+<pre class="mermaid"><code>flowchart LR
+    subgraph Input["C++ Source Headers"]
+        H["include/**/*.hpp"]
+        T["tests/**/*.cpp"]
+    end
+
+    subgraph Doxygen["Doxygen Pipeline"]
+        DF["docs/Doxyfile"]
+        XML["docs/doxygen_xml/ (*.xml)"]
+    end
+
+    subgraph Generator["API Generator"]
+        PY["scripts/generate_api_docs.py"]
+        MD["docs/api/*.md"]
+    end
+
+    subgraph MkDocs["MkDocs Material Pipeline"]
+        YML["mkdocs.yml"]
+        HOOK["docs/hooks.py"]
+        CSS["docs/css/custom.css"]
+        SITE["site/ (Static HTML/CSS/JS)"]
+    end
+
+    H --&gt; DF --&gt; XML
+    XML --&gt; PY
+    T --&gt; PY
+    PY --&gt; MD
+    MD &amp; YML &amp; HOOK &amp; CSS --&gt; SITE</code></pre>
+<hr />
+<h2 id="2-building-previewing-documentation-locally">2. Building &amp; Previewing Documentation Locally<a class="headerlink" href="#2-building-previewing-documentation-locally" title="Permanent link">&para;</a></h2>
+<p>Maintainers can preview and validate documentation changes locally before pushing:</p>
+<h3 id="live-reload-development-server">Live-Reload Development Server<a class="headerlink" href="#live-reload-development-server" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Activate Python environment and install requirements</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">source</span><span class="w"> </span>venv/bin/activate
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>docs/requirements.txt
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="c1"># Start live-reloading server</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>mkdocs<span class="w"> </span>serve
+</span></code></pre></div>
+<ul>
+<li><strong>Local URL</strong>: Open <a href="http://127.0.0.1:8000/"><code>http://127.0.0.1:8000/</code></a> in your browser.</li>
+<li><strong>Live Reload</strong>: Any edits saved in <code>docs/</code> files update automatically in real time.</li>
+</ul>
+<hr />
+<h3 id="strict-build-validation">Strict Build Validation<a class="headerlink" href="#strict-build-validation" title="Permanent link">&para;</a></h3>
+<p>Verify there are zero broken links or markdown syntax issues:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>mkdocs<span class="w"> </span>build<span class="w"> </span>--strict
+</span></code></pre></div>
+<p>The output compiles into <code>site/</code>. Open <code><span class="filepath-dir">site/</span><wbr><span class="filepath-name">index.html</span></code> directly in any browser.</p>
+<hr />
+<h3 id="updating-benchmark-data-prior-to-serving">Updating Benchmark Data Prior to Serving<a class="headerlink" href="#updating-benchmark-data-prior-to-serving" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>python3<span class="w"> </span>scripts/publish_benchmarks.py
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>mkdocs<span class="w"> </span>serve
+</span></code></pre></div>
+<hr />
+<h2 id="3-typography-sizing-tokens">3. Typography &amp; Sizing Tokens<a class="headerlink" href="#3-typography-sizing-tokens" title="Permanent link">&para;</a></h2>
+<p>Primary typeface families are declared in <a href="https://github.com/SiddiqSoft/sip2json/blob/master/mkdocs.yml"><code>mkdocs.yml</code></a> under <code>theme.font</code>. Material for MkDocs fetches these via Google Fonts:</p>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nt">theme</span><span class="p">:</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="nt">font</span><span class="p">:</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="nt">text</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Roboto</span><span class="w">         </span><span class="c1"># Primary prose typeface</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="nt">code</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">JetBrains Mono</span><span class="w"> </span><span class="c1"># Monospace code &amp; signature typeface</span>
+</span></code></pre></div>
+<p>All typography dimensions, line heights, and element bindings are centralized at the top of <a href="https://github.com/SiddiqSoft/sip2json/blob/master/docs/css/custom.css"><code><span class="filepath-dir">docs/css/</span><wbr><span class="filepath-name">custom.css</span></code></a>:</p>
+<div class="language-css highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="p">:</span><span class="nd">root</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span><span class="c">/* Typefaces: Inherits mkdocs.yml font with cross-platform system fallbacks */</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">  </span><span class="nv">--font-family-main</span><span class="p">:</span><span class="w"> </span><span class="nf">var</span><span class="p">(</span><span class="nv">--md-text-font</span><span class="p">,</span><span class="w"> </span><span class="n">Roboto</span><span class="p">),</span><span class="w"> </span><span class="o">-</span><span class="n">apple-system</span><span class="p">,</span><span class="w"> </span><span class="n">BlinkMacSystemFont</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Segoe UI&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Helvetica Neue&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">Arial</span><span class="p">,</span><span class="w"> </span><span class="kc">sans-serif</span><span class="p">;</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">  </span><span class="nv">--font-family-code</span><span class="p">:</span><span class="w"> </span><span class="nf">var</span><span class="p">(</span><span class="nv">--md-code-font</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;JetBrains Mono&quot;</span><span class="p">),</span><span class="w"> </span><span class="n">SFMono-Regular</span><span class="p">,</span><span class="w"> </span><span class="n">Consolas</span><span class="p">,</span><span class="w"> </span><span class="n">Menlo</span><span class="p">,</span><span class="w"> </span><span class="n">Monaco</span><span class="p">,</span><span class="w"> </span><span class="kc">monospace</span><span class="p">;</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">  </span><span class="c">/* Standard Display Sizing (Default base: 0.94rem) */</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">  </span><span class="nv">--font-size-base</span><span class="p">:</span><span class="w"> </span><span class="mf">0.94</span><span class="kt">rem</span><span class="p">;</span><span class="w">    </span><span class="c">/* Body copy, member documentation, descriptions */</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">  </span><span class="nv">--font-size-code</span><span class="p">:</span><span class="w"> </span><span class="mf">0.82</span><span class="kt">rem</span><span class="p">;</span><span class="w">    </span><span class="c">/* Inline code, pre blocks, signatures, types */</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">  </span><span class="nv">--font-size-nav</span><span class="p">:</span><span class="w"> </span><span class="mf">0.84</span><span class="kt">rem</span><span class="p">;</span><span class="w">     </span><span class="c">/* Sidebar navigation items and tabs */</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">  </span><span class="nv">--font-size-table</span><span class="p">:</span><span class="w"> </span><span class="mf">0.82</span><span class="kt">rem</span><span class="p">;</span><span class="w">   </span><span class="c">/* API summary matrices and parameter tables */</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">  </span><span class="nv">--font-size-h1</span><span class="p">:</span><span class="w"> </span><span class="mf">1.55</span><span class="kt">rem</span><span class="p">;</span><span class="w">      </span><span class="c">/* Page title */</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="w">  </span><span class="nv">--font-size-h2</span><span class="p">:</span><span class="w"> </span><span class="mf">1.25</span><span class="kt">rem</span><span class="p">;</span><span class="w">      </span><span class="c">/* Section headings */</span>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="w">  </span><span class="nv">--font-size-h3</span><span class="p">:</span><span class="w"> </span><span class="mf">1.02</span><span class="kt">rem</span><span class="p">;</span><span class="w">      </span><span class="c">/* Subsection headings */</span>
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="w">  </span><span class="nv">--font-size-h4</span><span class="p">:</span><span class="w"> </span><span class="mf">0.92</span><span class="kt">rem</span><span class="p">;</span><span class="w">      </span><span class="c">/* Detail headings */</span>
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="w">  </span><span class="nv">--line-height-base</span><span class="p">:</span><span class="w"> </span><span class="mf">1.55</span><span class="p">;</span>
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="w">  </span><span class="nv">--line-height-code</span><span class="p">:</span><span class="w"> </span><span class="mf">1.48</span><span class="p">;</span>
+</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>
+</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="w">  </span><span class="c">/* Material for MkDocs Typography Variable Bindings */</span>
+</span><span id="__span-4-19"><a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="w">  </span><span class="nv">--md-font-main</span><span class="p">:</span><span class="w"> </span><span class="nf">var</span><span class="p">(</span><span class="nv">--font-family-main</span><span class="p">);</span>
+</span><span id="__span-4-20"><a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a><span class="w">  </span><span class="nv">--md-font-code</span><span class="p">:</span><span class="w"> </span><span class="nf">var</span><span class="p">(</span><span class="nv">--font-family-code</span><span class="p">);</span>
+</span><span id="__span-4-21"><a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a><span class="w">  </span><span class="nv">--md-typeset-font-size</span><span class="p">:</span><span class="w"> </span><span class="nf">var</span><span class="p">(</span><span class="nv">--font-size-base</span><span class="p">);</span>
+</span><span id="__span-4-22"><a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a><span class="w">  </span><span class="nv">--md-typeset-line-height</span><span class="p">:</span><span class="w"> </span><span class="nf">var</span><span class="p">(</span><span class="nv">--line-height-base</span><span class="p">);</span>
+</span><span id="__span-4-23"><a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a><span class="p">}</span>
+</span></code></pre></div>
+<h3 id="browser-accessibility-native-zoom-compatibility">Browser Accessibility &amp; Native Zoom Compatibility<a class="headerlink" href="#browser-accessibility-native-zoom-compatibility" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Relative Units Only (<code>rem</code>/<code>em</code>)</strong>: All typography properties strictly reference <code>rem</code> or <code>em</code>. Root <code>html</code> is never hardcoded with fixed pixel dimensions (e.g. <code>16px</code>).</li>
+<li><strong>Preserves User Zoom</strong>: If a user increases their browser default font size or zooms the viewport (<code>Cmd</code> / <code>Ctrl</code> + <code>+</code>), the base <code>1rem</code> scales proportionately without layout breakage.</li>
+<li><strong>Zero Runtime DOM Scripting</strong>: Font sizing is handled 100% in CSS without client-side JavaScript overrides.</li>
+</ul>
+<h3 id="high-dpi-retina-desktop-scaling">High-DPI / Retina Desktop Scaling<a class="headerlink" href="#high-dpi-retina-desktop-scaling" title="Permanent link">&para;</a></h3>
+<p>High-resolution desktop displays (Apple Retina 4.5K/5K iMacs, Studio Displays, MacBook Pros, and 4K/UHD monitors on Windows with 150%&ndash;200% OS scaling) pack physical subpixels densely. A dedicated media query ensures the <code>0.94rem</code> base typography remains crisp and comfortable on desktop screens with device pixel ratios <code>DPR &gt;= 1.5</code>:</p>
+<div class="language-css highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="p">@</span><span class="k">media</span><span class="w"> </span><span class="nt">screen</span><span class="w"> </span><span class="nt">and</span><span class="w"> </span><span class="o">(</span><span class="nt">min-width</span><span class="o">:</span><span class="w"> </span><span class="nt">960px</span><span class="o">)</span><span class="w"> </span><span class="nt">and</span><span class="w"> </span><span class="o">(</span><span class="nt">-webkit-min-device-pixel-ratio</span><span class="o">:</span><span class="w"> </span><span class="nt">1</span><span class="p">.</span><span class="nc">5</span><span class="o">),</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">       </span><span class="nt">screen</span><span class="w"> </span><span class="nt">and</span><span class="w"> </span><span class="o">(</span><span class="nt">min-width</span><span class="o">:</span><span class="w"> </span><span class="nt">960px</span><span class="o">)</span><span class="w"> </span><span class="nt">and</span><span class="w"> </span><span class="o">(</span><span class="nt">min-resolution</span><span class="o">:</span><span class="w"> </span><span class="nt">144dpi</span><span class="o">),</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">       </span><span class="nt">screen</span><span class="w"> </span><span class="nt">and</span><span class="w"> </span><span class="o">(</span><span class="nt">min-width</span><span class="o">:</span><span class="w"> </span><span class="nt">960px</span><span class="o">)</span><span class="w"> </span><span class="nt">and</span><span class="w"> </span><span class="o">(</span><span class="nt">min-resolution</span><span class="o">:</span><span class="w"> </span><span class="nt">1</span><span class="p">.</span><span class="nc">5dppx</span><span class="o">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">  </span><span class="p">:</span><span class="nd">root</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">    </span><span class="nv">--font-size-base</span><span class="p">:</span><span class="w"> </span><span class="mf">0.94</span><span class="kt">rem</span><span class="p">;</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">    </span><span class="nv">--font-size-code</span><span class="p">:</span><span class="w"> </span><span class="mf">0.82</span><span class="kt">rem</span><span class="p">;</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">    </span><span class="nv">--font-size-nav</span><span class="p">:</span><span class="w"> </span><span class="mf">0.84</span><span class="kt">rem</span><span class="p">;</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">    </span><span class="nv">--font-size-table</span><span class="p">:</span><span class="w"> </span><span class="mf">0.82</span><span class="kt">rem</span><span class="p">;</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">    </span><span class="nv">--font-size-h1</span><span class="p">:</span><span class="w"> </span><span class="mf">1.55</span><span class="kt">rem</span><span class="p">;</span>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="w">    </span><span class="nv">--font-size-h2</span><span class="p">:</span><span class="w"> </span><span class="mf">1.25</span><span class="kt">rem</span><span class="p">;</span>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="w">    </span><span class="nv">--font-size-h3</span><span class="p">:</span><span class="w"> </span><span class="mf">1.02</span><span class="kt">rem</span><span class="p">;</span>
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="w">    </span><span class="nv">--font-size-h4</span><span class="p">:</span><span class="w"> </span><span class="mf">0.92</span><span class="kt">rem</span><span class="p">;</span>
+</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="w">    </span><span class="nv">--md-typeset-font-size</span><span class="p">:</span><span class="w"> </span><span class="nf">var</span><span class="p">(</span><span class="nv">--font-size-base</span><span class="p">);</span>
+</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="p">}</span>
+</span></code></pre></div>
+<hr />
+<h2 id="4-brand-colors-light-dark-themes">4. Brand Colors &amp; Light / Dark Themes<a class="headerlink" href="#4-brand-colors-light-dark-themes" title="Permanent link">&para;</a></h2>
+<p>The color system partitions brand identities, API reference cards, and surface backgrounds across light and dark palettes:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">CSS Variable</th>
+<th style="text-align: left;">Light Mode (<code>default</code>)</th>
+<th style="text-align: left;">Dark Mode (<code>slate</code>)</th>
+<th style="text-align: left;">Role &amp; Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>--api-primary</code></td>
+<td style="text-align: left;"><code>#23496d</code> (Deep Navy)</td>
+<td style="text-align: left;"><code>#38bdf8</code> (Vibrant Sky Blue)</td>
+<td style="text-align: left;">Member titles, class headers, primary accents</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--api-primary-light</code></td>
+<td style="text-align: left;"><code>#2e5e8c</code></td>
+<td style="text-align: left;"><code>#7dd3fc</code></td>
+<td style="text-align: left;">Hover states, interactive highlights</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--api-primary-dark</code></td>
+<td style="text-align: left;"><code>#1b3854</code></td>
+<td style="text-align: left;"><code>#0284c7</code></td>
+<td style="text-align: left;">Active tab headers, pressed states</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--api-accent</code></td>
+<td style="text-align: left;"><code>#0284c7</code> (Cerulean)</td>
+<td style="text-align: left;"><code>#38bdf8</code> (Sky Blue)</td>
+<td style="text-align: left;">Hyperlinks, active navigation indicators</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--api-border</code></td>
+<td style="text-align: left;"><code>#cbd5e1</code> (Slate 300)</td>
+<td style="text-align: left;"><code>#334155</code> (Slate 700)</td>
+<td style="text-align: left;">Card boundaries, table dividers</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--api-bg-subtle</code></td>
+<td style="text-align: left;"><code>#f1f5f9</code> (Slate 100)</td>
+<td style="text-align: left;"><code>#1e293b</code> (Slate 800)</td>
+<td style="text-align: left;">Member item header strips, table alternate rows</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--api-bg-card</code></td>
+<td style="text-align: left;"><code>#ffffff</code> (Pure White)</td>
+<td style="text-align: left;"><code>#0f172a</code> (Slate 900)</td>
+<td style="text-align: left;">Member item card body, code container cards</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--api-text-muted</code></td>
+<td style="text-align: left;"><code>#64748b</code> (Slate 500)</td>
+<td style="text-align: left;"><code>#94a3b8</code> (Slate 400)</td>
+<td style="text-align: left;">Header file annotations, table descriptions</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--api-proto-bg</code></td>
+<td style="text-align: left;"><code>#f8fafc</code> (Slate 50)</td>
+<td style="text-align: left;"><code>#1e293b</code> (Slate 800)</td>
+<td style="text-align: left;">Function prototype container background</td>
+</tr>
+</tbody>
+</table>
+<p>To customize brand colors project-wide, modify the <code>--api-primary</code> and <code>--api-accent</code> tokens in <a href="https://github.com/SiddiqSoft/sip2json/blob/master/docs/css/custom.css"><code><span class="filepath-dir">docs/css/</span><wbr><span class="filepath-name">custom.css</span></code></a>.</p>
+<hr />
+<h2 id="5-standard-c-syntax-highlighting-tokens">5. Standard C++ Syntax Highlighting Tokens<a class="headerlink" href="#5-standard-c-syntax-highlighting-tokens" title="Permanent link">&para;</a></h2>
+<p>Both light and dark themes configure semantic token coloring to mirror modern IDE syntax highlighting:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Token Variable</th>
+<th style="text-align: left;">Light Mode</th>
+<th style="text-align: left;">Dark Mode</th>
+<th style="text-align: left;">Semantic Target</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>--md-code-hl-keyword-color</code></td>
+<td style="text-align: left;"><code>#cf222e</code> (Crimson)</td>
+<td style="text-align: left;"><code>#ff7b72</code> (Coral)</td>
+<td style="text-align: left;"><code>static</code>, <code>const</code>, <code>void</code>, <code>auto</code>, <code>template</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--md-code-hl-type-color</code></td>
+<td style="text-align: left;"><code>#0550ae</code> (Deep Blue)</td>
+<td style="text-align: left;"><code>#79c0ff</code> (Sky Blue)</td>
+<td style="text-align: left;"><code>size_t</code>, <code>uint32_t</code>, <code>bool</code>, <code>sipmessage</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--md-code-hl-function-color</code></td>
+<td style="text-align: left;"><code>#8250df</code> (Purple)</td>
+<td style="text-align: left;"><code>#d2a8ff</code> (Lilac)</td>
+<td style="text-align: left;">Function &amp; method names (<code>parseAsync</code>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--md-code-hl-string-color</code></td>
+<td style="text-align: left;"><code>#0a3069</code> (Navy)</td>
+<td style="text-align: left;"><code>#a5d6ff</code> (Light Cyan)</td>
+<td style="text-align: left;">String literals (<code>"INVITE"</code>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--md-code-hl-number-color</code></td>
+<td style="text-align: left;"><code>#0550ae</code> (Blue)</td>
+<td style="text-align: left;"><code>#79c0ff</code> (Sky Blue)</td>
+<td style="text-align: left;">Numeric literals (<code>200</code>, <code>0u</code>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--md-code-hl-comment-color</code></td>
+<td style="text-align: left;"><code>#6e7781</code> (Slate Gray)</td>
+<td style="text-align: left;"><code>#8b949e</code> (Muted Gray)</td>
+<td style="text-align: left;">Source citations &amp; code comments</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--md-code-hl-constant-color</code></td>
+<td style="text-align: left;"><code>#953800</code> (Amber)</td>
+<td style="text-align: left;"><code>#ffa657</code> (Warm Orange)</td>
+<td style="text-align: left;">Enum values &amp; protocol constants</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--md-code-hl-special-color</code></td>
+<td style="text-align: left;"><code>#cf222e</code> (Crimson)</td>
+<td style="text-align: left;"><code>#ff7b72</code> (Coral)</td>
+<td style="text-align: left;"><code>#include</code>, preprocessor macros</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--md-code-hl-operator-color</code></td>
+<td style="text-align: left;"><code>#24292f</code> (Charcoal)</td>
+<td style="text-align: left;"><code>#e6edf3</code> (Off-white)</td>
+<td style="text-align: left;">Operators (<code>=</code>, <code>::</code>, <code>-&gt;</code>, <code>+</code>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--md-code-hl-punctuation-color</code></td>
+<td style="text-align: left;"><code>#57606a</code> (Gray)</td>
+<td style="text-align: left;"><code>#c9d1d9</code> (Light Gray)</td>
+<td style="text-align: left;">Delimiters (<code>;</code>, <code>,</code>, <code>(</code>, <code>)</code>)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="6-doxygen-xml-pipeline-configuration">6. Doxygen XML Pipeline Configuration<a class="headerlink" href="#6-doxygen-xml-pipeline-configuration" title="Permanent link">&para;</a></h2>
+<p>Doxygen operates strictly as an AST/XML extraction engine without generating HTML or LaTeX:</p>
+<ul>
+<li><strong>Configuration File</strong>: <a href="https://github.com/SiddiqSoft/sip2json/blob/master/docs/Doxyfile"><code>docs/Doxyfile</code></a></li>
+<li><strong>Key Directives</strong>:
+  <div class="language-ini highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="na">PROJECT_NAME</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;sip2json&quot;</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="na">INPUT</span><span class="w">                  </span><span class="o">=</span><span class="w"> </span><span class="s">include/siddiqsoft</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="na">RECURSIVE</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="s">YES</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="na">FILE_PATTERNS</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s">*.hpp *.h</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="na">EXCLUDE_PATTERNS</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s">*/tests/* */benchmarks/* */build/*</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="na">GENERATE_XML</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="s">YES</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="na">XML_OUTPUT</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="s">doxygen_xml</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="na">GENERATE_HTML</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s">NO</span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="na">GENERATE_LATEX</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="s">NO</span>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="na">EXTRACT_ALL</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="s">YES</span>
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="na">EXTRACT_STATIC</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="s">YES</span>
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="na">ENABLE_PREPROCESSING</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s">YES</span>
+</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="na">MACRO_EXPANSION</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s">YES</span>
+</span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="na">BUILTIN_STL_SUPPORT</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s">YES</span>
+</span></code></pre></div></li>
+<li><strong>Project Variables</strong>: Only <code>PROJECT_NAME</code>, <code>PROJECT_BRIEF</code>, and <code>INPUT</code> require adjustment per repository; all other settings are 100% portable.</li>
+</ul>
+<hr />
+<h2 id="7-api-reference-generator-parameter-folding-rules">7. API Reference Generator &amp; Parameter Folding Rules<a class="headerlink" href="#7-api-reference-generator-parameter-folding-rules" title="Permanent link">&para;</a></h2>
+<p><a href="https://github.com/SiddiqSoft/sip2json/blob/master/scripts/generate_api_docs.py"><code><span class="filepath-dir">scripts/</span><wbr><span class="filepath-name">generate_api_docs.py</span></code></a> transforms Doxygen XML into terse, OpenCV-style markdown references:</p>
+<ol>
+<li><strong>Member Function Boxes (<code>.memitem</code>)</strong>:</li>
+<li>Header strip with class diamond (<code>&amp;#9670;</code>), method title, and badge (<code>static</code>, <code>static noexcept</code>).</li>
+<li>Clean C++ prototype block (<code>.memproto</code>) with full namespace scoping.</li>
+<li>
+<p>Terse method description, parameter table, explicit return documentation, and authentic test snippets.</p>
+</li>
+<li>
+<p><strong>Parameter Wrapping &amp; Folding Rules</strong>:</p>
+</li>
+<li><strong>Fold Just After <code>&gt;</code>, Never Before</strong>: Closing angle brackets (<code>&gt;</code> / <code>&gt;&gt;</code>) always attach to the preceding token (e.g. <code>std::string_view)&gt;&gt;</code>). If followed by a parameter name or default value (<code>errorCallback = {}</code>), the fold occurs <em>just after</em> <code>&gt;</code> on whitespace.</li>
+<li><strong>Type Modifiers Attached to Types</strong>: Reference and pointer modifiers (<code>&amp;</code>, <code>&amp;&amp;</code>, <code>*</code>) attach directly to their type name (<code>std::string_view&amp;</code>, <code>sipmessage&amp;&amp;</code>, <code>const sip2json_exception&amp;</code>, <code>size_t&amp;</code>), followed by a single space before the identifier.</li>
+<li><strong>Break on Whitespace</strong>: All folded lines cleanly break on whitespace following delimiters (after <code>,</code> or after <code>&gt;&gt;</code>).</li>
+<li>
+<p><strong>Continuation Indentation</strong>: Wrapped parameter names indent with standard continuation indent (8 spaces in prototypes; <code>param-inner-wrap</code> in summary tables).</p>
+</li>
+<li>
+<p><strong>Authentic Test Snippets</strong>:</p>
+</li>
+<li>
+<p>Example code blocks are extracted directly from live regression and benchmark tests (<code>tests/regression/</code>, <code>tests/validation/</code>) with file path and line citations. Zero manufactured examples.</p>
+</li>
+<li>
+<p><strong>UML Class Diagram &amp; Source Links</strong>:</p>
+</li>
+<li>Class hierarchies, method signatures, and exception taxonomies are dynamically derived from Doxygen XML AST.</li>
+<li>Generates interactive Mermaid class diagrams with clickable links targeting the source header files on GitHub.</li>
+<li>Automatically injected into <a href="../maintainer_guide/"><code><span class="filepath-dir">docs/maintainers/</span><wbr><span class="filepath-name">maintainer_guide.md</span></code></a>, <a href="../../architecture/"><code><span class="filepath-dir">docs/architecture/</span><wbr><span class="filepath-name">index.md</span></code></a>, and <a href="../../api/"><code><span class="filepath-dir">docs/api/</span><wbr><span class="filepath-name">index.md</span></code></a> on every build.</li>
+</ol>
+<hr />
+<h2 id="8-dynamic-build-hooks-docshookspy">8. Dynamic Build Hooks (<code><span class="filepath-dir">docs/</span><wbr><span class="filepath-name">hooks.py</span></code>)<a class="headerlink" href="#8-dynamic-build-hooks-docshookspy" title="Permanent link">&para;</a></h2>
+<p>The MkDocs build lifecycle executes <a href="https://github.com/SiddiqSoft/sip2json/blob/master/docs/hooks.py"><code><span class="filepath-dir">docs/</span><wbr><span class="filepath-name">hooks.py</span></code></a>:</p>
+<ol>
+<li><strong><code>on_config</code></strong>:</li>
+<li>Resolves SemVer version from <code>GITVERSION_SEMVER</code>, <code>CI_BUILDID</code>, <code>GitVersion.yml</code>, or <code>git describe</code>.</li>
+<li>Executes <code>generate_dependencies_md.py</code> to document active CPM dependencies.</li>
+<li>Executes <code>generate_api_docs.py</code> to regenerate API reference from Doxygen XML.</li>
+<li>Executes <code>publish_benchmarks.py</code> to update architecture benchmark metrics.</li>
+<li>Injects the resolved version into <code>config['extra']['version']</code>.</li>
+<li><strong><code>on_page_markdown</code></strong>:</li>
+<li>Dynamically replaces <code>3.2.0-17</code> and <code>v3.2.0</code> placeholders across all markdown pages at build time.</li>
+</ol>
+<hr />
+<h2 id="9-multi-platform-cicd-documentation-pipeline">9. Multi-Platform CI/CD Documentation Pipeline<a class="headerlink" href="#9-multi-platform-cicd-documentation-pipeline" title="Permanent link">&para;</a></h2>
+<p>The documentation build pipeline supports <strong>Linux and macOS (Darwin)</strong> runners:</p>
+<ul>
+<li><strong>Graceful Skip Logic</strong>:</li>
+<li>Both <a href="https://github.com/SiddiqSoft/sip2json/blob/master/.azure/az-publish-docs.yml"><code><span class="filepath-dir">.azure/</span><wbr><span class="filepath-name">az-publish-docs.yml</span></code></a> and <a href="https://github.com/SiddiqSoft/sip2json/blob/master/.azure/az-build-unix.yml"><code><span class="filepath-dir">.azure/</span><wbr><span class="filepath-name">az-build-unix.yml</span></code></a> check for <code>mkdocs</code> and <code>doxygen</code> availability:
+    <div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">if</span><span class="w"> </span>!<span class="w"> </span><span class="nb">command</span><span class="w"> </span>-v<span class="w"> </span>mkdocs<span class="w"> </span><span class="p">&amp;</span>&gt;<span class="w"> </span>/dev/null<span class="p">;</span><span class="w"> </span><span class="k">then</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;##[warning] mkdocs not installed on this runner. Skipping documentation build.&quot;</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">    </span><span class="nb">exit</span><span class="w"> </span><span class="m">0</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="k">fi</span>
+</span></code></pre></div></li>
+<li>If tools are absent on a runner, the pipeline logs a warning and proceeds without failing the job.</li>
+<li><strong>Local Build Scripts</strong>:</li>
+<li>macOS / Linux: <a href="https://github.com/SiddiqSoft/sip2json/blob/master/docs/rebuild-docs.sh"><code><span class="filepath-dir">docs/</span><wbr><span class="filepath-name">rebuild-docs.sh</span></code></a></li>
+<li>Windows: <a href="https://github.com/SiddiqSoft/sip2json/blob/master/docs/rebuild-docs.ps1"><code><span class="filepath-dir">docs/</span><wbr><span class="filepath-name">rebuild-docs.ps1</span></code></a></li>
+</ul>
+<hr />
+<h2 id="10-porting-to-other-repositories-via-cxxtemplate">10. Porting to Other Repositories via <code>cxxtemplate</code><a class="headerlink" href="#10-porting-to-other-repositories-via-cxxtemplate" title="Permanent link">&para;</a></h2>
+<p>To apply this standardized documentation system to any downstream C++ repository:</p>
+<ol>
+<li>Copy <code>mkdocs.yml</code>, <code>docs/Doxyfile</code>, <code><span class="filepath-dir">docs/</span><wbr><span class="filepath-name">hooks.py</span></code>, <code><span class="filepath-dir">docs/css/</span><wbr><span class="filepath-name">custom.css</span></code>, and <code><span class="filepath-dir">scripts/</span><wbr><span class="filepath-name">generate_api_docs.py</span></code>.</li>
+<li>In <code>mkdocs.yml</code>, update <code>site_name</code>, <code>site_description</code>, <code>repo_url</code>, and <code>theme.font</code>.</li>
+<li>In <code>docs/Doxyfile</code>, update <code>PROJECT_NAME</code>, <code>PROJECT_BRIEF</code>, and <code>INPUT</code>.</li>
+<li>In <code><span class="filepath-dir">docs/css/</span><wbr><span class="filepath-name">custom.css</span></code>, adjust <code>--api-primary</code> and <code>--api-accent</code> to match project branding.</li>
+<li>In <code><span class="filepath-dir">docs/css/</span><wbr><span class="filepath-name">custom.css</span></code>, keep <code>--font-size-base: 0.94rem</code> (or adjust once in <code>:root</code> and in the retina <code>@media</code> query). All headings, tables, and nav items will scale in harmony.</li>
+</ol>
+<hr />
+<h2 id="related-topics">Related Topics<a class="headerlink" href="#related-topics" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="../maintainer_guide/"><strong>Maintainer Guide</strong></a>: Core maintainer guide and bulk clang-formatting</li>
+<li><a href="../pipelines/"><strong>CI/CD Pipelines</strong></a>: Automated CI pipeline that builds and publishes docs</li>
+<li><a href="../releases/"><strong>Release &amp; Publication</strong></a>: GitVersion and release publication flow</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../releases/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Release Lifecycle">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Release Lifecycle
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../license/" class="md-footer__link md-footer__link--next" aria-label="Next: License">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                License
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.2.0-17"}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

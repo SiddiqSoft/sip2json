@@ -706,6 +706,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#serialize_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        serialize()
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1095,8 +1106,90 @@
   
   
   
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Maintainer Guide
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Maintainer Guide
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
     <li class="md-nav__item">
-      <a href="../../maintainers/pipelines/" class="md-nav__link">
+      <a href="../../maintainers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintainers/maintainer_guide/" class="md-nav__link">
         
   
   
@@ -1112,6 +1205,182 @@
   
 
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintainers/pipelines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CI/CD Pipelines
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintainers/cmake_presets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CMake Presets
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintainers/workflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development Workflow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintainers/build_agents/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Build Agent Requirements
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintainers/releases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Release Lifecycle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintainers/documentation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -1322,6 +1591,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#serialize_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        serialize()
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1413,10 +1693,10 @@
 
     class sip2json["siddiqsoft::sip2json"] {
         &lt;&lt;final utility&gt;&gt;
-        +parseAsync(string_view&amp; buffer, onMsg, onErr)$ void
-        +parse(string_view buffer)$ sipmessage
-        +parseFromBuffer(string_view buffer)$ sipmessage
-        +serialize(const sipmessage&amp; msg)$ string
+        +parseAsync(string_view&amp; buffer, onMsg, onErr)$ size_t
+        +parse(string_view&amp; buffer)$ vector~sipmessage~
+        +parseFromBuffer(string_view&amp; buffer)$ sipmessage
+        +serialize(sipmessage&amp; msg)$ string
     }
     class sip2json:::highlightClass
 
@@ -1484,8 +1764,14 @@
   </tr>
   <tr>
     <td class="memtype"><code>std::string</code></td>
-    <td class="memitemleft"><a href="#serialize"><strong>serialize</strong></a> (sipmessage&amp; sipm)
+    <td class="memitemleft"><a href="#serialize"><strong>serialize</strong></a> (const sipmessage&amp; sipm)
       <div class="mdesc">Serializes the sipmessage document.</div>
+    </td>
+  </tr>
+  <tr>
+    <td class="memtype"><code>std::string</code></td>
+    <td class="memitemleft"><a href="#serialize-2"><strong>serialize</strong></a> (sipmessage&amp; sipm)
+      <div class="mdesc">Non-const forwarding overload for backwards compatibility.</div>
     </td>
   </tr>
 </table>
@@ -1835,7 +2121,7 @@
 </div>
 <div class="memproto">
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="k">static</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="nf">siddiqsoft::sip2json::serialize</span><span class="p">(</span>
-</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="w">    </span><span class="n">sipmessage</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sipm</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">sipmessage</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sipm</span>
 </span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="p">);</span>
 </span></code></pre></div>
 </div>
@@ -1844,7 +2130,7 @@
 <div class="memdoc-section-title">Parameters</div>
 <table class="params">
 <tr>
-    <td class="paramtype"><code>sipmessage&amp;</code></td>
+    <td class="paramtype"><code>const sipmessage&amp;</code></td>
     <td class="paramname">sipm</td>
     <td class="paramdesc">Source sipmessage</td>
   </tr>
@@ -1860,6 +2146,42 @@
 </span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">serialized</span><span class="p">;</span>
 </span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="n">ASSERT_NO_THROW</span><span class="p">(</span><span class="n">serialized</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">siddiqsoft</span><span class="o">::</span><span class="n">sip2json</span><span class="o">::</span><span class="n">serialize</span><span class="p">(</span><span class="n">sipm</span><span class="p">));</span>
 </span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="n">ASSERT_TRUE</span><span class="p">(</span><span class="n">serialized</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="n">method</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">npos</span><span class="p">);</span>
+</span></code></pre></div>
+</div>
+</div>
+<div class="memitem" id="serialize-2">
+<div class="memitem-header">
+  <span class="memitem-diamond">&#9670;</span>
+  <h3 class="memitem-title" id="serialize_2">serialize()<a class="headerlink" href="#serialize_2" title="Permanent link">&para;</a></h3>
+  <span class="memitem-badge">static</span>
+</div>
+<div class="memproto">
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="k">static</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="nf">siddiqsoft::sip2json::serialize</span><span class="p">(</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="w">    </span><span class="n">sipmessage</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sipm</span>
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="p">);</span>
+</span></code></pre></div>
+</div>
+<div class="memdoc">
+<p>Non-const forwarding overload for backwards compatibility.</p>
+<div class="memdoc-section-title">Parameters</div>
+<table class="params">
+<tr>
+    <td class="paramtype"><code>sipmessage&amp;</code></td>
+    <td class="paramname">sipm</td>
+    <td class="paramdesc"></td>
+  </tr>
+</table>
+<div class="memdoc-section-title">Returns</div>
+<p><code>std::string</code> &mdash; Serialized SIP message in standard RFC 3261 wire format, including CRLF line endings, canonical headers, and SDP payload.</p>
+<div class="memdoc-section-title">Example</div>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="c1">// Source: tests/regression/src/stress_tests.cpp:L136-L144</span>
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="n">siddiqsoft</span><span class="o">::</span><span class="n">sipmessage</span><span class="w"> </span><span class="n">sipm</span><span class="p">(</span><span class="n">method</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;sip:test@test.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">callId</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="n">sipm</span><span class="p">.</span><span class="n">setHeader</span><span class="p">(</span><span class="n">siddiqsoft</span><span class="o">::</span><span class="n">HF_TO</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;sip:test@test.com&quot;</span><span class="p">);</span>
+</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="n">sipm</span><span class="p">.</span><span class="n">setHeader</span><span class="p">(</span><span class="n">siddiqsoft</span><span class="o">::</span><span class="n">HF_FROM</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;sip:sender@sender.com&quot;</span><span class="p">);</span>
+</span><span id="__span-19-5"><a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a>
+</span><span id="__span-19-6"><a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">serialized</span><span class="p">;</span>
+</span><span id="__span-19-7"><a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a><span class="n">ASSERT_NO_THROW</span><span class="p">(</span><span class="n">serialized</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">siddiqsoft</span><span class="o">::</span><span class="n">sip2json</span><span class="o">::</span><span class="n">serialize</span><span class="p">(</span><span class="n">sipm</span><span class="p">));</span>
+</span><span id="__span-19-8"><a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a><span class="n">ASSERT_TRUE</span><span class="p">(</span><span class="n">serialized</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="n">method</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">npos</span><span class="p">);</span>
 </span></code></pre></div>
 </div>
 </div>
@@ -1958,7 +2280,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.1.5"}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.2.0-17"}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
