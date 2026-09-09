@@ -45,6 +45,9 @@ enum class sip2jsonErrors : uint32_t {
 | `invalid_document_unsupported_content` | `9` | Serialization | Message body format cannot be serialized to wire format. | Provide valid string or SDP structure. |
 | `empty_message` | `10` | Serialization | Attempted to serialize an empty `sipmessage` object. | Populate start line and headers prior to serialize. |
 
+!!! note "Serialization Exceptions"
+    During serialization, schema violations (such as unsupported request methods or unparseable body payloads) throw `siddiqsoft::invalid_document_error` (`errCode = invalid_document`). The specialized error codes `invalid_document_unsupported_method` and `invalid_document_unsupported_content` are reserved enumerators in `sip2jsonErrors` for fine-grained diagnostic classification.
+
 ## Exception Class Hierarchy
 
 All exceptions derive from `std::exception` via `siddiqsoft::sip2json_exception`:
