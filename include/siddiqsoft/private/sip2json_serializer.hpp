@@ -69,8 +69,7 @@ namespace siddiqsoft {
                                                                          METHOD_REFER,
                                                                          METHOD_PUBLISH,
                                                                          METHOD_UPDATE,
-                                                                         METHOD_PRACK,
-                                                                         SIPVER_20};
+                                                                         METHOD_PRACK};
         std::string                                buffer {};
         std::string                                contentType {};
 

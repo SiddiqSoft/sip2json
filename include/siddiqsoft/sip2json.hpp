@@ -63,10 +63,6 @@ namespace siddiqsoft {
     /// @brief SIP message encoder and decoder utility class
     class sip2json final {
     private:
-        // Named constants for magic numbers
-        static constexpr size_t TYPICAL_SIP_MESSAGE_SIZE = 3 * 1024; ///< Typical SIP message buffer size
-        static constexpr size_t METADATA_ONLY_SIZE       = 1;        ///< Size when only metadata is present
-
         static bool        parseStartLine(sipmessage& sipm, std::string_view& buffer) noexcept(false);
         static bool        parseStartLine(sipmessage&                  sipm,
                                           std::string::iterator&       bufferStart,
