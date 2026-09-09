@@ -42,6 +42,17 @@ Version computation is managed dynamically using GitVersion and custom MkDocs ho
 2. **[`scripts/publish_benchmarks.py`](https://github.com/SiddiqSoft/sip2json/blob/master/scripts/publish_benchmarks.py)**:
    Collects benchmark outputs across build matrix platforms, extracts CPU architecture and core count, and renders responsive platform-grouped benchmark tables and visual comparison charts into [`docs/architecture/benchmarks.md`](../architecture/benchmarks.md).
 
+### GitVersion Configuration & Major Version Updates
+
+Version calculation is driven by [`GitVersion.yml`](https://github.com/SiddiqSoft/sip2json/blob/master/GitVersion.yml) located at the repository root:
+
+* **Automated Increments**: Minor and patch increments are computed dynamically by GitVersion based on branch types and commit message pragmas (`+semver: feature|minor`, `+semver: fix|patch`).
+* **Manual Major Version Reflection**: For breaking changes or major milestone increments (e.g. transitioning from `3.x` to `4.0.0`), maintainers **must manually update the `next-version:` field in [`GitVersion.yml`](https://github.com/SiddiqSoft/sip2json/blob/master/GitVersion.yml)**:
+  ```yaml
+  next-version: 4.0.0
+  ```
+  This explicit declaration is required because GitVersion relies on the `ConfiguredNextVersion` strategy to establish the new major version baseline. Without updating `next-version:` in `GitVersion.yml`, GitVersion will continue incrementing against the previous major baseline across all CI/CD build stages, NuGet package generation, GitHub release creation, and MkDocs site publication.
+
 ---
 
 ## 2. NuGet Packaging & Publication

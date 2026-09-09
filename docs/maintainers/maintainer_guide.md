@@ -293,3 +293,4 @@ Before submitting a pull request or pushing to `master`:
    ```bash
    mkdocs build --strict
    ```
+5. **Major Version Updates**: When introducing breaking API changes or preparing a major version release, manually update the `next-version:` entry in [`GitVersion.yml`](https://github.com/SiddiqSoft/sip2json/blob/master/GitVersion.yml) (e.g. `next-version: 4.0.0`) so GitVersion establishes the new major version baseline.
