@@ -27,9 +27,9 @@ To compile and execute the benchmark suite on your local machine:
 
 ```bash
 # macOS (AppleClang Release)
-cmake --preset Darwin-Clang-Release -Dsip2json_BUILD_BENCHMARKS=ON
-cmake --build --preset Darwin-Clang-Release --target sip2json_benchmarks
-./build/Darwin-Clang-Release/benchmarks/sip2json_benchmarks
+cmake --preset Apple-Clang-Release -Dsip2json_BUILD_BENCHMARKS=ON
+cmake --build --preset Apple-Clang-Release --target sip2json_benchmarks
+./build/Apple-Clang-Release/benchmarks/sip2json_benchmarks
 
 # Linux - GCC Release
 cmake --preset Linux-GCC-Release -Dsip2json_BUILD_BENCHMARKS=ON

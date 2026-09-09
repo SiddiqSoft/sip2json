@@ -9,7 +9,7 @@ Step-by-step maintainer workflow for local building, testing, standalone validat
 Maintainers can build and execute the full test suite (320+ unit and compliance tests) with standard CMake commands:
 
 ```bash
-# Configure with desired preset (e.g. Darwin-Clang-Release, Linux-GCC-Release, Windows-x64-Release)
+# Configure with desired preset (e.g. Apple-Clang-Release, Linux-GCC-Release, Windows-x64-Release)
 cmake --preset <preset-name>
 
 # Build all targets
@@ -31,11 +31,11 @@ To test `sip2json` against historical versions or external CPM consumers, use th
 ```bash
 # Configure standalone validation client
 cd tests/validation
-cmake --preset Apple-Release
+cmake --preset Apple-Clang-Release
 
 # Build and run client test suite
-cmake --build --preset Apple-Release
-ctest --preset Apple-Release -j 4
+cmake --build --preset Apple-Clang-Release
+ctest --preset Apple-Clang-Release -j 4
 ```
 
 ---
@@ -73,7 +73,7 @@ sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
 `sip2json` handles toolchain resolution automatically through two complementary mechanisms:
 
 1. **Direct Compiler Paths in Presets**:
-   The `Apple-Debug`, `Apple-Release`, and `Darwin` presets in `CMakePresets.json` explicitly configure `CMAKE_C_COMPILER` and `CMAKE_CXX_COMPILER` to direct binary paths (e.g. `/Library/Developer/CommandLineTools/usr/bin/clang++`). Because the binary path is fully qualified, CMake and Ninja invoke the compiler directly, completely bypassing `/usr/bin/xcrun` and `xcodebuild`.
+   The `Apple-Clang-Debug` and `Apple-Clang-Release` presets in `CMakePresets.json` explicitly configure `CMAKE_C_COMPILER` and `CMAKE_CXX_COMPILER` to direct binary paths (e.g. `/Library/Developer/CommandLineTools/usr/bin/clang++`). Because the binary path is fully qualified, CMake and Ninja invoke the compiler directly, completely bypassing `/usr/bin/xcrun` and `xcodebuild`.
 
 2. **Automatic Toolchain Discovery in `CMakeLists.txt`**:
    If you configure CMake outside presets (e.g. `cmake -B build` or using IDE plugins), `CMakeLists.txt` inspects candidate toolchains before `project()`:

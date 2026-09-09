@@ -37,7 +37,7 @@ Refer to the live, pipeline-generated performance matrix at [**docs/architecture
 
 ### 1. Build Benchmarks in Release Mode
 ```bash
-# Using CMake Presets for your platform (e.g. Darwin-Clang-Release, Linux-GCC-Release, Windows-x64-Release)
+# Using CMake Presets for your platform (e.g. Apple-Clang-Release, Linux-GCC-Release, Windows-x64-Release)
 cmake --preset <Preset-Name> -Dsip2json_BUILD_BENCHMARKS=ON
 cmake --build --preset <Preset-Name> --target sip2json_benchmarks
 ```

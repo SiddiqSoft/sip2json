@@ -39,9 +39,9 @@
             }
         },
         {
-            "name": "Apple-Debug",
-            "displayName": "Apple-Debug (AppleClang)",
-            "description": "Using native AppleClang compiler toolchain",
+            "name": "Apple-Clang-Debug",
+            "displayName": "Apple Clang Debug",
+            "description": "Target macOS AppleClang (Debug)",
             "inherits": "Apple-Base",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug",
@@ -49,25 +49,17 @@
             }
         },
         {
-            "name": "Apple-Release",
-            "displayName": "Apple-Release (AppleClang)",
-            "description": "Using native AppleClang compiler toolchain",
+            "name": "Apple-Clang-Release",
+            "displayName": "Apple Clang Release",
+            "description": "Target macOS AppleClang (Release)",
             "inherits": "Apple-Base",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Release"
             }
         },
         {
-            "name": "Darwin-Clang-Debug",
-            "inherits": "Apple-Debug"
-        },
-        {
-            "name": "Darwin-Clang-Release",
-            "inherits": "Apple-Release"
-        },
-        {
-            "name": "Darwin",
-            "inherits": "Apple-Release"
+            "name": "Apple-Clang",
+            "inherits": "Apple-Clang-Release"
         },
         {
             "name": "Linux-Base",
@@ -237,24 +229,16 @@
     ],
     "buildPresets": [
         {
-            "name": "Apple-Debug",
-            "configurePreset": "Apple-Debug"
+            "name": "Apple-Clang-Debug",
+            "configurePreset": "Apple-Clang-Debug"
         },
         {
-            "name": "Apple-Release",
-            "configurePreset": "Apple-Release"
+            "name": "Apple-Clang-Release",
+            "configurePreset": "Apple-Clang-Release"
         },
         {
-            "name": "Darwin-Clang-Debug",
-            "configurePreset": "Darwin-Clang-Debug"
-        },
-        {
-            "name": "Darwin-Clang-Release",
-            "configurePreset": "Darwin-Clang-Release"
-        },
-        {
-            "name": "Darwin",
-            "configurePreset": "Apple-Release"
+            "name": "Apple-Clang",
+            "configurePreset": "Apple-Clang-Release"
         },
         {
             "name": "Linux-GCC-Debug",
@@ -318,29 +302,19 @@
             }
         },
         {
-            "name": "Apple-Debug",
+            "name": "Apple-Clang-Debug",
             "inherits": "Test-Base",
-            "configurePreset": "Apple-Debug"
+            "configurePreset": "Apple-Clang-Debug"
         },
         {
-            "name": "Apple-Release",
+            "name": "Apple-Clang-Release",
             "inherits": "Test-Base",
-            "configurePreset": "Apple-Release"
+            "configurePreset": "Apple-Clang-Release"
         },
         {
-            "name": "Darwin-Clang-Debug",
+            "name": "Apple-Clang",
             "inherits": "Test-Base",
-            "configurePreset": "Darwin-Clang-Debug"
-        },
-        {
-            "name": "Darwin-Clang-Release",
-            "inherits": "Test-Base",
-            "configurePreset": "Darwin-Clang-Release"
-        },
-        {
-            "name": "Darwin",
-            "inherits": "Test-Base",
-            "configurePreset": "Apple-Release"
+            "configurePreset": "Apple-Clang-Release"
         },
         {
             "name": "Linux-GCC-Debug",

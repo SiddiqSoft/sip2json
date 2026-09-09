@@ -55,10 +55,10 @@ The build matrix targets Windows, Linux, and macOS (Darwin) across `x64` and `ar
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Windows** | `x64`, `arm64` | MSVC (Visual Studio 2022) | `Windows-${arch}-${buildType}` | `.azure/az-build-windows.yml` | Binaries, CTest JUnit XML, Benchmarks |
 | **Linux** | `x64`, `arm64` | Clang (17+), GCC (13+) | `Linux-${compiler}-${buildType}` | `.azure/az-build-unix.yml` | Binaries, CTest JUnit XML, Benchmarks, Coverage XML |
-| **Darwin (macOS)** | `x64`, `arm64` | AppleClang (Xcode / CLT) | `Darwin-Clang-${buildType}` | `.azure/az-build-unix.yml` | Binaries, CTest JUnit XML, Benchmarks |
+| **Darwin (macOS)** | `x64`, `arm64` | AppleClang (Xcode / CLT) | `Apple-Clang-${buildType}` | `.azure/az-build-unix.yml` | Binaries, CTest JUnit XML, Benchmarks |
 
 > [!NOTE]
-> **Unified Unix Pipeline**: The Linux and Darwin stages share the parameterized template `.azure/az-build-unix.yml`. It dynamically adapts agent OS demands, compiler flags, and preset names based on the target platform.
+> **Unified Unix Pipeline**: The Linux and Darwin stages share the parameterized template `.azure/az-build-unix.yml`. It dynamically adapts agent OS demands, compiler flags, and preset names based on the target platform (e.g. Darwin maps to `cmakePresetPrefix: Apple-`, producing `Apple-Clang-Release` and `Apple-Clang-Debug`).
 
 ---
 

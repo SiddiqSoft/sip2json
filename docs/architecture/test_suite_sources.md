@@ -118,15 +118,15 @@ All compliance, regression, and benchmark test binaries can be built and run usi
 
 ```bash
 # Configure and build Release preset
-cmake --preset Apple-Release
-cmake --build --preset Apple-Release
+cmake --preset Apple-Clang-Release
+cmake --build --preset Apple-Clang-Release
 
 # Run Compliance Test Target (38 / 38 Passed)
-./build/Apple-Release/tests/compliance/sip2json_compliance_tests
+./build/Apple-Clang-Release/tests/compliance/sip2json_compliance_tests
 
 # Run Regression Test Target (78 / 78 Passed)
-SAMPLES_DIR=tests/validation/samples ./build/Apple-Release/tests/validation/sip2json_client_test
+SAMPLES_DIR=tests/validation/samples ./build/Apple-Clang-Release/tests/validation/sip2json_client_test
 
 # Run Performance Benchmark Harness
-./build/Apple-Release/tests/benchmark/sip2json_benchmark tests/validation/samples
+./build/Apple-Clang-Release/tests/benchmark/sip2json_benchmark tests/validation/samples
 ```

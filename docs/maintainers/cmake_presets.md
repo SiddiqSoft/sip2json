@@ -19,11 +19,9 @@ flowchart TD
 
         subgraph Darwin["Darwin / macOS"]
             ABase["Apple-Base (Darwin condition)"]
-            ADebug["Apple-Debug (Debug)"]
-            ARelease["Apple-Release (Release)"]
-            DCDebug["Darwin-Clang-Debug"]
-            DCRelease["Darwin-Clang-Release"]
-            DDefault["Darwin"]
+            ACDebug["Apple-Clang-Debug (Debug)"]
+            ACRelease["Apple-Clang-Release (Release)"]
+            ACDefault["Apple-Clang"]
         end
 
         subgraph Linux["Linux"]
@@ -52,9 +50,8 @@ flowchart TD
     CBase --> LBase
     CBase --> WBase
 
-    ABase --> ADebug & ARelease
-    ADebug --> DCDebug
-    ARelease --> DCRelease & DDefault
+    ABase --> ACDebug & ACRelease
+    ACRelease --> ACDefault
 
     LBase --> LClangBase & LGCCBase
     LClangBase --> LCDebug & LCRelease
@@ -86,11 +83,9 @@ flowchart TD
 
 | Preset Name | Platform | Compiler | Build Type | Notes |
 | :--- | :--- | :--- | :--- | :--- |
-| `Apple-Debug` | macOS | AppleClang | Debug | Native Xcode / Command Line Tools |
-| `Apple-Release` | macOS | AppleClang | Release | Native Xcode / Command Line Tools |
-| `Darwin-Clang-Debug` | macOS | AppleClang | Debug | Inherits `Apple-Debug` |
-| `Darwin-Clang-Release` | macOS | AppleClang | Release | Inherits `Apple-Release` |
-| `Darwin` | macOS | AppleClang | Release | Default macOS alias (inherits `Apple-Release`) |
+| `Apple-Clang-Debug` | macOS | AppleClang | Debug | Native Xcode / Command Line Tools (enables clang-format) |
+| `Apple-Clang-Release` | macOS | AppleClang | Release | Native Xcode / Command Line Tools |
+| `Apple-Clang` | macOS | AppleClang | Release | Default Apple release alias |
 | `Linux-Clang-Debug` | Linux | Clang (`/usr/bin/clang++`) | Debug | Clang toolchain |
 | `Linux-Clang-Release` | Linux | Clang (`/usr/bin/clang++`) | Release | Clang toolchain |
 | `Linux-Clang` | Linux | Clang (`/usr/bin/clang++`) | Release | Clang release alias |
@@ -110,13 +105,13 @@ flowchart TD
 
 ```bash
 # 1. Configure with your platform preset:
-cmake --preset Darwin-Clang-Release
+cmake --preset Apple-Clang-Release
 
 # 2. Build all targets:
-cmake --build --preset Darwin-Clang-Release
+cmake --build --preset Apple-Clang-Release
 
 # 3. Run unit tests with parallel worker threads:
-ctest --preset Darwin-Clang-Release -j 4 --output-on-failure
+ctest --preset Apple-Clang-Release -j 4 --output-on-failure
 ```
 
 ---

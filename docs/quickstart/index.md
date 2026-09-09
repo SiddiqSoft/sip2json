@@ -153,11 +153,11 @@ The repository provides presets configured in `CMakePresets.json`:
 
     ```bash
     # Configure and build Release
-    cmake --preset Darwin-Clang-Release
-    cmake --build --preset Darwin-Clang-Release
+    cmake --preset Apple-Clang-Release
+    cmake --build --preset Apple-Clang-Release
 
     # Run unit tests
-    ctest --preset Darwin-Clang-Release
+    ctest --preset Apple-Clang-Release
     ```
 
 === "Linux"

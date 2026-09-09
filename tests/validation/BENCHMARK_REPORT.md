@@ -72,11 +72,11 @@ The benchmark suite evaluated each library version using 34 anonymized real-worl
 Configure, build, and run the benchmark and compliance suites:
 
 ```bash
-# Build & run benchmark suite with Apple-Release preset
-cmake --preset Apple-Release
-cmake --build --preset Apple-Release --target sip2json_benchmark
-./build/Apple-Release/tests/validation/sip2json_benchmark
+# Build & run benchmark suite with Apple-Clang-Release preset
+cmake --preset Apple-Clang-Release
+cmake --build --preset Apple-Clang-Release --target sip2json_benchmark
+./build/Apple-Clang-Release/tests/validation/sip2json_benchmark
 
 # Run full compliance suite
-./build/Apple-Release/tests/compliance/sip2json_compliance_tests
+./build/Apple-Clang-Release/tests/compliance/sip2json_compliance_tests
 ```

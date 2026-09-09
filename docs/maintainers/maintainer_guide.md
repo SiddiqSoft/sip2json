@@ -207,10 +207,10 @@ When configured locally, CMake generates a dedicated `format` (and `clang-format
 
 ```bash
 # Format using an active preset build directory:
-cmake --build --preset Darwin-Clang-Debug --target format
+cmake --build --preset Apple-Clang-Debug --target format
 
 # Or format directly against any existing build folder:
-cmake --build build/Darwin-Clang-Debug --target format
+cmake --build build/Apple-Clang-Debug --target format
 ```
 
 > [!TIP]

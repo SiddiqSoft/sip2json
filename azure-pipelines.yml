@@ -217,7 +217,7 @@ stages:
         displayName: "Darwin Build and Test"
         platform: Darwin
         agentOS: Darwin
-        cmakePresetPrefix: Darwin-
+        cmakePresetPrefix: Apple-
         architectures: ${{ parameters.Architectures }}
         compilers: ${{ parameters.Compilers_Darwin }}
         buildTypes: ${{ parameters.BuildTypes }}
