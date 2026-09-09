@@ -2212,7 +2212,9 @@ def main():
     xml_dir = repo_root / "docs" / "doxygen_xml"
     api_dir = repo_root / "docs" / "api"
     arch_file = repo_root / "docs" / "architecture" / "index.md"
-    maintainer_file = repo_root / "docs" / "maintainers" / "pipelines.md"
+    maintainer_file = repo_root / "docs" / "maintainers" / "maintainer_guide.md"
+    if not maintainer_file.exists():
+        maintainer_file = repo_root / "docs" / "maintainers" / "pipelines.md"
 
     run_doxygen(repo_root)
 

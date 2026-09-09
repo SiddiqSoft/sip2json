@@ -95,8 +95,14 @@ classDiagram
   </tr>
   <tr>
     <td class="memtype"><code>std::string</code></td>
-    <td class="memitemleft"><a href="#serialize"><strong>serialize</strong></a> (sipmessage&amp; sipm)
+    <td class="memitemleft"><a href="#serialize"><strong>serialize</strong></a> (const sipmessage&amp; sipm)
       <div class="mdesc">Serializes the sipmessage document.</div>
+    </td>
+  </tr>
+  <tr>
+    <td class="memtype"><code>std::string</code></td>
+    <td class="memitemleft"><a href="#serialize-2"><strong>serialize</strong></a> (sipmessage&amp; sipm)
+      <div class="mdesc">Non-const forwarding overload for backwards compatibility.</div>
     </td>
   </tr>
 </table>
@@ -558,7 +564,7 @@ EXPECT_EQ("INVITE", sipm.getMethod());
 
 ```cpp
 static std::string siddiqsoft::sip2json::serialize(
-    sipmessage& sipm
+    const sipmessage& sipm
 );
 ```
 
@@ -571,9 +577,58 @@ Serializes the sipmessage document.
 
 <table class="params" markdown="0">
   <tr>
-    <td class="paramtype"><code>sipmessage&amp;</code></td>
+    <td class="paramtype"><code>const sipmessage&amp;</code></td>
     <td class="paramname">sipm</td>
     <td class="paramdesc">Source sipmessage</td>
+  </tr>
+</table>
+
+<div class="memdoc-section-title">Returns</div>
+
+<code>std::string</code> &mdash; Serialized SIP message in standard RFC 3261 wire format, including CRLF line endings, canonical headers, and SDP payload.
+
+<div class="memdoc-section-title">Example</div>
+
+```cpp
+// Source: tests/regression/src/stress_tests.cpp:L136-L144
+siddiqsoft::sipmessage sipm(method, "sip:test@test.com", callId, i + 1);
+sipm.setHeader(siddiqsoft::HF_TO, "sip:test@test.com");
+sipm.setHeader(siddiqsoft::HF_FROM, "sip:sender@sender.com");
+
+std::string serialized;
+ASSERT_NO_THROW(serialized = siddiqsoft::sip2json::serialize(sipm));
+ASSERT_TRUE(serialized.find(method) != std::string::npos);
+```
+
+</div>
+</div>
+
+<div class="memitem" id="serialize-2" markdown="1">
+<div class="memitem-header">
+  <span class="memitem-diamond">&#9670;</span>
+  <h3 class="memitem-title">serialize()</h3>
+  <span class="memitem-badge">static</span>
+</div>
+<div class="memproto" markdown="1">
+
+```cpp
+static std::string siddiqsoft::sip2json::serialize(
+    sipmessage& sipm
+);
+```
+
+</div>
+<div class="memdoc" markdown="1">
+
+Non-const forwarding overload for backwards compatibility.
+
+<div class="memdoc-section-title">Parameters</div>
+
+<table class="params" markdown="0">
+  <tr>
+    <td class="paramtype"><code>sipmessage&amp;</code></td>
+    <td class="paramname">sipm</td>
+    <td class="paramdesc"></td>
   </tr>
 </table>
 

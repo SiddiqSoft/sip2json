@@ -113,5 +113,13 @@ nav:
       - Optimization Choices: architecture/optimization_choices.md
       - Standards Compliance: architecture/compliance.md
       - Test Suite & RFC Reference: architecture/test_suite_sources.md
-      - Maintainer Guide: maintainers/pipelines.md
+      - Maintainer Guide:
+          - Overview: maintainers/index.md
+          - Maintainer Guide: maintainers/maintainer_guide.md
+          - CI/CD Pipelines: maintainers/pipelines.md
+          - CMake Presets: maintainers/cmake_presets.md
+          - Development Workflow: maintainers/workflow.md
+          - Build Agent Requirements: maintainers/build_agents.md
+          - Release Lifecycle: maintainers/releases.md
+          - Documentation Architecture: maintainers/documentation.md
       - License: license.md
