@@ -1,0 +1,2434 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="SIP Parser for Modern C++">
+      
+      
+        <meta name="author" content="Siddiq Software LLC">
+      
+      
+        <link rel="canonical" href="https://siddiqsoft.github.io/sip2json/api/constants/">
+      
+      
+        <link rel="prev" href="../sipmessage/">
+      
+      
+        <link rel="next" href="../errors/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/Siddiq-Software-Avatar.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Constants & Header Keys - sip2json</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../css/custom.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#protocol-header-framing-constants-reference" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="sip2json" class="md-header__button md-logo" aria-label="sip2json" data-md-component="logo">
+      
+  <img src="../../assets/Siddiq-Software-Avatar.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            sip2json
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Constants & Header Keys
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/SiddiqSoft/sip2json" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    SiddiqSoft/sip2json
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../quickstart/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  
+  API Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../architecture/benchmarks/" class="md-tabs__link">
+          
+  
+  
+  Related Pages
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="sip2json" class="md-nav__button md-logo" aria-label="sip2json" data-md-component="logo">
+      
+  <img src="../../assets/Siddiq-Software-Avatar.png" alt="logo">
+
+    </a>
+    sip2json
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/SiddiqSoft/sip2json" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    SiddiqSoft/sip2json
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sip2json/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    sip2json
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sipmessage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    sipmessage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Constants & Header Keys
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Constants & Header Keys
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#architectural-rationale" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architectural Rationale
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#top-level-message-json-section-keys" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Top-Level Message JSON Section Keys
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#start-line-json-field-keys" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Start-Line JSON Field Keys
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#meta-section-field-keys" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Meta Section Field Keys
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#standard-sip-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Standard SIP Methods
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Standard SIP Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#valid-methods-array" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Valid Methods Array
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#protocol-network-constants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Protocol &amp; Network Constants
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#registration-ttl-intervals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Registration &amp; TTL Intervals
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#supported-content-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported Content Types
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#authentication-schemes-subscription-states" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Authentication Schemes &amp; Subscription States
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#wire-framing-parsing-delimiters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Wire Framing &amp; Parsing Delimiters
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#canonical-header-key-constants-hf_" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Canonical Header Key Constants (HF_*)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#header-key-sets-compact-aliases-hfs_" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Header Key Sets &amp; Compact Aliases (HFS_*)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#header-normalization-fnv-1a-hashing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Header Normalization &amp; FNV-1a Hashing
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Header Normalization &amp; FNV-1a Hashing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#live-test-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Live Test Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../errors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Exceptions & Errors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../json_schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    JSON Schema & SDP
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Code Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Related Pages
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Related Pages
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/benchmarks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Benchmarks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/async/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stream Mechanics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/optimization_choices/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Optimization Choices
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/compliance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Standards Compliance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/test_suite_sources/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Test Suite & RFC Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintainers/pipelines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Maintainer Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../license/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    License
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#architectural-rationale" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architectural Rationale
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#top-level-message-json-section-keys" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Top-Level Message JSON Section Keys
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#start-line-json-field-keys" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Start-Line JSON Field Keys
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#meta-section-field-keys" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Meta Section Field Keys
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#standard-sip-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Standard SIP Methods
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Standard SIP Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#valid-methods-array" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Valid Methods Array
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#protocol-network-constants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Protocol &amp; Network Constants
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#registration-ttl-intervals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Registration &amp; TTL Intervals
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#supported-content-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported Content Types
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#authentication-schemes-subscription-states" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Authentication Schemes &amp; Subscription States
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#wire-framing-parsing-delimiters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Wire Framing &amp; Parsing Delimiters
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#canonical-header-key-constants-hf_" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Canonical Header Key Constants (HF_*)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#header-key-sets-compact-aliases-hfs_" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Header Key Sets &amp; Compact Aliases (HFS_*)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#header-normalization-fnv-1a-hashing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Header Normalization &amp; FNV-1a Hashing
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Header Normalization &amp; FNV-1a Hashing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#live-test-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Live Test Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation" >
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    API Reference
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="protocol-header-framing-constants-reference">Protocol, Header, &amp; Framing Constants Reference<a class="headerlink" href="#protocol-header-framing-constants-reference" title="Permanent link">&para;</a></h1>
+<div class="api-header-block">
+  <div class="api-module-name">Namespace siddiqsoft</div>
+  <div class="api-header-file">#include &lt;siddiqsoft/private/sip2json_constants.hpp&gt; &bull; &lt;siddiqsoft/private/sip2json_header_keys.hpp&gt;</div>
+</div>
+
+<p>The <code>siddiqsoft</code> namespace provides compile-time string constants, enumeration sets, and fast hash normalization dispatch tables for SIP RFC 3261 protocols, JSON serialization schema keys, framing delimiters, and canonical header names.</p>
+<h2 id="architectural-rationale">Architectural Rationale<a class="headerlink" href="#architectural-rationale" title="Permanent link">&para;</a></h2>
+<p>To maximize throughput and achieve zero dynamic heap allocations in high-performance message processing:</p>
+<ol>
+<li><strong><code>static inline const std::string</code> definitions</strong>: Defined once per compilation unit. When searching or inserting into <code>nlohmann::json</code> objects, passing these constants prevents the creation of temporary <code>std::string</code> instances that would otherwise occur when passing raw C-string literals (<code>const char*</code>).</li>
+<li><strong>Compile-Time FNV-1a Hashing</strong>: Wire header strings are mapped to canonical representations (<code>HF_*</code>) via a 64-bit constexpr Fowler-Noll-Vo-1a hash (<code>hash_header_key</code>) with inline case-folding, avoiding <code>tolower()</code> string copies during packet parsing.</li>
+<li><strong>RFC 3261 Compact Aliases</strong>: Compact single-character headers (e.g. <code>c</code> for <code>Content-Type</code>, <code>i</code> for <code>Call-ID</code>, <code>m</code> for <code>Contact</code>) are automatically mapped to their canonical forms via <code>siddiqsoft::canonicalizeHeaderKey</code>.</li>
+</ol>
+<h2 id="top-level-message-json-section-keys">Top-Level Message JSON Section Keys<a class="headerlink" href="#top-level-message-json-section-keys" title="Permanent link">&para;</a></h2>
+<p>Partition keys defining the root structure of the <code>sipmessage</code> JSON object:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Constant Name</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Value</th>
+<th style="text-align: left;">Target JSON Path</th>
+<th style="text-align: left;">Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>JSON_KEY_STARTLINE</code></td>
+<td style="text-align: left;"><code>std::string</code></td>
+<td style="text-align: left;"><code>"s"</code></td>
+<td style="text-align: left;"><code>/s</code></td>
+<td style="text-align: left;">Container for request-line or status-line fields.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>JSON_KEY_HEADERS</code></td>
+<td style="text-align: left;"><code>std::string</code></td>
+<td style="text-align: left;"><code>"h"</code></td>
+<td style="text-align: left;"><code>/h</code></td>
+<td style="text-align: left;">Key-value dictionary containing all normalized message headers.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>JSON_KEY_BODY</code></td>
+<td style="text-align: left;"><code>std::string</code></td>
+<td style="text-align: left;"><code>"b"</code></td>
+<td style="text-align: left;"><code>/b</code></td>
+<td style="text-align: left;">Container for raw message body or structured SDP array.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>JSON_KEY_META</code></td>
+<td style="text-align: left;"><code>std::string</code></td>
+<td style="text-align: left;"><code>"meta"</code></td>
+<td style="text-align: left;"><code>/meta</code></td>
+<td style="text-align: left;">Diagnostic and provenance tracking metadata.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>JSON_KEY_SDP</code></td>
+<td style="text-align: left;"><code>std::string</code></td>
+<td style="text-align: left;"><code>"sdp"</code></td>
+<td style="text-align: left;"><code>/b/sdp</code></td>
+<td style="text-align: left;">Structured array container for parsed SDP blocks.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="start-line-json-field-keys">Start-Line JSON Field Keys<a class="headerlink" href="#start-line-json-field-keys" title="Permanent link">&para;</a></h2>
+<p>Keys for start-line / status-line fields under the <code>/s</code> object:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Constant Name</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Value</th>
+<th style="text-align: left;">Target Path</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>JSON_KEY_TYPE</code></td>
+<td style="text-align: left;"><code>std::string</code></td>
+<td style="text-align: left;"><code>"type"</code></td>
+<td style="text-align: left;"><code>/s/type</code></td>
+<td style="text-align: left;">Discriminator: <code>"request"</code> (1) or <code>"response"</code> (2).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>JSON_KEY_METHOD</code></td>
+<td style="text-align: left;"><code>std::string</code></td>
+<td style="text-align: left;"><code>"method"</code></td>
+<td style="text-align: left;"><code>/s/method</code></td>
+<td style="text-align: left;">SIP request method name (e.g. <code>INVITE</code>).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>JSON_KEY_URI</code></td>
+<td style="text-align: left;"><code>std::string</code></td>
+<td style="text-align: left;"><code>"uri"</code></td>
+<td style="text-align: left;"><code>/s/uri</code></td>
+<td style="text-align: left;">Target SIP request URI string.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>JSON_KEY_VERSION</code></td>
+<td style="text-align: left;"><code>std::string</code></td>
+<td style="text-align: left;"><code>"version"</code></td>
+<td style="text-align: left;"><code>/s/version</code></td>
+<td style="text-align: left;">SIP protocol version token (always <code>SIP/2.0</code>).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>JSON_KEY_STATUS</code></td>
+<td style="text-align: left;"><code>std::string</code></td>
+<td style="text-align: left;"><code>"status"</code></td>
+<td style="text-align: left;"><code>/s/status</code></td>
+<td style="text-align: left;">Numeric response status code (e.g. <code>200</code>, <code>404</code>).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>JSON_KEY_REASON</code></td>
+<td style="text-align: left;"><code>std::string</code></td>
+<td style="text-align: left;"><code>"reason"</code></td>
+<td style="text-align: left;"><code>/s/reason</code></td>
+<td style="text-align: left;">Response reason phrase string (e.g. <code>"OK"</code>).</td>
+</tr>
+</tbody>
+</table>
+<h2 id="meta-section-field-keys">Meta Section Field Keys<a class="headerlink" href="#meta-section-field-keys" title="Permanent link">&para;</a></h2>
+<p>Diagnostic telemetry keys under the <code>/meta</code> object:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Constant Name</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Value</th>
+<th style="text-align: left;">Target Path</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>JSON_KEY_ID</code></td>
+<td style="text-align: left;"><code>std::string</code></td>
+<td style="text-align: left;"><code>"id"</code></td>
+<td style="text-align: left;"><code>/meta/id</code></td>
+<td style="text-align: left;">Unique UUID string assigned to message instance.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>JSON_KEY_TIME</code></td>
+<td style="text-align: left;"><code>std::string</code></td>
+<td style="text-align: left;"><code>"time"</code></td>
+<td style="text-align: left;"><code>/meta/time</code></td>
+<td style="text-align: left;">ISO 8601 UTC creation/receipt timestamp string.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>JSON_KEY_TTX</code></td>
+<td style="text-align: left;"><code>std::string</code></td>
+<td style="text-align: left;"><code>"ttx"</code></td>
+<td style="text-align: left;"><code>/meta/ttx</code></td>
+<td style="text-align: left;">Parse latency counter / tick accumulator.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="standard-sip-methods">Standard SIP Methods<a class="headerlink" href="#standard-sip-methods" title="Permanent link">&para;</a></h2>
+<p>Standard RFC 3261 / 3262 / 3265 / 3515 / 3903 request method constants:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Constant Name</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Value</th>
+<th style="text-align: left;">RFC Specification</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>METHOD_INVITE</code></td>
+<td style="text-align: left;"><code>std::string</code></td>
+<td style="text-align: left;"><code>"INVITE"</code></td>
+<td style="text-align: left;">RFC 3261</td>
+<td style="text-align: left;">Initiates a session or dialog between endpoints.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>METHOD_ACK</code></td>
+<td style="text-align: left;"><code>std::string</code></td>
+<td style="text-align: left;"><code>"ACK"</code></td>
+<td style="text-align: left;">RFC 3261</td>
+<td style="text-align: left;">Confirms final response to an INVITE request.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>METHOD_OPTIONS</code></td>
+<td style="text-align: left;"><code>std::string</code></td>
+<td style="text-align: left;"><code>"OPTIONS"</code></td>
+<td style="text-align: left;">RFC 3261</td>
+<td style="text-align: left;">Queries capabilities and supported extensions.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>METHOD_BYE</code></td>
+<td style="text-align: left;"><code>std::string</code></td>
+<td style="text-align: left;"><code>"BYE"</code></td>
+<td style="text-align: left;">RFC 3261</td>
+<td style="text-align: left;">Terminates an active media session or call.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>METHOD_CANCEL</code></td>
+<td style="text-align: left;"><code>std::string</code></td>
+<td style="text-align: left;"><code>"CANCEL"</code></td>
+<td style="text-align: left;">RFC 3261</td>
+<td style="text-align: left;">Cancels a pending uncompleted request.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>METHOD_REGISTER</code></td>
+<td style="text-align: left;"><code>std::string</code></td>
+<td style="text-align: left;"><code>"REGISTER"</code></td>
+<td style="text-align: left;">RFC 3261</td>
+<td style="text-align: left;">Binds a SIP address to current network contact.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>METHOD_SUBSCRIBE</code></td>
+<td style="text-align: left;"><code>std::string</code></td>
+<td style="text-align: left;"><code>"SUBSCRIBE"</code></td>
+<td style="text-align: left;">RFC 3265</td>
+<td style="text-align: left;">Requests event notifications from remote agent.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>METHOD_NOTIFY</code></td>
+<td style="text-align: left;"><code>std::string</code></td>
+<td style="text-align: left;"><code>"NOTIFY"</code></td>
+<td style="text-align: left;">RFC 3265</td>
+<td style="text-align: left;">Transports state notifications to subscriber.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>METHOD_MESSAGE</code></td>
+<td style="text-align: left;"><code>std::string</code></td>
+<td style="text-align: left;"><code>"MESSAGE"</code></td>
+<td style="text-align: left;">RFC 3428</td>
+<td style="text-align: left;">Transports instant message text payloads.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>METHOD_INFO</code></td>
+<td style="text-align: left;"><code>std::string</code></td>
+<td style="text-align: left;"><code>"INFO"</code></td>
+<td style="text-align: left;">RFC 2976</td>
+<td style="text-align: left;">Sends mid-dialog session control information.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>METHOD_REFER</code></td>
+<td style="text-align: left;"><code>std::string</code></td>
+<td style="text-align: left;"><code>"REFER"</code></td>
+<td style="text-align: left;">RFC 3515</td>
+<td style="text-align: left;">Requests recipient to contact a third party.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>METHOD_PUBLISH</code></td>
+<td style="text-align: left;"><code>std::string</code></td>
+<td style="text-align: left;"><code>"PUBLISH"</code></td>
+<td style="text-align: left;">RFC 3903</td>
+<td style="text-align: left;">Publishes event state (e.g. presence data).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>METHOD_UPDATE</code></td>
+<td style="text-align: left;"><code>std::string</code></td>
+<td style="text-align: left;"><code>"UPDATE"</code></td>
+<td style="text-align: left;">RFC 3311</td>
+<td style="text-align: left;">Modifies session state before call is answered.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>METHOD_PRACK</code></td>
+<td style="text-align: left;"><code>std::string</code></td>
+<td style="text-align: left;"><code>"PRACK"</code></td>
+<td style="text-align: left;">RFC 3262</td>
+<td style="text-align: left;">Provisional response acknowledgement.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="valid-methods-array">Valid Methods Array<a class="headerlink" href="#valid-methods-array" title="Permanent link">&para;</a></h3>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string_view</span><span class="w"> </span><span class="n">SIP_VALID_METHODS</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="s">&quot;INVITE&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ACK&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;OPTIONS&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;BYE&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;CANCEL&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;REGISTER&quot;</span><span class="p">,</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="s">&quot;SUBSCRIBE&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;NOTIFY&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;REFER&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;PUBLISH&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;UPDATE&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;PRACK&quot;</span><span class="p">,</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="s">&quot;INFO&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;MESSAGE&quot;</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="p">};</span>
+</span></code></pre></div>
+<h2 id="protocol-network-constants">Protocol &amp; Network Constants<a class="headerlink" href="#protocol-network-constants" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Constant Name</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Value</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>SIPVER_20</code></td>
+<td style="text-align: left;"><code>std::string</code></td>
+<td style="text-align: left;"><code>"SIP/2.0"</code></td>
+<td style="text-align: left;">Standard SIP version identifier token.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>DEFAULT_SERVER_PORT</code></td>
+<td style="text-align: left;"><code>constexpr int</code></td>
+<td style="text-align: left;"><code>5060</code></td>
+<td style="text-align: left;">Default IANA-assigned port for SIP over UDP and TCP.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>URI_SCHEME_SIP</code></td>
+<td style="text-align: left;"><code>std::string</code></td>
+<td style="text-align: left;"><code>"sip:"</code></td>
+<td style="text-align: left;">Unencrypted SIP URI scheme prefix.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>URI_SCHEME_SIPS</code></td>
+<td style="text-align: left;"><code>std::string</code></td>
+<td style="text-align: left;"><code>"sips:"</code></td>
+<td style="text-align: left;">Secure TLS-encrypted SIP URI scheme prefix.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>VIA_BRANCH_PREFIX</code></td>
+<td style="text-align: left;"><code>std::string</code></td>
+<td style="text-align: left;"><code>"z9hG4bK"</code></td>
+<td style="text-align: left;">RFC 3261 magic cookie required for all transaction branch IDs.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>EMPTY_STD_STRING_VALUE</code></td>
+<td style="text-align: left;"><code>std::string</code></td>
+<td style="text-align: left;"><code>""</code></td>
+<td style="text-align: left;">Cached empty string instance to avoid heap reallocations.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="registration-ttl-intervals">Registration &amp; TTL Intervals<a class="headerlink" href="#registration-ttl-intervals" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Constant Name</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Value</th>
+<th style="text-align: left;">Time Representation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>DEFAULT_MAX_REGISTER_TTL</code></td>
+<td style="text-align: left;"><code>constexpr int</code></td>
+<td style="text-align: left;"><code>3600</code></td>
+<td style="text-align: left;">1 hour in seconds.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>DEFAULT_MAX_REGISTER_TTL_MS</code></td>
+<td style="text-align: left;"><code>constexpr int</code></td>
+<td style="text-align: left;"><code>3600000</code></td>
+<td style="text-align: left;">1 hour in milliseconds.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>DEFAULT_MIN_REGISTER_TTL</code></td>
+<td style="text-align: left;"><code>constexpr int</code></td>
+<td style="text-align: left;"><code>120</code></td>
+<td style="text-align: left;">2 minutes in seconds.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>REGISTER_PERIOD_10MIN_SEC</code></td>
+<td style="text-align: left;"><code>constexpr int</code></td>
+<td style="text-align: left;"><code>600</code></td>
+<td style="text-align: left;">10 minutes in seconds.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>REGISTER_PERIOD_10MIN_MS</code></td>
+<td style="text-align: left;"><code>constexpr int</code></td>
+<td style="text-align: left;"><code>600000</code></td>
+<td style="text-align: left;">10 minutes in milliseconds.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>REGISTER_PERIOD_1MIN_SEC</code></td>
+<td style="text-align: left;"><code>constexpr int</code></td>
+<td style="text-align: left;"><code>60</code></td>
+<td style="text-align: left;">1 minute in seconds.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>REGISTER_PERIOD_MIN_SEC</code></td>
+<td style="text-align: left;"><code>constexpr int</code></td>
+<td style="text-align: left;"><code>30</code></td>
+<td style="text-align: left;">30 seconds.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="supported-content-types">Supported Content Types<a class="headerlink" href="#supported-content-types" title="Permanent link">&para;</a></h2>
+<p>MIME type string constants used for <code>Content-Type</code> header verification and SDP parsing dispatch:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Constant Name</th>
+<th style="text-align: left;">Value</th>
+<th style="text-align: left;">Handling Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>CONTENT_TYPE_APP_SDP</code></td>
+<td style="text-align: left;"><code>"application/sdp"</code></td>
+<td style="text-align: left;">Automatically parsed into structured <code>/b/sdp</code> array.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>CONTENT_TYPE_TEXT_PLAIN</code></td>
+<td style="text-align: left;"><code>"text/plain"</code></td>
+<td style="text-align: left;">Retained as verbatim UTF-8 string payload in <code>/b</code>.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>CONTENT_TYPE_TEXT_HTML</code></td>
+<td style="text-align: left;"><code>"text/html"</code></td>
+<td style="text-align: left;">Retained as verbatim UTF-8 string payload in <code>/b</code>.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>CONTENT_TYPE_TEXT_XML</code></td>
+<td style="text-align: left;"><code>"text/xml"</code></td>
+<td style="text-align: left;">Retained as verbatim string payload in <code>/b</code>.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>CONTENT_TYPE_APP_XML</code></td>
+<td style="text-align: left;"><code>"application/xml"</code></td>
+<td style="text-align: left;">Retained as verbatim string payload in <code>/b</code>.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>CONTENT_TYPE_APP_PKCS7MIME</code></td>
+<td style="text-align: left;"><code>"application/pkcs7-mime"</code></td>
+<td style="text-align: left;">Opaque binary/encrypted payload string in <code>/b</code>.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>CONTENT_TYPE_APP_XPRIVATE</code></td>
+<td style="text-align: left;"><code>"application/x-private"</code></td>
+<td style="text-align: left;">Proprietary custom data payload in <code>/b</code>.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>CONTENT_TYPE_TEXT_X_METATEL1_PRESENCE</code></td>
+<td style="text-align: left;"><code>"text/x-metatel1.0-presence"</code></td>
+<td style="text-align: left;">Presence information data format payload.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="authentication-schemes-subscription-states">Authentication Schemes &amp; Subscription States<a class="headerlink" href="#authentication-schemes-subscription-states" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Category</th>
+<th style="text-align: left;">Constant Name</th>
+<th style="text-align: left;">Value</th>
+<th style="text-align: left;">Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Auth</strong></td>
+<td style="text-align: left;"><code>AUTHORIZATION_CLEAR</code></td>
+<td style="text-align: left;"><code>"Clear"</code></td>
+<td style="text-align: left;">Cleartext password scheme.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Auth</strong></td>
+<td style="text-align: left;"><code>AUTHORIZATION_BASIC</code></td>
+<td style="text-align: left;"><code>"Basic"</code></td>
+<td style="text-align: left;">RFC 7617 HTTP Basic authentication scheme.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Auth</strong></td>
+<td style="text-align: left;"><code>AUTHORIZATION_DIGEST</code></td>
+<td style="text-align: left;"><code>"Digest"</code></td>
+<td style="text-align: left;">RFC 2617 / RFC 7616 MD5 / SHA-256 Digest scheme.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Subscription</strong></td>
+<td style="text-align: left;"><code>SUBSTATE_ACTIVE</code></td>
+<td style="text-align: left;"><code>"active"</code></td>
+<td style="text-align: left;">Subscription accepted and active.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Subscription</strong></td>
+<td style="text-align: left;"><code>SUBSTATE_PENDING</code></td>
+<td style="text-align: left;"><code>"pending"</code></td>
+<td style="text-align: left;">Subscription request received but awaiting approval.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Subscription</strong></td>
+<td style="text-align: left;"><code>SUBSTATE_TERMINATED</code></td>
+<td style="text-align: left;"><code>"terminated"</code></td>
+<td style="text-align: left;">Subscription ended or timed out.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="wire-framing-parsing-delimiters">Wire Framing &amp; Parsing Delimiters<a class="headerlink" href="#wire-framing-parsing-delimiters" title="Permanent link">&para;</a></h2>
+<p>Constants representing standard line delimiters, separators, and SDP markers across platforms:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Constant Name</th>
+<th style="text-align: left;">Wire Sequence</th>
+<th style="text-align: left;">Escaped String</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>ELEM_NEWLINE</code></td>
+<td style="text-align: left;">CRLF</td>
+<td style="text-align: left;"><code>"\r\n"</code></td>
+<td style="text-align: left;">Standard RFC 3261 header and line delimiter.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ELEM_HEADERSECTIONDELIMITER</code></td>
+<td style="text-align: left;">Double CRLF</td>
+<td style="text-align: left;"><code>"\r\n\r\n"</code></td>
+<td style="text-align: left;">Delimiter separating header dictionary from payload body.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ELEM_SPACE</code></td>
+<td style="text-align: left;">Space</td>
+<td style="text-align: left;"><code>" "</code></td>
+<td style="text-align: left;">Token separator in request line and status line.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ELEM_SEPARATOR</code></td>
+<td style="text-align: left;">Colon</td>
+<td style="text-align: left;"><code>":"</code></td>
+<td style="text-align: left;">Header key-value delimiter.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ELEM_PADDED_SEPARATOR</code></td>
+<td style="text-align: left;">Colon + Space</td>
+<td style="text-align: left;"><code>": "</code></td>
+<td style="text-align: left;">Standard formatted header key-value separator.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ELEM_TAG_SEPARATOR</code></td>
+<td style="text-align: left;">Open Brace</td>
+<td style="text-align: left;"><code>"{"</code></td>
+<td style="text-align: left;">Tag / parameter delimiter.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ELEM_LWSP</code></td>
+<td style="text-align: left;">CRLF + Space</td>
+<td style="text-align: left;"><code>"\r\n "</code></td>
+<td style="text-align: left;">Linear whitespace folding indicator (RFC 822 / 3261).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ELEM_LWSP1</code></td>
+<td style="text-align: left;">CRLF + Tab</td>
+<td style="text-align: left;"><code>"\r\n\t"</code></td>
+<td style="text-align: left;">Tab-based linear whitespace folding indicator.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ELEM_SDPBlockStart</code></td>
+<td style="text-align: left;">Padded SDP</td>
+<td style="text-align: left;"><code>" v=0\r\n"</code></td>
+<td style="text-align: left;">Wire indicator for start of SDP session description.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ELEM_NEWLINE_LF</code></td>
+<td style="text-align: left;">LF</td>
+<td style="text-align: left;"><code>"\n"</code></td>
+<td style="text-align: left;">UNIX newline fallback delimiter.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ELEM_HEADERSECTIONDELIMITER_LF</code></td>
+<td style="text-align: left;">Double LF</td>
+<td style="text-align: left;"><code>"\n\n"</code></td>
+<td style="text-align: left;">UNIX header-body separator fallback.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ELEM_LWSP_LF</code></td>
+<td style="text-align: left;">LF + Space</td>
+<td style="text-align: left;"><code>"\n "</code></td>
+<td style="text-align: left;">UNIX linear whitespace folding.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ELEM_LWSP1_LF</code></td>
+<td style="text-align: left;">LF + Tab</td>
+<td style="text-align: left;"><code>"\n\t"</code></td>
+<td style="text-align: left;">UNIX tab linear whitespace folding.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ELEM_SDPBlockStart_LF</code></td>
+<td style="text-align: left;">LF SDP</td>
+<td style="text-align: left;"><code>"v=0\n"</code></td>
+<td style="text-align: left;">UNIX SDP session block start indicator.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="canonical-header-key-constants-hf_">Canonical Header Key Constants (<code>HF_*</code>)<a class="headerlink" href="#canonical-header-key-constants-hf_" title="Permanent link">&para;</a></h2>
+<p>Static <code>std::string</code> definitions used as keys in <code>sipmessage["h"]</code> and <code>sipmessage.setHeader()</code> to ensure zero dynamic allocation during lookups:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Constant Name</th>
+<th style="text-align: left;">Canonical Header Name</th>
+<th style="text-align: left;">RFC 3261 Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>HF_FROM</code></td>
+<td style="text-align: left;"><code>"From"</code></td>
+<td style="text-align: left;">Identifies the originator of the request.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>HF_TO</code></td>
+<td style="text-align: left;"><code>"To"</code></td>
+<td style="text-align: left;">Identifies the desired recipient of the request.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>HF_CALLID</code></td>
+<td style="text-align: left;"><code>"Call-ID"</code></td>
+<td style="text-align: left;">Uniquely identifies a particular invitation or registration.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>HF_CSEQ</code></td>
+<td style="text-align: left;"><code>"CSeq"</code></td>
+<td style="text-align: left;">Sequential number identifying transaction ordering.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>HF_VIA</code></td>
+<td style="text-align: left;"><code>"Via"</code></td>
+<td style="text-align: left;">Records path taken by request and routes responses back.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>HF_CONTACT</code></td>
+<td style="text-align: left;"><code>"Contact"</code></td>
+<td style="text-align: left;">Direct routing URI for subsequent requests.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>HF_CONTENT_TYPE</code></td>
+<td style="text-align: left;"><code>"Content-Type"</code></td>
+<td style="text-align: left;">Media type of message payload body.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>HF_CONTENT_LENGTH</code></td>
+<td style="text-align: left;"><code>"Content-Length"</code></td>
+<td style="text-align: left;">Size in octets of the message payload.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>HF_CONTENT_ENCODING</code></td>
+<td style="text-align: left;"><code>"Content-Encoding"</code></td>
+<td style="text-align: left;">Compression or encoding scheme applied to body.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>HF_EXPIRES</code></td>
+<td style="text-align: left;"><code>"Expires"</code></td>
+<td style="text-align: left;">Relative time in seconds after which message expires.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>HF_ROUTE</code></td>
+<td style="text-align: left;"><code>"Route"</code></td>
+<td style="text-align: left;">Forces routing through specified proxy addresses.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>HF_RECORD_ROUTE</code></td>
+<td style="text-align: left;"><code>"Record-Route"</code></td>
+<td style="text-align: left;">Injected by proxies to remain on dialog path.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>HF_MAX_FORWARDS</code></td>
+<td style="text-align: left;"><code>"Max-Forwards"</code></td>
+<td style="text-align: left;">Hop count limit preventing routing loops (default 70).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>HF_USER_AGENT</code></td>
+<td style="text-align: left;"><code>"User-Agent"</code></td>
+<td style="text-align: left;">Client software name and version information.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>HF_SERVER</code></td>
+<td style="text-align: left;"><code>"Server"</code></td>
+<td style="text-align: left;">UAS software name and version information.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>HF_AUTHORIZATION</code></td>
+<td style="text-align: left;"><code>"Authorization"</code></td>
+<td style="text-align: left;">Client authentication credentials.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>HF_WWW_AUTHENTICATE</code></td>
+<td style="text-align: left;"><code>"WWW-Authenticate"</code></td>
+<td style="text-align: left;">Authentication challenge issued by UAS.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>HF_PROXY_AUTHENTICATE</code></td>
+<td style="text-align: left;"><code>"Proxy-Authenticate"</code></td>
+<td style="text-align: left;">Challenge issued by an intermediary proxy.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>HF_PROXY_AUTHORIZATION</code></td>
+<td style="text-align: left;"><code>"Proxy-Authorization"</code></td>
+<td style="text-align: left;">Client credentials for intermediary proxy.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>HF_PROXY_REQUIRE</code></td>
+<td style="text-align: left;"><code>"Proxy-Require"</code></td>
+<td style="text-align: left;">Sensitive features that proxies must support.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>HF_REQUIRE</code></td>
+<td style="text-align: left;"><code>"Require"</code></td>
+<td style="text-align: left;">Extensions that UAS must support to process request.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>HF_SUPPORTED</code></td>
+<td style="text-align: left;"><code>"Supported"</code></td>
+<td style="text-align: left;">Extensions supported by the sender.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>HF_UNSUPPORTED</code></td>
+<td style="text-align: left;"><code>"Unsupported"</code></td>
+<td style="text-align: left;">Extensions not supported by recipient.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>HF_ALLOW</code></td>
+<td style="text-align: left;"><code>"Allow"</code></td>
+<td style="text-align: left;">Lists SIP methods supported by the UA.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>HF_WARNING</code></td>
+<td style="text-align: left;"><code>"Warning"</code></td>
+<td style="text-align: left;">Diagnostic warning message and code.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>HF_ACCEPT</code></td>
+<td style="text-align: left;"><code>"Accept"</code></td>
+<td style="text-align: left;">Media types acceptable in responses.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>HF_ACCEPT_ENCODING</code></td>
+<td style="text-align: left;"><code>"Accept-Encoding"</code></td>
+<td style="text-align: left;">Content codings acceptable in responses.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>HF_ACCEPT_LANGUAGE</code></td>
+<td style="text-align: left;"><code>"Accept-Language"</code></td>
+<td style="text-align: left;">Preferred natural languages in reason phrases.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>HF_DATE</code></td>
+<td style="text-align: left;"><code>"Date"</code></td>
+<td style="text-align: left;">Date and time message was originated (RFC 1123).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>HF_TIMESTAMP</code></td>
+<td style="text-align: left;"><code>"Timestamp"</code></td>
+<td style="text-align: left;">Client time when request was initially sent.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>HF_PRIORITY</code></td>
+<td style="text-align: left;"><code>"Priority"</code></td>
+<td style="text-align: left;">Call urgency (e.g. <code>urgent</code>, <code>normal</code>, <code>emergency</code>).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>HF_SUBJECT</code></td>
+<td style="text-align: left;"><code>"Subject"</code></td>
+<td style="text-align: left;">Short text summary of call topic.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>HF_LOCATION</code></td>
+<td style="text-align: left;"><code>"Location"</code></td>
+<td style="text-align: left;">Geographical or network location of sender.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>HF_HIDE</code></td>
+<td style="text-align: left;"><code>"Hide"</code></td>
+<td style="text-align: left;">Request proxy anonymity / route concealment.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>HF_RESPONSE_KEY</code></td>
+<td style="text-align: left;"><code>"Response-Key"</code></td>
+<td style="text-align: left;">PGP key used to encrypt subsequent responses.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>HF_RETRY_AFTER</code></td>
+<td style="text-align: left;"><code>"Retry-After"</code></td>
+<td style="text-align: left;">Time interval client should wait before retrying.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>HF_SUBSCRIPTION_STATE</code></td>
+<td style="text-align: left;"><code>"Subscription-State"</code></td>
+<td style="text-align: left;">Current state of event notification subscription.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="header-key-sets-compact-aliases-hfs_">Header Key Sets &amp; Compact Aliases (<code>HFS_*</code>)<a class="headerlink" href="#header-key-sets-compact-aliases-hfs_" title="Permanent link">&para;</a></h2>
+<p>RFC 3261 defines single-character compact aliases to minimize packet size over MTU-constrained networks. The parser normalizes all aliases to their canonical representation:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Canonical Name</th>
+<th style="text-align: left;">Compact Alias</th>
+<th style="text-align: left;">Constant Instance</th>
+<th style="text-align: left;">Multi-line Support</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>From</code></td>
+<td style="text-align: left;"><code>f</code></td>
+<td style="text-align: left;"><code>siddiqsoft::HFS_FROM</code></td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>To</code></td>
+<td style="text-align: left;"><code>t</code></td>
+<td style="text-align: left;"><code>siddiqsoft::HFS_TO</code></td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>Call-ID</code></td>
+<td style="text-align: left;"><code>i</code></td>
+<td style="text-align: left;"><code>siddiqsoft::HFS_CALLID</code></td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>Via</code></td>
+<td style="text-align: left;"><code>v</code></td>
+<td style="text-align: left;"><code>siddiqsoft::HFS_VIA</code></td>
+<td style="text-align: left;"><strong>Yes (Array)</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>Contact</code></td>
+<td style="text-align: left;"><code>m</code></td>
+<td style="text-align: left;"><code>siddiqsoft::HFS_CONTACT</code></td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>Content-Type</code></td>
+<td style="text-align: left;"><code>c</code></td>
+<td style="text-align: left;"><code>siddiqsoft::HFS_CONTENT_TYPE</code></td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>Content-Length</code></td>
+<td style="text-align: left;"><code>l</code></td>
+<td style="text-align: left;"><code>siddiqsoft::HFS_CONTENT_LENGTH</code></td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>Content-Encoding</code></td>
+<td style="text-align: left;"><code>e</code></td>
+<td style="text-align: left;"><code>siddiqsoft::HFS_CONTENT_ENCODING</code></td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>Subject</code></td>
+<td style="text-align: left;"><code>s</code></td>
+<td style="text-align: left;"><code>siddiqsoft::HFS_SUBJECT</code></td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>Supported</code></td>
+<td style="text-align: left;"><code>k</code></td>
+<td style="text-align: left;"><code>siddiqsoft::HFS_SUPPORTED</code></td>
+<td style="text-align: left;"><strong>Yes (Array)</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>Authorization</code></td>
+<td style="text-align: left;"><code>uthorization</code></td>
+<td style="text-align: left;"><code>siddiqsoft::HFS_AUTHORIZATION</code></td>
+<td style="text-align: left;">No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="header-normalization-fnv-1a-hashing">Header Normalization &amp; FNV-1a Hashing<a class="headerlink" href="#header-normalization-fnv-1a-hashing" title="Permanent link">&para;</a></h2>
+<p>The parser matches incoming headers in $O(1)$ time by evaluating a <code>constexpr</code> 64-bit Fowler-Noll-Vo-1a hash over the string:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">uint64_t</span><span class="w"> </span><span class="nf">hash_header_key</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">len</span><span class="p">)</span><span class="w"> </span><span class="k">noexcept</span><span class="p">;</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">uint64_t</span><span class="w"> </span><span class="nf">hash_header_key</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string_view</span><span class="w"> </span><span class="n">sv</span><span class="p">)</span><span class="w"> </span><span class="k">noexcept</span><span class="p">;</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="k">const</span><span class="w"> </span><span class="n">HeaderKeySet</span><span class="o">&amp;</span><span class="w"> </span><span class="nf">canonicalizeHeaderKey</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string_view</span><span class="w"> </span><span class="n">keyFromPayload</span><span class="p">);</span>
+</span></code></pre></div>
+<h3 id="live-test-example">Live Test Example<a class="headerlink" href="#live-test-example" title="Permanent link">&para;</a></h3>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1">// Source: tests/regression/src/rule_of_five_tests.cpp:L40-L45</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">auto</span><span class="w"> </span><span class="n">callId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">siddiqsoft</span><span class="o">::</span><span class="n">createCallId</span><span class="p">();</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">siddiqsoft</span><span class="o">::</span><span class="n">sipmessage</span><span class="w"> </span><span class="n">original</span><span class="p">(</span><span class="n">siddiqsoft</span><span class="o">::</span><span class="n">METHOD_INVITE</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;sip:test@example.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">callId</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="c1">// Setting canonical headers with static string constants (zero allocation):</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="n">original</span><span class="p">.</span><span class="n">setHeader</span><span class="p">(</span><span class="n">siddiqsoft</span><span class="o">::</span><span class="n">HF_TO</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;sip:test@example.com&quot;</span><span class="p">);</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="n">original</span><span class="p">.</span><span class="n">setHeader</span><span class="p">(</span><span class="n">siddiqsoft</span><span class="o">::</span><span class="n">HF_FROM</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;sip:sender@example.com&quot;</span><span class="p">);</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="n">original</span><span class="p">.</span><span class="n">setHeader</span><span class="p">(</span><span class="n">siddiqsoft</span><span class="o">::</span><span class="n">HF_CONTENT_TYPE</span><span class="p">,</span><span class="w"> </span><span class="n">siddiqsoft</span><span class="o">::</span><span class="n">CONTENT_TYPE_APP_SDP</span><span class="p">);</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">original</span><span class="p">.</span><span class="n">getMethod</span><span class="p">(),</span><span class="w"> </span><span class="n">siddiqsoft</span><span class="o">::</span><span class="n">METHOD_INVITE</span><span class="p">);</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">original</span><span class="p">.</span><span class="n">getHeader</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span><span class="n">siddiqsoft</span><span class="o">::</span><span class="n">HF_CONTENT_TYPE</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;application/sdp&quot;</span><span class="p">);</span>
+</span></code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../sipmessage/" class="md-footer__link md-footer__link--prev" aria-label="Previous: sipmessage">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                sipmessage
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../errors/" class="md-footer__link md-footer__link--next" aria-label="Next: Exceptions &amp; Errors">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Exceptions & Errors
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.1.5"}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

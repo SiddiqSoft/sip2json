@@ -2,82 +2,70 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://siddiqsoft.github.io/sip2json/</loc>
-         <lastmod>2026-09-06</lastmod>
+         <lastmod>2026-09-09</lastmod>
     </url>
     <url>
          <loc>https://siddiqsoft.github.io/sip2json/license/</loc>
-         <lastmod>2026-09-06</lastmod>
+         <lastmod>2026-09-09</lastmod>
     </url>
     <url>
          <loc>https://siddiqsoft.github.io/sip2json/api/</loc>
-         <lastmod>2026-09-06</lastmod>
+         <lastmod>2026-09-09</lastmod>
+    </url>
+    <url>
+         <loc>https://siddiqsoft.github.io/sip2json/api/constants/</loc>
+         <lastmod>2026-09-09</lastmod>
     </url>
     <url>
          <loc>https://siddiqsoft.github.io/sip2json/api/errors/</loc>
-         <lastmod>2026-09-06</lastmod>
+         <lastmod>2026-09-09</lastmod>
     </url>
     <url>
          <loc>https://siddiqsoft.github.io/sip2json/api/json_schema/</loc>
-         <lastmod>2026-09-06</lastmod>
-    </url>
-    <url>
-         <loc>https://siddiqsoft.github.io/sip2json/api/sdp/</loc>
-         <lastmod>2026-09-06</lastmod>
+         <lastmod>2026-09-09</lastmod>
     </url>
     <url>
          <loc>https://siddiqsoft.github.io/sip2json/api/sip2json/</loc>
-         <lastmod>2026-09-06</lastmod>
+         <lastmod>2026-09-09</lastmod>
     </url>
     <url>
          <loc>https://siddiqsoft.github.io/sip2json/api/sipmessage/</loc>
-         <lastmod>2026-09-06</lastmod>
+         <lastmod>2026-09-09</lastmod>
     </url>
     <url>
          <loc>https://siddiqsoft.github.io/sip2json/api/examples/</loc>
-         <lastmod>2026-09-06</lastmod>
+         <lastmod>2026-09-09</lastmod>
     </url>
     <url>
          <loc>https://siddiqsoft.github.io/sip2json/architecture/</loc>
-         <lastmod>2026-09-06</lastmod>
+         <lastmod>2026-09-09</lastmod>
     </url>
     <url>
          <loc>https://siddiqsoft.github.io/sip2json/architecture/async/</loc>
-         <lastmod>2026-09-06</lastmod>
+         <lastmod>2026-09-09</lastmod>
     </url>
     <url>
          <loc>https://siddiqsoft.github.io/sip2json/architecture/benchmarks/</loc>
-         <lastmod>2026-09-06</lastmod>
+         <lastmod>2026-09-09</lastmod>
     </url>
     <url>
          <loc>https://siddiqsoft.github.io/sip2json/architecture/compliance/</loc>
-         <lastmod>2026-09-06</lastmod>
+         <lastmod>2026-09-09</lastmod>
     </url>
     <url>
          <loc>https://siddiqsoft.github.io/sip2json/architecture/optimization_choices/</loc>
-         <lastmod>2026-09-06</lastmod>
+         <lastmod>2026-09-09</lastmod>
     </url>
     <url>
          <loc>https://siddiqsoft.github.io/sip2json/architecture/test_suite_sources/</loc>
-         <lastmod>2026-09-06</lastmod>
+         <lastmod>2026-09-09</lastmod>
     </url>
     <url>
          <loc>https://siddiqsoft.github.io/sip2json/maintainers/pipelines/</loc>
-         <lastmod>2026-09-06</lastmod>
+         <lastmod>2026-09-09</lastmod>
     </url>
     <url>
          <loc>https://siddiqsoft.github.io/sip2json/quickstart/</loc>
-         <lastmod>2026-09-06</lastmod>
-    </url>
-    <url>
-         <loc>https://siddiqsoft.github.io/sip2json/quickstart/cmake/</loc>
-         <lastmod>2026-09-06</lastmod>
-    </url>
-    <url>
-         <loc>https://siddiqsoft.github.io/sip2json/quickstart/dependencies/</loc>
-         <lastmod>2026-09-06</lastmod>
-    </url>
-    <url>
-         <loc>https://siddiqsoft.github.io/sip2json/quickstart/nuget/</loc>
-         <lastmod>2026-09-06</lastmod>
+         <lastmod>2026-09-09</lastmod>
     </url>
 </urlset>

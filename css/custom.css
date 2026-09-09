@@ -1,215 +1,846 @@
-/* Custom styles for sip2json documentation */
+/* ==========================================================================
+   sip2json - Custom Theme & Stylesheet
+   Theme: Structured C++ Technical Reference Architecture
+   Typography: Scalable, Accessible Modern Typography (cxxtemplate Standard)
+   Responsive: Mobile to Ultra-wide 4K / 5K & Retina Displays
+   ========================================================================== */
 
+/* ==========================================================================
+   1. Typography & Theme Configuration (cxxtemplate Standard)
+   --------------------------------------------------------------------------
+   - Font families dynamically inherit from mkdocs.yml (theme.font.text/code)
+     with robust cross-platform system fallbacks.
+   - All sizing strictly uses relative units (rem) to preserve the browser's
+     accessibility font scaler and native user zoom (never hardcode px on root).
+   - High-DPI / Retina desktop displays automatically scale up typography.
+   ========================================================================== */
 :root {
-  --md-font-main: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-  --md-font-code: "JetBrains Mono", SFMono-Regular, Consolas, Menlo, monospace;
-  --md-typeset-font-size: 0.85rem;
+  /* Typefaces: Inherit from mkdocs.yml theme.font or fall back to system stacks */
+  --font-family-main: var(--md-text-font, Roboto), -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --font-family-code: var(--md-code-font, "JetBrains Mono"), SFMono-Regular, Consolas, Menlo, Monaco, monospace;
 
-  /* Theme accent palette */
-  --s2j-primary: #3f51b5;
-  --s2j-primary-hover: #303f9f;
-  --s2j-accent: #4f46e5;
-  --s2j-highlight-bg: rgba(63, 81, 181, 0.08);
-  --s2j-highlight-border: #3f51b5;
-  --s2j-active-bg: rgba(63, 81, 181, 0.12);
-  --s2j-card-border: rgba(0, 0, 0, 0.08);
+  /* Standard Display Sizing (Default base: 0.94rem) */
+  --font-size-base: 0.94rem;
+  --font-size-code: 0.82rem;
+  --font-size-nav: 0.84rem;
+  --font-size-table: 0.82rem;
+  --font-size-h1: 1.55rem;
+  --font-size-h2: 1.25rem;
+  --font-size-h3: 1.02rem;
+  --font-size-h4: 0.92rem;
+  --line-height-base: 1.55;
+  --line-height-code: 1.48;
+
+  /* Material for MkDocs Typography Variable Bindings */
+  --md-font-main: var(--font-family-main);
+  --md-font-code: var(--font-family-code);
+  --md-typeset-font-size: var(--font-size-base);
+  --md-typeset-line-height: var(--line-height-base);
+}
+
+/* ==========================================================================
+   2. Retina / High-DPI Desktop Scaling (cxxtemplate Standard)
+   --------------------------------------------------------------------------
+   Desktop displays (>= 960px) with high pixel density (Retina, 4K, 5K, DPR >= 1.5)
+   render physical subpixels very densely. We scale up the typography tokens
+   for optimal desktop reading comfort while maintaining rem-based scaling.
+   ========================================================================== */
+@media screen and (min-width: 960px) and (-webkit-min-device-pixel-ratio: 1.5),
+       screen and (min-width: 960px) and (min-resolution: 144dpi),
+       screen and (min-width: 960px) and (min-resolution: 1.5dppx) {
+  :root {
+    --font-size-base: 0.94rem;
+    --font-size-code: 0.82rem;
+    --font-size-nav: 0.84rem;
+    --font-size-table: 0.82rem;
+    --font-size-h1: 1.55rem;
+    --font-size-h2: 1.25rem;
+    --font-size-h3: 1.02rem;
+    --font-size-h4: 0.92rem;
+    --md-typeset-font-size: var(--font-size-base);
+  }
+}
+
+:root,
+[data-md-color-scheme="default"] {
+  /* API Reference Theme Colors */
+  --api-primary: #23496d;
+  --api-primary-light: #2e5e8c;
+  --api-primary-dark: #1b3854;
+  --api-accent: #0284c7;
+  --api-border: #cbd5e1;
+  --api-bg-subtle: #f1f5f9;
+  --api-bg-card: #ffffff;
+  --api-text-muted: #64748b;
+  --api-proto-bg: #f8fafc;
+
+  /* Material for MkDocs Theme Overrides */
+  --md-primary-fg-color: #23496d;
+  --md-primary-fg-color--light: #2e5e8c;
+  --md-primary-fg-color--dark: #1b3854;
+  --md-accent-fg-color: #0284c7;
+
+  /* Standard C++ Syntax Highlighting Conventions (Light Mode) */
+  --md-code-hl-keyword-color: #cf222e;        /* Red / crimson for keywords (static, const, void, auto, template) */
+  --md-code-hl-type-color: #0550ae;           /* Deep blue / teal for types (size_t, uint32_t, bool, sipmessage) */
+  --md-code-hl-function-color: #8250df;       /* Purple for function & method names */
+  --md-code-hl-string-color: #0a3069;         /* Navy blue for string literals */
+  --md-code-hl-number-color: #0550ae;         /* Blue for numeric constants */
+  --md-code-hl-comment-color: #6e7781;        /* Muted slate gray for comments */
+  --md-code-hl-constant-color: #953800;       /* Amber / orange for constants and enum values */
+  --md-code-hl-special-color: #cf222e;        /* Crimson for preprocessor directives */
+  --md-code-hl-operator-color: #24292f;       /* Dark charcoal for operators */
+  --md-code-hl-punctuation-color: #57606a;    /* Muted gray for punctuation */
+
+  /* Status Colors */
   --s2j-pill-success-bg: rgba(16, 185, 129, 0.12);
   --s2j-pill-success-text: #059669;
-  --s2j-pill-info-bg: rgba(59, 130, 246, 0.12);
-  --s2j-pill-info-text: #2563eb;
+  --s2j-pill-info-bg: rgba(2, 132, 199, 0.12);
+  --s2j-pill-info-text: #0284c7;
 
-  /* Mermaid Diagram Integration (matching sip2json Indigo/Slate) */
-  --md-mermaid-font-family: var(--md-font-main);
-  --md-mermaid-edge-color: #5c6bc0;
-  --md-mermaid-node-bg-color: rgba(63, 81, 181, 0.08);
-  --md-mermaid-node-fg-color: #3f51b5;
+  /* Mermaid Diagram Integration */
+  --md-mermaid-font-family: var(--font-family-main);
+  --md-mermaid-edge-color: #475569;
+  --md-mermaid-node-bg-color: rgba(35, 73, 109, 0.08);
+  --md-mermaid-node-fg-color: #23496d;
   --md-mermaid-label-bg-color: var(--md-default-bg-color);
   --md-mermaid-label-fg-color: var(--md-default-fg-color);
-  --md-mermaid-sequence-actor-bg-color: rgba(63, 81, 181, 0.08);
-  --md-mermaid-sequence-actor-border-color: #3f51b5;
-  --md-mermaid-sequence-actor-fg-color: #1e1b4b;
-  --md-mermaid-sequence-actor-line-color: rgba(63, 81, 181, 0.3);
-  --md-mermaid-sequence-message-fg-color: #303f9f;
-  --md-mermaid-sequence-message-line-color: #5c6bc0;
-  --md-mermaid-sequence-note-bg-color: rgba(79, 70, 229, 0.08);
-  --md-mermaid-sequence-note-border-color: #818cf8;
-  --md-mermaid-sequence-note-fg-color: #1e1b4b;
-  --md-mermaid-sequence-box-bg-color: rgba(63, 81, 181, 0.03);
-  --md-mermaid-sequence-loop-bg-color: rgba(63, 81, 181, 0.04);
-  --md-mermaid-sequence-loop-border-color: rgba(63, 81, 181, 0.25);
-  --md-mermaid-sequence-number-bg-color: #3f51b5;
-  --md-mermaid-sequence-number-fg-color: #ffffff;
 }
 
 [data-md-color-scheme="slate"] {
-  --s2j-highlight-bg: rgba(129, 140, 248, 0.14);
-  --s2j-highlight-border: #818cf8;
-  --s2j-active-bg: rgba(129, 140, 248, 0.22);
-  --s2j-card-border: rgba(255, 255, 255, 0.1);
+  /* Dark Mode Overrides */
+  --api-primary: #38bdf8;
+  --api-primary-light: #7dd3fc;
+  --api-primary-dark: #0284c7;
+  --api-accent: #38bdf8;
+  --api-border: #334155;
+  --api-bg-subtle: #1e293b;
+  --api-bg-card: #0f172a;
+  --api-text-muted: #94a3b8;
+  --api-proto-bg: #1e293b;
+
+  --md-primary-fg-color: #1e293b;
+  --md-primary-fg-color--light: #334155;
+  --md-primary-fg-color--dark: #0f172a;
+  --md-accent-fg-color: #38bdf8;
+
+  /* Standard C++ Syntax Highlighting Conventions (Dark Mode) */
+  --md-code-hl-keyword-color: #ff7b72;        /* Vibrant coral for keywords in dark mode */
+  --md-code-hl-type-color: #79c0ff;           /* Sky blue for types in dark mode */
+  --md-code-hl-function-color: #d2a8ff;       /* Lilac purple for functions in dark mode */
+  --md-code-hl-string-color: #a5d6ff;         /* Cyan / light blue for strings in dark mode */
+  --md-code-hl-number-color: #79c0ff;         /* Light blue for numbers */
+  --md-code-hl-comment-color: #8b949e;        /* Slate gray for comments in dark mode */
+  --md-code-hl-constant-color: #ffa657;       /* Warm orange for constants in dark mode */
+  --md-code-hl-special-color: #ff7b72;        /* Coral for preprocessor */
+  --md-code-hl-operator-color: #e6edf3;       /* Off-white for operators in dark mode */
+  --md-code-hl-punctuation-color: #c9d1d9;    /* Light gray for punctuation in dark mode */
+
   --s2j-pill-success-bg: rgba(52, 211, 153, 0.2);
   --s2j-pill-success-text: #6ee7b7;
-  --s2j-pill-info-bg: rgba(96, 165, 250, 0.2);
-  --s2j-pill-info-text: #93c5fd;
+  --s2j-pill-info-bg: rgba(56, 189, 248, 0.2);
+  --s2j-pill-info-text: #7dd3fc;
 
-  /* Mermaid Diagram Dark Mode */
   --md-mermaid-edge-color: #94a3b8;
-  --md-mermaid-node-bg-color: rgba(129, 140, 248, 0.16);
-  --md-mermaid-node-fg-color: #818cf8;
+  --md-mermaid-node-bg-color: rgba(56, 189, 248, 0.14);
+  --md-mermaid-node-fg-color: #38bdf8;
   --md-mermaid-label-bg-color: var(--md-default-bg-color);
   --md-mermaid-label-fg-color: #e2e8f0;
-  --md-mermaid-sequence-actor-bg-color: rgba(129, 140, 248, 0.18);
-  --md-mermaid-sequence-actor-border-color: #818cf8;
-  --md-mermaid-sequence-actor-fg-color: #e0e7ff;
-  --md-mermaid-sequence-actor-line-color: rgba(129, 140, 248, 0.35);
-  --md-mermaid-sequence-message-fg-color: #cbd5e1;
-  --md-mermaid-sequence-message-line-color: #818cf8;
-  --md-mermaid-sequence-note-bg-color: rgba(30, 27, 75, 0.6);
-  --md-mermaid-sequence-note-border-color: #6366f1;
-  --md-mermaid-sequence-note-fg-color: #e0e7ff;
-  --md-mermaid-sequence-box-bg-color: rgba(15, 23, 42, 0.6);
-  --md-mermaid-sequence-loop-bg-color: rgba(129, 140, 248, 0.08);
-  --md-mermaid-sequence-loop-border-color: rgba(129, 140, 248, 0.3);
-  --md-mermaid-sequence-number-bg-color: #818cf8;
-  --md-mermaid-sequence-number-fg-color: #0f172a;
 }
 
-/* Base typography */
+/* ==========================================================================
+   3. Base Typography & Scaled Headings
+   ========================================================================== */
 body, input {
-  font-family: var(--md-font-main);
-  font-size: 0.85rem;
+  font-family: var(--font-family-main);
+  font-size: var(--font-size-base);
 }
 
 .md-typeset {
-  font-size: 0.85rem;
-  line-height: 1.6;
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
 }
 
 code, kbd, pre {
-  font-family: var(--md-font-code);
+  font-family: var(--font-family-code);
+  font-size: var(--font-size-code);
 }
 
-/* -------------------------------------------------------------------------- */
-/* Responsive Layout Expansion for Desktop & Wide Monitors                   */
-/* -------------------------------------------------------------------------- */
+.md-typeset code {
+  font-size: var(--font-size-code);
+  padding: 0.15em 0.35em;
+  border-radius: 3px;
+}
+
+.md-typeset pre > code {
+  font-size: var(--font-size-code);
+  line-height: var(--line-height-code);
+}
+
+.md-typeset h1 {
+  font-size: var(--font-size-h1) !important;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-top: 1.4rem;
+  margin-bottom: 0.85rem;
+}
+
+.md-typeset h2 {
+  font-size: var(--font-size-h2) !important;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-top: 2.2rem;
+  margin-bottom: 0.85rem;
+  padding-bottom: 0.35rem;
+}
+
+.md-typeset h3 {
+  font-size: var(--font-size-h3) !important;
+  font-weight: 600;
+  margin-top: 1.8rem;
+  margin-bottom: 0.75rem;
+}
+
+.md-typeset h4 {
+  font-size: var(--font-size-h4) !important;
+  font-weight: 600;
+  margin-top: 1.4rem;
+  margin-bottom: 0.6rem;
+}
+
+/* Subtle Horizontal Dividers */
+hr, .md-typeset hr {
+  border: none;
+  border-top: 1px solid var(--api-border);
+  opacity: 0.35;
+  margin: 1.5rem 0;
+}
+
+/* Navigation sidebar text sizing */
+.md-nav {
+  font-size: var(--font-size-nav);
+}
+
+.md-nav__link {
+  padding: 0.25rem 0.5rem;
+}
+
+/* ==========================================================================
+   Navigation Sidebar & Table of Contents Scrollbar Hygiene
+   Eliminates phantom scrollbars on desktop displays when content does not scroll.
+   Eliminates nested/double scrollbars in primary navigation on desktop.
+   ========================================================================== */
+.md-sidebar__scrollwrap {
+  scrollbar-gutter: auto !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+}
+
+@media screen and (min-width: 60em) {
+  .md-sidebar__scrollwrap {
+    scrollbar-gutter: auto !important;
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+    transition: scrollbar-color 0.2s ease-in-out;
+  }
+  .md-sidebar__scrollwrap:hover,
+  .md-sidebar__scrollwrap:focus-within {
+    scrollbar-color: var(--md-default-fg-color--lighter) transparent;
+  }
+  .md-sidebar__scrollwrap::-webkit-scrollbar {
+    width: 4px !important;
+    height: 4px !important;
+  }
+  .md-sidebar__scrollwrap::-webkit-scrollbar-track {
+    background: transparent !important;
+  }
+  .md-sidebar__scrollwrap::-webkit-scrollbar-thumb {
+    background: transparent !important;
+    border-radius: 4px;
+  }
+  .md-sidebar__scrollwrap:hover::-webkit-scrollbar-thumb,
+  .md-sidebar__scrollwrap:focus-within::-webkit-scrollbar-thumb {
+    background: var(--md-default-fg-color--lighter) !important;
+  }
+
+  /* Eliminate redundant inner scrollbars on primary navigation list on desktop */
+  .md-nav--primary .md-nav__title ~ .md-nav__list {
+    overflow-y: visible !important;
+    box-shadow: none !important;
+  }
+}
+
+/* Header & Tabs Navigation: prevent phantom horizontal/vertical scrollbars */
+.md-tabs {
+  overflow: hidden !important;
+}
+.md-tabs__list {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+.md-tabs__list::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* ==========================================================================
+   Responsive Layout & Ultra-Wide (4K / 5K) Display Support
+   ========================================================================== */
 @media screen and (min-width: 76.25em) {
   .md-grid {
-    max-width: 90rem; /* Expanded from default 61rem (1440px max width) */
+    max-width: min(92vw, 98rem);
+  }
+  .md-typeset p, .md-typeset li {
+    max-width: 85ch;
+  }
+  .md-typeset pre, .md-typeset table, .memitem, .feature-grid, .hero-section, .feature-span-all {
+    max-width: 100%;
   }
 }
 
-@media screen and (min-width: 100em) {
+@media screen and (min-width: 120em) {
   .md-grid {
-    max-width: 96rem; /* 1536px for ultra-wide desktop monitors */
+    max-width: min(94vw, 118rem);
   }
 }
 
-/* -------------------------------------------------------------------------- */
-/* Navigation Column Highlighting (Glanceable Current Section & Item)        */
-/* -------------------------------------------------------------------------- */
-
-/* Active Section Header in primary navigation */
-.md-sidebar--primary .md-nav__item--section.md-nav__item--active > .md-nav__link,
-.md-sidebar--primary .md-nav__item--nested.md-nav__item--active > .md-nav__link {
-  background-color: var(--s2j-highlight-bg);
-  border-radius: 6px;
-  font-weight: 700;
-  color: var(--md-primary-fg-color, #3f51b5) !important;
-  padding: 0.35rem 0.6rem;
-  margin-bottom: 0.25rem;
+@media screen and (max-width: 767px) {
+  .md-content__inner {
+    padding: 0.5rem 0.35rem;
+  }
+  .feature-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1.25rem !important;
+  }
+  .memitem {
+    padding: 0.75rem !important;
+  }
+  .md-typeset table:not([class]) {
+    display: block;
+    overflow-x: auto;
+  }
 }
 
-/* Current Active Page link in primary navigation */
-.md-sidebar--primary .md-nav__link--active:not(.md-nav__link--passed) {
-  background-color: var(--s2j-active-bg) !important;
-  color: var(--md-primary-fg-color, #3f51b5) !important;
-  font-weight: 600 !important;
-  border-left: 3px solid var(--s2j-highlight-border) !important;
-  padding-left: 0.6rem !important;
-  border-radius: 0 6px 6px 0 !important;
+/* ==========================================================================
+   Hero Header & Badges
+   ========================================================================== */
+.hero-section {
+  padding: 1.25rem 0 0.85rem 0;
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid var(--api-border);
 }
 
-/* Inactive nav link hover */
-.md-sidebar--primary .md-nav__link:hover:not(.md-nav__link--active) {
-  background-color: rgba(63, 81, 181, 0.04);
-  border-radius: 4px;
+.hero-title {
+  font-size: 2.0rem !important;
+  font-weight: 800;
+  color: var(--api-primary);
+  margin-bottom: 0.15rem;
+  letter-spacing: -0.03em;
 }
 
-[data-md-color-scheme="slate"] .md-sidebar--primary .md-nav__link:hover:not(.md-nav__link--active) {
-  background-color: rgba(255, 255, 255, 0.04);
+[data-md-color-scheme="slate"] .hero-title {
+  color: var(--api-primary);
 }
 
-/* Secondary Table of Contents (nested in sidebar) */
-.md-sidebar--primary .md-nav--secondary {
-  border-left: 1.5px solid rgba(63, 81, 181, 0.15);
-  margin-left: 0.75rem;
-  padding-left: 0.35rem;
+.hero-tagline {
+  font-size: var(--font-size-base);
+  color: var(--api-text-muted);
+  margin-bottom: 0.85rem;
+  line-height: 1.4;
 }
 
-.md-sidebar--primary .md-nav--secondary .md-nav__link--active {
-  background-color: transparent !important;
-  color: var(--md-accent-fg-color, #3f51b5) !important;
-  font-weight: 600;
-  border-left: none !important;
-  padding-left: 0.25rem !important;
-}
-
-/* -------------------------------------------------------------------------- */
-/* Badge Container Styling                                                   */
-/* -------------------------------------------------------------------------- */
-.badge-container {
+.hero-badges {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 1.5rem;
+  gap: 0.4rem;
+  margin: 0.65rem 0 0.85rem 0;
   align-items: center;
 }
 
-.badge-container img {
-  margin: 0;
+.hero-badges a {
+  display: inline-flex;
+  text-decoration: none !important;
+  line-height: 0;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Modern Table Styling                                                      */
-/* -------------------------------------------------------------------------- */
+.hero-badges img {
+  height: 20px;
+  margin: 0 !important;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 0.85rem 0 0.25rem 0;
+}
+
+.hero-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.45rem 1rem;
+  border-radius: 4px;
+  font-size: var(--font-size-nav);
+  font-weight: 600;
+  text-decoration: none !important;
+  transition: all 0.15s ease;
+}
+
+.hero-btn-primary {
+  background-color: var(--api-primary);
+  color: #ffffff !important;
+}
+
+.hero-btn-primary:hover {
+  background-color: var(--api-primary-dark);
+  box-shadow: 0 2px 5px rgba(35, 73, 109, 0.25);
+}
+
+[data-md-color-scheme="slate"] .hero-btn-primary {
+  background-color: #38bdf8;
+  color: #0f172a !important;
+}
+
+[data-md-color-scheme="slate"] .hero-btn-primary:hover {
+  background-color: #7dd3fc;
+}
+
+.hero-btn-secondary {
+  background-color: transparent;
+  color: var(--md-default-fg-color) !important;
+  border: 1px solid var(--api-border);
+}
+
+.hero-btn-secondary:hover {
+  background-color: rgba(35, 73, 109, 0.05);
+  border-color: var(--api-primary);
+}
+
+/* Two-column feature grid */
+.feature-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: start;
+  margin: 1.25rem 0 1.5rem 0;
+}
+
+.feature-col-left, .feature-col-right {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Full-width container spanning both columns */
+.feature-span-all {
+  grid-column: 1 / -1;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.feature-list {
+  padding-left: 1.25rem;
+  margin: 0.5rem 0;
+  list-style: disc;
+}
+
+.feature-list li {
+  margin-bottom: 0.45rem;
+  line-height: 1.5;
+  font-size: var(--font-size-base);
+}
+
+/* ==========================================================================
+   C++ API Reference Styling
+   ========================================================================== */
+
+/* Page Header */
+.api-header-block {
+  padding: 0.5rem 0 1rem 0;
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid var(--api-border);
+}
+
+.api-module-name {
+  font-size: var(--font-size-nav);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--api-text-muted);
+}
+
+.api-header-file {
+  font-family: var(--font-family-code);
+  font-size: var(--font-size-code);
+  color: var(--api-text-muted);
+  margin-top: 0.25rem;
+}
+
+/* API Member Summary Table */
+.api-summary-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0 1.5rem 0;
+  font-size: var(--font-size-table) !important;
+}
+
+.api-summary-table td {
+  padding: 0.45rem 0.65rem !important;
+  vertical-align: top;
+  border-top: 1px solid var(--api-border);
+}
+
+.api-summary-table td.memtype {
+  width: 25%;
+  max-width: 28%;
+  font-family: var(--md-font-code);
+  color: var(--api-text-muted);
+  white-space: normal;
+  word-break: break-word;
+}
+
+.api-summary-table td.memtype code {
+  color: var(--md-code-hl-type-color) !important;
+  font-weight: 600;
+  background-color: transparent !important;
+  padding: 0 !important;
+}
+
+.api-summary-table td.memitemleft {
+  font-family: var(--font-family-code);
+}
+
+.api-summary-table .mdesc {
+  font-family: var(--font-family-main);
+  font-style: italic;
+  color: var(--api-text-muted);
+  padding-left: 1.25rem;
+  margin-top: 0.15rem;
+  font-size: calc(var(--font-size-table) * 0.95);
+}
+
+/* Parameter Wrapping in Summary Tables */
+.param-wrap {
+  display: block;
+  padding-left: 1.25rem;
+  font-family: var(--font-family-code);
+  font-size: var(--font-size-code);
+  color: var(--md-default-fg-color);
+  line-height: var(--line-height-code);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.param-wrap .param-line {
+  display: block;
+}
+
+.param-wrap .param-inner-wrap {
+  display: block;
+  padding-left: 1.25rem;
+  color: var(--md-default-fg-color);
+}
+
+.param-wrap .param-inner-lvl2 {
+  display: block;
+  padding-left: 2.25rem;
+  color: var(--md-default-fg-color);
+}
+
+.param-wrap .param-inner-lvl3 {
+  display: block;
+  padding-left: 3.25rem;
+  color: var(--md-default-fg-color);
+}
+
+.param-wrap .param-fn-break,
+.param-wrap .param-call-break {
+  display: inline;
+}
+
+/* Doxygen Member Item Box (.memitem) */
+.memitem {
+  background: var(--api-bg-card);
+  border: 1px solid var(--api-border);
+  border-radius: 4px;
+  margin: 2rem 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+}
+
+.memitem-header {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: var(--api-bg-subtle);
+  border-bottom: 1px solid var(--api-border);
+  padding: 0.55rem 0.85rem;
+}
+
+.memitem-diamond {
+  color: var(--api-primary);
+  font-size: 0.75rem;
+  line-height: 1;
+}
+
+.memitem-title {
+  font-size: var(--font-size-base) !important;
+  font-weight: 700;
+  color: var(--api-primary);
+  margin: 0 !important;
+}
+
+[data-md-color-scheme="slate"] .memitem-title {
+  color: var(--api-primary);
+}
+
+.memitem-badge {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-family: var(--font-family-code);
+  font-weight: 600;
+  padding: 0.1rem 0.35rem;
+  border-radius: 3px;
+  background: rgba(35, 73, 109, 0.1);
+  color: var(--api-primary);
+  margin-left: auto;
+}
+
+[data-md-color-scheme="slate"] .memitem-badge {
+  background: rgba(56, 189, 248, 0.15);
+  color: var(--api-primary);
+}
+
+/* Function Prototype Box (.memproto) */
+.memproto {
+  background: var(--api-proto-bg);
+  border-bottom: 1px solid var(--api-border);
+  padding: 0.5rem 0.75rem;
+}
+
+.memproto pre {
+  background-color: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  font-size: var(--font-size-code) !important;
+  line-height: var(--line-height-code);
+}
+
+.memproto .highlight {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+}
+
+/* Member Documentation Block (.memdoc) */
+.memdoc {
+  padding: 0.75rem 1rem;
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+}
+
+.memdoc p {
+  margin: 0.35rem 0;
+}
+
+/* Parameter Table (.params) */
+.params {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.5rem 0 0.85rem 0;
+  font-size: var(--font-size-table) !important;
+}
+
+.params td {
+  padding: 0.35rem 0.6rem !important;
+  border-top: 1px solid var(--api-border);
+  vertical-align: top;
+}
+
+.paramtype {
+  font-family: var(--font-family-code);
+  font-size: var(--font-size-code);
+  white-space: normal;
+  word-break: break-word;
+  width: 28%;
+  max-width: 32%;
+  vertical-align: top;
+}
+
+.paramtype code {
+  color: var(--md-code-hl-type-color) !important;
+  font-weight: 600;
+  background: transparent !important;
+  padding: 0 !important;
+}
+
+/* Complex Type Folding */
+.type-folded {
+  display: block;
+  font-family: var(--font-family-code);
+  font-size: var(--font-size-code);
+  line-height: 1.35;
+  white-space: normal;
+}
+
+.type-folded .type-line {
+  display: block;
+}
+
+.type-folded .type-inner-lvl1 {
+  display: block;
+  padding-left: 0.6rem;
+}
+
+.type-folded .type-inner-lvl2 {
+  display: block;
+  padding-left: 1.2rem;
+}
+
+.type-folded .type-inner-lvl3,
+.type-folded .type-inner-arg {
+  display: block;
+  padding-left: 1.8rem;
+}
+
+.paramdir {
+  font-family: var(--font-family-code);
+  font-size: var(--font-size-code);
+  font-weight: 600;
+  color: var(--api-text-muted);
+  white-space: nowrap;
+  width: 10%;
+}
+
+.paramname {
+  font-family: var(--font-family-code);
+  font-size: var(--font-size-code);
+  font-weight: 700;
+  color: var(--md-default-fg-color);
+  width: 18%;
+  white-space: nowrap;
+}
+
+.paramdesc {
+  width: 54%;
+}
+
+/* Section titles inside memdoc (Parameters, Returns, Example) */
+.memdoc-section-title {
+  font-family: var(--font-family-main);
+  font-size: var(--font-size-nav);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--api-text-muted);
+  margin: 1.4rem 0 0.6rem 0;
+}
+
+/* ==========================================================================
+   Standard C++ Syntax Highlighting Conventions
+   ========================================================================== */
+.highlight .k, .highlight .kd, .highlight .kn, .highlight .kp, .highlight .kr {
+  color: var(--md-code-hl-keyword-color) !important;
+  font-weight: 600;
+}
+.highlight .kt, .highlight .nc {
+  color: var(--md-code-hl-type-color) !important;
+  font-weight: 600;
+}
+.highlight .nf, .highlight .fm {
+  color: var(--md-code-hl-function-color) !important;
+  font-weight: 600;
+}
+.highlight .s, .highlight .s1, .highlight .s2, .highlight .sa, .highlight .sb, .highlight .sc {
+  color: var(--md-code-hl-string-color) !important;
+}
+.highlight .c, .highlight .c1, .highlight .cm {
+  color: var(--md-code-hl-comment-color) !important;
+  font-style: italic;
+}
+.highlight .cp, .highlight .cpf {
+  color: var(--md-code-hl-special-color) !important;
+}
+.highlight .m, .highlight .mi, .highlight .mf {
+  color: var(--md-code-hl-number-color) !important;
+}
+.highlight .nb, .highlight .no {
+  color: var(--md-code-hl-constant-color) !important;
+}
+.highlight .o {
+  color: var(--md-code-hl-operator-color) !important;
+}
+.highlight .p {
+  color: var(--md-code-hl-punctuation-color) !important;
+}
+
+/* ==========================================================================
+   Navigation Column Glancability & Active Section Highlighting
+   ========================================================================== */
+.md-sidebar--primary .md-nav__item--section.md-nav__item--active > .md-nav__link,
+.md-sidebar--primary .md-nav__item--nested.md-nav__item--active > .md-nav__link {
+  background-color: rgba(35, 73, 109, 0.08);
+  border-radius: 4px;
+  font-weight: 700;
+  color: var(--api-primary) !important;
+  padding: 0.25rem 0.5rem;
+  margin-bottom: 0.2rem;
+}
+
+.md-sidebar--primary .md-nav__link--active:not(.md-nav__link--passed) {
+  background-color: rgba(35, 73, 109, 0.12) !important;
+  color: var(--api-primary) !important;
+  font-weight: 600 !important;
+  border-left: 3px solid var(--api-primary) !important;
+  padding-left: 0.5rem !important;
+  border-radius: 0 4px 4px 0 !important;
+}
+
+[data-md-color-scheme="slate"] .md-sidebar--primary .md-nav__link--active:not(.md-nav__link--passed) {
+  background-color: rgba(56, 189, 248, 0.18) !important;
+  color: #38bdf8 !important;
+  border-left-color: #38bdf8 !important;
+}
+
+/* ==========================================================================
+   Table Styling (Structured Technical Style)
+   ========================================================================== */
 .md-typeset table:not([class]) {
-  font-size: 0.85rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  border-radius: 8px;
+  font-size: var(--font-size-table);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  border-radius: 4px;
   overflow: hidden;
   border-collapse: separate;
   border-spacing: 0;
-  margin-top: 1.2em;
-  margin-bottom: 1.8em;
+  margin-top: 0.75rem;
+  margin-bottom: 1.25rem;
   width: 100%;
-  border: 1px solid var(--s2j-card-border);
+  border: 1px solid var(--api-border);
 }
 
 .md-typeset table:not([class]) th {
-  background: linear-gradient(180deg, #3f51b5 0%, #303f9f 100%);
-  color: #ffffff;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  padding: 0.85rem 1.1rem;
+  background-color: var(--api-bg-subtle);
+  color: var(--api-primary);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  padding: 0.45rem 0.75rem;
   text-align: left;
-  font-size: 0.82rem;
-  text-transform: uppercase;
-  border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1.5px solid var(--api-border);
 }
 
 [data-md-color-scheme="slate"] .md-typeset table:not([class]) th {
-  background: linear-gradient(180deg, rgba(63, 81, 181, 0.4) 0%, rgba(48, 63, 159, 0.4) 100%);
-  color: #e0e7ff;
-  border-bottom-color: rgba(255, 255, 255, 0.1);
+  background-color: #1e293b;
+  color: #38bdf8;
+  border-bottom-color: #334155;
 }
 
 .md-typeset table:not([class]) td {
-  padding: 0.85rem 1.1rem;
-  border-top: 1px solid var(--md-default-fg-color--lightest, #e0e0e0);
+  padding: 0.45rem 0.75rem;
+  border-top: 1px solid var(--api-border);
   vertical-align: middle;
-}
-
-[data-md-color-scheme="slate"] .md-typeset table:not([class]) td {
-  border-top-color: rgba(255, 255, 255, 0.08);
 }
 
 .md-typeset table:not([class]) tr:nth-child(even) td {
@@ -221,160 +852,193 @@ code, kbd, pre {
 }
 
 .md-typeset table:not([class]) tr:hover td {
-  background-color: var(--s2j-highlight-bg);
-  transition: background-color 0.15s ease;
+  background-color: rgba(35, 73, 109, 0.05);
 }
 
-.md-typeset table:not([class]) td code,
-.md-typeset table:not([class]) th code {
-  white-space: nowrap;
-  font-size: 0.85em;
-  padding: 0.2em 0.4em;
-  border-radius: 4px;
+[data-md-color-scheme="slate"] .md-typeset table:not([class]) tr:hover td {
+  background-color: rgba(56, 189, 248, 0.06);
 }
 
-/* -------------------------------------------------------------------------- */
-/* Modern Metric KPI Stat Cards                                              */
-/* -------------------------------------------------------------------------- */
-.kpi-grid {
+/* ==========================================================================
+   Mermaid Diagrams Container
+   ========================================================================== */
+.mermaid {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  background-color: var(--md-default-bg-color) !important;
+  border: 1px solid var(--api-border) !important;
+  border-radius: 4px !important;
+  padding: 1rem 0.85rem !important;
+  margin: 1rem 0 1.5rem 0 !important;
+  overflow-x: auto !important;
+}
+
+.mermaid > svg,
+.mermaid svg {
+  max-width: 100% !important;
+  height: auto !important;
+  font-family: var(--md-font-main) !important;
+}
+
+/* Mermaid Class Diagram Specific Styling */
+.mermaid .classGroup rect {
+  fill: var(--api-bg-card) !important;
+  stroke: var(--api-border) !important;
+  stroke-width: 1.5px !important;
+  rx: 4px !important;
+  ry: 4px !important;
+}
+
+.mermaid .classGroup line {
+  stroke: var(--api-border) !important;
+  stroke-width: 1px !important;
+}
+
+.mermaid .classGroup text {
+  fill: var(--md-default-fg-color) !important;
+  font-family: var(--font-family-mono) !important;
+  font-size: 11px !important;
+}
+
+.mermaid .classGroup .title,
+.mermaid .classGroup .titleText {
+  font-family: var(--font-family-main) !important;
+  font-weight: 700 !important;
+  fill: var(--api-primary) !important;
+  font-size: 13px !important;
+}
+
+.mermaid .relation {
+  stroke: var(--md-mermaid-edge-color) !important;
+  stroke-width: 1.5px !important;
+}
+
+.mermaid text.classText {
+  font-family: var(--font-family-mono) !important;
+}
+
+.mermaid .labelBox {
+  fill: var(--md-default-bg-color) !important;
+  stroke: var(--api-border) !important;
+  rx: 3px !important;
+  ry: 3px !important;
+}
+
+.mermaid .labelText,
+.mermaid .relationText {
+  fill: var(--api-text-muted) !important;
+  font-family: var(--font-family-main) !important;
+  font-size: 11px !important;
+}
+
+[data-md-color-scheme="slate"] .mermaid .classGroup rect {
+  fill: #1e293b !important;
+  stroke: #334155 !important;
+}
+
+[data-md-color-scheme="slate"] .mermaid .classGroup text {
+  fill: #e2e8f0 !important;
+}
+
+[data-md-color-scheme="slate"] .mermaid .classGroup .title,
+[data-md-color-scheme="slate"] .mermaid .classGroup .titleText {
+  fill: #38bdf8 !important;
+}
+
+[data-md-color-scheme="slate"] .mermaid .labelBox {
+  fill: #0f172a !important;
+  stroke: #334155 !important;
+}
+
+[data-md-color-scheme="slate"] .mermaid .labelText,
+[data-md-color-scheme="slate"] .mermaid .relationText {
+  fill: #94a3b8 !important;
+}
+
+.mermaid .clickable,
+.mermaid a,
+.mermaid g.classGroup.clickable,
+.mermaid g.classGroup:has(a) {
+  cursor: pointer !important;
+}
+
+.mermaid a:hover text,
+.mermaid .clickable:hover text {
+  fill: var(--api-accent) !important;
+}
+
+.mermaid .clickable:hover rect,
+.mermaid g.classGroup:has(a:hover) rect {
+  stroke: var(--api-accent) !important;
+  stroke-width: 2px !important;
+}
+
+/* Highlighted active class node in class diagrams */
+.mermaid .classGroup.highlightClass rect {
+  fill: rgba(2, 132, 199, 0.14) !important;
+  stroke: var(--api-accent) !important;
+  stroke-width: 2.5px !important;
+  filter: drop-shadow(0 2px 5px rgba(2, 132, 199, 0.22)) !important;
+}
+
+.mermaid .classGroup.highlightClass .title,
+.mermaid .classGroup.highlightClass .titleText {
+  fill: var(--api-accent) !important;
+  font-weight: 800 !important;
+}
+
+[data-md-color-scheme="slate"] .mermaid .classGroup.highlightClass rect {
+  fill: rgba(56, 189, 248, 0.18) !important;
+  stroke: #38bdf8 !important;
+  stroke-width: 2.5px !important;
+  filter: drop-shadow(0 2px 6px rgba(56, 189, 248, 0.3)) !important;
+}
+
+[data-md-color-scheme="slate"] .mermaid .classGroup.highlightClass .title,
+[data-md-color-scheme="slate"] .mermaid .classGroup.highlightClass .titleText {
+  fill: #38bdf8 !important;
+  font-weight: 800 !important;
+}
+
+/* ==========================================================================
+   Card Grids & Utility Pills
+   ========================================================================== */
+.grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 1rem;
-  margin: 1.25rem 0 1.75rem 0;
+  margin-top: 0.85rem;
+  margin-bottom: 1.25rem;
 }
 
-.kpi-card {
-  padding: 1.25rem 1rem;
-  border-radius: 8px;
-  border: 1px solid var(--s2j-card-border);
-  background-color: var(--md-default-bg-color);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
-  text-align: center;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+.card {
+  padding: 1rem;
+  border-radius: 4px;
+  border: 1px solid var(--api-border);
+  background-color: var(--api-bg-card);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.kpi-card:hover {
+.card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.07);
 }
 
-.kpi-value {
-  font-size: 1.9rem;
-  font-weight: 700;
-  color: var(--md-primary-fg-color, #3f51b5);
-  line-height: 1.1;
+.card h3 {
+  margin-top: 0;
   margin-bottom: 0.35rem;
+  font-size: 0.85rem !important;
+  color: var(--api-primary);
 }
 
-[data-md-color-scheme="slate"] .kpi-value {
-  color: #818cf8;
-}
-
-.kpi-label {
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--md-default-fg-color--light, #666);
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-}
-
-.kpi-badge {
-  display: inline-block;
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 0.2em 0.55em;
-  border-radius: 12px;
-  background-color: var(--s2j-pill-success-bg);
-  color: var(--s2j-pill-success-text);
-}
-
-/* -------------------------------------------------------------------------- */
-/* Modern Visual Bar Comparison Chart                                        */
-/* -------------------------------------------------------------------------- */
-.modern-chart {
-  background: var(--md-default-bg-color);
-  border: 1px solid var(--s2j-card-border);
-  border-radius: 8px;
-  padding: 1.25rem 1.5rem;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
-  margin: 1.5rem 0;
-}
-
-.chart-row {
-  margin-bottom: 1.1rem;
-}
-
-.chart-row:last-child {
-  margin-bottom: 0;
-}
-
-.chart-meta {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.35rem;
-  font-size: 0.85rem;
-}
-
-.chart-title {
-  font-weight: 600;
-  color: var(--md-default-fg-color);
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.chart-val {
-  font-family: var(--md-font-code);
-  font-weight: 600;
-  font-size: 0.85rem;
-  color: var(--md-default-fg-color);
-}
-
-.chart-track {
-  width: 100%;
-  height: 14px;
-  background-color: rgba(0, 0, 0, 0.06);
-  border-radius: 7px;
-  overflow: hidden;
-}
-
-[data-md-color-scheme="slate"] .chart-track {
-  background-color: rgba(255, 255, 255, 0.08);
-}
-
-.chart-bar {
-  height: 100%;
-  border-radius: 7px;
-  transition: width 0.6s ease-out;
-}
-
-.chart-bar-primary {
-  background: linear-gradient(90deg, #4f46e5 0%, #3f51b5 100%);
-}
-
-.chart-bar-secondary {
-  background: linear-gradient(90deg, #10b981 0%, #059669 100%);
-}
-
-.chart-bar-info {
-  background: linear-gradient(90deg, #0284c7 0%, #0369a1 100%);
-}
-
-.chart-bar-muted {
-  background: linear-gradient(90deg, #94a3b8 0%, #64748b 100%);
-}
-
-/* -------------------------------------------------------------------------- */
-/* Status Pills & Badges                                                     */
-/* -------------------------------------------------------------------------- */
 .pill {
   display: inline-block;
-  font-size: 0.72rem;
+  font-size: 0.65rem;
   font-weight: 600;
-  padding: 0.15rem 0.5rem;
-  border-radius: 10px;
+  padding: 0.12rem 0.4rem;
+  border-radius: 8px;
   text-transform: uppercase;
   letter-spacing: 0.03em;
 }
@@ -389,94 +1053,83 @@ code, kbd, pre {
   color: var(--s2j-pill-info-text);
 }
 
-.pill-neutral {
-  background-color: rgba(148, 163, 184, 0.2);
-  color: #64748b;
+/* ==========================================================================
+   Interactive Diagram Pan & Zoom Engine
+   Allows zooming, panning, and fullscreen expansion for Mermaid diagrams.
+   Optimized for high-DPI / Retina displays and responsive viewports.
+   ========================================================================== */
+.pill-info {
+  background-color: var(--s2j-pill-info-bg);
+  color: var(--s2j-pill-info-text);
 }
 
-[data-md-color-scheme="slate"] .pill-neutral {
-  background-color: rgba(148, 163, 184, 0.2);
-  color: #94a3b8;
-}
-
-/* -------------------------------------------------------------------------- */
-/* Enhanced Code Blocks & Permalinks                                         */
-/* -------------------------------------------------------------------------- */
-.md-typeset pre > code {
+/* ==========================================================================
+   Quick Info Key-Value Table (No Header Row)
+   For compact key-value data displays (Language, Dependencies, Standards).
+   ========================================================================== */
+.quick-info-table,
+.md-typeset table.quick-info-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--api-border);
   border-radius: 6px;
-  font-size: 0.85em;
-  line-height: 1.5;
-}
-
-.md-typeset .highlight {
-  border-radius: 6px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-/* Hero & Card Grid enhancements */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.25rem;
-  margin-top: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.card {
-  padding: 1.25rem;
-  border-radius: 8px;
-  border: 1px solid var(--s2j-card-border);
-  background-color: var(--md-default-bg-color);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
-}
-
-.card h3 {
-  margin-top: 0;
+  overflow: hidden;
+  font-size: var(--font-size-table);
+  margin-top: 0.85rem;
   margin-bottom: 0.5rem;
-  color: var(--md-primary-fg-color);
+  background: var(--api-bg-card);
 }
 
-/* Admonition Refinements */
-.md-typeset .admonition,
-.md-typeset details {
-  border-radius: 6px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+.quick-info-table td,
+.md-typeset table.quick-info-table td {
+  padding: 0.45rem 0.75rem;
+  border-top: 1px solid var(--api-border);
+  vertical-align: middle;
 }
 
-.md-typeset .headerlink {
-  transition: opacity 0.2s ease;
+.quick-info-table tr:first-child td,
+.md-typeset table.quick-info-table tr:first-child td {
+  border-top: none;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Mermaid Diagram Framing & Container Layout                                */
-/* -------------------------------------------------------------------------- */
-.mermaid {
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
-  background-color: var(--md-default-bg-color) !important;
-  border: 1px solid var(--s2j-card-border) !important;
-  border-radius: 8px !important;
-  padding: 1.5rem 1.25rem !important;
-  margin: 1.5rem 0 2rem 0 !important;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
-  overflow-x: auto !important;
-  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+.quick-info-table tr:nth-child(even) td,
+.md-typeset table.quick-info-table tr:nth-child(even) td {
+  background-color: rgba(0, 0, 0, 0.015);
 }
 
-.mermaid:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07) !important;
+[data-md-color-scheme="slate"] .quick-info-table,
+[data-md-color-scheme="slate"] .md-typeset table.quick-info-table {
+  background: var(--api-bg-card);
+  border-color: var(--api-border);
 }
 
-.mermaid > svg,
-.mermaid svg {
-  max-width: 100% !important;
-  height: auto !important;
-  font-family: var(--md-font-main) !important;
+[data-md-color-scheme="slate"] .quick-info-table tr:nth-child(even) td,
+[data-md-color-scheme="slate"] .md-typeset table.quick-info-table tr:nth-child(even) td {
+  background-color: rgba(255, 255, 255, 0.02);
 }
+
+[data-md-color-scheme="slate"] .quick-info-table tr:hover td,
+[data-md-color-scheme="slate"] .md-typeset table.quick-info-table tr:hover td {
+  background-color: rgba(56, 189, 248, 0.06);
+}
+
+/* ==========================================================================
+   Filepath Code Folding & Word-break Hygiene
+   Folds on the right-most '/' when content does not fit in container/column.
+   Keeps directory prefix and filename intact without breaking mid-token.
+   ========================================================================== */
+.filepath-dir {
+  display: inline-block;
+  white-space: nowrap;
+  vertical-align: baseline;
+}
+
+.filepath-name {
+  display: inline-block;
+  white-space: nowrap;
+  vertical-align: baseline;
+}
+
+
+
