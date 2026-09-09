@@ -124,9 +124,12 @@ def extract_dependencies(root_path: Path):
     return list(deps.values())
 
 
-def generate_markdown(dependencies, project_name="sip2json"):
+def generate_dependency_block(dependencies, project_name="sip2json"):
     """
-    Generates markdown content containing the Mermaid diagram and dependency breakdown table.
+    Generates the auto-generated dependency block (diagram + table).
+    This content is injected between <!-- deps:start --> and <!-- deps:end -->
+    sentinels inside docs/quickstart/index.md.
+    No page heading is emitted -- the containing page supplies the section heading.
     """
     core_deps = [d for d in dependencies if d["scope"] == "Core"]
     test_deps = [d for d in dependencies if d["scope"] == "Test"]
@@ -136,17 +139,13 @@ def generate_markdown(dependencies, project_name="sip2json"):
     ]
 
     lines = []
-    lines.append("# Project Dependencies")
-    lines.append("")
     lines.append(
-        f"This document is automatically generated from `CMakeLists.txt` files for `{project_name}`."
+        f"The following table is auto-generated from `CMakeLists.txt` at build time."
     )
-    lines.append("")
-    lines.append("## Dependency Diagram")
     lines.append("")
     lines.append("```mermaid")
     lines.append("graph TD")
-    lines.append(f'    {project_name}["{project_name}::{project_name}"]')
+    lines.append(f'    {project_name}["{project_name}::{project_name} {{{{ version }}}}"]')
     lines.append("")
 
     if core_deps:
@@ -195,8 +194,6 @@ def generate_markdown(dependencies, project_name="sip2json"):
 
     lines.append("```")
     lines.append("")
-    lines.append("## Dependency Breakdown")
-    lines.append("")
     lines.append(
         "| Dependency | Repository / Target | Version | Type | Scope |"
     )
@@ -227,9 +224,44 @@ def generate_markdown(dependencies, project_name="sip2json"):
     return "\n".join(lines)
 
 
+# Keep generate_markdown as an alias for backwards compatibility with any
+# external callers that pass --output to write a standalone file.
+def generate_markdown(dependencies, project_name="sip2json"):
+    block = generate_dependency_block(dependencies, project_name)
+    return f"# Project Dependencies\n\n{block}"
+
+
+START_SENTINEL = "<!-- deps:start -->"
+END_SENTINEL   = "<!-- deps:end -->"
+
+
+def patch_target_file(target_path: Path, new_block: str) -> bool:
+    """
+    Replaces content between START_SENTINEL and END_SENTINEL in target_path.
+    Returns True if the file was modified, False if already up-to-date.
+    """
+    content = target_path.read_text(encoding="utf-8")
+    start_idx = content.find(START_SENTINEL)
+    end_idx   = content.find(END_SENTINEL)
+    if start_idx == -1 or end_idx == -1 or end_idx <= start_idx:
+        raise ValueError(
+            f"[generate_dependencies_md] Sentinels '{START_SENTINEL}' / '{END_SENTINEL}' "
+            f"not found in {target_path}. Add them to the Dependencies section."
+        )
+
+    before = content[: start_idx + len(START_SENTINEL)]
+    after  = content[end_idx:]
+    updated = f"{before}\n{new_block}\n{after}"
+
+    if updated == content:
+        return False
+    target_path.write_text(updated, encoding="utf-8")
+    return True
+
+
 def main():
     parser = argparse.ArgumentParser(
-        description="Extract CMake dependencies into markdown documentation with Mermaid diagram."
+        description="Extract CMake dependencies and inject them into docs/quickstart/index.md."
     )
     parser.add_argument(
         "--root",
@@ -237,33 +269,45 @@ def main():
         default=".",
         help="Root directory of the project (default: current directory)",
     )
+    # --output is kept for backwards compatibility (e.g. CI scripts that still
+    # pass it) but is ignored when the target file contains the sentinels.
     parser.add_argument(
         "--output",
         type=str,
-        default="docs/quickstart/dependencies.md",
-        help="Path to output markdown file (default: docs/quickstart/dependencies.md)",
+        default=None,
+        help="(Legacy) Write standalone markdown file instead of patching quickstart/index.md",
     )
 
     args = parser.parse_args()
 
     root_path = Path(args.root).resolve()
     all_deps = extract_dependencies(root_path)
-    markdown_content = generate_markdown(all_deps, project_name="sip2json")
 
-    out_path = Path(args.output)
-    full_out_path = root_path / out_path if not out_path.is_absolute() else out_path
-    full_out_path.parent.mkdir(parents=True, exist_ok=True)
+    # Preferred path: patch the consolidated Getting Started page in-place
+    target_file = root_path / "docs" / "quickstart" / "index.md"
 
-    # Avoid rewriting if content is identical (prevents infinite reload loops)
-    if full_out_path.exists():
-        existing_content = full_out_path.read_text(encoding="utf-8")
-        if existing_content == markdown_content:
+    if args.output is None and target_file.exists():
+        block = generate_dependency_block(all_deps, project_name="sip2json")
+        try:
+            modified = patch_target_file(target_file, block)
+            if modified:
+                print(f"[generate_dependencies_md] Updated dependency block in {target_file}")
+            else:
+                print(f"[generate_dependencies_md] Up to date: {target_file}")
+        except ValueError as e:
+            print(e, file=sys.stderr)
+            sys.exit(1)
+    else:
+        # Legacy: write a standalone file (used if --output is explicitly supplied)
+        out_path = Path(args.output) if args.output else Path("docs/quickstart/dependencies.md")
+        full_out_path = root_path / out_path if not out_path.is_absolute() else out_path
+        full_out_path.parent.mkdir(parents=True, exist_ok=True)
+        markdown_content = generate_markdown(all_deps, project_name="sip2json")
+        if full_out_path.exists() and full_out_path.read_text(encoding="utf-8") == markdown_content:
             print(f"[generate_dependencies_md] Up to date: {full_out_path}")
-            return
-
-    with open(full_out_path, "w", encoding="utf-8") as f:
-        f.write(markdown_content)
-    print(f"[generate_dependencies_md] Wrote dependency documentation to: {full_out_path}")
+        else:
+            full_out_path.write_text(markdown_content, encoding="utf-8")
+            print(f"[generate_dependencies_md] Wrote dependency documentation to: {full_out_path}")
 
 
 if __name__ == "__main__":

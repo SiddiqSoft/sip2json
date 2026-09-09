@@ -97,19 +97,14 @@ extra_css:
 
 nav:
   - Home: index.md
-  - Getting Started:
-      - Overview: quickstart/index.md
-      - Dependencies: quickstart/dependencies.md
-      - CMake & CPM: quickstart/cmake.md
-      - NuGet Package: quickstart/nuget.md
+  - Getting Started: quickstart/index.md
   - API Reference:
       - Overview: api/index.md
       - sip2json: api/sip2json.md
       - sipmessage: api/sipmessage.md
       - Constants & Header Keys: api/constants.md
       - Exceptions & Errors: api/errors.md
-      - JSON Schema & Metaphor: api/json_schema.md
-      - SDP Support: api/sdp.md
+      - JSON Schema & SDP: api/json_schema.md
       - Code Examples: api/examples/index.md
   - Related Pages:
       - Benchmarks: architecture/benchmarks.md

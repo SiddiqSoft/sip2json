@@ -1,4 +1,4 @@
-# JSON Metaphor & Schema
+# JSON Schema & SDP Support
 
 To streamline integration with modern NoSQL databases (DocumentDB, Azure Cosmos DB, MongoDB, Elasticsearch), `sip2json` represents SIP messages as structured JSON documents.
 
@@ -62,9 +62,51 @@ The document uses single-character keys (`s`, `h`, `b`, `meta`) to minimize payl
 * Boolean extensions (e.g., `X-Call-URL: true`) are converted to JSON booleans.
 * Headers occurring multiple times in a SIP message (e.g. `Via`, `Record-Route`) are represented as JSON string arrays.
 
+## SDP (Session Description Protocol) Support
+
+`sip2json` includes built-in parsing and serialization for `application/sdp` payload bodies.
+
+SDP lines (`v=`, `o=`, `s=`, `c=`, `t=`, `m=`, `a=`) are parsed into structured JSON objects inside `b.sdp`.
+
+```json
+{
+  "v": 0,
+  "o": {
+    "user": "Alice",
+    "t1": "2890844526",
+    "t2": "2890844526",
+    "type": "IN",
+    "subtype": "IP4",
+    "host": "10.0.0.5"
+  },
+  "s": "SIP Call",
+  "c": {
+    "type": "IN",
+    "subtype": "IP4",
+    "dn": "10.0.0.5"
+  },
+  "t": [0, 0],
+  "m": "audio 49170 RTP/AVP 0 101",
+  "a": {
+    "rtpmap": [
+      "0 PCMU/8000",
+      "101 telephone-event/8000"
+    ],
+    "fmtp": "101 0-16",
+    "sendrecv": true
+  }
+}
+```
+
+### SDP Attribute Mapping Rules
+
+* Flag attributes like `a=sendrecv` are stored as boolean `true`.
+* Repeated attribute keys like `a=rtpmap:...` are accumulated into array values.
+* Key-value attributes like `a=fmtp:101 0-16` are separated into string mappings.
+
 ## Related References
 
 * [`sipmessage` Class Reference](sipmessage.md)
 * [`sip2json` Parsing & Serialization Functions](sip2json.md)
-* [SDP Protocol Support](sdp.md)
 * [Error & Exception Types](errors.md)
+* [Code Examples](examples/index.md)

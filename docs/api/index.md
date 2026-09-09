@@ -239,20 +239,11 @@ Full documentation of methods (`METHOD_INVITE`), JSON keys, delimiters, and cano
 </div>
 <div class="card" markdown="1">
 
-### [JSON Schema & Metaphor](json_schema.md)
+### [JSON Schema & SDP](json_schema.md)
 
-Mapping specification from wire format to compact `/s`, `/h`, `/b`, `/meta` JSON fields.
+JSON document structure, field types, header conversions, and SDP attribute mapping.
 
-[View Schema Specification :octicons-arrow-right-24:](json_schema.md)
-
-</div>
-<div class="card" markdown="1">
-
-### [SDP Protocol Support](sdp.md)
-
-Details on Session Description Protocol parsing, attribute mapping, and media line arrays.
-
-[View SDP Reference :octicons-arrow-right-24:](sdp.md)
+[View Schema Reference :octicons-arrow-right-24:](json_schema.md)
 
 </div>
 <div class="card" markdown="1">

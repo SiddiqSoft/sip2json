@@ -1,6 +1,7 @@
 # Getting Started
 
-`sip2json` is a header-only C++20 library. You can add it via CPM, CMake `FetchContent`, NuGet, or by copying the `include/` directory.
+`sip2json` { version } is a header-only C++20 library for parsing and serializing SIP messages into structured JSON.
+Add it via CPM, CMake `FetchContent`, NuGet, or by copying the `include/` directory directly.
 
 ## System Requirements
 
@@ -12,6 +13,37 @@
 | **Linux** | GCC 13+ or Clang 17+, architectures: `x64`, `arm64` |
 | **Build Tools** | CMake 3.31+ with CMake Presets (v8) and Ninja |
 | **Target Type** | `INTERFACE` (Header-only) |
+
+## Dependencies
+
+<!-- deps:start -->
+The following table is auto-generated from `CMakeLists.txt` at build time.
+
+```mermaid
+graph TD
+    sip2json["sip2json::sip2json {{ version }}"]
+
+    subgraph Core["Core Dependencies (via CPM)"]
+        NLOHMANNJSON["nlohmann_json v3.12.0"]
+    end
+
+    subgraph TestBench["Test & Benchmark Dependencies (Conditional)"]
+        GTEST["gtest v1.17.0"]
+        BENCHMARK["benchmark v1.9.5"]
+    end
+
+    sip2json --> NLOHMANNJSON
+    sip2json -.->|BUILD_TESTS=ON| GTEST
+    sip2json -.->|BUILD_BENCHMARKS=ON| BENCHMARK
+```
+
+| Dependency | Repository / Target | Version | Type | Scope |
+| :--- | :--- | :--- | :--- | :--- |
+| **nlohmann_json** | [`nlohmann/json`](https://github.com/nlohmann/json) | v3.12.0 | `CPM` | All Platforms (`INTERFACE`) |
+| **gtest** | [`google/googletest`](https://github.com/google/googletest) | v1.17.0 | `CPM` | Tests only (`sip2json_BUILD_TESTS=ON`) |
+| **benchmark** | [`google/benchmark`](https://github.com/google/benchmark) | v1.9.5 | `CPM` | Benchmarks only (`sip2json_BUILD_BENCHMARKS=ON`) |
+
+<!-- deps:end -->
 
 ## Installation & Integration
 
@@ -42,6 +74,8 @@
 
 === "NuGet"
 
+    Package: [`SiddiqSoft.sip2json`](https://www.nuget.org/packages/SiddiqSoft.sip2json) (header-only, native C++20).
+
     **Package Manager Console**:
     ```powershell
     Install-Package SiddiqSoft.sip2json
@@ -54,6 +88,10 @@
     </ItemGroup>
     ```
 
+    Set **C++ Language Standard** to **C++20 (`/std:c++20`)**.
+    Dependency [`nlohmann.json`](https://www.nuget.org/packages/nlohmann.json) (v3.12+) is resolved automatically.
+    Includes `siddiqsoft.sip2json.natvis` for Visual Studio debugger inspection.
+
 === "Header-Only Include"
 
     Include the `include/` directory directly:
@@ -63,6 +101,13 @@
     ```
 
     Ensure that [`nlohmann/json`](https://github.com/nlohmann/json) v3.12.0+ is also in your include path.
+
+## CMake Build Options
+
+| Option | Default | Description |
+| :--- | :--- | :--- |
+| `sip2json_BUILD_TESTS` | `OFF` | Build unit tests (requires GoogleTest). |
+| `sip2json_BUILD_BENCHMARKS` | `OFF` | Build benchmark suite. |
 
 ## Basic Usage
 
@@ -137,41 +182,31 @@ The repository provides presets configured in `CMakePresets.json`:
 
 <div class="card" markdown="1">
 
-### [Dependencies](dependencies.md)
-
-Auto-generated dependency graph, package versions, and CPM configuration extracted from CMake.
-
-[View Dependencies :octicons-arrow-right-24:](dependencies.md)
-
-</div>
-
-<div class="card" markdown="1">
-
-### [CMake & CPM Guide](cmake.md)
-
-Detailed CMake configuration options, cache variables, and FetchContent settings.
-
-[CMake Integration :octicons-arrow-right-24:](cmake.md)
-
-</div>
-
-<div class="card" markdown="1">
-
-### [NuGet Package](nuget.md)
-
-Package configuration for Visual Studio C++ projects and MSBuild targets.
-
-[NuGet Setup :octicons-arrow-right-24:](nuget.md)
-
-</div>
-
-<div class="card" markdown="1">
-
 ### [API Reference](../api/index.md)
 
 Detailed documentation for `siddiqsoft::sip2json` and `siddiqsoft::sipmessage`.
 
 [API Reference :octicons-arrow-right-24:](../api/index.md)
+
+</div>
+
+<div class="card" markdown="1">
+
+### [Code Examples](../api/examples/index.md)
+
+Ready-to-compile examples for stream parsing, message construction, and serialization.
+
+[Code Examples :octicons-arrow-right-24:](../api/examples/index.md)
+
+</div>
+
+<div class="card" markdown="1">
+
+### [Architecture](../architecture/index.md)
+
+Design rationale, stream mechanics, and optimization notes.
+
+[Architecture :octicons-arrow-right-24:](../architecture/index.md)
 
 </div>
 

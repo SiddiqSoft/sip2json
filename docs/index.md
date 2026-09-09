@@ -250,7 +250,7 @@ flowchart TD
 | **Message DTO** | [`siddiqsoft/sipmessage.hpp`](api/sipmessage.md) | Document model [`siddiqsoft::sipmessage`](api/sipmessage.md) extending `nlohmann::json` with typed accessors. |
 | **Stream Parser Engine** | `siddiqsoft/private/sip2json_parser.hpp` | High-throughput linear token scanner for start line, headers, and payload dispatch. |
 | **Wire Serializer Engine** | `siddiqsoft/private/sip2json_serializer.hpp` | RFC 3261 compliance serializer formatting headers and body into CRLF-separated byte streams. |
-| **SDP Processor** | [`siddiqsoft/private/sip2json_sdp.hpp`](api/sdp.md) | RFC 4566 / RFC 8866 Session Description Protocol parser and JSON serializer. |
+| **SDP Processor** | [`siddiqsoft/private/sip2json_sdp.hpp`](api/json_schema.md) | RFC 4566 / RFC 8866 Session Description Protocol parser and JSON serializer. |
 | **Diagnostic Errors** | [`siddiqsoft/private/sip2json_exception.hpp`](api/errors.md) | Exception [`siddiqsoft::sip2json_exception`](api/errors.md) (derives `std::runtime_error`) and [`sip2jsonErrors`](api/errors.md). |
 | **Header Key Dispatch** | `siddiqsoft/private/sip2json_header_keys.hpp` | Case-insensitive mapping and compact single-character alias expansion. |
 | **Protocol Constants** | `siddiqsoft/private/sip2json_constants.hpp` | RFC 3261 standard method identifiers, version literals, and syntax delimiters. |
