@@ -52,7 +52,7 @@ namespace siddiqsoft {
     /// @brief Serializes the sipmessage document
     /// @param sipm Source sipmessage
     /// @return Return serialized sipmessage
-    inline std::string sip2json::serialize(sipmessage& sipm) noexcept(false)
+    inline std::string sip2json::serialize(const sipmessage& sipm) noexcept(false)
     {
         using namespace std;
 
@@ -115,21 +115,26 @@ namespace siddiqsoft {
                     std::format("{}:sipm /type is neither `SIPMessageType::request` nor `SIPMessageType::response`.", __func__)};
         }
 
-        // CAUTION!
         // Encode the body first so we can get the content-length properly.
         auto body = serializeSDP(sipm);
-        sipm.setHeader(HF_CONTENT_LENGTH, body.length());
 
         // Next we build the headers
-        if (auto mh = sipm.headers(); mh.size() > 0) {
+        bool contentLengthWritten = false;
+        if (const auto& mh = sipm.headers(); mh.size() > 0) {
             // NOTE: Header order is not preserved during serialization.
             // The nlohmann::json library does not maintain insertion order.
             // This is acceptable for SIP as header order is not significant per RFC 3261.
-            for (auto& [key, val] : sipm.headers().items()) {
+            for (const auto& [key, val] : mh.items()) {
                 if (key.find('\r') != std::string::npos || key.find('\n') != std::string::npos)
                     throw invalid_document_error {std::format("{}:Header key contains line breaks:{}", __func__, key)};
 
                 if (contentType.empty() && (key == HF_CONTENT_TYPE) && val.is_string()) contentType = val;
+
+                if (key == HF_CONTENT_LENGTH) {
+                    std::format_to(std::back_inserter(buffer), "{}: {}\r\n", HF_CONTENT_LENGTH, body.length());
+                    contentLengthWritten = true;
+                    continue;
+                }
 
                 if (val.is_null()) {
                     // For null entries, put a blank entry. This is the same as our decode
@@ -150,8 +155,8 @@ namespace siddiqsoft {
                 } else if (val.is_array()) {
                     // Special handling for arrays.
                     // We serialize with the same key and the various values follow.
-                    for (auto& item : val.items()) {
-                        auto iv = item.value();
+                    for (const auto& item : val.items()) {
+                        const auto& iv = item.value();
                         if (iv.is_string()) {
                             std::string sval = iv.get<std::string>();
                             if (sval.find('\r') != std::string::npos || sval.find('\n') != std::string::npos)
@@ -164,15 +169,25 @@ namespace siddiqsoft {
                     }
                 }
             }
-
-            // End of the message header section
-            buffer += ELEM_NEWLINE;
         }
+
+        if (!contentLengthWritten) {
+            std::format_to(std::back_inserter(buffer), "{}: {}\r\n", HF_CONTENT_LENGTH, body.length());
+        }
+
+        // End of the message header section
+        buffer += ELEM_NEWLINE;
 
         // Add the body
         buffer += body;
 
         // At the end we must have a complete and true serialized (ready for the wire) sip message
         return buffer;
+    }
+
+    /// @brief Non-const forwarding overload for backwards compatibility
+    inline std::string sip2json::serialize(sipmessage& sipm) noexcept(false)
+    {
+        return serialize(static_cast<const sipmessage&>(sipm));
     }
 } // namespace siddiqsoft

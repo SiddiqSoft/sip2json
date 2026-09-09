@@ -83,7 +83,7 @@ endif()
 project(sip2json
         VERSION         "${CURRENT_PROJECT_VERSION}"
         LANGUAGES       CXX
-        HOMEPAGE_URL    "%%myurl%%"
+        HOMEPAGE_URL    "https://github.com/SiddiqSoft/sip2json"
         DESCRIPTION     "A SIP Parser for Modern C++. Header-only library to parse and serialize SIP messages to/from JSON.")
 
 if(NOT CMAKE_CXX_STANDARD)

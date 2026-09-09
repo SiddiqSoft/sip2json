@@ -58,9 +58,9 @@ The document uses single-character keys (`s`, `h`, `b`, `meta`) to minimize payl
 
 ## Header Type Conversions
 
-* Numeric fields like `Content-Length` are converted to JSON integers.
-* Boolean extensions (e.g., `X-Call-URL: true`) are converted to JSON booleans.
-* Headers occurring multiple times in a SIP message (e.g. `Via`, `Record-Route`) are represented as JSON string arrays.
+* Numeric fields like `Content-Length` and `Expires` are converted to JSON unsigned integers during stream parsing.
+* Standard headers are parsed as JSON strings. Boolean extensions, numeric values, and custom structures can be assigned programmatically using `setHeader()`, which the wire serializer formats correctly.
+* Headers occurring multiple times in a SIP message (e.g. `Via`, `Record-Route`, `Supported`) are represented as JSON string arrays.
 
 ## SDP (Session Description Protocol) Support
 

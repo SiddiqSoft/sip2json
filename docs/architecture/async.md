@@ -8,27 +8,57 @@ SIP traffic over TCP or TLS arrives in continuous stream buffers where multiple 
 sequenceDiagram
     autonumber
     participant Net as Network Socket (TCP/TLS)
-    participant Buf as std::string tcpBuffer
+    participant Buf as Buffer (std::string_view or std::string)
     participant Parser as sip2json::parseAsync
     participant App as Application Handler
 
     Net->>Buf: Read raw bytes into buffer
-    Buf->>Parser: Pass iterators (begin, end)
+    Buf->>Parser: Pass buffer view or string reference
     loop For each complete SIP message
         Parser->>Parser: Extract Startline & Headers (zero-copy string_view)
         Parser->>Parser: Parse SDP Body (if present)
         Parser->>App: Invoke Callback with sipmessage&& (Move)
-        Parser->>Buf: Advance cursor past parsed message
+        Parser->>Buf: Advance view or erase consumed bytes
     end
     alt Incomplete Message / Partial Frame
         Parser-->>Buf: Stop parsing, leave residual bytes in place
     end
-    App->>Buf: Erase processed bytes up to cursor
 ```
 
 ## 2. Stream Processing Mechanics
 
-`sip2json::parseAsync` operates directly over string iterators (`std::string::const_iterator` or `std::string::iterator`), advancing the start iterator as complete frames are successfully parsed.
+`sip2json::parseAsync` provides two streaming modes:
+
+### Zero-Copy Stream (`std::string_view&`)
+
+Advances the non-owning view in-place past all successfully parsed messages and returns the total bytes consumed:
+
+```cpp
+#include <iostream>
+#include <string_view>
+#include "siddiqsoft/sip2json.hpp"
+
+using namespace siddiqsoft;
+
+void onNetworkBufferReceived(std::string_view& tcpReadBuffer)
+{
+    // Decodes frames and advances tcpReadBuffer past consumed bytes
+    size_t consumed = sip2json::parseAsync(
+        tcpReadBuffer,
+        [](sipmessage&& msg) {
+            std::cout << "Method: " << msg.getMethodView() 
+                      << ", Call-ID: " << msg.getCallIDView() << "\n";
+        },
+        [](const sip2json_exception& ex, std::string_view remaining) {
+            std::cerr << "Parser diagnostic: " << ex.what() << "\n";
+        }
+    );
+}
+```
+
+### In-Place Buffer Drainage (`std::string&`)
+
+For persistent `std::string` socket read buffers, `parseAsync` automatically erases consumed bytes from the front of the string, retaining incomplete frames for subsequent network `recv()` cycles:
 
 ```cpp
 #include <iostream>
@@ -39,24 +69,17 @@ using namespace siddiqsoft;
 
 void onNetworkBufferReceived(std::string& tcpBuffer)
 {
-    auto cursor = tcpBuffer.begin();
-
-    // Iterate through buffer and invoke callback for each complete SIP frame
+    // Automatically drains consumed frames; residual bytes remain in tcpBuffer
     sip2json::parseAsync(
-        cursor,
-        tcpBuffer.end(),
+        tcpBuffer,
         [](sipmessage&& msg) {
-            // Zero-copy moved rvalue message
             std::cout << "Method: " << msg.getMethod() 
                       << ", Call-ID: " << msg.getCallID() << "\n";
         },
-        [](sip2json_exception& ex, std::string::iterator& start, const std::string::iterator& end) {
-            std::cerr << "Parser warning: " << ex.what() << "\n";
+        [](const sip2json_exception& ex, std::string::iterator& start, const std::string::iterator& end) {
+            std::cerr << "Parser diagnostic: " << ex.what() << "\n";
         }
     );
-
-    // Erase processed frames from front of buffer; incomplete frames remain for next packet
-    tcpBuffer.erase(tcpBuffer.begin(), cursor);
 }
 ```
 

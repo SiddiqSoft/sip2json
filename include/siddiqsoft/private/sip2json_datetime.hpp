@@ -85,7 +85,7 @@ namespace siddiqsoft {
     /// @param tp Optional system_clock::timepoint; uses "now" if not provided
     /// @return String with your date/time as "Sun, 28 Jun 2020 23:29:00 GMT"
     template <class T = std::string>
-    static T TimeAsRFC1123(std::optional<std::chrono::system_clock::time_point> src = {}) noexcept(false)
+    inline T TimeAsRFC1123(std::optional<std::chrono::system_clock::time_point> src = {}) noexcept(false)
     {
         // This cast is critical since the RFC1123 does not have a fractional portion!
         const auto rawtp = std::chrono::time_point_cast<std::chrono::seconds>(src.value_or(std::chrono::system_clock::now()));
@@ -118,16 +118,16 @@ namespace siddiqsoft {
             return T {};
     }
 
-    /// @brief Creates a string representaiton of the date time in ISO8601 format with millisecond precision.
+    /// @brief Creates a string representation of the date time in ISO8601 format with millisecond precision.
     /// @param tp Optional system_clock::timepoint; uses "now" if not provided
     /// @return String ISO8601 "2020-06-28T23:29:00.000Z"
     template <class T = std::string>
-    static T TimeAsISO8601(std::optional<std::chrono::system_clock::time_point> src = {}) noexcept(false)
+    inline T TimeAsISO8601(std::optional<std::chrono::system_clock::time_point> src = {}) noexcept(false)
     {
         // This cast is critical since the ISO8601 only asks for milliseconds!
         const auto tp = std::chrono::time_point_cast<std::chrono::milliseconds>(src.value_or(std::chrono::system_clock::now()));
 
-        // NOTE: The resolution for %T includes siz-digits of microsecond detail!
+        // NOTE: The resolution for %T includes six-digits of microsecond detail!
         if constexpr (std::is_same_v<T, std::wstring>) {
             return std::format(L"{:%Y-%m-%dT%T}Z", tp);
         } else if constexpr (std::is_same_v<T, std::string>) {
@@ -158,11 +158,11 @@ namespace siddiqsoft {
             return T {};
     }
 
-    /// @brief Creates a string representaiton of the date time in RFC3339 format with millisecond precision. Alias for TimeAsISO8601.
+    /// @brief Creates a string representation of the date time in RFC3339 format with millisecond precision. Alias for TimeAsISO8601.
     /// @param tp Optional system_clock::timepoint; uses "now" if not provided
     /// @return String RFC3339 "2020-06-28T23:29:00.000Z"
     template <class T = std::string>
-    static T TimeAsRFC3339(std::optional<std::chrono::system_clock::time_point> src = {}) noexcept(false)
+    inline T TimeAsRFC3339(std::optional<std::chrono::system_clock::time_point> src = {}) noexcept(false)
     { return TimeAsISO8601<T>(src); }
 
 #pragma endregion
