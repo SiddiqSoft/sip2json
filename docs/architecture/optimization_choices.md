@@ -43,7 +43,7 @@ switch (h)
     case hash_header_key("content-type"):
     case hash_header_key("c"): return HFS_CONTENT_TYPE;
     // ...
-    default: return customKey;
+    default: return fallbackKey;
 }
 ```
 

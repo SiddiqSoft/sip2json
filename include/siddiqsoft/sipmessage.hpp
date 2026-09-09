@@ -256,6 +256,31 @@ namespace siddiqsoft {
         template <class T> auto getHeader(std::string_view key, std::optional<T> defaultValue = {}) const
         { return (*this)[JSON_KEY_HEADERS].value(std::string {key}, defaultValue.value_or(T {})); }
 
+        /// @brief Checks if a header is present in the message.
+        /// @details Performs alias-aware and case-insensitive check using canonical header resolution.
+        /// @param key The header name to check (e.g. "Via", "v", "Call-ID", "i").
+        /// @return True if the header is present, false otherwise.
+        bool hasHeader(std::string_view key) const
+        {
+            if (!this->contains(JSON_KEY_HEADERS)) return false;
+            const auto& hdrs = headers();
+            const auto& ks   = canonicalizeHeaderKey(key);
+            if (hdrs.contains(ks.canonical())) return true;
+            return hdrs.contains(std::string(key));
+        }
+
+        /// @brief Checks if a header is present in the message.
+        /// @param key The header name to check.
+        /// @return True if the header is present, false otherwise.
+        bool hasHeader(const std::string& key) const
+        { return hasHeader(std::string_view(key)); }
+
+        /// @brief Checks if a header is present in the message.
+        /// @param key The header name to check.
+        /// @return True if the header is present, false otherwise.
+        bool hasHeader(const char* key) const
+        { return hasHeader(std::string_view(key)); }
+
         /// @brief Sets the User-Agent header with library metadata and optional custom string.
         /// @details Automatically formats the User-Agent header with library name, version, and schema information.
         /// @param ua Optional additional user agent string to append.
