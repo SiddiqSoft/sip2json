@@ -58,6 +58,13 @@ graph TD
     target_link_libraries(my_target PRIVATE sip2json::sip2json)
     ```
 
+    **Build options** (pass via `-D` or `cmake-presets`):
+
+    | Option | Default | Description |
+    | :--- | :--- | :--- |
+    | `sip2json_BUILD_TESTS` | `OFF` | Build unit tests (requires GoogleTest). |
+    | `sip2json_BUILD_BENCHMARKS` | `OFF` | Build benchmark suite. |
+
 === "CMake FetchContent"
 
     ```cmake
@@ -71,6 +78,13 @@ graph TD
     FetchContent_MakeAvailable(sip2json)
     target_link_libraries(my_target PRIVATE sip2json::sip2json)
     ```
+
+    **Build options** (pass via `-D` or `cmake-presets`):
+
+    | Option | Default | Description |
+    | :--- | :--- | :--- |
+    | `sip2json_BUILD_TESTS` | `OFF` | Build unit tests (requires GoogleTest). |
+    | `sip2json_BUILD_BENCHMARKS` | `OFF` | Build benchmark suite. |
 
 === "NuGet"
 
@@ -101,13 +115,6 @@ graph TD
     ```
 
     Ensure that [`nlohmann/json`](https://github.com/nlohmann/json) v3.12.0+ is also in your include path.
-
-## CMake Build Options
-
-| Option | Default | Description |
-| :--- | :--- | :--- |
-| `sip2json_BUILD_TESTS` | `OFF` | Build unit tests (requires GoogleTest). |
-| `sip2json_BUILD_BENCHMARKS` | `OFF` | Build benchmark suite. |
 
 ## Basic Usage
 
