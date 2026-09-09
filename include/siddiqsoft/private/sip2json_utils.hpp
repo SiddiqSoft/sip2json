@@ -48,7 +48,7 @@
 namespace siddiqsoft {
     /// @brief Creates a pseudo random number generated UUID v4. It is best to use platform-specific method to ensure guid
     /// @return string 44 character of the format: 7792eaf4-456f-4d47-d93-863af0e0-a8b99b9b9988
-    static std::string createCallId()
+    inline std::string createCallId()
     {
         static thread_local std::random_device            rd;
         static thread_local std::mt19937_64               generator(rd());

@@ -1023,4 +1023,46 @@ TEST(coverage_json, Test_sip2jsonErrors_json_serialization)
 }
 
 
-//
+TEST(coverage_serialize, Test_serialize_const_sipmessage)
+{
+    const siddiqsoft::sipmessage sipm("INVITE", "sip:bob@biloxi.com", "callid123", 1);
+    std::string serialized;
+    EXPECT_NO_THROW(serialized = siddiqsoft::sip2json::serialize(sipm));
+    EXPECT_TRUE(serialized.find("INVITE sip:bob@biloxi.com SIP/2.0") != std::string::npos);
+    EXPECT_TRUE(serialized.find("Content-Length: 0") != std::string::npos);
+}
+
+TEST(coverage_message, Test_hasHeader)
+{
+    siddiqsoft::sipmessage msg(siddiqsoft::METHOD_INVITE, "sip:alice@example.com", "call-123", 1);
+    msg.setHeader(siddiqsoft::HF_VIA, "SIP/2.0/UDP 10.0.0.1:5060;branch=z9hG4bK123");
+    msg.setHeader("X-Custom-Header", "custom-value");
+
+    // Standard canonical name
+    EXPECT_TRUE(msg.hasHeader("Via"));
+    EXPECT_TRUE(msg.hasHeader("Call-ID"));
+    EXPECT_TRUE(msg.hasHeader("CSeq"));
+
+    // Compact alias lookup
+    EXPECT_TRUE(msg.hasHeader("v"));
+    EXPECT_TRUE(msg.hasHeader("i"));
+
+    // Case-insensitive lookup
+    EXPECT_TRUE(msg.hasHeader("via"));
+    EXPECT_TRUE(msg.hasHeader("call-id"));
+
+    // Custom header
+    EXPECT_TRUE(msg.hasHeader("X-Custom-Header"));
+    EXPECT_TRUE(msg.hasHeader(std::string("X-Custom-Header")));
+
+    // Non-existent header
+    EXPECT_FALSE(msg.hasHeader("Non-Existent"));
+    EXPECT_FALSE(msg.hasHeader("Subject"));
+    EXPECT_FALSE(msg.hasHeader("s"));
+
+    // Empty message without headers section
+    siddiqsoft::sipmessage emptyMsg(nlohmann::json::object());
+    EXPECT_FALSE(emptyMsg.hasHeader("Via"));
+}
+
+

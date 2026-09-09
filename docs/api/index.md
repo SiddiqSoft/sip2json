@@ -91,10 +91,10 @@ classDiagram
 
     class sip2json["siddiqsoft::sip2json"] {
         <<final utility>>
-        +parseAsync(string_view& buffer, onMsg, onErr)$ void
-        +parse(string_view buffer)$ sipmessage
-        +parseFromBuffer(string_view buffer)$ sipmessage
-        +serialize(const sipmessage& msg)$ string
+        +parseAsync(string_view& buffer, onMsg, onErr)$ size_t
+        +parse(string_view& buffer)$ vector~sipmessage~
+        +parseFromBuffer(string_view& buffer)$ sipmessage
+        +serialize(sipmessage& msg)$ string
     }
     class sip2json:::utilityClass
 
@@ -105,7 +105,7 @@ classDiagram
         +getMethodView() string_view
         +getUriView() string_view
         +getCallIDView() string_view
-        +getStatusCode() int
+        +getStatusCode() uint32_t
         +getReasonView() string_view
         +getHeader(string_view key) string
         +setHeader(string_view key, string_view val) sipmessage&

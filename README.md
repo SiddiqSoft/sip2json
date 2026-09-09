@@ -30,72 +30,74 @@
 
 ---
 
-## Quick Example
+## Quick Examples
 
-=== "Stream Parsing"
+### Stream Parsing
 
-    ```cpp
-    #include <iostream>
-    #include "siddiqsoft/sip2json.hpp"
+```cpp
+#include <iostream>
+#include "siddiqsoft/sip2json.hpp"
 
-    using namespace siddiqsoft;
+using namespace siddiqsoft;
 
-    void onNetworkDataReceived(std::string& tcpReadBuffer)
-    {
-        // Asynchronously parse multiple SIP frames from buffer (erasing consumed bytes)
-        sip2json::parseAsync(
-            tcpReadBuffer,
-            [](sipmessage&& msg) {
-                std::cout << "Parsed " << msg.getMethod() << " Call-ID: " << msg.getCallID() << "\n";
-                nlohmann::json doc = msg; // First-class JSON metaphor
-            },
-            [](const sip2json_exception& ex, auto& start, const auto& end) {
-                std::cerr << "Parser warning: " << ex.what() << "\n";
-            }
-        );
-    }
-    ```
+void onNetworkDataReceived(std::string& tcpReadBuffer)
+{
+    // Asynchronously parse multiple SIP frames from buffer (erasing consumed bytes)
+    sip2json::parseAsync(
+        tcpReadBuffer,
+        [](sipmessage&& msg) {
+            std::cout << "Parsed " << msg.getMethod() << " Call-ID: " << msg.getCallID() << "\n";
+            nlohmann::json doc = msg; // First-class JSON metaphor
+        },
+        [](const sip2json_exception& ex, auto& start, const auto& end) {
+            std::cerr << "Parser warning: " << ex.what() << "\n";
+        }
+    );
+}
+```
 
-=== "Push to RabbitMQ"
+### Push to RabbitMQ
 
-    ```cpp
-    #include "siddiqsoft/sip2json.hpp"
-    #include <SimpleAmqpClient/SimpleAmqpClient.h>
+```cpp
+#include "siddiqsoft/sip2json.hpp"
+#include <SimpleAmqpClient/SimpleAmqpClient.h>
 
-    using namespace siddiqsoft;
+using namespace siddiqsoft;
 
-    // Stream incoming SIP frames directly into a RabbitMQ exchange as JSON
-    auto channel = AmqpClient::Channel::Create("localhost");
+// Stream incoming SIP frames directly into a RabbitMQ exchange as JSON
+auto channel = AmqpClient::Channel::Create("localhost");
 
-    sip2json::parseAsync(tcpReadBuffer, [&](sipmessage&& msg) {
-        nlohmann::json doc = msg;
-        auto body = AmqpClient::BasicMessage::Create(doc.dump());
-        channel->BasicPublish("sip_events", std::string(msg.getMethod()), body);
-    });
-    ```
+sip2json::parseAsync(tcpReadBuffer, [&](sipmessage&& msg) {
+    nlohmann::json doc = msg;
+    auto body = AmqpClient::BasicMessage::Create(doc.dump());
+    channel->BasicPublish("sip_events", std::string(msg.getMethod()), body);
+});
+```
 
-=== "Log to DuckDB"
+### Log to DuckDB
 
-    ```cpp
-    #include "siddiqsoft/sip2json.hpp"
-    #include <duckdb.hpp>
+```cpp
+#include "siddiqsoft/sip2json.hpp"
+#include <duckdb.hpp>
 
-    using namespace siddiqsoft;
+using namespace siddiqsoft;
 
-    // Stream incoming SIP traffic directly into DuckDB for columnar analytics
-    duckdb::DuckDB db("sip_analytics.db");
-    duckdb::Connection con(db);
-    con.Query("CREATE TABLE IF NOT EXISTS sip_traffic (method VARCHAR, call_id VARCHAR, payload JSON);");
+// Stream incoming SIP traffic directly into DuckDB for columnar analytics
+duckdb::DuckDB db("sip_analytics.db");
+duckdb::Connection con(db);
+con.Query("CREATE TABLE IF NOT EXISTS sip_traffic (method VARCHAR, call_id VARCHAR, payload JSON);");
 
-    duckdb::Appender appender(con, "sip_traffic");
-    sip2json::parseAsync(tcpReadBuffer, [&](sipmessage&& msg) {
-        nlohmann::json doc = msg;
-        appender.AppendRow(std::string(msg.getMethod()), std::string(msg.getCallID()), doc.dump());
-    });
-    appender.Flush();
-    ```
-    !!! note "NOTE"
-        Use threadpool or async versions of specific SDK to maximize performance.
+duckdb::Appender appender(con, "sip_traffic");
+sip2json::parseAsync(tcpReadBuffer, [&](sipmessage&& msg) {
+    nlohmann::json doc = msg;
+    appender.AppendRow(std::string(msg.getMethod()), std::string(msg.getCallID()), doc.dump());
+});
+appender.Flush();
+```
+
+> [!NOTE]
+> Use threadpool or async versions of specific SDKs to maximize performance.
+
 ---
 
 
@@ -110,8 +112,8 @@
 
 For full coverage matrices, section mappings, and torture test details, see the [**Standards Compliance Guide**](https://siddiqsoft.github.io/sip2json/architecture/compliance/) on our documentation site.
 
-!!! note "Performance"
-    High-throughput stream parsing with low microsecond latency -- see our pipeline-compiled [**Performance & Benchmarks Guide**](https://siddiqsoft.github.io/sip2json/architecture/benchmarks/).
+> [!NOTE]
+> **Performance**: High-throughput stream parsing with low microsecond latency -- see our pipeline-compiled [**Performance & Benchmarks Guide**](https://siddiqsoft.github.io/sip2json/architecture/benchmarks/).
 
 ---
 

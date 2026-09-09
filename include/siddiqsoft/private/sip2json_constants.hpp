@@ -44,111 +44,110 @@
 
 namespace siddiqsoft {
     // Top-Level Message JSON Section Keys
-    static inline const std::string JSON_KEY_STARTLINE {"s"};
-    static inline const std::string JSON_KEY_HEADERS {"h"};
-    static inline const std::string JSON_KEY_BODY {"b"};
-    static inline const std::string JSON_KEY_META {"meta"};
+    inline const std::string JSON_KEY_STARTLINE {"s"};
+    inline const std::string JSON_KEY_HEADERS {"h"};
+    inline const std::string JSON_KEY_BODY {"b"};
+    inline const std::string JSON_KEY_META {"meta"};
 
     // Start-Line JSON Field Keys
-    static inline const std::string JSON_KEY_TYPE {"type"};
-    static inline const std::string JSON_KEY_METHOD {"method"};
-    static inline const std::string JSON_KEY_URI {"uri"};
-    static inline const std::string JSON_KEY_VERSION {"version"};
-    static inline const std::string JSON_KEY_STATUS {"status"};
-    static inline const std::string JSON_KEY_REASON {"reason"};
+    inline const std::string JSON_KEY_TYPE {"type"};
+    inline const std::string JSON_KEY_METHOD {"method"};
+    inline const std::string JSON_KEY_URI {"uri"};
+    inline const std::string JSON_KEY_VERSION {"version"};
+    inline const std::string JSON_KEY_STATUS {"status"};
+    inline const std::string JSON_KEY_REASON {"reason"};
 
     // Meta JSON Field Keys
-    static inline const std::string JSON_KEY_ID {"id"};
-    static inline const std::string JSON_KEY_TIME {"time"};
-    static inline const std::string JSON_KEY_TTX {"ttx"};
+    inline const std::string JSON_KEY_ID {"id"};
+    inline const std::string JSON_KEY_TIME {"time"};
+    inline const std::string JSON_KEY_TTX {"ttx"};
 
     // SDP JSON Key
-    static inline const std::string JSON_KEY_SDP {"sdp"};
+    inline const std::string JSON_KEY_SDP {"sdp"};
 
     // URI Schemes
-    static inline const std::string URI_SCHEME_SIP {"sip:"};
-    static inline const std::string URI_SCHEME_SIPS {"sips:"};
+    inline const std::string URI_SCHEME_SIP {"sip:"};
+    inline const std::string URI_SCHEME_SIPS {"sips:"};
 
     // CAUTION; this is used as a reference to break out of the processing loop if the remaining buffer is less than the
     // size of this sample message.
-    static inline const std::string SIP_SAMPLE_MINIMAL_MESSAGE {
+    inline const std::string SIP_SAMPLE_MINIMAL_MESSAGE {
             "SIP/2.0 A B\r\nVia: SIP/2.0/TCP localhost\r\nCall-ID: A\r\nCSeq: 1 ACK\r\nFrom: sip:A\r\nTo: "
             "sip:A\r\nContact: A\r\nContent-Length: 0\r\n\r\n"};
 
     // Authorization Type
-    static inline const std::string AUTHORIZATION_CLEAR {"Clear"};
-    static inline const std::string AUTHORIZATION_BASIC {"Basic"};
-    static inline const std::string AUTHORIZATION_DIGEST {"Digest"};
+    inline const std::string AUTHORIZATION_CLEAR {"Clear"};
+    inline const std::string AUTHORIZATION_BASIC {"Basic"};
+    inline const std::string AUTHORIZATION_DIGEST {"Digest"};
 
     // Content-Type
-    static inline const std::string CONTENT_TYPE_TEXT_PLAIN {"text/plain"};
-    static inline const std::string CONTENT_TYPE_TEXT_HTML {"text/html"};
-    static inline const std::string CONTENT_TYPE_TEXT_XML {"text/xml"};
-    static inline const std::string CONTENT_TYPE_APP_SDP {"application/sdp"};
-    static inline const std::string CONTENT_TYPE_APP_XML {"application/xml"};
-    static inline const std::string CONTENT_TYPE_APP_PKCS7MIME {"application/pkcs7-mime"};
-    static inline const std::string CONTENT_TYPE_APP_XPRIVATE {"application/x-private"};
-    static inline const std::string CONTENT_TYPE_TEXT_X_METATEL1_PRESENCE {"text/x-metatel1.0-presence"};
+    inline const std::string CONTENT_TYPE_TEXT_PLAIN {"text/plain"};
+    inline const std::string CONTENT_TYPE_TEXT_HTML {"text/html"};
+    inline const std::string CONTENT_TYPE_TEXT_XML {"text/xml"};
+    inline const std::string CONTENT_TYPE_APP_SDP {"application/sdp"};
+    inline const std::string CONTENT_TYPE_APP_XML {"application/xml"};
+    inline const std::string CONTENT_TYPE_APP_PKCS7MIME {"application/pkcs7-mime"};
+    inline const std::string CONTENT_TYPE_APP_XPRIVATE {"application/x-private"};
+    inline const std::string CONTENT_TYPE_TEXT_X_METATEL1_PRESENCE {"text/x-metatel1.0-presence"};
 
     // Subscription State
-    static inline const std::string SUBSTATE_ACTIVE {"active"};
-    static inline const std::string SUBSTATE_PENDING {"pending"};
-    static inline const std::string SUBSTATE_TERMINATED {"terminated"};
+    inline const std::string SUBSTATE_ACTIVE {"active"};
+    inline const std::string SUBSTATE_PENDING {"pending"};
+    inline const std::string SUBSTATE_TERMINATED {"terminated"};
 
     // TTL constants
-    static constexpr int DEFAULT_SERVER_PORT {5060};
-    static constexpr int DEFAULT_MAX_REGISTER_TTL {1 * 60 * 60};                        // 3600s
-    static constexpr int DEFAULT_MAX_REGISTER_TTL_MS {DEFAULT_MAX_REGISTER_TTL * 1000}; // 1 hour in milliseconds
-    static constexpr int DEFAULT_MIN_REGISTER_TTL {2 * 60};                             // 120s
-    static constexpr int REGISTER_PERIOD_10MIN_SEC {10 * 60};                           // 600s = 10 minutes
-    static constexpr int REGISTER_PERIOD_1MIN_SEC {60};                                 // 60s = 1 minute
-    static constexpr int REGISTER_PERIOD_MIN_SEC {30};                                  // 30s
-    static constexpr int REGISTER_PERIOD_10MIN_MS {REGISTER_PERIOD_10MIN_SEC * 1000};   // 600s = 10 minutes
+    inline constexpr int DEFAULT_SERVER_PORT {5060};
+    inline constexpr int DEFAULT_MAX_REGISTER_TTL {1 * 60 * 60};                        // 3600s
+    inline constexpr int DEFAULT_MAX_REGISTER_TTL_MS {DEFAULT_MAX_REGISTER_TTL * 1000}; // 1 hour in milliseconds
+    inline constexpr int DEFAULT_MIN_REGISTER_TTL {2 * 60};                             // 120s
+    inline constexpr int REGISTER_PERIOD_10MIN_SEC {10 * 60};                           // 600s = 10 minutes
+    inline constexpr int REGISTER_PERIOD_1MIN_SEC {60};                                 // 60s = 1 minute
+    inline constexpr int REGISTER_PERIOD_MIN_SEC {30};                                  // 30s
+    inline constexpr int REGISTER_PERIOD_10MIN_MS {REGISTER_PERIOD_10MIN_SEC * 1000};   // 600s = 10 minutes
 
-    static inline const std::string SIPVER_20 {"SIP/2.0"};
+    inline const std::string SIPVER_20 {"SIP/2.0"};
 
-    static inline const std::string METHOD_INVITE {"INVITE"};
-    static inline const std::string METHOD_ACK {"ACK"};
-    static inline const std::string METHOD_OPTIONS {"OPTIONS"};
-    static inline const std::string METHOD_BYE {"BYE"};
-    static inline const std::string METHOD_CANCEL {"CANCEL"};
-    static inline const std::string METHOD_REGISTER {"REGISTER"};
-    static inline const std::string METHOD_SUBSCRIBE {"SUBSCRIBE"};
-    static inline const std::string METHOD_NOTIFY {"NOTIFY"};
-    static inline const std::string METHOD_MESSAGE {"MESSAGE"};
-    static inline const std::string METHOD_INFO {"INFO"};
-    static inline const std::string METHOD_REFER {"REFER"};
-    static inline const std::string METHOD_PUBLISH {"PUBLISH"};
-    static inline const std::string METHOD_UPDATE {"UPDATE"};
-    static inline const std::string METHOD_PRACK {"PRACK"};
+    inline const std::string METHOD_INVITE {"INVITE"};
+    inline const std::string METHOD_ACK {"ACK"};
+    inline const std::string METHOD_OPTIONS {"OPTIONS"};
+    inline const std::string METHOD_BYE {"BYE"};
+    inline const std::string METHOD_CANCEL {"CANCEL"};
+    inline const std::string METHOD_REGISTER {"REGISTER"};
+    inline const std::string METHOD_SUBSCRIBE {"SUBSCRIBE"};
+    inline const std::string METHOD_NOTIFY {"NOTIFY"};
+    inline const std::string METHOD_MESSAGE {"MESSAGE"};
+    inline const std::string METHOD_INFO {"INFO"};
+    inline const std::string METHOD_REFER {"REFER"};
+    inline const std::string METHOD_PUBLISH {"PUBLISH"};
+    inline const std::string METHOD_UPDATE {"UPDATE"};
+    inline const std::string METHOD_PRACK {"PRACK"};
 
-    static inline const std::string VIA_BRANCH_PREFIX {"z9hG4bK"};
+    inline const std::string VIA_BRANCH_PREFIX {"z9hG4bK"};
 
-    static inline const std::string EMPTY_STD_STRING_VALUE {""};
+    inline const std::string EMPTY_STD_STRING_VALUE {""};
 
     // Parsing elements
-    static inline const std::string ELEM_SPACE {" "};
-    static inline const std::string ELEM_SEPARATOR {":"};
-    static inline const std::string ELEM_PADDED_SEPARATOR {": "};
-    static inline const std::string ELEM_TAG_SEPARATOR {"{"};
+    inline const std::string ELEM_SPACE {" "};
+    inline const std::string ELEM_SEPARATOR {":"};
+    inline const std::string ELEM_PADDED_SEPARATOR {": "};
+    inline const std::string ELEM_TAG_SEPARATOR {"{"};
     // Common elements over the wire (and WIN32)
-    static inline const std::string ELEM_NEWLINE {"\r\n"};
-    static inline const std::string ELEM_HEADERSECTIONDELIMITER {"\r\n\r\n"};
-    static inline const std::string ELEM_LWSP {"\r\n "};
-    static inline const std::string ELEM_LWSP1 {"\r\n\t"};
-    static inline const std::string ELEM_SDPBlockStart {" v=0\r\n"};
+    inline const std::string ELEM_NEWLINE {"\r\n"};
+    inline const std::string ELEM_HEADERSECTIONDELIMITER {"\r\n\r\n"};
+    inline const std::string ELEM_LWSP {"\r\n "};
+    inline const std::string ELEM_LWSP1 {"\r\n\t"};
+    inline const std::string ELEM_SDPBlockStart {" v=0\r\n"};
     // For UNIX systems
-    static inline const std::string ELEM_NEWLINE_LF {"\n"};
-    static inline const std::string ELEM_HEADERSECTIONDELIMITER_LF {"\n\n"};
-    static inline const std::string ELEM_LWSP_LF {"\n "};
-    static inline const std::string ELEM_LWSP1_LF {"\n\t"};
-    static inline const std::string ELEM_SDPBlockStart_LF {"v=0\n"};
+    inline const std::string ELEM_NEWLINE_LF {"\n"};
+    inline const std::string ELEM_HEADERSECTIONDELIMITER_LF {"\n\n"};
+    inline const std::string ELEM_LWSP_LF {"\n "};
+    inline const std::string ELEM_LWSP1_LF {"\n\t"};
+    inline const std::string ELEM_SDPBlockStart_LF {"v=0\n"};
 
     // Some common elements for building the SIP message
-    static inline const std::string SIP_ADDR_PREFIX {"sip:\\s"};
+    inline const std::string SIP_ADDR_PREFIX {"sip:\\s"};
 
-
-    static constexpr std::string_view SIP_VALID_METHODS[] = {"INVITE",
+    inline constexpr std::string_view SIP_VALID_METHODS[] = {"INVITE",
                                                              "ACK",
                                                              "OPTIONS",
                                                              "BYE",
