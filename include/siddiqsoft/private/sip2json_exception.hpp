@@ -160,25 +160,26 @@ template <> struct std::formatter<siddiqsoft::sip2jsonErrors> : std::formatter<s
     auto format(siddiqsoft::sip2jsonErrors e, std::format_context& ctx) const
     {
         switch (e) {
-        case siddiqsoft::sip2jsonErrors::ok: return std::formatter<std::string>::format("ok", ctx);
-        case siddiqsoft::sip2jsonErrors::incomplete_buffer_for_parse:
-            return std::formatter<std::string>::format("incomplete_buffer_for_parse", ctx);
-        case siddiqsoft::sip2jsonErrors::incomplete_buffer_for_content:
-            return std::formatter<std::string>::format("incomplete_buffer_for_content", ctx);
-        case siddiqsoft::sip2jsonErrors::incomplete_buffer_for_header:
-            return std::formatter<std::string>::format("incomplete_buffer_for_header", ctx);
-        case siddiqsoft::sip2jsonErrors::invalid_startline: return std::formatter<std::string>::format("invalid_startline", ctx);
-        case siddiqsoft::sip2jsonErrors::unsupported_contenttype:
-            return std::formatter<std::string>::format("unsupported_contenttype", ctx);
-        case siddiqsoft::sip2jsonErrors::missing_required_element:
-            return std::formatter<std::string>::format("missing_required_element", ctx);
-        case siddiqsoft::sip2jsonErrors::invalid_document: return std::formatter<std::string>::format("invalid_document", ctx);
-        case siddiqsoft::sip2jsonErrors::invalid_document_unsupported_method:
-            return std::formatter<std::string>::format("invalid_document_unsupported_method", ctx);
-        case siddiqsoft::sip2jsonErrors::invalid_document_unsupported_content:
-            return std::formatter<std::string>::format("invalid_document_unsupported_content", ctx);
-        case siddiqsoft::sip2jsonErrors::empty_message: return std::formatter<std::string>::format("empty_message", ctx);
-        default: return std::formatter<std::string>::format("unknown", ctx);
+            case siddiqsoft::sip2jsonErrors::ok: return std::formatter<std::string>::format("ok", ctx);
+            case siddiqsoft::sip2jsonErrors::incomplete_buffer_for_parse:
+                return std::formatter<std::string>::format("incomplete_buffer_for_parse", ctx);
+            case siddiqsoft::sip2jsonErrors::incomplete_buffer_for_content:
+                return std::formatter<std::string>::format("incomplete_buffer_for_content", ctx);
+            case siddiqsoft::sip2jsonErrors::incomplete_buffer_for_header:
+                return std::formatter<std::string>::format("incomplete_buffer_for_header", ctx);
+            case siddiqsoft::sip2jsonErrors::invalid_startline:
+                return std::formatter<std::string>::format("invalid_startline", ctx);
+            case siddiqsoft::sip2jsonErrors::unsupported_contenttype:
+                return std::formatter<std::string>::format("unsupported_contenttype", ctx);
+            case siddiqsoft::sip2jsonErrors::missing_required_element:
+                return std::formatter<std::string>::format("missing_required_element", ctx);
+            case siddiqsoft::sip2jsonErrors::invalid_document: return std::formatter<std::string>::format("invalid_document", ctx);
+            case siddiqsoft::sip2jsonErrors::invalid_document_unsupported_method:
+                return std::formatter<std::string>::format("invalid_document_unsupported_method", ctx);
+            case siddiqsoft::sip2jsonErrors::invalid_document_unsupported_content:
+                return std::formatter<std::string>::format("invalid_document_unsupported_content", ctx);
+            case siddiqsoft::sip2jsonErrors::empty_message: return std::formatter<std::string>::format("empty_message", ctx);
+            default: return std::formatter<std::string>::format("unknown", ctx);
         }
 
         return std::formatter<std::string>::format("unknown", ctx);

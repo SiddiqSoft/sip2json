@@ -214,56 +214,56 @@ namespace siddiqsoft {
         // break the constexpr evaluation and the switch statement will not work as intended.
         // the hash_header_key is constexpr, case-insensitive (lowercased).
         switch (h) {
-        case hash_header_key("from"):
-        case hash_header_key("f"): return HFS_FROM;
-        case hash_header_key("to"):
-        case hash_header_key("t"): return HFS_TO;
-        case hash_header_key("priority"): return HFS_PRIORITY;
-        case hash_header_key("content-encoding"):
-        case hash_header_key("e"): return HFS_CONTENT_ENCODING;
-        case hash_header_key("content-length"):
-        case hash_header_key("l"): return HFS_CONTENT_LENGTH;
-        case hash_header_key("content-type"):
-        case hash_header_key("c"): return HFS_CONTENT_TYPE;
-        case hash_header_key("call-id"):
-        case hash_header_key("i"): return HFS_CALLID;
-        case hash_header_key("cseq"): return HFS_CSEQ;
-        case hash_header_key("via"):
-        case hash_header_key("v"): return HFS_VIA;
-        case hash_header_key("encryption"): return HFS_ENCRYPTION;
-        case hash_header_key("subject"):
-        case hash_header_key("s"): return HFS_SUBJECT;
-        case hash_header_key("location"): return HFS_LOCATION;
-        case hash_header_key("expires"): return HFS_EXPIRES;
-        case hash_header_key("contact"):
-        case hash_header_key("m"): return HFS_CONTACT;
-        case hash_header_key("accept"): return HFS_ACCEPT;
-        case hash_header_key("accept-encoding"): return HFS_ACCEPT_ENCODING;
-        case hash_header_key("accept-language"): return HFS_ACCEPT_LANGUAGE;
-        case hash_header_key("date"): return HFS_DATE;
-        case hash_header_key("record-route"): return HFS_RECORD_ROUTE;
-        case hash_header_key("timestamp"): return HFS_TIMESTAMP;
-        case hash_header_key("hide"): return HFS_HIDE;
-        case hash_header_key("max-forwards"): return HFS_MAX_FORWARDS;
-        case hash_header_key("organization"): return HFS_ORGANIZATION;
-        case hash_header_key("proxy-authorization"): return HFS_PROXY_AUTHORIZATION;
-        case hash_header_key("proxy-require"): return HFS_PROXY_REQUIRE;
-        case hash_header_key("route"): return HFS_ROUTE;
-        case hash_header_key("require"): return HFS_REQUIRE;
-        case hash_header_key("response-key"): return HFS_RESPONSE_KEY;
-        case hash_header_key("user-agent"): return HFS_USER_AGENT;
-        case hash_header_key("proxy-authenticate"): return HFS_PROXY_AUTHENTICATE;
-        case hash_header_key("retry-after"): return HFS_RETRY_AFTER;
-        case hash_header_key("server"): return HFS_SERVER;
-        case hash_header_key("supported"):
-        case hash_header_key("k"): return HFS_SUPPORTED;
-        case hash_header_key("allow"): return HFS_ALLOW;
-        case hash_header_key("unsupported"): return HFS_UNSUPPORTED;
-        case hash_header_key("warning"): return HFS_WARNING;
-        case hash_header_key("www-authenticate"): return HFS_WWW_AUTHENTICATE;
-        case hash_header_key("authorization"):
-        case hash_header_key("uthorization"): return HFS_AUTHORIZATION;
-        case hash_header_key("subscription-state"): return HFS_SUBSCRIPTION_STATE;
+            case hash_header_key("from"):
+            case hash_header_key("f"): return HFS_FROM;
+            case hash_header_key("to"):
+            case hash_header_key("t"): return HFS_TO;
+            case hash_header_key("priority"): return HFS_PRIORITY;
+            case hash_header_key("content-encoding"):
+            case hash_header_key("e"): return HFS_CONTENT_ENCODING;
+            case hash_header_key("content-length"):
+            case hash_header_key("l"): return HFS_CONTENT_LENGTH;
+            case hash_header_key("content-type"):
+            case hash_header_key("c"): return HFS_CONTENT_TYPE;
+            case hash_header_key("call-id"):
+            case hash_header_key("i"): return HFS_CALLID;
+            case hash_header_key("cseq"): return HFS_CSEQ;
+            case hash_header_key("via"):
+            case hash_header_key("v"): return HFS_VIA;
+            case hash_header_key("encryption"): return HFS_ENCRYPTION;
+            case hash_header_key("subject"):
+            case hash_header_key("s"): return HFS_SUBJECT;
+            case hash_header_key("location"): return HFS_LOCATION;
+            case hash_header_key("expires"): return HFS_EXPIRES;
+            case hash_header_key("contact"):
+            case hash_header_key("m"): return HFS_CONTACT;
+            case hash_header_key("accept"): return HFS_ACCEPT;
+            case hash_header_key("accept-encoding"): return HFS_ACCEPT_ENCODING;
+            case hash_header_key("accept-language"): return HFS_ACCEPT_LANGUAGE;
+            case hash_header_key("date"): return HFS_DATE;
+            case hash_header_key("record-route"): return HFS_RECORD_ROUTE;
+            case hash_header_key("timestamp"): return HFS_TIMESTAMP;
+            case hash_header_key("hide"): return HFS_HIDE;
+            case hash_header_key("max-forwards"): return HFS_MAX_FORWARDS;
+            case hash_header_key("organization"): return HFS_ORGANIZATION;
+            case hash_header_key("proxy-authorization"): return HFS_PROXY_AUTHORIZATION;
+            case hash_header_key("proxy-require"): return HFS_PROXY_REQUIRE;
+            case hash_header_key("route"): return HFS_ROUTE;
+            case hash_header_key("require"): return HFS_REQUIRE;
+            case hash_header_key("response-key"): return HFS_RESPONSE_KEY;
+            case hash_header_key("user-agent"): return HFS_USER_AGENT;
+            case hash_header_key("proxy-authenticate"): return HFS_PROXY_AUTHENTICATE;
+            case hash_header_key("retry-after"): return HFS_RETRY_AFTER;
+            case hash_header_key("server"): return HFS_SERVER;
+            case hash_header_key("supported"):
+            case hash_header_key("k"): return HFS_SUPPORTED;
+            case hash_header_key("allow"): return HFS_ALLOW;
+            case hash_header_key("unsupported"): return HFS_UNSUPPORTED;
+            case hash_header_key("warning"): return HFS_WARNING;
+            case hash_header_key("www-authenticate"): return HFS_WWW_AUTHENTICATE;
+            case hash_header_key("authorization"):
+            case hash_header_key("uthorization"): return HFS_AUTHORIZATION;
+            case hash_header_key("subscription-state"): return HFS_SUBSCRIPTION_STATE;
         } // don't replace the string constants!
 
         thread_local HeaderKeySet fallbackKey;

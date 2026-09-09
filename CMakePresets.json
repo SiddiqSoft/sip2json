@@ -44,7 +44,8 @@
             "description": "Using native AppleClang compiler toolchain",
             "inherits": "Apple-Base",
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Debug"
+                "CMAKE_BUILD_TYPE": "Debug",
+                "sip2json_ENABLE_CLANG_FORMAT": "ON"
             }
         },
         {

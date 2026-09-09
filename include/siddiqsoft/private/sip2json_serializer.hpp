@@ -171,9 +171,7 @@ namespace siddiqsoft {
             }
         }
 
-        if (!contentLengthWritten) {
-            std::format_to(std::back_inserter(buffer), "{}: {}\r\n", HF_CONTENT_LENGTH, body.length());
-        }
+        if (!contentLengthWritten) { std::format_to(std::back_inserter(buffer), "{}: {}\r\n", HF_CONTENT_LENGTH, body.length()); }
 
         // End of the message header section
         buffer += ELEM_NEWLINE;
@@ -187,7 +185,5 @@ namespace siddiqsoft {
 
     /// @brief Non-const forwarding overload for backwards compatibility
     inline std::string sip2json::serialize(sipmessage& sipm) noexcept(false)
-    {
-        return serialize(static_cast<const sipmessage&>(sipm));
-    }
+    { return serialize(static_cast<const sipmessage&>(sipm)); }
 } // namespace siddiqsoft

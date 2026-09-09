@@ -1026,7 +1026,7 @@ TEST(coverage_json, Test_sip2jsonErrors_json_serialization)
 TEST(coverage_serialize, Test_serialize_const_sipmessage)
 {
     const siddiqsoft::sipmessage sipm("INVITE", "sip:bob@biloxi.com", "callid123", 1);
-    std::string serialized;
+    std::string                  serialized;
     EXPECT_NO_THROW(serialized = siddiqsoft::sip2json::serialize(sipm));
     EXPECT_TRUE(serialized.find("INVITE sip:bob@biloxi.com SIP/2.0") != std::string::npos);
     EXPECT_TRUE(serialized.find("Content-Length: 0") != std::string::npos);
@@ -1064,5 +1064,3 @@ TEST(coverage_message, Test_hasHeader)
     siddiqsoft::sipmessage emptyMsg(nlohmann::json::object());
     EXPECT_FALSE(emptyMsg.hasHeader("Via"));
 }
-
-

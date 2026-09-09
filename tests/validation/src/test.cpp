@@ -1041,41 +1041,41 @@ TEST(validation, Test_extension_aras)
             [&](auto&& sipm) {
                 // std::cerr << "We're inside the callback..the sipmessage...\n" << sipm.dump(1) << std::endl;
                 switch (parseCount++) {
-                case 0: {
-                    std::cerr << __func__ << " - case " << parseCount << ".." << std::endl;
-                    EXPECT_EQ(2, sipm["/h/Via"_json_pointer].size()) << sipm.dump(2);
-                    EXPECT_EQ(1118, sipm.getContentLength());
-                    EXPECT_EQ("+14155500001x,0000000001",
-                              sipm.template getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
-                    EXPECT_EQ("1.11", sipm.value("/b/sdp/0/a/x-voice-coords"_json_pointer, "")) << sipm.dump(2);
-                } break;
-                case 1: {
-                    std::cerr << __func__ << " - case " << parseCount << ".." << std::endl;
-                    // EXPECT_TRUE(false) << sipm.dump(2); // Diagnostics only
+                    case 0: {
+                        std::cerr << __func__ << " - case " << parseCount << ".." << std::endl;
+                        EXPECT_EQ(2, sipm["/h/Via"_json_pointer].size()) << sipm.dump(2);
+                        EXPECT_EQ(1118, sipm.getContentLength());
+                        EXPECT_EQ("+14155500001x,0000000001",
+                                  sipm.template getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
+                        EXPECT_EQ("1.11", sipm.value("/b/sdp/0/a/x-voice-coords"_json_pointer, "")) << sipm.dump(2);
+                    } break;
+                    case 1: {
+                        std::cerr << __func__ << " - case " << parseCount << ".." << std::endl;
+                        // EXPECT_TRUE(false) << sipm.dump(2); // Diagnostics only
 
-                    EXPECT_EQ(2, sipm["/h/Via"_json_pointer].size()) << sipm.dump(2);
-                    EXPECT_EQ(1263, sipm.getContentLength());
-                    EXPECT_EQ("+14155500001x,0000000001",
-                              sipm.template getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
-                    EXPECT_TRUE(sipm.contains("/b/sdp/0/a/x-voice-coords"_json_pointer)) << sipm.dump(2);
-                    EXPECT_EQ(2, sipm["/b/sdp/0/a/x-voice-coords"_json_pointer].size()) << sipm.dump(2);
-                    EXPECT_EQ("2.11", sipm.value("/b/sdp/0/a/x-voice-coords/0"_json_pointer, "")) << sipm.dump(2);
-                    EXPECT_EQ("2.22", sipm.value("/b/sdp/0/a/x-voice-coords/1"_json_pointer, "")) << sipm.dump(2);
-                } break;
-                case 2: {
-                    std::cerr << __func__ << " - case " << parseCount << ".." << std::endl;
-                    // EXPECT_TRUE(false) << sipm.dump(2); // Diagnostics only
+                        EXPECT_EQ(2, sipm["/h/Via"_json_pointer].size()) << sipm.dump(2);
+                        EXPECT_EQ(1263, sipm.getContentLength());
+                        EXPECT_EQ("+14155500001x,0000000001",
+                                  sipm.template getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
+                        EXPECT_TRUE(sipm.contains("/b/sdp/0/a/x-voice-coords"_json_pointer)) << sipm.dump(2);
+                        EXPECT_EQ(2, sipm["/b/sdp/0/a/x-voice-coords"_json_pointer].size()) << sipm.dump(2);
+                        EXPECT_EQ("2.11", sipm.value("/b/sdp/0/a/x-voice-coords/0"_json_pointer, "")) << sipm.dump(2);
+                        EXPECT_EQ("2.22", sipm.value("/b/sdp/0/a/x-voice-coords/1"_json_pointer, "")) << sipm.dump(2);
+                    } break;
+                    case 2: {
+                        std::cerr << __func__ << " - case " << parseCount << ".." << std::endl;
+                        // EXPECT_TRUE(false) << sipm.dump(2); // Diagnostics only
 
-                    EXPECT_EQ(2, sipm["/h/Via"_json_pointer].size()) << sipm.dump(2);
-                    EXPECT_EQ(1318, sipm.getContentLength());
-                    EXPECT_EQ("+14155500001x,0000000001",
-                              sipm.template getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
-                    EXPECT_TRUE(sipm.contains("/b/sdp/0/a/x-voice-coords"_json_pointer)) << sipm.dump(2);
-                    EXPECT_EQ(3, sipm["/b/sdp/0/a/x-voice-coords"_json_pointer].size()) << sipm.dump(2);
-                    EXPECT_EQ("3.11", sipm.value("/b/sdp/0/a/x-voice-coords/0"_json_pointer, "")) << sipm.dump(2);
-                    EXPECT_EQ("3.22", sipm.value("/b/sdp/0/a/x-voice-coords/1"_json_pointer, "")) << sipm.dump(2);
-                    EXPECT_EQ("3.33", sipm.value("/b/sdp/0/a/x-voice-coords/2"_json_pointer, "")) << sipm.dump(2);
-                } break;
+                        EXPECT_EQ(2, sipm["/h/Via"_json_pointer].size()) << sipm.dump(2);
+                        EXPECT_EQ(1318, sipm.getContentLength());
+                        EXPECT_EQ("+14155500001x,0000000001",
+                                  sipm.template getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
+                        EXPECT_TRUE(sipm.contains("/b/sdp/0/a/x-voice-coords"_json_pointer)) << sipm.dump(2);
+                        EXPECT_EQ(3, sipm["/b/sdp/0/a/x-voice-coords"_json_pointer].size()) << sipm.dump(2);
+                        EXPECT_EQ("3.11", sipm.value("/b/sdp/0/a/x-voice-coords/0"_json_pointer, "")) << sipm.dump(2);
+                        EXPECT_EQ("3.22", sipm.value("/b/sdp/0/a/x-voice-coords/1"_json_pointer, "")) << sipm.dump(2);
+                        EXPECT_EQ("3.33", sipm.value("/b/sdp/0/a/x-voice-coords/2"_json_pointer, "")) << sipm.dump(2);
+                    } break;
                 };
             },
             [](const siddiqsoft::sip2json_exception& e, std::string::iterator&, const std::string::iterator&) {
@@ -1100,36 +1100,36 @@ TEST(validation, Test_extension_nelson)
 
     auto remainingBuffer = siddiqsoft::sip2json::parseAsync(buffer, [&](siddiqsoft::sipmessage&& sipm) {
         switch (parseCount++) {
-        case 0:
-            EXPECT_EQ(1065, sipm.getContentLength());
-            EXPECT_EQ("+15550000019", sipm.getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
-            break;
-        case 1:
-            EXPECT_EQ(1189, sipm.getContentLength());
-            EXPECT_EQ("+15550000019", sipm.getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
-            break;
-        case 2:
-            EXPECT_EQ(2011, sipm.getContentLength());
-            EXPECT_EQ(2, sipm.body()["sdp"].size());
-            EXPECT_EQ("+15550000019", sipm.getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
-            EXPECT_EQ("+445550000007", sipm.getBodyElement<std::string>("/sdp/1/c/dn"_json_pointer, ""));
-            break;
-        case 3:
-            EXPECT_EQ(978, sipm.getContentLength());
-            EXPECT_EQ("+445550000007", sipm.getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
-            break;
-        case 4:
-            EXPECT_EQ(1080, sipm.getContentLength());
-            EXPECT_EQ("+445550000007", sipm.getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
-            break;
-        case 5:
-            EXPECT_EQ(1073, sipm.getContentLength());
-            EXPECT_EQ("+442555000022x,0000000022", sipm.getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
-            break;
-        case 6:
-            EXPECT_EQ(1321, sipm.getContentLength());
-            EXPECT_EQ("+442555000022x,0000000022", sipm.getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
-            break;
+            case 0:
+                EXPECT_EQ(1065, sipm.getContentLength());
+                EXPECT_EQ("+15550000019", sipm.getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
+                break;
+            case 1:
+                EXPECT_EQ(1189, sipm.getContentLength());
+                EXPECT_EQ("+15550000019", sipm.getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
+                break;
+            case 2:
+                EXPECT_EQ(2011, sipm.getContentLength());
+                EXPECT_EQ(2, sipm.body()["sdp"].size());
+                EXPECT_EQ("+15550000019", sipm.getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
+                EXPECT_EQ("+445550000007", sipm.getBodyElement<std::string>("/sdp/1/c/dn"_json_pointer, ""));
+                break;
+            case 3:
+                EXPECT_EQ(978, sipm.getContentLength());
+                EXPECT_EQ("+445550000007", sipm.getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
+                break;
+            case 4:
+                EXPECT_EQ(1080, sipm.getContentLength());
+                EXPECT_EQ("+445550000007", sipm.getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
+                break;
+            case 5:
+                EXPECT_EQ(1073, sipm.getContentLength());
+                EXPECT_EQ("+442555000022x,0000000022", sipm.getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
+                break;
+            case 6:
+                EXPECT_EQ(1321, sipm.getContentLength());
+                EXPECT_EQ("+442555000022x,0000000022", sipm.getBodyElement<std::string>("/sdp/0/c/dn"_json_pointer, ""));
+                break;
         };
     });
 
