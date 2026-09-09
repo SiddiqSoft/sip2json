@@ -58,7 +58,7 @@ namespace siddiqsoft {
     inline bool sip2json::parseStartLine(sipmessage& sipm, std::string_view& buffer) noexcept(false)
     {
         while (!buffer.empty()) {
-            // Skip leading empty lines (RFC 3261 §7.5 allows CRLF between messages)
+            // Skip leading empty lines (RFC 3261 Section 7.5 allows CRLF between messages)
             while (!buffer.empty() && (buffer.front() == '\r' || buffer.front() == '\n')) {
                 buffer.remove_prefix(1);
             }

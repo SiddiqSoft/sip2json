@@ -38,11 +38,11 @@ def format_latency(val_float: float, unit: str = "us") -> str:
         us = val_float * 1000.0
     elif unit_lower in ("s", "sec", "seconds", "second"):
         us = val_float * 1000000.0
-    else:  # us / µs
+    else:  # us
         us = val_float
 
     if us < 1000.0:
-        return f"{us:.2f} µs"
+        return f"{us:.2f} us"
     elif us < 1000000.0:
         return f"{us / 1000.0:.2f} ms"
     else:
@@ -295,7 +295,7 @@ def update_benchmarks_doc(repo_root: Path, platform_results: list, require_all: 
     """Dynamically update docs/architecture/benchmarks.md strictly from pipeline build data.
 
     The benchmark section is rendered as a single unified table that combines numeric figures
-    with inline proportional bar graphs — so figures and visual comparisons are co-located.
+    with inline proportional bar graphs -- so figures and visual comparisons are co-located.
     The separate "Visual Platform Performance Comparison" section has been removed to avoid
     redundancy; all visual information now lives inside the table itself.
     """
@@ -425,7 +425,7 @@ def update_benchmarks_doc(repo_root: Path, platform_results: list, require_all: 
     else:
         # Awaiting pipeline run - no fabricated data
         table_lines.append('!!! info "Pipeline-Derived Performance Data"')
-        table_lines.append('    Benchmark metrics and host runner environment details are compiled dynamically from CI/CD pipeline build matrix artifacts across our release matrix runners (Apple macOS, Red Hat Enterprise Linux, and Microsoft Windows — both GCC and Clang for Linux). When release builds complete, live benchmark data will populate automatically.')
+        table_lines.append('    Benchmark metrics and host runner environment details are compiled dynamically from CI/CD pipeline build matrix artifacts across our release matrix runners (Apple macOS, Red Hat Enterprise Linux, and Microsoft Windows -- both GCC and Clang for Linux). When release builds complete, live benchmark data will populate automatically.')
         table_lines.append("")
         table_lines.append("| Platform & Architecture | Compiler | Stream Throughput<br>`parseAsync` | Bandwidth | Per-Msg Latency | Single Msg Throughput<br>`parseFromBuffer` | Single Msg Latency |")
         table_lines.append("| :--- | :---: | :--- | :---: | :--- | :--- | :--- |")

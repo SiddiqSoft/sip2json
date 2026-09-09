@@ -104,14 +104,14 @@
 `sip2json` is verified against official IETF specifications across dedicated automated test suites:
 
 - **[RFC 3261](https://datatracker.ietf.org/doc/html/rfc3261)** (Core SIP): [`tests/compliance/src/rfc3261_compliance_tests.cpp`](tests/compliance/src/rfc3261_compliance_tests.cpp)
-- **[RFC 4475](https://datatracker.ietf.org/doc/html/rfc4475)** (Torture Test Suite — 50/50): [`tests/compliance/src/rfc4475_torture_tests.cpp`](tests/compliance/src/rfc4475_torture_tests.cpp)
+- **[RFC 4475](https://datatracker.ietf.org/doc/html/rfc4475)** (Torture Test Suite -- 50/50): [`tests/compliance/src/rfc4475_torture_tests.cpp`](tests/compliance/src/rfc4475_torture_tests.cpp)
 - **[RFC 3262](https://datatracker.ietf.org/doc/html/rfc3262)**, **[RFC 3515](https://datatracker.ietf.org/doc/html/rfc3515)**, **[RFC 3903](https://datatracker.ietf.org/doc/html/rfc3903)**, **[RFC 6665](https://datatracker.ietf.org/doc/html/rfc6665)** (SIP Extensions): [`tests/compliance/src/sip_certification_suite.cpp`](tests/compliance/src/sip_certification_suite.cpp)
 - **[RFC 8866](https://datatracker.ietf.org/doc/html/rfc8866)** / **[RFC 4566](https://datatracker.ietf.org/doc/html/rfc4566)**, **[RFC 3264](https://datatracker.ietf.org/doc/html/rfc3264)**, **[RFC 8829](https://datatracker.ietf.org/doc/html/rfc8829)** / **[RFC 8839](https://datatracker.ietf.org/doc/html/rfc8839)** (SDP & WebRTC): [`tests/compliance/src/sdp_compliance_tests.cpp`](tests/compliance/src/sdp_compliance_tests.cpp)
 
 For full coverage matrices, section mappings, and torture test details, see the [**Standards Compliance Guide**](https://siddiqsoft.github.io/sip2json/architecture/compliance/) on our documentation site.
 
 !!! note "Performance"
-    High-throughput stream parsing with low microsecond latency — see our pipeline-compiled [**Performance & Benchmarks Guide**](https://siddiqsoft.github.io/sip2json/architecture/benchmarks/).
+    High-throughput stream parsing with low microsecond latency -- see our pipeline-compiled [**Performance & Benchmarks Guide**](https://siddiqsoft.github.io/sip2json/architecture/benchmarks/).
 
 ---
 

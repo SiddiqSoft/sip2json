@@ -2,8 +2,6 @@
 
 This document provides a section-by-section mapping of all test suites, test runner files, sample fixtures, authoritative standards, and links to official IETF RFC specifications integrated into [`siddiqsoft/sip2json`](https://github.com/siddiqsoftware/sip2json).
 
----
-
 ## 1. Test Suite Architecture & Categorization
 
 ```mermaid
@@ -33,8 +31,6 @@ graph TD
     Root --> Benchmark
 ```
 
----
-
 ## 2. Official Standards Specifications & Links
 
 `sip2json` is engineered and validated directly against official IETF (Internet Engineering Task Force) RFC standards for Session Initiation Protocol (SIP) and Session Description Protocol (SDP):
@@ -54,8 +50,6 @@ graph TD
 | **IETF RFC 3515** | The Session Initiation Protocol (SIP) Refer Method (`REFER`) | [https://datatracker.ietf.org/doc/html/rfc3515](https://datatracker.ietf.org/doc/html/rfc3515) |
 | **IETF RFC 3903** | SIP Extension for Event Publication (`PUBLISH`) | [https://datatracker.ietf.org/doc/html/rfc3903](https://datatracker.ietf.org/doc/html/rfc3903) |
 
----
-
 ## 3. Compliance Test Suites & Section-by-Section Mapping
 
 ### A. IETF RFC 4475 SIP Torture Test Matrix
@@ -66,21 +60,19 @@ graph TD
 
 | RFC 4475 Section | Specification Title | Sample Fixture File | Test Runner Source Link | Test Name | Assertion / Expected Behavior |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **§3.1.1.1** | A Short Tortuous INVITE | [`wsinv.dat`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/samples/rfc4475/wsinv.dat) | [`rfc4475_torture_tests.cpp#L61`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/rfc4475_torture_tests.cpp#L61) | `Section_3_1_1_1_A_Short_Tortuous_INVITE` | Parses method `INVITE`, URI `sip:vivekg@...`, Call-ID `wsinv.ndaksdj@...` |
-| **§3.1.1.2** | Wide Range of Valid Characters | [`multi01.dat`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/samples/rfc4475/multi01.dat) | [`rfc4475_torture_tests.cpp#L74`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/rfc4475_torture_tests.cpp#L74) | `Section_3_1_1_2_Wide_Range_Valid_Characters` | Parses method `INVITE`, URI `sip:user@company.com`, multi-character headers |
-| **§3.1.1.3** | Valid Use of % Escaping Mechanism | [`esc01.dat`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/samples/rfc4475/esc01.dat) | [`rfc4475_torture_tests.cpp#L87`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/rfc4475_torture_tests.cpp#L87) | `Section_3_1_1_3_Valid_Use_Escaping` | Parses URI with percent escaping `sip:sips%3Auser%40example.com@example.net` |
-| **§3.1.1.4** | Escaped Nulls in URIs | [`escnull.dat`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/samples/rfc4475/escnull.dat) | [`rfc4475_torture_tests.cpp#L99`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/rfc4475_torture_tests.cpp#L99) | `Section_3_1_1_4_Escaped_Nulls_In_URIs` | Parses method `REGISTER` with escaped `%00` null bytes in URI |
-| **§3.1.1.5** | Use of % When It Is Not an Escape | [`esc02.dat`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/samples/rfc4475/esc02.dat) | [`rfc4475_torture_tests.cpp#L112`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/rfc4475_torture_tests.cpp#L112) | `Section_3_1_1_5_Escaped_Method_Name_Rejection` | Throws `invalid_startline_error` due to escaped method `RE%47IST%45R` |
-| **§3.1.1.6** | No LWS between Display Name and `<` | [`lwsdisp.dat`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/samples/rfc4475/lwsdisp.dat) | [`rfc4475_torture_tests.cpp#L124`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/rfc4475_torture_tests.cpp#L124) | `Section_3_1_1_6_No_LWS_Display_Name` | Parses `OPTIONS` request with display name adjacent to `<` |
-| **§3.1.1.7** | Long Values in Header Fields | [`longreq.dat`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/samples/rfc4475/longreq.dat) | [`rfc4475_torture_tests.cpp#L136`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/rfc4475_torture_tests.cpp#L136) | `Section_3_1_1_7_Long_Values_Header_Fields` | Parses `INVITE` request containing multi-kilobyte header lines |
-| **§3.1.1.8** | Extra Whitespace in Start Line | [`trws.dat`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/samples/rfc4475/trws.dat) | [`rfc4475_torture_tests.cpp#L148`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/rfc4475_torture_tests.cpp#L148) | `Section_3_1_1_8_Extra_Space_In_Startline_Rejection` | Throws `invalid_startline_error` on double space `SIP/2.0  ` |
-| **§3.1.1.9** | Semicolon Parameters in URI User | [`cparam01.dat`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/samples/rfc4475/cparam01.dat) | [`rfc4475_torture_tests.cpp#L160`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/rfc4475_torture_tests.cpp#L160) | `Section_3_1_1_9_Semicolon_Separated_URI_Params` | Parses `REGISTER` request with URI user part parameters |
-| **§3.1.1.10** | Varied Transport Types | [`transports.dat`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/samples/rfc4475/transports.dat) | [`rfc4475_torture_tests.cpp#L172`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/rfc4475_torture_tests.cpp#L172) | `Section_3_1_1_10_Varied_Transport_Types` | Parses `OPTIONS` request with custom transport parameters |
-| **§3.1.1.11** | Multipart MIME Body | [`mpart01.dat`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/samples/rfc4475/mpart01.dat) | [`rfc4475_torture_tests.cpp#L184`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/rfc4475_torture_tests.cpp#L184) | `Section_3_1_1_11_Multipart_MIME_Rejection` | Throws `unsupported_contenttype_error` for `multipart/mixed` |
-| **§3.1.1.12** | Non-ASCII Reason Phrase | [`unreason.dat`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/samples/rfc4475/unreason.dat) | [`rfc4475_torture_tests.cpp#L196`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/rfc4475_torture_tests.cpp#L196) | `Section_3_1_1_12_Unusual_Reason_Phrase` | Parses response status 200 OK with non-ASCII reason phrase |
-| **§3.1.1.13** | Empty Reason Phrase | [`noreason.dat`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/samples/rfc4475/noreason.dat) | [`rfc4475_torture_tests.cpp#L206`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/rfc4475_torture_tests.cpp#L206) | `Section_3_1_1_13_Empty_Reason_Phrase` | Parses response status 100 with empty reason phrase |
-
----
+| **Section 3.1.1.1** | A Short Tortuous INVITE | [`wsinv.dat`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/samples/rfc4475/wsinv.dat) | [`rfc4475_torture_tests.cpp#L61`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/rfc4475_torture_tests.cpp#L61) | `Section_3_1_1_1_A_Short_Tortuous_INVITE` | Parses method `INVITE`, URI `sip:vivekg@...`, Call-ID `wsinv.ndaksdj@...` |
+| **Section 3.1.1.2** | Wide Range of Valid Characters | [`multi01.dat`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/samples/rfc4475/multi01.dat) | [`rfc4475_torture_tests.cpp#L74`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/rfc4475_torture_tests.cpp#L74) | `Section_3_1_1_2_Wide_Range_Valid_Characters` | Parses method `INVITE`, URI `sip:user@company.com`, multi-character headers |
+| **Section 3.1.1.3** | Valid Use of % Escaping Mechanism | [`esc01.dat`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/samples/rfc4475/esc01.dat) | [`rfc4475_torture_tests.cpp#L87`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/rfc4475_torture_tests.cpp#L87) | `Section_3_1_1_3_Valid_Use_Escaping` | Parses URI with percent escaping `sip:sips%3Auser%40example.com@example.net` |
+| **Section 3.1.1.4** | Escaped Nulls in URIs | [`escnull.dat`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/samples/rfc4475/escnull.dat) | [`rfc4475_torture_tests.cpp#L99`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/rfc4475_torture_tests.cpp#L99) | `Section_3_1_1_4_Escaped_Nulls_In_URIs` | Parses method `REGISTER` with escaped `%00` null bytes in URI |
+| **Section 3.1.1.5** | Use of % When It Is Not an Escape | [`esc02.dat`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/samples/rfc4475/esc02.dat) | [`rfc4475_torture_tests.cpp#L112`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/rfc4475_torture_tests.cpp#L112) | `Section_3_1_1_5_Escaped_Method_Name_Rejection` | Throws `invalid_startline_error` due to escaped method `RE%47IST%45R` |
+| **Section 3.1.1.6** | No LWS between Display Name and `<` | [`lwsdisp.dat`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/samples/rfc4475/lwsdisp.dat) | [`rfc4475_torture_tests.cpp#L124`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/rfc4475_torture_tests.cpp#L124) | `Section_3_1_1_6_No_LWS_Display_Name` | Parses `OPTIONS` request with display name adjacent to `<` |
+| **Section 3.1.1.7** | Long Values in Header Fields | [`longreq.dat`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/samples/rfc4475/longreq.dat) | [`rfc4475_torture_tests.cpp#L136`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/rfc4475_torture_tests.cpp#L136) | `Section_3_1_1_7_Long_Values_Header_Fields` | Parses `INVITE` request containing multi-kilobyte header lines |
+| **Section 3.1.1.8** | Extra Whitespace in Start Line | [`trws.dat`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/samples/rfc4475/trws.dat) | [`rfc4475_torture_tests.cpp#L148`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/rfc4475_torture_tests.cpp#L148) | `Section_3_1_1_8_Extra_Space_In_Startline_Rejection` | Throws `invalid_startline_error` on double space `SIP/2.0  ` |
+| **Section 3.1.1.9** | Semicolon Parameters in URI User | [`cparam01.dat`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/samples/rfc4475/cparam01.dat) | [`rfc4475_torture_tests.cpp#L160`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/rfc4475_torture_tests.cpp#L160) | `Section_3_1_1_9_Semicolon_Separated_URI_Params` | Parses `REGISTER` request with URI user part parameters |
+| **Section 3.1.1.10** | Varied Transport Types | [`transports.dat`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/samples/rfc4475/transports.dat) | [`rfc4475_torture_tests.cpp#L172`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/rfc4475_torture_tests.cpp#L172) | `Section_3_1_1_10_Varied_Transport_Types` | Parses `OPTIONS` request with custom transport parameters |
+| **Section 3.1.1.11** | Multipart MIME Body | [`mpart01.dat`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/samples/rfc4475/mpart01.dat) | [`rfc4475_torture_tests.cpp#L184`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/rfc4475_torture_tests.cpp#L184) | `Section_3_1_1_11_Multipart_MIME_Rejection` | Throws `unsupported_contenttype_error` for `multipart/mixed` |
+| **Section 3.1.1.12** | Non-ASCII Reason Phrase | [`unreason.dat`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/samples/rfc4475/unreason.dat) | [`rfc4475_torture_tests.cpp#L196`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/rfc4475_torture_tests.cpp#L196) | `Section_3_1_1_12_Unusual_Reason_Phrase` | Parses response status 200 OK with non-ASCII reason phrase |
+| **Section 3.1.1.13** | Empty Reason Phrase | [`noreason.dat`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/samples/rfc4475/noreason.dat) | [`rfc4475_torture_tests.cpp#L206`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/rfc4475_torture_tests.cpp#L206) | `Section_3_1_1_13_Empty_Reason_Phrase` | Parses response status 100 with empty reason phrase |
 
 ### B. SDP & WebRTC Standards Compliance Matrix
 
@@ -89,13 +81,11 @@ graph TD
 | Standard Specification | Test Verification Topic | Test Runner Source Link | Test Name | Assertion / Expected Behavior |
 | :--- | :--- | :--- | :--- | :--- |
 | **RFC 4566 / 8866** | Session Level Syntax (`o=`, `c=`) | [`sdp_compliance_tests.cpp#L21`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/sdp_compliance_tests.cpp#L21) | `CERT_SDP_SessionLevel_OriginAndConnection` | Parses `o=` owner string, IP4 connection address |
-| **RFC 4566 §9** | Full Reference SDP Specification | [`sdp_compliance_tests.cpp#L69`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/sdp_compliance_tests.cpp#L69) | `CERT_SDP_RFC4566_Section9_FullSpecificationExample` | Parses Section 9 reference vector into structured JSON |
+| **RFC 4566 Section 9** | Full Reference SDP Specification | [`sdp_compliance_tests.cpp#L69`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/sdp_compliance_tests.cpp#L69) | `CERT_SDP_RFC4566_Section9_FullSpecificationExample` | Parses Section 9 reference vector into structured JSON |
 | **RFC 3264** | Offer/Answer Direction Attributes | [`sdp_compliance_tests.cpp#L109`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/sdp_compliance_tests.cpp#L109) | `CERT_SDP_OfferAnswer_DirectionAttributes` | Validates `sendrecv`, `sendonly`, `recvonly`, `inactive` |
 | **RFC 8829 / 8839** | WebRTC BUNDLE, ICE & DTLS Attributes | [`sdp_compliance_tests.cpp#L151`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/sdp_compliance_tests.cpp#L151) | `CERT_SDP_WebRTC_BUNDLE_ICE_DTLS_Attributes` | Validates `group:BUNDLE`, `ice-ufrag`, `ice-pwd`, `fingerprint` |
 | **RFC 4566 / 8866** | Multi-Session Demarcation (`v=0`) | [`sdp_compliance_tests.cpp#L206`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/sdp_compliance_tests.cpp#L206) | `CERT_SDP_Multiple_Sessions_Demarcation` | Splits multiple `v=0` session descriptions |
 | **RFC 4566** | UNIX LF (`\n`) Line Endings | [`sdp_compliance_tests.cpp#L243`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/compliance/src/sdp_compliance_tests.cpp#L243) | `CERT_SDP_UNIX_LF_LineEndings` | Seamlessly parses SDP payloads formatted with `\n` |
-
----
 
 ## 4. Regression Test Suite (`tests/regression/` & `tests/validation/`)
 
@@ -104,15 +94,11 @@ graph TD
 - **Fixture Inventory**: Contains **36 real-world SIP stream fixtures and SIPp scenario vectors** (`NOTIFY_CallStart_1.sip`, `NOTIFY_CallStart_2.sip`, `NOTIFY_CallEnd.sip`, `NOTIFY_LegAdd.sip`, `NOTIFY_LegDrop.sip`, `NOTIFY_SDP_multi_1.sip`, `sipp_uac_invite.sip`, `sipp_uas_200ok.sip`, `Mixed_Stream_1.sip`, `Mixed_Stream_2.sip`, `Mixed_Stream_3.sip`, `RandomStream_Recv_File_1.sip`, `OK_REGISTER_Multiline_ContactHeader_1.sip`, etc.).
 - **Coverage**: 78 unit & edge-case tests validating parser state transitions, edge case handling, async parsing callbacks, header accessors, SDP object structures, and serialization round-tripping.
 
----
-
 ## 5. Performance Benchmark Suite (`tests/benchmark/`)
 
 - **Test Runner Source Code**: [`tests/benchmark/src/benchmark.cpp`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/benchmark/src/benchmark.cpp)
 - **Report Document**: [`tests/benchmark/BENCHMARK_REPORT.md`](https://github.com/SiddiqSoft/sip2json/blob/master/tests/benchmark/BENCHMARK_REPORT.md)
 - **Coverage**: Measures multi-message stream vector parsing (`parse`), zero-copy stream callback parsing (`parseAsync`), discrete single-message parsing (`parseFromBuffer`), and SDP element counts across stream fixtures.
-
----
 
 ## 6. Ecosystem Open-Source Test Suites & Test Vectors
 
@@ -125,8 +111,6 @@ In addition to official IETF standards documents, `sip2json` incorporates test v
 | **PROTOS Test-Suite c07-sip (Security Fuzzing)** | [University of Oulu PROTOS Suite](https://www.ee.oulu.fi/research/ouspg/PROTOS) | Open / Academic | Protocol crash resilience & malformed header fuzzing test vectors incorporated into `tests/compliance/src/rfc4475_torture_tests.cpp`. |
 | **W3C Web Platform Tests (WPT) WebRTC SDP** | [https://github.com/web-platform-tests/wpt](https://github.com/web-platform-tests/wpt) | BSD-3-Clause / W3C | WebRTC SDP offer/answer blobs generated by Google Chrome & Mozilla Firefox integrated into `tests/compliance/src/sdp_compliance_tests.cpp`. |
 | **baresip / re (libre) C SIP Test Fixtures** | [https://github.com/baresip/re](https://github.com/baresip/re) | BSD-3-Clause | C SIP/SDP parser test vectors (compatible with `sip2json` BSD-3 license). |
-
----
 
 ## 7. CTest Test Target & Execution Guide
 

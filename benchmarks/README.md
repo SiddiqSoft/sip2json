@@ -1,6 +1,6 @@
 # sip2json Performance Benchmarks & Throughput Results
 
-This directory contains the performance benchmarking suite and published benchmark results for **`sip2json`** — a Modern C++20 header-only SIP protocol parser and serializer.
+This directory contains the performance benchmarking suite and published benchmark results for **`sip2json`** -- a Modern C++20 header-only SIP protocol parser and serializer.
 
 ---
 

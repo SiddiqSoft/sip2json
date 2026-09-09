@@ -2,8 +2,6 @@
 
 To streamline integration with modern NoSQL databases (DocumentDB, Azure Cosmos DB, MongoDB, Elasticsearch), `sip2json` represents SIP messages as structured JSON documents.
 
----
-
 ## Schema Overview
 
 The document uses single-character keys (`s`, `h`, `b`, `meta`) to minimize payload size during network transmission and indexing.
@@ -49,8 +47,6 @@ The document uses single-character keys (`s`, `h`, `b`, `meta`) to minimize payl
 }
 ```
 
----
-
 ## Document Fields
 
 | Field | Type | Description |
@@ -60,15 +56,11 @@ The document uses single-character keys (`s`, `h`, `b`, `meta`) to minimize payl
 | **`h`** | `object` | Header key-value pairs. Arrays represent multi-instance headers (e.g. `Via`) |
 | **`b`** | `object` | Optional body container (e.g. SDP descriptors) |
 
----
-
 ## Header Type Conversions
 
 * Numeric fields like `Content-Length` are converted to JSON integers.
 * Boolean extensions (e.g., `X-Call-URL: true`) are converted to JSON booleans.
 * Headers occurring multiple times in a SIP message (e.g. `Via`, `Record-Route`) are represented as JSON string arrays.
-
----
 
 ## Related References
 

@@ -2,8 +2,6 @@
 
 SIP traffic over TCP or TLS arrives in continuous stream buffers where multiple SIP frames can be packed together, or where a single frame might be partially received. `sip2json::parseAsync` processes frames directly off network read buffers with move semantics.
 
----
-
 ## 1. Stream Buffer Data Flow Workflow
 
 ```mermaid
@@ -27,8 +25,6 @@ sequenceDiagram
     end
     App->>Buf: Erase processed bytes up to cursor
 ```
-
----
 
 ## 2. Stream Processing Mechanics
 
@@ -63,8 +59,6 @@ void onNetworkBufferReceived(std::string& tcpBuffer)
     tcpBuffer.erase(tcpBuffer.begin(), cursor);
 }
 ```
-
----
 
 ## 3. Memory Layout & Lifetime Rules
 

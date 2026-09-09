@@ -119,15 +119,14 @@ Detailed performance benchmark results comparing `sip2json` across versions **v2
 
 ### Summary Highlights (v2.6.0 vs v2.4.2)
 
-- **Stream Parsing Throughput**: **17,448.26 msg/sec** (45.85 MB/sec, 57.31 µs avg latency) vs v2.4.2 baseline of 1,376.18 msg/sec (**12.7x speedup**).
-- **Single-Message Parsing Throughput**: **19,737.79 msg/sec** (50.66 µs avg latency) vs v2.4.2 baseline of 1,784.98 msg/sec (**11.1x speedup**).
+- **Stream Parsing Throughput**: **17,448.26 msg/sec** (45.85 MB/sec, 57.31 us avg latency) vs v2.4.2 baseline of 1,376.18 msg/sec (**12.7x speedup**).
+- **Single-Message Parsing Throughput**: **19,737.79 msg/sec** (50.66 us avg latency) vs v2.4.2 baseline of 1,784.98 msg/sec (**11.1x speedup**).
 - **Key Architectural Improvements**: Zero-copy header key canonicalization via `HeaderKeySet`, fast-path line parsing with string views, memory allocation reuse, and `std::format` serialization.
 
 ## Dependencies
 
 The project uses:
 - **sip2json**: Core SIP parsing library (supports configurable versioning via `-DSIP2JSON_VERSION=<version>`)
-- **nlohmann/json**: JSON manipulation
 - **nlohmann/json**: JSON manipulation
 - **Google Test** (v1.17.0): Testing framework
 

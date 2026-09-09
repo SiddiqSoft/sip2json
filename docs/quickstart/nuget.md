@@ -2,8 +2,6 @@
 
 Package: [`SiddiqSoft.sip2json`](https://www.nuget.org/packages/SiddiqSoft.sip2json) (header-only, native C++20).
 
----
-
 ## Installation
 
 === "Package Manager"
@@ -16,19 +14,15 @@ Package: [`SiddiqSoft.sip2json`](https://www.nuget.org/packages/SiddiqSoft.sip2j
 
     ```xml
     <ItemGroup>
-      <PackageReference Include="SiddiqSoft.sip2json" Version="3.1.0" />
+      <PackageReference Include="SiddiqSoft.sip2json" Version="{ version }" />
     </ItemGroup>
     ```
-
----
 
 ## Configuration
 
 1. Set **C++ Language Standard** to **C++20 (`/std:c++20`)**.
 2. Dependency [`nlohmann.json`](https://www.nuget.org/packages/nlohmann.json) (v3.12+) is resolved automatically.
 3. Includes `siddiqsoft.sip2json.natvis` for Visual Studio debugger inspection.
-
----
 
 ## Example
 

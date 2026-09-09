@@ -4,11 +4,9 @@ This is not the best code or the most performant library. It features a very cle
 
 Where optimizations are applied, they take advantage of the specific structure of the SIP protocol itself.
 
----
-
 ## 1. Header Matching: FNV-1 and the SIP Header Model
 
-The SIP protocol has known, standard headers (RFC 3261) along with a well-defined custom header model. I took advantage of this to optimize header matching using the [FNV-1](https://en.wikipedia.org/wiki/Fowler–Noll–Vo_hash_function) algorithm.
+The SIP protocol has known, standard headers (RFC 3261) along with a well-defined custom header model. I took advantage of this to optimize header matching using the [FNV-1](https://en.wikipedia.org/wiki/Fowler-Noll-Vo_hash_function) algorithm.
 
 In SIP traffic:
 
@@ -50,8 +48,6 @@ switch (h)
 ```
 
 This effectively reduces header identification to comparing integer values, allowing the compiler to generate a clean, direct jump table.
-
----
 
 ## 2. Header Lookup Flow
 

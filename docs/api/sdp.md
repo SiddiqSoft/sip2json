@@ -2,8 +2,6 @@
 
 `sip2json` includes built-in parsing and serialization for `application/sdp` payload bodies.
 
----
-
 ## SDP Attribute Mapping
 
 SDP lines (`v=`, `o=`, `s=`, `c=`, `t=`, `m=`, `a=`) are parsed into structured JSON objects inside `b.sdp`.
@@ -40,15 +38,11 @@ SDP lines (`v=`, `o=`, `s=`, `c=`, `t=`, `m=`, `a=`) are parsed into structured 
 }
 ```
 
----
-
 ## Handling Multi-Line Attributes
 
 * Flag attributes like `a=sendrecv` are stored as boolean `true`.
 * Repeated attribute keys like `a=rtpmap:...` are accumulated into array values.
 * Key-value attributes like `a=fmtp:101 0-16` are separated into string mappings.
-
----
 
 ## Related References
 

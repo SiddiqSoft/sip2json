@@ -4,7 +4,7 @@
 ## Performance & Benchmarks
 
 !!! info "Pipeline-Derived Performance Data"
-    Benchmark metrics and host runner environment details are compiled dynamically from CI/CD pipeline build matrix artifacts across our release matrix runners (Apple macOS, Red Hat Enterprise Linux, and Microsoft Windows — both GCC and Clang for Linux). When release builds complete, live benchmark data will populate automatically.
+    Benchmark metrics and host runner environment details are compiled dynamically from CI/CD pipeline build matrix artifacts across our release matrix runners (Apple macOS, Red Hat Enterprise Linux, and Microsoft Windows -- both GCC and Clang for Linux). When release builds complete, live benchmark data will populate automatically.
 
 | Platform & Architecture | Compiler | Stream Throughput<br>`parseAsync` | Bandwidth | Per-Msg Latency | Single Msg Throughput<br>`parseFromBuffer` | Single Msg Latency |
 | :--- | :---: | :--- | :---: | :--- | :--- | :--- |
@@ -21,8 +21,6 @@
 
     For an analysis of bare-metal host vs. guest virtual machine execution and compiler code generation, see [Platform Performance Variance & Host Architecture](#platform-performance-variance-host-architecture).
 
----
-
 ## 2. Running Benchmarks Locally
 
 To compile and execute the benchmark suite on your local machine:
@@ -33,12 +31,12 @@ cmake --preset Darwin-Clang-Release -Dsip2json_BUILD_BENCHMARKS=ON
 cmake --build --preset Darwin-Clang-Release --target sip2json_benchmarks
 ./build/Darwin-Clang-Release/benchmarks/sip2json_benchmarks
 
-# Linux — GCC Release
+# Linux - GCC Release
 cmake --preset Linux-GCC-Release -Dsip2json_BUILD_BENCHMARKS=ON
 cmake --build --preset Linux-GCC-Release --target sip2json_benchmarks
 ./build/Linux-GCC-Release/benchmarks/sip2json_benchmarks
 
-# Linux — Clang Release
+# Linux - Clang Release
 cmake --preset Linux-Clang-Release -Dsip2json_BUILD_BENCHMARKS=ON
 cmake --build --preset Linux-Clang-Release --target sip2json_benchmarks
 ./build/Linux-Clang-Release/benchmarks/sip2json_benchmarks
@@ -48,8 +46,6 @@ cmake --preset Windows-x64-Release -Dsip2json_BUILD_BENCHMARKS=ON
 cmake --build --preset Windows-x64-Release --target sip2json_benchmarks
 .\build\Windows-x64-Release\benchmarks\sip2json_benchmarks.exe
 ```
-
----
 
 ## Platform Performance Variance & Host Architecture
 
@@ -64,7 +60,7 @@ All CI/CD release matrix runners execute on the same physical host machine:
 #### 1. Bare-Metal vs. Hypervisor Virtualization (Memory & Address Translation)
 - **Bare-Metal Execution (macOS)**: Memory address translation is direct ($L1 \rightarrow L2 \rightarrow \text{RAM}$). The parser accesses buffer pages with zero hypervisor intervention and utilizes the full 273 GB/s host memory bus.
 - **Virtualized Execution (Linux & Windows)**: Every memory access requires **Two-Stage Address Translation (SLAT)** through the hypervisor (Guest Virtual $\rightarrow$ Guest Physical $\rightarrow$ Host Physical). In buffer-scanning, pointer-chasing, and allocation workloads, TLB misses and page table traversals incur hypervisor trap-and-emulate overhead.
-- **Guest Buffer Cache Capacity**: The guest VMs are allocated 6 GB of RAM, of which 2–3 GB is consumed by the guest OS kernel and background services, leaving constrained memory for filesystem and buffer caching compared to the host's 24 GB pool.
+- **Guest Buffer Cache Capacity**: The guest VMs are allocated 6 GB of RAM, of which 2-3 GB is consumed by the guest OS kernel and background services, leaving constrained memory for filesystem and buffer caching compared to the host's 24 GB pool.
 
 #### 2. Heterogeneous Core Scheduling (Performance vs. Efficiency Cores)
 - The M4 Pro features an asymmetric core topology comprising high-frequency Performance (P) cores (~4.4 GHz, 8-wide decode) and Efficiency (E) cores (~2.8 GHz, narrow execution pipelines).

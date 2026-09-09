@@ -16,7 +16,7 @@
 # 3. Darwin - Cleanup, build, and test for macOS with matrix for architecture and compiler
 # 3. PublishNuGet - Publishes NuGet package
 # 4. PublishGitHub - Creates GitHub release with build artifacts
-# 5. PublishDocs - Builds MkDocs site and publishes to GitHub Pages (gh-pages)
+# 5. PublishDocs - Builds MkDocs site and publishes to GitHub Pages (gh-pages) - Linux or macOS
 # ============================================================================
 
 # ============================================================================

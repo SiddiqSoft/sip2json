@@ -1,0 +1,33 @@
+# Doxyfile for sip2json
+PROJECT_NAME           = "sip2json"
+PROJECT_BRIEF          = "A SIP Parser for Modern C++"
+OUTPUT_DIRECTORY       = docs
+INPUT                  = include/siddiqsoft
+RECURSIVE              = YES
+FILE_PATTERNS          = *.hpp *.h
+EXCLUDE_PATTERNS       = */tests/* */benchmarks/* */build/*
+
+GENERATE_XML           = YES
+XML_OUTPUT             = doxygen_xml
+XML_PROGRAMLISTING     = NO
+
+GENERATE_HTML          = NO
+GENERATE_LATEX         = NO
+GENERATE_MAN            = NO
+GENERATE_RTF            = NO
+
+EXTRACT_ALL            = YES
+EXTRACT_STATIC         = YES
+EXTRACT_PRIVATE        = NO
+EXTRACT_PACKAGE        = NO
+
+ENABLE_PREPROCESSING   = YES
+MACRO_EXPANSION        = YES
+SEARCH_INCLUDES        = YES
+BUILTIN_STL_SUPPORT    = YES
+
+QUIET                  = YES
+WARNINGS               = YES
+WARN_IF_UNDOCUMENTED   = NO
+WARN_IF_DOC_ERROR      = YES
+WARN_NO_PARAMDOC       = NO

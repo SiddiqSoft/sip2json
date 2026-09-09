@@ -1,49 +1,42 @@
 # Code Examples & Integration Recipes
 
-Ready-to-compile modern C++20 code examples demonstrating common `sip2json` parsing, serialization, and high-throughput streaming patterns.
-
----
+Ready-to-compile modern C++20 code examples demonstrating `sip2json` parsing, serialization, and high-throughput streaming patterns.
 
 ## Core Usage Examples
 
 === "1. Asynchronous Stream Parsing"
 
-    `sip2json::parseAsync` reads continuous TCP/TLS buffers, processes complete frames via zero-copy callbacks, and leaves partial frames intact for subsequent network reads.
+    `sip2json::parseAsync` reads continuous TCP/TLS buffers via non-owning `std::string_view`, invokes callbacks for complete frames, and advances the view past consumed data.
 
     ```cpp
     #include <iostream>
-    #include <string>
-    #include "siddiqsoft/sip2json.hpp"
+    #include <string_view>
+    #include <siddiqsoft/sip2json.hpp>
 
     using namespace siddiqsoft;
 
-    void handleNetworkInput(std::string& socketReadBuffer)
+    void handleNetworkInput(std::string_view& buffer)
     {
-        auto cursor = socketReadBuffer.begin();
-
         // Parse stream buffer in-place; invoke callback for each complete frame
         sip2json::parseAsync(
-            cursor,
-            socketReadBuffer.end(),
+            buffer,
             [](sipmessage&& msg) {
                 std::cout << "[SIP Message Received]\n"
-                          << "  Type:    " << msg.type << "\n"
-                          << "  Method:  " << msg.method << "\n"
-                          << "  URI:     " << msg.uri << "\n"
-                          << "  Call-ID: " << msg.callid << "\n";
+                          << "  Method:  " << msg.getMethodView() << "\n"
+                          << "  URI:     " << msg.getUriView() << "\n"
+                          << "  Call-ID: " << msg.getCallIDView() << "\n";
             },
-            [](sip2json_exception& ex, std::string::iterator& start, const std::string::iterator& end) {
-                std::cerr << "[Parser Error] " << ex.what() << "\n";
+            [](const sip2json_exception& ex, std::string_view remaining) {
+                std::cerr << "[Parser Warning] " << ex.what() << "\n";
             }
         );
 
-        // Erase consumed frames; incomplete frames remain at front of buffer
-        socketReadBuffer.erase(socketReadBuffer.begin(), cursor);
+        // buffer is automatically advanced past all parsed frames
     }
 
     int main()
     {
-        std::string buffer =
+        std::string raw =
             "REGISTER sip:example.com SIP/2.0\r\n"
             "Via: SIP/2.0/UDP 192.168.1.1:5060;branch=z9hG4bK-123\r\n"
             "From: <sip:user@example.com>;tag=111\r\n"
@@ -52,7 +45,8 @@ Ready-to-compile modern C++20 code examples demonstrating common `sip2json` pars
             "CSeq: 1 REGISTER\r\n"
             "Content-Length: 0\r\n\r\n";
 
-        handleNetworkInput(buffer);
+        std::string_view view = raw;
+        handleNetworkInput(view);
         return 0;
     }
     ```
@@ -63,7 +57,7 @@ Ready-to-compile modern C++20 code examples demonstrating common `sip2json` pars
 
     ```cpp
     #include <iostream>
-    #include "siddiqsoft/sip2json.hpp"
+    #include <siddiqsoft/sip2json.hpp>
 
     using namespace siddiqsoft;
 
@@ -79,19 +73,17 @@ Ready-to-compile modern C++20 code examples demonstrating common `sip2json` pars
            .setHeader(siddiqsoft::HF_CONTENT_TYPE, "application/sdp")
            .setHeader(siddiqsoft::HF_USER_AGENT, "sip2json/3.1.0");
 
-        // 3. Attach SDP payload directly
-        msg.body = {
-            {"sdp", {
-                {
-                    {"v", 0},
-                    {"o", {{"user", "alice"}, {"t1", "1000"}, {"t2", "1000"}, {"type", "IN"}, {"subtype", "IP4"}, {"host", "10.0.0.4"}}},
-                    {"s", "SIP Session"},
-                    {"c", {{"type", "IN"}, {"subtype", "IP4"}, {"dn", "10.0.0.4"}}},
-                    {"t", {0, 0}},
-                    {"m", "audio 49170 RTP/AVP 0 101"},
-                    {"a", {{"rtpmap", {"0 PCMU/8000", "101 telephone-event/8000"}}}}
-                }
-            }}
+        // 3. Attach SDP payload directly via JSON
+        msg["b"]["sdp"] = {
+            {
+                {"v", 0},
+                {"o", {{"user", "alice"}, {"t1", "1000"}, {"t2", "1000"}, {"type", "IN"}, {"subtype", "IP4"}, {"host", "10.0.0.4"}}},
+                {"s", "SIP Session"},
+                {"c", {{"type", "IN"}, {"subtype", "IP4"}, {"dn", "10.0.0.4"}}},
+                {"t", {0, 0}},
+                {"m", "audio 49170 RTP/AVP 0 101"},
+                {"a", {{"rtpmap", {"0 PCMU/8000", "101 telephone-event/8000"}}}}
+            }
         };
 
         // 4. Serialize to wire format
@@ -113,7 +105,7 @@ Ready-to-compile modern C++20 code examples demonstrating common `sip2json` pars
     ```cpp
     #include <iostream>
     #include <string_view>
-    #include "siddiqsoft/sip2json.hpp"
+    #include <siddiqsoft/sip2json.hpp>
 
     using namespace siddiqsoft;
 
@@ -129,11 +121,10 @@ Ready-to-compile modern C++20 code examples demonstrating common `sip2json` pars
             "Content-Length: 0\r\n\r\n";
 
         try {
-            auto cursor = datagram.begin();
-            sipmessage msg = sip2json::parseFromBuffer(cursor, datagram.end());
+            sipmessage msg = sip2json::parseFromBuffer(datagram);
 
-            std::cout << "Status: " << msg.getResponseCode() << " " << msg.getReason() << "\n"
-                      << "Call-ID: " << msg.getCallID() << "\n";
+            std::cout << "Status:  " << msg.getStatusCode() << " " << msg.getReasonView() << "\n"
+                      << "Call-ID: " << msg.getCallIDView() << "\n";
         } catch (const sip2json_exception& e) {
             std::cerr << "Parse failure: " << e.what() << "\n";
         }
@@ -142,37 +133,11 @@ Ready-to-compile modern C++20 code examples demonstrating common `sip2json` pars
     }
     ```
 
-=== "4. JSON DTO & Analytics Integration"
-
-    Because `sipmessage` subclasses `nlohmann::json`, it converts natively to JSON documents for queuing into Kafka, RabbitMQ, DuckDB, or MongoDB.
-
-    ```cpp
-    #include <iostream>
-    #include "siddiqsoft/sip2json.hpp"
-
-    using namespace siddiqsoft;
-
-    void processSipAsJson(const sipmessage& msg)
-    {
-        // 1. Direct conversion to nlohmann::json
-        const nlohmann::json& doc = msg;
-
-        // 2. Query compact metaphor schema: s (startline), h (headers), b (body)
-        std::cout << "Method: " << doc["s"]["m"].get<std::string>() << "\n"
-                  << "CSeq:   " << doc["s"]["cs"].get<uint64_t>() << "\n"
-                  << "From:   " << doc["h"]["from"].get<std::string>() << "\n";
-
-        // 3. Pretty-print or export
-        std::cout << doc.dump(2) << "\n";
-    }
-    ```
-
 ---
 
 ## Related References
 
-* [`sipmessage` Class Specification](../sipmessage.md)
-* [`sip2json` Static Functions](../sip2json.md)
-* [Exception & Error Handling](../errors.md)
+* [`sipmessage` Class Reference](../sipmessage.md)
+* [`sip2json` Parsing & Serialization Functions](../sip2json.md)
 * [JSON Schema Specification](../json_schema.md)
-* [SDP Support](../sdp.md)
+* [Error & Exception Types](../errors.md)

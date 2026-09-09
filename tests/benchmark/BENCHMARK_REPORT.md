@@ -8,7 +8,7 @@ Official benchmark results for `siddiqsoft/sip2json` comparing performance acros
 
 - **Stream Throughput (`parseAsync`)**: Increased from **21,364.24 msg/sec** (`v2.4.2`) and **19,227.57 msg/sec** (`master`) to **37,260.49 msg/sec** (**+74.4% faster than v2.4.2** and **+93.8% faster than master**).
 - **Single Message Throughput (`parseFromBuffer`)**: Increased from **24,770.67 msg/sec** (`v2.4.2`) and **23,256.49 msg/sec** (`master`) to **43,976.62 msg/sec** (**+77.5% faster than v2.4.2** and **+89.1% faster than master**).
-- **Latency Reduction**: Average per-message latency dropped from **46.81 µs/msg** (`v2.4.2`) and **52.01 µs/msg** (`master`) down to **26.84 µs/msg** (`parseAsync`) and **22.74 µs/msg** (`parseFromBuffer`).
+- **Latency Reduction**: Average per-message latency dropped from **46.81 us/msg** (`v2.4.2`) and **52.01 us/msg** (`master`) down to **26.84 us/msg** (`parseAsync`) and **22.74 us/msg** (`parseFromBuffer`).
 - **Data Bandwidth**: Stream parsing bandwidth reached **98.20 MB/sec** on single-core network execution.
 - **100% Standards & Regression Pass**: All 39 compliance tests and 78 validation/regression tests passed cleanly.
 
@@ -24,11 +24,11 @@ Official benchmark results for `siddiqsoft/sip2json` comparing performance acros
 | **Throughput (msg/sec)** | **21,394.49** | **19,043.79** | **36,292.77** | **37,260.49** | **+74.4% FASTER** | **+93.8% FASTER** |
 | Execution Time (300 iters / 164.4k msgs) | 7.68 s | 8.63 s | 4.53 s | **4.41 s** | **-3.27 s (-42.6%)** | **-4.22 s (-48.9%)** |
 | Data Bandwidth | 56.39 MB/s | 50.19 MB/s | 95.08 MB/s | **98.20 MB/s** | **+41.81 MB/s** | **+48.01 MB/s** |
-| Avg Per-Msg Latency | 46.74 µs | 52.51 µs | 27.55 µs | **26.84 µs** | **-19.97 µs (-42.7%)** | **-25.17 µs (-48.4%)** |
+| Avg Per-Msg Latency | 46.74 us | 52.51 us | 27.55 us | **26.84 us** | **-19.97 us (-42.7%)** | **-25.17 us (-48.4%)** |
 | **Single-Msg Parsing (`parseFromBuffer`)** | | | | | | |
 | **Throughput (msg/sec)** | **24,770.67** | **23,256.49** | **43,976.62** | **43,976.62** | **+77.5% FASTER** | **+89.1% FASTER** |
 | Execution Time (1k iters / 31k msgs) | 1,251.48 ms | 1,332.96 ms | **704.92 ms** | **704.92 ms** | **-546.56 ms (-43.7%)** | **-628.04 ms (-47.1%)** |
-| Avg Per-Msg Latency | 40.37 µs | 43.00 µs | **22.74 µs** | **22.74 µs** | **-17.63 µs (-43.7%)** | **-20.26 µs (-47.1%)** |
+| Avg Per-Msg Latency | 40.37 us | 43.00 us | **22.74 us** | **22.74 us** | **-17.63 us (-43.7%)** | **-20.26 us (-47.1%)** |
 
 ---
 

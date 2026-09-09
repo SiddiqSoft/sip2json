@@ -48,7 +48,7 @@
 namespace siddiqsoft {
 
     /// @brief Computes 64-bit FNV-1a hash with inline case-folding over input string.
-    /// The algorithm is from https://en.wikipedia.org/wiki/Fowler–Noll–Vo_hash_function
+    /// The algorithm is from https://en.wikipedia.org/wiki/Fowler-Noll-Vo_hash_function
     constexpr uint64_t hash_header_key(const char* s, size_t len) noexcept
     {
         uint64_t h = 14695981039346656037ULL;

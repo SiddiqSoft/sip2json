@@ -2,8 +2,6 @@
 
 Target: `sip2json::sip2json` (header-only, C++20).
 
----
-
 ## CPM.cmake (Recommended)
 
 ```cmake
@@ -11,8 +9,6 @@ include(cmake/CPM.cmake)
 CPMAddPackage("gh:SiddiqSoft/sip2json#{ tag_version }")
 target_link_libraries(your_target PRIVATE sip2json::sip2json)
 ```
-
----
 
 ## CMake FetchContent
 
@@ -27,16 +23,12 @@ FetchContent_MakeAvailable(sip2json)
 target_link_libraries(your_target PRIVATE sip2json::sip2json)
 ```
 
----
-
 ## Build Options
 
 | Option | Default | Description |
 | :--- | :--- | :--- |
 | `sip2json_BUILD_TESTS` | `OFF` | Build unit tests (requires GoogleTest). |
 | `sip2json_BUILD_BENCHMARKS` | `OFF` | Build benchmark suite. |
-
----
 
 ## Building with Presets
 
