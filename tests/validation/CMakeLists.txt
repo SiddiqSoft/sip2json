@@ -80,7 +80,9 @@ project(sip2json_client_test
         HOMEPAGE_URL    "%%myurl%%"
         DESCRIPTION     "Sample client sub-project that uses the sip2json library")
 
-set(CMAKE_CXX_STANDARD 23)
+if(NOT CMAKE_CXX_STANDARD)
+    set(CMAKE_CXX_STANDARD 20)
+endif()
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 enable_testing()

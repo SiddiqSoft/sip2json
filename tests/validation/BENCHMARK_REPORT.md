@@ -60,7 +60,7 @@ The benchmark suite evaluated each library version using 34 anonymized real-worl
 ## 5. Methodology & Test Environment
 
 - **OS**: macOS (Apple Silicon ARM64)
-- **Compiler**: Clang / LLVM (`-std=c++23`, `-O3` / Release optimization)
+- **Compiler**: Clang / LLVM (`-std=c++20`, `-O3` / Release optimization)
 - **Test Fixtures**: 34 anonymized `.sip` files representing real-world SIP traffic (`REGISTER`, `INVITE`, `NOTIFY`, multi-part SDP, and multi-message streams).
 - **Harness Implementation**: C++ `std::chrono::high_resolution_clock` measuring in-memory buffer parsing iterations in `sip2json_benchmark`.
 - **Isolation Constraint**: Benchmarks executed strictly sequentially in dedicated single-threaded processes to prevent thread scheduling noise and core contention.

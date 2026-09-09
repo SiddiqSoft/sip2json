@@ -48,6 +48,6 @@ Official benchmark results for `siddiqsoft/sip2json` comparing performance acros
 ## 4. Benchmark Environment & Methodology
 
 - **Processor**: Apple M-series / 64-bit ARM / x86-64 single-threaded process isolation
-- **Compiler**: Modern C++23 Clang / GCC with `-O3` Release optimization
+- **Compiler**: Modern C++20 Clang / GCC with `-O3` Release optimization
 - **Harness Executable**: `tests/benchmark/src/benchmark.cpp` (`sip2json_benchmark`)
 - **Isolation Protocol**: Each release build (`v2.4.2`, `master`, `release/2.6.0`) was compiled and executed independently in dedicated process space to prevent memory pool interference.

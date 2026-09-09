@@ -7,7 +7,7 @@ Add it via CPM, CMake `FetchContent`, NuGet, or by copying the `include/` direct
 
 | Category | Specification |
 | :--- | :--- |
-| **Language Standard** | C++20 minimum (`/std:c++20` or `/std:c++23` on MSVC; `-std=c++20` or `-std=c++23` on Clang/GCC) |
+| **Language Standard** | C++20 (`/std:c++20` on MSVC; `-std=c++20` on Clang/GCC) |
 | **Windows** | Microsoft Visual Studio 2022+ (MSVC v143+), architectures: `x64`, `arm64` |
 | **macOS (Darwin)** | AppleClang (Xcode CommandLineTools / LLVM Clang), architecture: `arm64` |
 | **Linux** | GCC 13+ or Clang 17+, architectures: `x64`, `arm64` |

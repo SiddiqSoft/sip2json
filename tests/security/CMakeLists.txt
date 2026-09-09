@@ -37,7 +37,7 @@ project(sip2json_security_tests
         DESCRIPTION     "Security test suite for sip2json")
 
 if(NOT CMAKE_CXX_STANDARD OR CMAKE_CXX_STANDARD STREQUAL "")
-    set(CMAKE_CXX_STANDARD 23)
+    set(CMAKE_CXX_STANDARD 20)
 endif()
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
