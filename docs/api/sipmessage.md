@@ -32,7 +32,7 @@ classDiagram
         +getMethodView() string_view
         +getUriView() string_view
         +getCallIDView() string_view
-        +getStatusCode() int
+        +getStatusCode() uint32_t
         +getReasonView() string_view
         +getHeader(string_view key) string
         +setHeader(string_view key, string_view val) sipmessage&
