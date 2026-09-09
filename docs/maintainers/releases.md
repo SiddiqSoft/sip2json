@@ -54,8 +54,9 @@ NuGet packaging (`NuGetCommand@2 pack`) runs during the Windows Release job:
 
 ## 3. MkDocs Site Publication (`gh-pages`)
 
-MkDocs documentation publication is supported on **Linux and macOS (Darwin)** machines:
-* **Stage `PublishDocs`** (via [`.azure/az-publish-docs.yml`](https://github.com/SiddiqSoft/sip2json/blob/master/.azure/az-publish-docs.yml)) runs on Linux or macOS runners and dynamically verifies `mkdocs` availability.
+MkDocs documentation publication is strictly supported on **Linux and macOS (Darwin)** machines:
+* **Stage `PublishDocs`** (via [`.azure/az-publish-docs.yml`](https://github.com/SiddiqSoft/sip2json/blob/master/.azure/az-publish-docs.yml)) runs exclusively on Linux or macOS runners. Windows build agents cannot run MkDocs and are strictly excluded via pool demands (`Agent.OS -equals Linux` or `Agent.OS -equals Darwin`) and pipeline stage conditions.
+* The preflight verification script enforces Linux or macOS execution and fails with an error if invoked on Windows.
 * If `mkdocs` is not installed on the runner, the documentation build step is safely skipped without failing the pipeline.
 * In addition, the Unix matrix build pipeline ([`.azure/az-build-unix.yml`](https://github.com/SiddiqSoft/sip2json/blob/master/.azure/az-build-unix.yml)) validates the documentation site on Linux and Darwin whenever `mkdocs` is present, skipping gracefully if uninstalled.
 

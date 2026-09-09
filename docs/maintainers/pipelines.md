@@ -79,6 +79,7 @@ When manually triggering a pipeline in Azure DevOps, maintainers can customize:
 | `PublishNuGet` | `boolean` | `false` | `true`, `false` | Trigger NuGet Release (auto on `master`/`main`) |
 | `PublishGitHub` | `boolean` | `false` | `true`, `false` | Trigger GitHub Release (auto on `master`/`main`) |
 | `PublishDocs` | `boolean` | `false` | `true`, `false` | Publish documentation site via Linux or macOS agent (auto on `master`/`main`) |
+| `DocAgentOS` | `string` | `Linux` | `Linux`, `Darwin` | Build agent OS for documentation publication stage (Windows disallowed) |
 | `Cleanup` | `boolean` | `false` | `true`, `false` | Run cache and workspace cleanup only |
 
 ---
