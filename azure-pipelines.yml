@@ -280,7 +280,7 @@ stages:
       - Windows
       - Linux
       - Darwin
-    condition: and(not(failed()), not(canceled()), or(eq('${{ parameters.PublishDocs }}', 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(variables['Build.SourceBranch'], 'refs/heads/master')), or(containsValue(parameters.Platforms, 'Linux'), containsValue(parameters.Platforms, 'Darwin')))
+    condition: and(not(failed()), not(canceled()), or(eq('${{ parameters.PublishDocs }}', 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(variables['Build.SourceBranch'], 'refs/heads/master')), ${{ or(containsValue(parameters.Platforms, 'Linux'), containsValue(parameters.Platforms, 'Darwin')) }})
     jobs:
       - job: ApproveDocsRelease
         displayName: "Manual Approval - Documentation Site"
@@ -297,6 +297,6 @@ stages:
           displayName: Publish Documentation Site
           ${{ if and(not(containsValue(parameters.Platforms, 'Linux')), containsValue(parameters.Platforms, 'Darwin')) }}:
             agentOS: Darwin
-          ${{ else }}:
+          ${{ if or(containsValue(parameters.Platforms, 'Linux'), not(containsValue(parameters.Platforms, 'Darwin'))) }}:
             agentOS: ${{ parameters.DocAgentOS }}
           dependsOn: [ ApproveDocsRelease ]
