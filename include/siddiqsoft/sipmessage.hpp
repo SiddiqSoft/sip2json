@@ -493,39 +493,38 @@ namespace siddiqsoft {
         };
 
     }; // class sipmessage
+
+    inline std::ostream& operator<<(std::ostream& os, const SIPMessageType& mt)
+    {
+        switch (mt) {
+        case SIPMessageType::request: os << "request"; break;
+        case SIPMessageType::response: os << "response"; break;
+        default: os << "unknown";
+        }
+
+        return os;
+    }
+
+    inline std::ostream& operator<<(std::ostream& os, const sip2jsonErrors& errs)
+    {
+        switch (errs) {
+        case sip2jsonErrors::ok: os << "ok"; break;
+        case sip2jsonErrors::incomplete_buffer_for_parse: os << "incomplete_buffer_for_parse"; break;
+        case sip2jsonErrors::incomplete_buffer_for_content: os << "incomplete_buffer_for_content"; break;
+        case sip2jsonErrors::incomplete_buffer_for_header: os << "incomplete_buffer_for_header"; break;
+        case sip2jsonErrors::invalid_startline: os << "invalid_startline"; break;
+        case sip2jsonErrors::unsupported_contenttype: os << "unsupported_contenttype"; break;
+        case sip2jsonErrors::missing_required_element: os << "missing_required_element"; break;
+        case sip2jsonErrors::invalid_document: os << "invalid_document"; break;
+        case sip2jsonErrors::invalid_document_unsupported_method: os << "invalid_document_unsupported_method"; break;
+        case sip2jsonErrors::invalid_document_unsupported_content: os << "invalid_document_unsupported_content"; break;
+        case sip2jsonErrors::empty_message: os << "empty_message"; break;
+        default: os << "unknown"; break;
+        }
+
+        return os;
+    }
 } // namespace siddiqsoft
-
-
-static std::ostream& operator<<(std::ostream& os, const siddiqsoft::SIPMessageType& mt)
-{
-    switch (mt) {
-    case siddiqsoft::SIPMessageType::request: os << "request"; break;
-    case siddiqsoft::SIPMessageType::response: os << "response"; break;
-    default: os << "unknown";
-    }
-
-    return os;
-}
-
-static std::ostream& operator<<(std::ostream& os, const siddiqsoft::sip2jsonErrors& errs)
-{
-    switch (errs) {
-    case siddiqsoft::sip2jsonErrors::ok: os << "ok"; break;
-    case siddiqsoft::sip2jsonErrors::incomplete_buffer_for_parse: os << "incomplete_buffer_for_parse"; break;
-    case siddiqsoft::sip2jsonErrors::incomplete_buffer_for_content: os << "incomplete_buffer_for_content"; break;
-    case siddiqsoft::sip2jsonErrors::incomplete_buffer_for_header: os << "incomplete_buffer_for_header"; break;
-    case siddiqsoft::sip2jsonErrors::invalid_startline: os << "invalid_startline"; break;
-    case siddiqsoft::sip2jsonErrors::unsupported_contenttype: os << "unsupported_contenttype"; break;
-    case siddiqsoft::sip2jsonErrors::missing_required_element: os << "missing_required_element"; break;
-    case siddiqsoft::sip2jsonErrors::invalid_document: os << "invalid_document"; break;
-    case siddiqsoft::sip2jsonErrors::invalid_document_unsupported_method: os << "invalid_document_unsupported_method"; break;
-    case siddiqsoft::sip2jsonErrors::invalid_document_unsupported_content: os << "invalid_document_unsupported_content"; break;
-    case siddiqsoft::sip2jsonErrors::empty_message: os << "empty_message"; break;
-    default: os << "unknown"; break;
-    }
-
-    return os;
-}
 
 
 template <> struct std::formatter<siddiqsoft::SIPMessageType> : std::formatter<std::string> {
