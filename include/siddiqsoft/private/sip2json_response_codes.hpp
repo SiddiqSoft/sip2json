@@ -36,133 +36,116 @@
 
 #pragma once
 
-#include <algorithm>
 #include <cstdint>
-#include <string>
-#include <memory>
-#include <iterator>
-#include <chrono>
-#include <random>
-#include <sstream>
-
-#include <format>
 #include <string_view>
-#include "nlohmann/json.hpp"
 
 namespace siddiqsoft {
 #pragma region SIP Response Codes
-    static const uint32_t INVALID_SIP_RESPONSE_CODE = 999;
+    inline constexpr uint32_t INVALID_SIP_RESPONSE_CODE = 999;
 
-    /// @brief Comprehensive map of SIP response codes and their reason phrases.
+    /// @brief Retrieves the reason phrase for a given SIP status code.
     /// @details Includes all standard SIP response codes defined in RFC 3261 and related RFCs.
     /// Sources: RFC 3261, RFC 3265, RFC 3311, RFC 3326, RFC 3455, RFC 3608, RFC 4028, RFC 4320,
     /// RFC 5057, RFC 5360, RFC 5366, RFC 5373, RFC 6050
     /// https://en.wikipedia.org/wiki/List_of_SIP_response_codes
-    static const inline std::map<uint32_t, std::string> SIPResponseCodes {{0, "NotSet"},
-                                                                          // 1xx - Provisional Responses
-                                                                          {100, "Trying"},
-                                                                          {180, "Ringing"},
-                                                                          {181, "Call is Being Forwarded"},
-                                                                          {182, "Queued"},
-                                                                          {183, "Session Progress"},
-                                                                          {199, "Early Dialog Terminated"},
-                                                                          // 2xx - Successful Responses
-                                                                          {200, "OK"},
-                                                                          {202, "Accepted"},
-                                                                          {204, "No Notification"},
-                                                                          // 3xx - Redirection Responses
-                                                                          {300, "Multiple Choices"},
-                                                                          {301, "Moved Permanently"},
-                                                                          {302, "Moved Temporarily"},
-                                                                          {305, "Use Proxy"},
-                                                                          {380, "Alternative Service"},
-                                                                          // 4xx - Client Failure Responses
-                                                                          {400, "Bad Request"},
-                                                                          {401, "Unauthorized"},
-                                                                          {402, "Payment Required"},
-                                                                          {403, "Forbidden"},
-                                                                          {404, "Not Found"},
-                                                                          {405, "Method Not Allowed"},
-                                                                          {406, "Not Acceptable"},
-                                                                          {407, "Proxy Authentication Required"},
-                                                                          {408, "Request Timeout"},
-                                                                          {409, "Conflict"},
-                                                                          {410, "Gone"},
-                                                                          {411, "Length Required"},
-                                                                          {412, "Conditional Request Failed"},
-                                                                          {413, "Request Entity Too Large"},
-                                                                          {414, "Request-URI Too Long"},
-                                                                          {415, "Unsupported Media Type"},
-                                                                          {416, "Unsupported URI Scheme"},
-                                                                          {417, "Unknown Resource-Priority"},
-                                                                          {420, "Bad Extension"},
-                                                                          {421, "Extension Required"},
-                                                                          {422, "Session Interval Too Small"},
-                                                                          {423, "Interval Too Brief"},
-                                                                          {424, "Bad Location Information"},
-                                                                          {428, "Use Identity Header"},
-                                                                          {429, "Provide Referrer Identity"},
-                                                                          {430, "Flow Failed"},
-                                                                          {433, "Anonymity Disallowed"},
-                                                                          {436, "Bad Identity-Info"},
-                                                                          {437, "Unsupported Certificate"},
-                                                                          {438, "Invalid Identity Header"},
-                                                                          {439, "First Hop Lacks Outbound Support"},
-                                                                          {440, "Max-Breadth Exceeded"},
-                                                                          {469, "Bad Info Package"},
-                                                                          {470, "Consent Needed"},
-                                                                          {480, "Temporarily Unavailable"},
-                                                                          {481, "Call/Transaction Does Not Exist"},
-                                                                          {482, "Loop Detected"},
-                                                                          {483, "Too Many Hops"},
-                                                                          {484, "Address Incomplete"},
-                                                                          {485, "Ambiguous"},
-                                                                          {486, "Busy Here"},
-                                                                          {487, "Request Terminated"},
-                                                                          {488, "Not Acceptable Here"},
-                                                                          {489, "Bad Event"},
-                                                                          {491, "Request Pending"},
-                                                                          {493, "Undecipherable"},
-                                                                          {494, "Security Agreement Required"},
-                                                                          {495, "Invalid Message Digest"},
-                                                                          {496, "Invalid Authorization Scheme"},
-                                                                          {497, "Key Expired"},
-                                                                          {498, "Signature Mismatch"},
-                                                                          {499, "Authentication Timeout"},
-                                                                          // 5xx - Server Failure Responses
-                                                                          {500, "Internal Server Error"},
-                                                                          {501, "Not Implemented"},
-                                                                          {502, "Bad Gateway"},
-                                                                          {503, "Service Unavailable"},
-                                                                          {504, "Server Time-out"},
-                                                                          {505, "Version Not Supported"},
-                                                                          {506, "Message Too Large"},
-                                                                          {513, "Message Too Large"},
-                                                                          {555, "Push Notification Service Not Supported"},
-                                                                          {580, "Precondition Failure"},
-                                                                          // 6xx - Global Failure Responses
-                                                                          {600, "Busy Everywhere"},
-                                                                          {603, "Decline"},
-                                                                          {604, "Does Not Exist Anywhere"},
-                                                                          {606, "Not Acceptable"},
-                                                                          {607, "Unwanted"},
-                                                                          {608, "Rejected"},
-                                                                          {609, "Feature Not Implemented"},
-                                                                          // 999 - Internal invalid; return empty string
-                                                                          {INVALID_SIP_RESPONSE_CODE, ""}};
-
-    /// @brief Retrieves the reason phrase for a given SIP status code.
     /// @param statusCode The SIP status code to look up.
-    /// @return A const reference to the reason phrase string.
-    /// @throws std::out_of_range if the status code is not found in the map.
-    static const std::string& getReasonPhrase(uint32_t statusCode)
+    /// @return A std::string_view representing the reason phrase, or empty string_view if unknown.
+    constexpr std::string_view getReasonPhrase(uint32_t statusCode) noexcept
     {
-        if (SIPResponseCodes.contains(statusCode)) { return SIPResponseCodes.at(statusCode); }
-
-        // Drop-through.. we did not find the status code.
-        // This will return an empty string to allow the downstream clients to
-        // easily detect invalid/unavailable codes without performing a string compare.
-        return SIPResponseCodes.at(INVALID_SIP_RESPONSE_CODE);
+        switch (statusCode) {
+        case 0: return "NotSet";
+        // 1xx - Provisional Responses
+        case 100: return "Trying";
+        case 180: return "Ringing";
+        case 181: return "Call is Being Forwarded";
+        case 182: return "Queued";
+        case 183: return "Session Progress";
+        case 199: return "Early Dialog Terminated";
+        // 2xx - Successful Responses
+        case 200: return "OK";
+        case 202: return "Accepted";
+        case 204: return "No Notification";
+        // 3xx - Redirection Responses
+        case 300: return "Multiple Choices";
+        case 301: return "Moved Permanently";
+        case 302: return "Moved Temporarily";
+        case 305: return "Use Proxy";
+        case 380: return "Alternative Service";
+        // 4xx - Client Failure Responses
+        case 400: return "Bad Request";
+        case 401: return "Unauthorized";
+        case 402: return "Payment Required";
+        case 403: return "Forbidden";
+        case 404: return "Not Found";
+        case 405: return "Method Not Allowed";
+        case 406: return "Not Acceptable";
+        case 407: return "Proxy Authentication Required";
+        case 408: return "Request Timeout";
+        case 409: return "Conflict";
+        case 410: return "Gone";
+        case 411: return "Length Required";
+        case 412: return "Conditional Request Failed";
+        case 413: return "Request Entity Too Large";
+        case 414: return "Request-URI Too Long";
+        case 415: return "Unsupported Media Type";
+        case 416: return "Unsupported URI Scheme";
+        case 417: return "Unknown Resource-Priority";
+        case 420: return "Bad Extension";
+        case 421: return "Extension Required";
+        case 422: return "Session Interval Too Small";
+        case 423: return "Interval Too Brief";
+        case 424: return "Bad Location Information";
+        case 428: return "Use Identity Header";
+        case 429: return "Provide Referrer Identity";
+        case 430: return "Flow Failed";
+        case 433: return "Anonymity Disallowed";
+        case 436: return "Bad Identity-Info";
+        case 437: return "Unsupported Certificate";
+        case 438: return "Invalid Identity Header";
+        case 439: return "First Hop Lacks Outbound Support";
+        case 440: return "Max-Breadth Exceeded";
+        case 469: return "Bad Info Package";
+        case 470: return "Consent Needed";
+        case 480: return "Temporarily Unavailable";
+        case 481: return "Call/Transaction Does Not Exist";
+        case 482: return "Loop Detected";
+        case 483: return "Too Many Hops";
+        case 484: return "Address Incomplete";
+        case 485: return "Ambiguous";
+        case 486: return "Busy Here";
+        case 487: return "Request Terminated";
+        case 488: return "Not Acceptable Here";
+        case 489: return "Bad Event";
+        case 491: return "Request Pending";
+        case 493: return "Undecipherable";
+        case 494: return "Security Agreement Required";
+        case 495: return "Invalid Message Digest";
+        case 496: return "Invalid Authorization Scheme";
+        case 497: return "Key Expired";
+        case 498: return "Signature Mismatch";
+        case 499: return "Authentication Timeout";
+        // 5xx - Server Failure Responses
+        case 500: return "Internal Server Error";
+        case 501: return "Not Implemented";
+        case 502: return "Bad Gateway";
+        case 503: return "Service Unavailable";
+        case 504: return "Server Time-out";
+        case 505: return "Version Not Supported";
+        case 506: return "Message Too Large";
+        case 513: return "Message Too Large";
+        case 555: return "Push Notification Service Not Supported";
+        case 580: return "Precondition Failure";
+        // 6xx - Global Failure Responses
+        case 600: return "Busy Everywhere";
+        case 603: return "Decline";
+        case 604: return "Does Not Exist Anywhere";
+        case 606: return "Not Acceptable";
+        case 607: return "Unwanted";
+        case 608: return "Rejected";
+        case 609: return "Feature Not Implemented";
+        // 999 or unknown / not found
+        default: return "";
+        }
     }
 #pragma endregion
 } // namespace siddiqsoft

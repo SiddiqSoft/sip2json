@@ -832,6 +832,12 @@ TEST(coverage_response_codes, Test_getReasonPhrase)
     EXPECT_EQ("Service Unavailable", siddiqsoft::getReasonPhrase(503));
     EXPECT_EQ("Decline", siddiqsoft::getReasonPhrase(603));
     EXPECT_EQ("Rejected", siddiqsoft::getReasonPhrase(608));
+    EXPECT_EQ("", siddiqsoft::getReasonPhrase(999));
+    EXPECT_EQ("", siddiqsoft::getReasonPhrase(99999));
+
+    static_assert(siddiqsoft::getReasonPhrase(200) == "OK");
+    static_assert(siddiqsoft::getReasonPhrase(404) == "Not Found");
+    static_assert(siddiqsoft::getReasonPhrase(999).empty());
 }
 
 
