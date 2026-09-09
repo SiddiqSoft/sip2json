@@ -80,8 +80,8 @@ namespace siddiqsoft {
         static bool parseBodySDP(sipmessage& sipm, std::string_view& buffer) noexcept(false);
         static bool
         parseBodySDP(sipmessage& sipm, std::string::iterator& bufferStart, const std::string::iterator& bufferEnd) noexcept(false);
-        static std::string serializeSDP(sipmessage& sipm) noexcept(false);
-        static std::string serializeSDPelement(nlohmann::json& sdpBlock, const std::string& element);
+        static std::string serializeSDP(const sipmessage& sipm) noexcept(false);
+        static std::string serializeSDPelement(const nlohmann::json& sdpBlock, const std::string& element);
 
     public:
         // --- String View High-Performance API ---
@@ -144,6 +144,7 @@ namespace siddiqsoft {
         [[nodiscard]] static sipmessage parseFromBuffer(std::string::iterator&       bufferStart,
                                                         const std::string::iterator& bufferEnd) noexcept(false);
 
+        static std::string serialize(const sipmessage& sipm) noexcept(false);
         static std::string serialize(sipmessage& sipm) noexcept(false);
     };
 } // namespace siddiqsoft

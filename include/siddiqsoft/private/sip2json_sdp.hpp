@@ -251,7 +251,7 @@ namespace siddiqsoft {
     /// @param sdpBlock The SDP block from the SDP array
     /// @param element The element: o, s, i, c, t, m, a. When returning a= the code builds CRLF terminators.
     /// @return Returns the sdp element as string.
-    inline std::string sip2json::serializeSDPelement(nlohmann::json& sdpBlock, const std::string& element)
+    inline std::string sip2json::serializeSDPelement(const nlohmann::json& sdpBlock, const std::string& element)
     {
         using namespace std;
 
@@ -335,7 +335,7 @@ namespace siddiqsoft {
     /// @brief Serializes the SDP content
     /// @param sipm sipmessage object
     /// @return string representing the sdp
-    inline std::string sip2json::serializeSDP(sipmessage& sipm) noexcept(false)
+    inline std::string sip2json::serializeSDP(const sipmessage& sipm) noexcept(false)
     {
         using namespace std;
 
