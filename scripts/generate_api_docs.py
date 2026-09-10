@@ -18,6 +18,7 @@ import os
 import sys
 import re
 import shutil
+import argparse
 import subprocess
 import xml.etree.ElementTree as ET
 from pathlib import Path
@@ -1448,8 +1449,11 @@ def generate_constants_md(output_file: Path):
     output_file.write_text("\n".join(lines), encoding="utf-8")
     print(f"[generate_api_docs] Wrote {output_file}")
 
-def generate_index_md(output_file: Path, uml_diagram: str = ""):
-    """Generate docs/api/index.md overview with structured API reference layout."""
+def generate_index_md(output_file: Path, uml_diagram: str = "", force: bool = False):
+    """Generate docs/api/index.md overview with structured API reference layout if missing or forced."""
+    if output_file.exists() and not force:
+        print(f"[generate_api_docs] Human-editable file exists; skipping overwrite: {output_file}")
+        return
     lines = [
         "# API Reference Overview",
         "",
@@ -2510,6 +2514,28 @@ def generate_snippets(repo_root: Path, xml_dir: Path):
     print(f"[generate_api_docs] Wrote structural/sequence UML snippets to {snippets_dir}")
 
 
+def clean_uml_directives_in_text(text: str) -> str:
+    """Safely normalizes UML directive tags to standard HTML comments without nesting."""
+    # 1. Convert legacy markdown snippet inclusions
+    text = text.replace(
+        '--8<-- "docs/snippets/system_uml_diagram.md"\n\n--8<-- "docs/snippets/source_mapping_table.md"',
+        "<!-- @@uml-diag:complete -->\n\n<!-- @@uml-diag:source-table -->"
+    )
+    # 2. Collapse any multiple/nested HTML comments (e.g. <!-- <!-- ... --> -->)
+    text = re.sub(
+        r'(?:<!--\s*)+(@{1,2}uml-(?:diag|diagram):[a-zA-Z0-9_\-:]+)(?:\s*-->)+',
+        r'<!-- \1 -->',
+        text
+    )
+    # 3. Convert bare standalone lines (not in comments) to clean HTML comments
+    text = re.sub(
+        r'(?m)^[ \t]*(?<!<!--\s)(@{1,2}uml-(?:diag|diagram):[a-zA-Z0-9_\-:]+)(?!\s*-->)[ \t]*$',
+        r'<!-- \1 -->',
+        text
+    )
+    return text
+
+
 def update_architecture_uml(arch_file: Path, uml_content: str = ""):
     """
     Ensures docs/architecture/index.md uses clean <!-- @@uml-diag:... --> tags.
@@ -2517,23 +2543,9 @@ def update_architecture_uml(arch_file: Path, uml_content: str = ""):
     if not arch_file.exists():
         return
     text = arch_file.read_text(encoding="utf-8")
+    original_text = text
 
-    conversions = [
-        ('--8<-- "docs/snippets/system_uml_diagram.md"\n\n--8<-- "docs/snippets/source_mapping_table.md"', "<!-- @@uml-diag:complete -->\n\n<!-- @@uml-diag:source-table -->"),
-        ("uml:structure", "<!-- @@uml-diag:structure -->"),
-        ("uml:control-flow", "<!-- @@uml-diag:control-flow -->"),
-        ("uml:namespace", "<!-- @@uml-diagram:namespace -->"),
-        ("uml:complete", "<!-- @@uml-diag:complete -->"),
-        ("uml:source-table", "<!-- @@uml-diag:source-table -->"),
-        ("@@uml-diag:structure", "<!-- @@uml-diag:structure -->"),
-        ("@@uml-diag:control-flow", "<!-- @@uml-diag:control-flow -->"),
-        ("@@uml-diagram:namespace", "<!-- @@uml-diagram:namespace -->"),
-        ("@@uml-diag:complete", "<!-- @@uml-diag:complete -->"),
-        ("@@uml-diag:source-table", "<!-- @@uml-diag:source-table -->"),
-    ]
-    for old, new in conversions:
-        if old in text:
-            text = text.replace(old, new)
+    text = clean_uml_directives_in_text(text)
 
     start_tag = "<!-- UML_CLASS_DIAGRAM_START -->"
     end_tag = "<!-- UML_CLASS_DIAGRAM_END -->"
@@ -2541,7 +2553,8 @@ def update_architecture_uml(arch_file: Path, uml_content: str = ""):
         pattern = re.compile(rf"{re.escape(start_tag)}.*?{re.escape(end_tag)}", re.DOTALL)
         text = pattern.sub("<!-- @@uml-diag:complete -->\n\n<!-- @@uml-diag:source-table -->", text)
 
-    arch_file.write_text(text, encoding="utf-8")
+    if text != original_text:
+        arch_file.write_text(text, encoding="utf-8")
 
 
 def update_maintainer_uml(maintainer_file: Path, uml_content: str = ""):
@@ -2551,17 +2564,9 @@ def update_maintainer_uml(maintainer_file: Path, uml_content: str = ""):
     if not maintainer_file.exists():
         return
     text = maintainer_file.read_text(encoding="utf-8")
+    original_text = text
 
-    conversions = [
-        ('--8<-- "docs/snippets/system_uml_diagram.md"\n\n--8<-- "docs/snippets/source_mapping_table.md"', "<!-- @@uml-diag:complete -->\n\n<!-- @@uml-diag:source-table -->"),
-        ("uml:complete", "<!-- @@uml-diag:complete -->"),
-        ("uml:source-table", "<!-- @@uml-diag:source-table -->"),
-        ("@@uml-diag:complete", "<!-- @@uml-diag:complete -->"),
-        ("@@uml-diag:source-table", "<!-- @@uml-diag:source-table -->"),
-    ]
-    for old, new in conversions:
-        if old in text:
-            text = text.replace(old, new)
+    text = clean_uml_directives_in_text(text)
 
     start_tag = "<!-- UML_CLASS_DIAGRAM_START -->"
     end_tag = "<!-- UML_CLASS_DIAGRAM_END -->"
@@ -2570,10 +2575,16 @@ def update_maintainer_uml(maintainer_file: Path, uml_content: str = ""):
         pattern = re.compile(rf"{re.escape(start_tag)}.*?{re.escape(end_tag)}", re.DOTALL)
         text = pattern.sub(f"{lead_text}<!-- @@uml-diag:complete -->\n\n<!-- @@uml-diag:source-table -->", text)
 
-    maintainer_file.write_text(text, encoding="utf-8")
+    if text != original_text:
+        maintainer_file.write_text(text, encoding="utf-8")
 
 
 def main():
+    parser = argparse.ArgumentParser(description="Generate API documentation from Doxygen XML")
+    parser.add_argument("--force", action="store_true", help="Force overwrite of human-editable files such as index.md")
+    parser.add_argument("--force-index", action="store_true", help="Force overwrite of docs/api/index.md")
+    args, _ = parser.parse_known_args()
+
     repo_root = Path(__file__).resolve().parent.parent
     xml_dir = repo_root / "docs" / "doxygen_xml"
     api_dir = repo_root / "docs" / "api"
@@ -2586,7 +2597,7 @@ def main():
 
     generate_snippets(repo_root, xml_dir)
 
-    generate_index_md(api_dir / "index.md")
+    generate_index_md(api_dir / "index.md", force=(args.force or args.force_index))
     generate_sip2json_md(xml_dir, api_dir / "sip2json.md")
     generate_sipmessage_md(xml_dir, api_dir / "sipmessage.md")
     generate_constants_md(api_dir / "constants.md")
