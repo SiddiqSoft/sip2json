@@ -79,13 +79,18 @@ namespace siddiqsoft {
     /// The internal structure uses abbreviated keys: "s" for status/start line, "h" for headers,
     /// "b" for body, and "meta" for metadata.
     class sipmessage : public nlohmann::json {
+    public:
         static const inline std::string MetaLibName {"sip2json"};    ///< Library name for metadata
         static const inline std::string MetaSchemaVersion {"1.0.2"}; ///< Schema version for metadata
-        static const inline std::string MetaParserVersion {"3.1.0"}; ///< Parser version for metadata
-        static const inline std::string MetaVersionString {"sip2json/3.1.0/1.0.2"};
-        static const inline std::string MetaUserAgentString {"sip2json/3.1.0 (schema:1.0.2)"};
+#if defined(SIP2JSON_VERSION)
+        static const inline std::string MetaParserVersion {SIP2JSON_VERSION}; ///< Parser version for metadata
+#else
+        static const inline std::string MetaParserVersion {"3.2.0"}; ///< Parser version for metadata
+#endif
+        static const inline std::string MetaVersionString {MetaLibName + "/" + MetaParserVersion + "/" + MetaSchemaVersion};
+        static const inline std::string MetaUserAgentString {MetaLibName + "/" + MetaParserVersion +
+                                                             " (schema:" + MetaSchemaVersion + ")"};
 
-    public:
         /// @brief Default constructor initializing an empty SIP message with metadata.
         /// @details Creates a new sipmessage with default metadata including version, timestamp, and TTX counter.
         sipmessage()

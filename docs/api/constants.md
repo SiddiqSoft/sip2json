@@ -225,6 +225,10 @@ constexpr uint64_t hash_header_key(std::string_view sv) noexcept;
 const HeaderKeySet& canonicalizeHeaderKey(std::string_view keyFromPayload);
 ```
 
+### HeaderKeySet UML Class Diagram
+
+<!-- @@uml-diag:HeaderKeySet -->
+
 ### Live Test Example
 
 ```cpp

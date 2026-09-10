@@ -396,4 +396,4 @@ docs/assets/benchmark_report.html
 
 # Doxygen XML build artifacts
 docs/doxygen_xml/
-
+docs/doxygen_html/

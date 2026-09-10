@@ -223,6 +223,10 @@ endif()
         
 target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_${CMAKE_CXX_STANDARD})
 
+if(DEFINED CURRENT_PROJECT_VERSION AND NOT CURRENT_PROJECT_VERSION STREQUAL "0.0.0.0" AND NOT CURRENT_PROJECT_VERSION STREQUAL "0.0.0")
+    target_compile_definitions(${PROJECT_NAME} INTERFACE SIP2JSON_VERSION="${CURRENT_PROJECT_VERSION}")
+endif()
+
 # ____________________________________
 # Dependencies
 cpmaddpackage("gh:nlohmann/json#v3.12.0")

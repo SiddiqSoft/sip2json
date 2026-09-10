@@ -21,166 +21,38 @@ The maintainer documentation is organized into modular topic guides:
 
 ## Codebase Architecture & UML Class Diagram
 
-<!-- UML_CLASS_DIAGRAM_START -->
 The following UML class diagram illustrates the primary classes, relationships, and exception hierarchy in `siddiqsoft::sip2json`. The diagram is auto-generated from the C++ source AST via Doxygen XML. Each node in the diagram links directly to its source header file on GitHub.
 
-```mermaid
-classDiagram
-    direction TB
+<!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- @@uml-diag:complete --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> -->
 
-    classDef coreClass fill:rgba(35,73,109,0.08),stroke:#23496d,stroke-width:2px;
-    classDef utilityClass fill:rgba(15,118,110,0.08),stroke:#0f766e,stroke-width:2px;
-    classDef exceptionClass fill:rgba(185,28,28,0.06),stroke:#b91c1c,stroke-width:1.5px;
-    classDef enumClass fill:rgba(109,40,217,0.06),stroke:#6d28d9,stroke-width:1.5px;
-    classDef externalClass fill:rgba(100,116,139,0.06),stroke:#64748b,stroke-width:1.5px,stroke-dasharray: 4 3;
-    classDef highlightClass fill:rgba(2,132,199,0.18),stroke:#0284c7,stroke-width:3px;
+<!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- @@uml-diag:source-table --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> -->
 
-    class json["nlohmann::json"] {
-        <<external DOM>>
-    }
-    class json:::externalClass
+---
 
-    class runtime_error["std::runtime_error"] {
-        <<external exception>>
-    }
-    class runtime_error:::externalClass
+### Referencing UML Diagrams in Documentation (`@@uml-diag:` Grammar)
 
-    class sip2json["siddiqsoft::sip2json"] {
-        <<final utility>>
-        +parseAsync(string_view& buffer, onMsg, onErr)$ size_t
-        +parse(string_view& buffer)$ vector~sipmessage~
-        +parseFromBuffer(string_view& buffer)$ sipmessage
-        +serialize(sipmessage& msg)$ string
-    }
-    class sip2json:::utilityClass
+To keep all documentation Markdown files clean, human-editable, and version-controlled, diagrams and tables are **never** hard-coded or directly pasted as raw Mermaid code blocks. Instead, maintainers embed lightweight, semantic `@@uml-diag:` or `@@uml-diagram:` directives.
 
-    class sipmessage["siddiqsoft::sipmessage"] {
-        +sipmessage()
-        +sipmessage(string_view method, string_view uri, string_view callId, uint32_t cseq)
-        +sipmessage(const json& src)
-        +getMethodView() string_view
-        +getUriView() string_view
-        +getCallIDView() string_view
-        +getStatusCode() uint32_t
-        +getReasonView() string_view
-        +getHeader(string_view key) string
-        +setHeader(string_view key, string_view val) sipmessage&
-        +hasHeader(string_view key) bool
-        +getContentTypeView() string_view
-    }
-    class sipmessage:::coreClass
+To ensure **100% Markdown and HTML compatibility** (avoiding any GitHub Pages, Jekyll Liquid syntax errors, W3C HTML5 validator warnings, or interference with adjacent Markdown elements), the canonical syntax wraps the directive inside standard HTML comments `<!-- @@uml-diagram:... -->` or `<!-- @@uml-diag:... -->`:
 
-    class HeaderKeySet["siddiqsoft::HeaderKeySet"] {
-        +string_view canonicalKey
-        +string_view canonicalUpper
-        +char compactAlias
-        +uint64_t hash
-        +HeaderKeySet(string_view key)
-        +canonical() string_view
-        +lower() string_view
-    }
-    class HeaderKeySet:::coreClass
-
-    class SIPMessageType["siddiqsoft::SIPMessageType"] {
-        <<enumeration>>
-        Request = 1
-        Response = 2
-    }
-    class SIPMessageType:::enumClass
-
-    class sip2jsonErrors["siddiqsoft::sip2jsonErrors"] {
-        <<enumeration>>
-        unknown = -1
-        success = 0
-        invalid_document = 1
-        empty_message = 2
-        invalid_startline = 3
-        incomplete_buffer_for_header = 4
-        incomplete_buffer_for_content = 5
-        incomplete_buffer_for_parse = 6
-        missing_required_element = 7
-        unsupported_contenttype = 8
-    }
-    class sip2jsonErrors:::enumClass
-
-    class sip2json_exception["siddiqsoft::sip2json_exception"] {
-        +sip2jsonErrors errCode
-        +sip2json_exception(string message, sip2jsonErrors code)
-        +what() const char*
-    }
-    class sip2json_exception:::exceptionClass
-
-    class empty_message_error["siddiqsoft::empty_message_error"]
-    class empty_message_error:::exceptionClass
-    class incomplete_buffer_for_content_error["siddiqsoft::incomplete_buffer_for_content_error"]
-    class incomplete_buffer_for_content_error:::exceptionClass
-    class incomplete_buffer_for_header_error["siddiqsoft::incomplete_buffer_for_header_error"]
-    class incomplete_buffer_for_header_error:::exceptionClass
-    class incomplete_buffer_for_parse_error["siddiqsoft::incomplete_buffer_for_parse_error"]
-    class incomplete_buffer_for_parse_error:::exceptionClass
-    class invalid_document_error["siddiqsoft::invalid_document_error"]
-    class invalid_document_error:::exceptionClass
-    class invalid_startline_error["siddiqsoft::invalid_startline_error"]
-    class invalid_startline_error:::exceptionClass
-    class missing_required_element["siddiqsoft::missing_required_element"]
-    class missing_required_element:::exceptionClass
-    class unsupported_contenttype_error["siddiqsoft::unsupported_contenttype_error"]
-    class unsupported_contenttype_error:::exceptionClass
-
-    json <|-- sipmessage : public inheritance
-    runtime_error <|-- sip2json_exception : public inheritance
-    sip2json_exception <|-- empty_message_error
-    sip2json_exception <|-- incomplete_buffer_for_content_error
-    sip2json_exception <|-- incomplete_buffer_for_header_error
-    sip2json_exception <|-- incomplete_buffer_for_parse_error
-    sip2json_exception <|-- invalid_document_error
-    sip2json_exception <|-- invalid_startline_error
-    sip2json_exception <|-- missing_required_element
-    sip2json_exception <|-- unsupported_contenttype_error
-
-    sip2json ..> sipmessage : produces / consumes
-    sip2json ..> sip2json_exception : throws
-    sipmessage ..> SIPMessageType : classifies
-    sipmessage ..> HeaderKeySet : uses
-    sip2json_exception ..> sip2jsonErrors : contains
-
-    link sip2json "https://github.com/SiddiqSoft/sip2json/blob/master/include/siddiqsoft/sip2json.hpp" "Source: include/siddiqsoft/sip2json.hpp"
-    link sipmessage "https://github.com/SiddiqSoft/sip2json/blob/master/include/siddiqsoft/sipmessage.hpp" "Source: include/siddiqsoft/sipmessage.hpp"
-    link HeaderKeySet "https://github.com/SiddiqSoft/sip2json/blob/master/include/siddiqsoft/private/sip2json_header_keys.hpp" "Source: include/siddiqsoft/private/sip2json_header_keys.hpp"
-    link SIPMessageType "https://github.com/SiddiqSoft/sip2json/blob/master/include/siddiqsoft/sipmessage.hpp" "Source: include/siddiqsoft/sipmessage.hpp"
-    link sip2jsonErrors "https://github.com/SiddiqSoft/sip2json/blob/master/include/siddiqsoft/private/sip2json_exception.hpp" "Source: include/siddiqsoft/private/sip2json_exception.hpp"
-    link sip2json_exception "https://github.com/SiddiqSoft/sip2json/blob/master/include/siddiqsoft/private/sip2json_exception.hpp" "Source: include/siddiqsoft/private/sip2json_exception.hpp"
-    link empty_message_error "https://github.com/SiddiqSoft/sip2json/blob/master/include/siddiqsoft/private/sip2json_exception.hpp" "Source: include/siddiqsoft/private/sip2json_exception.hpp"
-    link incomplete_buffer_for_content_error "https://github.com/SiddiqSoft/sip2json/blob/master/include/siddiqsoft/private/sip2json_exception.hpp" "Source: include/siddiqsoft/private/sip2json_exception.hpp"
-    link incomplete_buffer_for_header_error "https://github.com/SiddiqSoft/sip2json/blob/master/include/siddiqsoft/private/sip2json_exception.hpp" "Source: include/siddiqsoft/private/sip2json_exception.hpp"
-    link incomplete_buffer_for_parse_error "https://github.com/SiddiqSoft/sip2json/blob/master/include/siddiqsoft/private/sip2json_exception.hpp" "Source: include/siddiqsoft/private/sip2json_exception.hpp"
-    link invalid_document_error "https://github.com/SiddiqSoft/sip2json/blob/master/include/siddiqsoft/private/sip2json_exception.hpp" "Source: include/siddiqsoft/private/sip2json_exception.hpp"
-    link invalid_startline_error "https://github.com/SiddiqSoft/sip2json/blob/master/include/siddiqsoft/private/sip2json_exception.hpp" "Source: include/siddiqsoft/private/sip2json_exception.hpp"
-    link missing_required_element "https://github.com/SiddiqSoft/sip2json/blob/master/include/siddiqsoft/private/sip2json_exception.hpp" "Source: include/siddiqsoft/private/sip2json_exception.hpp"
-    link unsupported_contenttype_error "https://github.com/SiddiqSoft/sip2json/blob/master/include/siddiqsoft/private/sip2json_exception.hpp" "Source: include/siddiqsoft/private/sip2json_exception.hpp"
-    link json "https://github.com/nlohmann/json" "External: nlohmann/json"
-    link runtime_error "https://en.cppreference.com/w/cpp/error/runtime_error" "Standard Library: std::runtime_error"
-```
-
-### Source Code Mapping
-
-| Component / Class | Header File | Source Link | Purpose & Architectural Role |
+| Canonical Directive Syntax | Alternative Syntax | Target Description | Example Target |
 | :--- | :--- | :--- | :--- |
-| [`siddiqsoft::sip2json`](../api/sip2json.md) | `include/siddiqsoft/sip2json.hpp` | [`sip2json.hpp`](https://github.com/SiddiqSoft/sip2json/blob/master/include/siddiqsoft/sip2json.hpp) | Top-level static parser, stream deserializer, and wire serializer utility |
-| [`siddiqsoft::sipmessage`](../api/sipmessage.md) | `include/siddiqsoft/sipmessage.hpp` | [`sipmessage.hpp`](https://github.com/SiddiqSoft/sip2json/blob/master/include/siddiqsoft/sipmessage.hpp) | Core message container inheriting from `nlohmann::json` with zero-copy view accessors |
-| [`siddiqsoft::HeaderKeySet`](../api/constants.md) | `include/siddiqsoft/private/sip2json_header_keys.hpp` | [`sip2json_header_keys.hpp`](https://github.com/SiddiqSoft/sip2json/blob/master/include/siddiqsoft/private/sip2json_header_keys.hpp) | Canonical SIP header normalization, compact alias mapping, and compile-time hashing |
-| [`siddiqsoft::SIPMessageType`](../api/sipmessage.md) | `include/siddiqsoft/sipmessage.hpp` | [`sipmessage.hpp`](https://github.com/SiddiqSoft/sip2json/blob/master/include/siddiqsoft/sipmessage.hpp) | Protocol message discriminator (`Request = 1`, `Response = 2`) |
-| [`siddiqsoft::sip2json_exception`](../api/errors.md#exception-class-hierarchy) | `include/siddiqsoft/private/sip2json_exception.hpp` | [`sip2json_exception.hpp`](https://github.com/SiddiqSoft/sip2json/blob/master/include/siddiqsoft/private/sip2json_exception.hpp) | Base exception class inheriting from `std::runtime_error` with `sip2jsonErrors` payload |
-| [`siddiqsoft::sip2jsonErrors`](../api/errors.md#sip2jsonerrors-enumeration) | `include/siddiqsoft/private/sip2json_exception.hpp` | [`sip2json_exception.hpp`](https://github.com/SiddiqSoft/sip2json/blob/master/include/siddiqsoft/private/sip2json_exception.hpp) | Diagnostic error code enumeration for parser and syntax failures |
-| Derived Exceptions | `include/siddiqsoft/private/sip2json_exception.hpp` | [`sip2json_exception.hpp`](https://github.com/SiddiqSoft/sip2json/blob/master/include/siddiqsoft/private/sip2json_exception.hpp) | Specialized exception hierarchy (`invalid_document_error`, `empty_message_error`, etc.) |
-| Parser Engine (`raw_view`) | `include/siddiqsoft/private/sip2json_parser.hpp` | [`sip2json_parser.hpp`](https://github.com/SiddiqSoft/sip2json/blob/master/include/siddiqsoft/private/sip2json_parser.hpp) | High-throughput streaming parser, zero-copy buffer slicing, CRLF boundary scanning |
-| Wire Serializer | `include/siddiqsoft/private/sip2json_serializer.hpp` | [`sip2json_serializer.hpp`](https://github.com/SiddiqSoft/sip2json/blob/master/include/siddiqsoft/private/sip2json_serializer.hpp) | RFC 3261 compliant text wire serializer |
-| SDP Body Parser | `include/siddiqsoft/private/sip2json_sdp.hpp` | [`sip2json_sdp.hpp`](https://github.com/SiddiqSoft/sip2json/blob/master/include/siddiqsoft/private/sip2json_sdp.hpp) | RFC 4566 Session Description Protocol parser and structured JSON serialization |
-| Response Codes | `include/siddiqsoft/private/sip2json_response_codes.hpp` | [`sip2json_response_codes.hpp`](https://github.com/SiddiqSoft/sip2json/blob/master/include/siddiqsoft/private/sip2json_response_codes.hpp) | SIP status codes, reason phrases, and classification ranges (1xx-6xx) |
-| Protocol Constants | `include/siddiqsoft/private/sip2json_constants.hpp` | [`sip2json_constants.hpp`](https://github.com/SiddiqSoft/sip2json/blob/master/include/siddiqsoft/private/sip2json_constants.hpp) | SIP grammar tokens, method strings, whitespace matchers, CRLF constants |
-| DateTime Parser | `include/siddiqsoft/private/sip2json_datetime.hpp` | [`sip2json_datetime.hpp`](https://github.com/SiddiqSoft/sip2json/blob/master/include/siddiqsoft/private/sip2json_datetime.hpp) | RFC 3261 / RFC 1123 HTTP-date timestamp parser and serializer |
-| Utility Functions | `include/siddiqsoft/private/sip2json_utils.hpp` | [`sip2json_utils.hpp`](https://github.com/SiddiqSoft/sip2json/blob/master/include/siddiqsoft/private/sip2json_utils.hpp) | Internal whitespace trimming, view slicing, string conversion utilities |
-<!-- UML_CLASS_DIAGRAM_END -->
+| `<!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- @@uml-diag:complete --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> -->` | `<!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- @@uml-diag:complete --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> -->` | Full system UML class diagram | System architecture, maintainer guide |
+| `<!-- @@uml-diagram:namespace -->` | `@@uml-diagram:namespace` | Namespace package architecture & boundary diagram | Architecture namespace section |
+| `<!-- @@uml-diagram:namespace:<name> -->` | `@@uml-diagram:namespace:<name>` | Specific namespace package (e.g. `siddiqsoft`) | Specific package mapping |
+| `<!-- @@uml-diag:<class-name> -->` | `@@uml-diag:<class-name>` | Targeted class UML diagram (e.g. `sip2json`, `sipmessage`, `HeaderKeySet`) | Class reference API pages |
+| `<!-- @@uml-diag:class:<class-name> -->` | `@@uml-diag:class:<class-name>` | Explicit class specifier | Class reference API pages |
+| `<!-- @@uml-diag:structure -->` | `@@uml-diag:structure` | Subsystem topology & layered architecture flowchart | Subsystem structure overview |
+| `<!-- @@uml-diag:control-flow -->` | `@@uml-diag:control-flow` | Stream parsing linear control-flow sequence diagram | Stream mechanics & async parsing |
+| `<!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- @@uml-diag:source-table --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> -->` | `<!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- <!-- @@uml-diag:source-table --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> -->` | Source code mapping table with GitHub links | Mapping tables |
+| `<!-- @@uml-diag:errors -->` | `@@uml-diag:errors` | Diagnostic exceptions & error code hierarchy | Error handling reference |
+
+#### Markdown & HTML Compatibility Guarantees:
+* **HTML & CommonMark Compliant**: Wrapping in `<!-- ... -->` represents an isolated HTML block per CommonMark 0.30+ specification, preventing conflicts with Markdown headers, list indentation, tables, or emphasis.
+* **GitHub Pages & Jekyll Safe**: Unlike template curly braces `{{ ... }}` which trigger Jekyll Liquid parse errors on GitHub Pages, HTML comments pass through cleanly without causing build failures.
+* **Clean Web Repository Browsing**: On github.com, HTML comments remain hidden, preventing raw directive text from displaying on unrendered Markdown pages.
+* **Flexible Parser**: The hook ([`docs/hooks.py`](documentation.md#8-dynamic-build-hooks-docshookspy)) also supports Markdown invisible link comments `[//]: # (@@uml-diag:...)`, HTML tags `<div class="uml-diagram" data-diagram="..."></div>`, and bare `@@uml-diag:...` lines.
+* **Automated Clickable Source Links**: All generated diagrams automatically include clickable GitHub source links (`link ClassName "https://github.com/..."`).
 
 ---
 

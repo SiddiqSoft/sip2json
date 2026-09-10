@@ -65,6 +65,10 @@ std::exception
       \-- empty_message_error
 ```
 
+### Exception Class UML Diagram
+
+<!-- @@uml-diag:sip2json_exception -->
+
 ### Exception Handling Example
 
 ```cpp

@@ -11,10 +11,25 @@ GENERATE_XML           = YES
 XML_OUTPUT             = doxygen_xml
 XML_PROGRAMLISTING     = NO
 
-GENERATE_HTML          = NO
+GENERATE_HTML          = YES
+HTML_OUTPUT            = doxygen_html
 GENERATE_LATEX         = NO
 GENERATE_MAN            = NO
 GENERATE_RTF            = NO
+
+HAVE_DOT               = YES
+DOT_IMAGE_FORMAT       = svg
+DOT_CLEANUP            = NO
+UML_LOOK               = YES
+UML_LIMIT_NUM_FIELDS   = 50
+CLASS_DIAGRAMS         = YES
+CLASS_GRAPH            = YES
+COLLABORATION_GRAPH    = YES
+INCLUDE_GRAPH          = YES
+INCLUDED_BY_GRAPH      = YES
+DIRECTORY_GRAPH        = YES
+DOT_GRAPH_MAX_NODES    = 100
+DOT_TRANSPARENT        = YES
 
 EXTRACT_ALL            = YES
 EXTRACT_STATIC         = YES

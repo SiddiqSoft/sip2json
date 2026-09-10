@@ -128,7 +128,7 @@ Designed for high-throughput telecom proxies, log analysis, event streaming, and
         "Content-Length": 0
       },
       "meta": {
-        "version": "sip2json/3.1.0/1.0.2",
+        "version": "sip2json/{ semver }/1.0.2",
         "time": "2026-09-07T12:00:00.000Z",
         "ttx": 0
       }

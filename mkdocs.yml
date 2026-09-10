@@ -17,6 +17,10 @@ exclude_docs: |
   Doxyfile
   doxygen_xml/*
   doxygen_xml/**
+  doxygen_html/*
+  doxygen_html/**
+  snippets/*
+  snippets/**
   __pycache__/*
 
 extra:
@@ -52,7 +56,7 @@ theme:
     code: JetBrains Mono
   features:
     - navigation.tabs
-    # - toc.integrate # everything in the left side nav bar, but not great for large docs
+    - toc.integrate # everything in the left side nav bar, but not great for large docs
     - navigation.tabs.sticky
     - navigation.sections
     - navigation.expand

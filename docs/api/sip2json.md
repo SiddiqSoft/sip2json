@@ -11,36 +11,7 @@ Final utility class providing static routines for encoding, decoding, and stream
 
 The following UML class diagram highlights `siddiqsoft::sip2json` within the system architecture. Each node links directly to its source header file on GitHub:
 
-```mermaid
-classDiagram
-    direction TB
-
-    classDef coreClass fill:rgba(35,73,109,0.08),stroke:#23496d,stroke-width:2px;
-    classDef exceptionClass fill:rgba(185,28,28,0.06),stroke:#b91c1c,stroke-width:1.5px;
-    classDef highlightClass fill:rgba(2,132,199,0.18),stroke:#0284c7,stroke-width:3px;
-
-    class sip2json["siddiqsoft::sip2json"] {
-        <<final utility>>
-        +parseAsync(string_view& buffer, onMsg, onErr)$ size_t
-        +parse(string_view& buffer)$ vector~sipmessage~
-        +parseFromBuffer(string_view& buffer)$ sipmessage
-        +serialize(sipmessage& msg)$ string
-    }
-    class sip2json:::highlightClass
-
-    class sipmessage["siddiqsoft::sipmessage"]
-    class sipmessage:::coreClass
-
-    class sip2json_exception["siddiqsoft::sip2json_exception"]
-    class sip2json_exception:::exceptionClass
-
-    sip2json ..> sipmessage : produces / consumes
-    sip2json ..> sip2json_exception : throws
-
-    link sip2json "https://github.com/SiddiqSoft/sip2json/blob/master/include/siddiqsoft/sip2json.hpp" "Source: include/siddiqsoft/sip2json.hpp"
-    link sipmessage "https://github.com/SiddiqSoft/sip2json/blob/master/include/siddiqsoft/sipmessage.hpp" "Source: include/siddiqsoft/sipmessage.hpp"
-    link sip2json_exception "https://github.com/SiddiqSoft/sip2json/blob/master/include/siddiqsoft/private/sip2json_exception.hpp" "Source: include/siddiqsoft/private/sip2json_exception.hpp"
-```
+<!-- @@uml-diag:sip2json -->
 
 ## Static Public Member Functions
 

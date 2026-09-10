@@ -11,61 +11,7 @@ Represents a Session Initiation Protocol (SIP) message with native JSON serializ
 
 The following UML class diagram highlights `siddiqsoft::sipmessage` within the system architecture. Each node links directly to its source header file on GitHub:
 
-```mermaid
-classDiagram
-    direction TB
-
-    classDef coreClass fill:rgba(35,73,109,0.08),stroke:#23496d,stroke-width:2px;
-    classDef enumClass fill:rgba(109,40,217,0.06),stroke:#6d28d9,stroke-width:1.5px;
-    classDef externalClass fill:rgba(100,116,139,0.06),stroke:#64748b,stroke-width:1.5px,stroke-dasharray: 4 3;
-    classDef highlightClass fill:rgba(2,132,199,0.18),stroke:#0284c7,stroke-width:3px;
-
-    class json["nlohmann::json"] {
-        <<external DOM>>
-    }
-    class json:::externalClass
-
-    class sipmessage["siddiqsoft::sipmessage"] {
-        +sipmessage()
-        +sipmessage(string_view method, string_view uri, string_view callId, uint32_t cseq)
-        +sipmessage(const json& src)
-        +getMethodView() string_view
-        +getUriView() string_view
-        +getCallIDView() string_view
-        +getStatusCode() uint32_t
-        +getReasonView() string_view
-        +getHeader(string_view key) string
-        +setHeader(string_view key, string_view val) sipmessage&
-        +hasHeader(string_view key) bool
-        +getContentTypeView() string_view
-    }
-    class sipmessage:::highlightClass
-
-    class HeaderKeySet["siddiqsoft::HeaderKeySet"] {
-        +string_view canonicalKey
-        +char compactAlias
-        +uint64_t hash
-        +canonical() string_view
-        +lower() string_view
-    }
-    class HeaderKeySet:::coreClass
-
-    class SIPMessageType["siddiqsoft::SIPMessageType"] {
-        <<enumeration>>
-        Request = 1
-        Response = 2
-    }
-    class SIPMessageType:::enumClass
-
-    json <|-- sipmessage : public inheritance
-    sipmessage ..> SIPMessageType : classifies
-    sipmessage ..> HeaderKeySet : uses
-
-    link sipmessage "https://github.com/SiddiqSoft/sip2json/blob/master/include/siddiqsoft/sipmessage.hpp" "Source: include/siddiqsoft/sipmessage.hpp"
-    link json "https://github.com/nlohmann/json" "External: nlohmann/json"
-    link HeaderKeySet "https://github.com/SiddiqSoft/sip2json/blob/master/include/siddiqsoft/private/sip2json_header_keys.hpp" "Source: include/siddiqsoft/private/sip2json_header_keys.hpp"
-    link SIPMessageType "https://github.com/SiddiqSoft/sip2json/blob/master/include/siddiqsoft/sipmessage.hpp" "Source: include/siddiqsoft/sipmessage.hpp"
-```
+<!-- @@uml-diag:sipmessage -->
 
 ## Member Functions Summary
 
@@ -343,7 +289,7 @@ nlohmann::json json_obj = {
     {"s", {{"type", "request"}, {"method", "INVITE"}, {"uri", "sip:test@example.com"}, {"version", "SIP/2.0"}}},
     {"h", {{"Call-ID", "test-call-id"}, {"User-Agent", "test-agent"}}},
     {"b", nullptr},
-    {"meta", {{"version", "sip2json/2.2/1.0.2"}, {"time", "2024-01-01T00:00:00Z"}, {"ttx", 0}}}
+    {"meta", {{"version", "sip2json/3.2.0/1.0.2"}, {"time", "2024-01-01T00:00:00Z"}, {"ttx", 0}}}
 };
 
 siddiqsoft::sipmessage msg(json_obj);

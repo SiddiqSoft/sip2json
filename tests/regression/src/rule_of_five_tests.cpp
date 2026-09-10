@@ -28,7 +28,7 @@ namespace {
         siddiqsoft::sipmessage msg;
 
         EXPECT_TRUE(msg.contains("meta"));
-        EXPECT_FALSE(msg.value("/meta/version"_json_pointer, std::string {}).empty());
+        EXPECT_EQ(siddiqsoft::sipmessage::MetaVersionString, msg.value("/meta/version"_json_pointer, std::string {}));
         EXPECT_FALSE(msg.value("/meta/time"_json_pointer, std::string {}).empty());
         EXPECT_EQ(0, msg.value("/meta/ttx"_json_pointer, -1));
     }
@@ -61,7 +61,7 @@ namespace {
                 {"s", {{"type", "request"}, {"method", "INVITE"}, {"uri", "sip:test@example.com"}, {"version", "SIP/2.0"}}},
                 {"h", {{"Call-ID", "test-call-id"}, {"User-Agent", "test-agent"}}},
                 {"b", nullptr},
-                {"meta", {{"version", "sip2json/2.2/1.0.2"}, {"time", "2024-01-01T00:00:00Z"}, {"ttx", 0}}}};
+                {"meta", {{"version", siddiqsoft::sipmessage::MetaVersionString}, {"time", "2024-01-01T00:00:00Z"}, {"ttx", 0}}}};
 
         siddiqsoft::sipmessage msg(json_obj);
 
@@ -89,10 +89,11 @@ namespace {
     TEST(RuleOfFive, MoveConstructor_FromJson)
     {
         // Test that move constructor from nlohmann::json works
-        nlohmann::json json_obj = {{"s", {{"type", "response"}, {"status", 200}, {"reason", "OK"}, {"version", "SIP/2.0"}}},
-                                   {"h", {{"User-Agent", "test-agent"}}},
-                                   {"b", nullptr},
-                                   {"meta", {{"version", "sip2json/2.2/1.0.2"}, {"time", "2024-01-01T00:00:00Z"}, {"ttx", 0}}}};
+        nlohmann::json json_obj = {
+                {"s", {{"type", "response"}, {"status", 200}, {"reason", "OK"}, {"version", "SIP/2.0"}}},
+                {"h", {{"User-Agent", "test-agent"}}},
+                {"b", nullptr},
+                {"meta", {{"version", siddiqsoft::sipmessage::MetaVersionString}, {"time", "2024-01-01T00:00:00Z"}, {"ttx", 0}}}};
 
         siddiqsoft::sipmessage msg(std::move(json_obj));
 
@@ -128,7 +129,7 @@ namespace {
                 {"s", {{"type", "request"}, {"method", "BYE"}, {"uri", "sip:test@example.com"}, {"version", "SIP/2.0"}}},
                 {"h", {{"Call-ID", "bye-call-id"}}},
                 {"b", nullptr},
-                {"meta", {{"version", "sip2json/2.2/1.0.2"}, {"time", "2024-01-01T00:00:00Z"}, {"ttx", 0}}}};
+                {"meta", {{"version", siddiqsoft::sipmessage::MetaVersionString}, {"time", "2024-01-01T00:00:00Z"}, {"ttx", 0}}}};
 
         siddiqsoft::sipmessage msg;
         msg = json_obj;
@@ -171,10 +172,11 @@ namespace {
     TEST(RuleOfFive, MoveAssignmentOperator_FromJson)
     {
         // Test that move assignment from nlohmann::json works
-        nlohmann::json json_obj = {{"s", {{"type", "response"}, {"status", 404}, {"reason", "Not Found"}, {"version", "SIP/2.0"}}},
-                                   {"h", {{"User-Agent", "test-agent"}}},
-                                   {"b", nullptr},
-                                   {"meta", {{"version", "sip2json/2.2/1.0.2"}, {"time", "2024-01-01T00:00:00Z"}, {"ttx", 0}}}};
+        nlohmann::json json_obj = {
+                {"s", {{"type", "response"}, {"status", 404}, {"reason", "Not Found"}, {"version", "SIP/2.0"}}},
+                {"h", {{"User-Agent", "test-agent"}}},
+                {"b", nullptr},
+                {"meta", {{"version", siddiqsoft::sipmessage::MetaVersionString}, {"time", "2024-01-01T00:00:00Z"}, {"ttx", 0}}}};
 
         siddiqsoft::sipmessage msg;
         msg = std::move(json_obj);
@@ -372,7 +374,7 @@ namespace {
                 {"s", {{"type", "request"}, {"method", "OPTIONS"}, {"uri", "sip:test@example.com"}, {"version", "SIP/2.0"}}},
                 {"h", {{"Call-ID", "options-call-id"}}},
                 {"b", nullptr},
-                {"meta", {{"version", "sip2json/2.2/1.0.2"}, {"time", "2024-01-01T00:00:00Z"}, {"ttx", 0}}}};
+                {"meta", {{"version", siddiqsoft::sipmessage::MetaVersionString}, {"time", "2024-01-01T00:00:00Z"}, {"ttx", 0}}}};
 
         // Explicit copy constructor
         siddiqsoft::sipmessage msg1(json_obj);

@@ -614,15 +614,14 @@ def generate_sip2json_md(xml_dir: Path, output_file: Path, uml_diagram: str = ""
         "",
     ]
 
-    if uml_diagram:
-        lines.extend([
-            "## Class Hierarchy & Inheritance",
-            "",
-            "The following UML class diagram highlights `siddiqsoft::sip2json` within the system architecture. Each node links directly to its source header file on GitHub:",
-            "",
-            uml_diagram,
-            "",
-        ])
+    lines.extend([
+        "## Class Hierarchy & Inheritance",
+        "",
+        "The following UML class diagram highlights `siddiqsoft::sip2json` within the system architecture. Each node links directly to its source header file on GitHub:",
+        "",
+        "<!-- @@uml-diag:sip2json -->",
+        "",
+    ])
 
     lines.extend([
         "## Static Public Member Functions",
@@ -763,15 +762,14 @@ def generate_sipmessage_md(xml_dir: Path, output_file: Path, uml_diagram: str = 
         "",
     ]
 
-    if uml_diagram:
-        lines.extend([
-            "## Class Hierarchy & Inheritance",
-            "",
-            "The following UML class diagram highlights `siddiqsoft::sipmessage` within the system architecture. Each node links directly to its source header file on GitHub:",
-            "",
-            uml_diagram,
-            "",
-        ])
+    lines.extend([
+        "## Class Hierarchy & Inheritance",
+        "",
+        "The following UML class diagram highlights `siddiqsoft::sipmessage` within the system architecture. Each node links directly to its source header file on GitHub:",
+        "",
+        "<!-- @@uml-diag:sipmessage -->",
+        "",
+    ])
 
     lines.extend([
         "## Member Functions Summary",
@@ -921,7 +919,7 @@ nlohmann::json json_obj = {
     {"s", {{"type", "request"}, {"method", "INVITE"}, {"uri", "sip:test@example.com"}, {"version", "SIP/2.0"}}},
     {"h", {{"Call-ID", "test-call-id"}, {"User-Agent", "test-agent"}}},
     {"b", nullptr},
-    {"meta", {{"version", "sip2json/2.2/1.0.2"}, {"time", "2024-01-01T00:00:00Z"}, {"ttx", 0}}}
+    {"meta", {{"version", "sip2json/3.2.0/1.0.2"}, {"time", "2024-01-01T00:00:00Z"}, {"ttx", 0}}}
 };
 
 siddiqsoft::sipmessage msg(json_obj);
@@ -1425,6 +1423,10 @@ def generate_constants_md(output_file: Path):
         "const HeaderKeySet& canonicalizeHeaderKey(std::string_view keyFromPayload);",
         "```",
         "",
+        "### HeaderKeySet UML Class Diagram",
+        "",
+        "<!-- @@uml-diag:HeaderKeySet -->",
+        "",
         "### Live Test Example",
         "",
         "```cpp",
@@ -1517,17 +1519,16 @@ def generate_index_md(output_file: Path, uml_diagram: str = ""):
         "",
     ]
 
-    if uml_diagram:
-        lines.extend([
-            "## System UML Class Diagram",
-            "",
-            "The following UML class diagram illustrates the primary classes, relationships, and exception hierarchy in `sip2json`. Each node links directly to its source header file on GitHub:",
-            "",
-            uml_diagram,
-            "",
-            generate_source_mapping_table(api_prefix=""),
-            "",
-        ])
+    lines.extend([
+        "## System UML Class Diagram",
+        "",
+        "The following UML class diagram illustrates the primary classes, relationships, and exception hierarchy in `sip2json`. Each node links directly to its source header file on GitHub:",
+        "",
+        "<!-- @@uml-diag:complete -->",
+        "",
+        "<!-- @@uml-diag:source-table -->",
+        "",
+    ])
 
     lines.extend([
         "## Detailed Topics",
@@ -1637,6 +1638,10 @@ def generate_errors_md(xml_dir: Path, output_file: Path, uml_diagram: str = ""):
         "      \\-- empty_message_error",
         "```",
         "",
+        "### Exception Class UML Diagram",
+        "",
+        "<!-- @@uml-diag:sip2json_exception -->",
+        "",
         "### Exception Handling Example",
         "",
         "```cpp",
@@ -1666,41 +1671,168 @@ def generate_errors_md(xml_dir: Path, output_file: Path, uml_diagram: str = ""):
     print(f"[generate_api_docs] Wrote {output_file}")
 
 
+def clean_uml_type(elem) -> str:
+    """Recursively extract and clean a C++ type for Mermaid UML formatting."""
+    if elem is None:
+        return ""
+    t = "".join(elem.itertext()).strip()
+    t = re.sub(r"\s+", " ", t)
+    t = t.replace("std::", "")
+    t = t.replace("nlohmann::json::json_pointer", "json_pointer")
+    t = t.replace("nlohmann::", "")
+    t = t.replace("<", "~").replace(">", "~")
+    t = re.sub(r"~\s*([^~]+?)\s*~", r"~\1~", t)
+    return t
+
+
+def clean_uml_ret_type(type_elem) -> str:
+    """Format return type cleanly for Mermaid UML."""
+    if type_elem is None:
+        return ""
+    t = clean_uml_type(type_elem)
+    t = re.sub(r"\bconst\s+", "", t)
+    t = re.sub(r"\s*&\s*", "&", t)
+    t = re.sub(r"\s+", " ", t).strip()
+    return t
+
+
+def clean_uml_params(m) -> str:
+    """Extract and format parameters for Mermaid UML."""
+    params = []
+    for p in m.findall("param"):
+        ptype = clean_uml_type(p.find("type"))
+        pname = p.findtext("declname", "").strip()
+        ptype = re.sub(r"\bconst\s+", "", ptype)
+        ptype = re.sub(r"\s*&\s*", "&", ptype)
+        ptype = re.sub(r"\s+", " ", ptype).strip()
+        if "function~" in ptype:
+            ptype = "callback"
+        elif "optional~" in ptype:
+            ptype = re.sub(r"optional~([^~]+)~", r"optional~\1~", ptype)
+        if pname and ptype:
+            params.append(f"{ptype} {pname}")
+        elif ptype:
+            params.append(ptype)
+        elif pname:
+            params.append(pname)
+    return ", ".join(params)
+
+
+def parse_doxygen_ast(xml_dir: Path):
+    """
+    Dynamically extracts classes, methods, fields, enums, inheritance, and source
+    locations from Doxygen XML intermediate files in xml_dir.
+    """
+    classes = {}
+    for p in sorted(xml_dir.glob("classsiddiqsoft_*.xml")):
+        try:
+            tree = ET.parse(p)
+        except Exception:
+            continue
+        cdef = tree.find("compounddef")
+        if cdef is None:
+            continue
+        cname = cdef.findtext("compoundname", "")
+        short_name = cname.split("::")[-1]
+        is_final = cdef.get("final") == "yes"
+        loc = cdef.find("location")
+        hfile = loc.get("file", "") if loc is not None else ""
+        bases = []
+        for b in cdef.findall("basecompoundref"):
+            b_text = "".join(b.itertext()).strip()
+            bases.append(b_text)
+        derived = [d.text.split("::")[-1] for d in cdef.findall("derivedcompoundref") if d.text]
+
+        methods = []
+        seen_names = set()
+        for m in cdef.findall('.//memberdef[@kind="function"]'):
+            if m.get("prot") != "public":
+                continue
+            mname = m.findtext("name", "")
+            if not mname or mname.startswith("~") or mname.startswith("operator"):
+                continue
+            if mname in seen_names:
+                continue
+            seen_names.add(mname)
+            is_static = m.get("static") == "yes"
+            ret = clean_uml_ret_type(m.find("type"))
+            params = clean_uml_params(m)
+            methods.append({
+                "name": mname,
+                "ret": ret,
+                "params": params,
+                "static": is_static
+            })
+
+        attribs = []
+        for a in cdef.findall('.//memberdef[@kind="variable"]'):
+            if a.get("prot") != "public":
+                continue
+            aname = a.findtext("name", "")
+            if not aname or aname.startswith("Meta"):
+                continue
+            atype = clean_uml_ret_type(a.find("type"))
+            is_static = a.get("static") == "yes"
+            attribs.append({
+                "name": aname,
+                "type": atype,
+                "static": is_static
+            })
+
+        classes[short_name] = {
+            "name": cname,
+            "short_name": short_name,
+            "is_final": is_final,
+            "header_file": hfile,
+            "bases": bases,
+            "derived": derived,
+            "methods": methods,
+            "attribs": attribs
+        }
+
+    enums = {}
+    ns_xml = xml_dir / "namespacesiddiqsoft.xml"
+    if ns_xml.exists():
+        try:
+            tree = ET.parse(ns_xml)
+            for edef in tree.findall('.//memberdef[@kind="enum"]'):
+                ename = edef.findtext("name", "")
+                qname = edef.findtext("qualifiedname", f"siddiqsoft::{ename}")
+                loc = edef.find("location")
+                hfile = loc.get("file", "") if loc is not None else ""
+                vals = []
+                for v in edef.findall("enumvalue"):
+                    vname = v.findtext("name", "")
+                    init = v.findtext("initializer", "")
+                    init = re.sub(r"=[^0-9\-]*([0-9\-]+)", r"= \1", init).strip()
+                    vals.append(f"{vname} {init}".strip() if init else vname)
+                enums[ename] = {
+                    "name": ename,
+                    "qualified_name": qname,
+                    "header_file": hfile,
+                    "values": vals
+                }
+        except Exception as e:
+            print(f"[generate_api_docs] Warning parsing enums: {e}")
+
+    return classes, enums
+
+
 def generate_class_uml_diagram(xml_dir: Path, target_class: str) -> str:
     """
     Generates a focused, per-class Mermaid UML diagram displaying only the target class
-    and its immediate inheritance and usage relationships.
+    and its immediate inheritance and usage relationships, dynamically derived from Doxygen XML AST.
     """
+    classes, enums = parse_doxygen_ast(xml_dir)
     base_src_url = "https://github.com/SiddiqSoft/sip2json/blob/master"
 
     if target_class == "sip2json":
-        s2j_xml = xml_dir / "classsiddiqsoft_1_1sip2json.xml"
-        s2j_methods = []
-        if s2j_xml.exists():
-            try:
-                tree = ET.parse(s2j_xml)
-                for m in tree.findall(".//memberdef[@kind='function']"):
-                    if m.get("prot") == "public":
-                        mname = m.findtext("name")
-                        if mname:
-                            if mname == "parse" and not any("parse(string_view" in s for s in s2j_methods):
-                                s2j_methods.append("+parse(string_view& buffer)$ vector~sipmessage~")
-                            elif mname == "parseFromBuffer" and not any("parseFromBuffer(string_view" in s for s in s2j_methods):
-                                s2j_methods.append("+parseFromBuffer(string_view& buffer)$ sipmessage")
-                            elif mname == "parseAsync" and not any("parseAsync(string_view" in s for s in s2j_methods):
-                                s2j_methods.append("+parseAsync(string_view& buffer, onMsg, onErr)$ size_t")
-                            elif mname == "serialize" and not any("serialize" in s for s in s2j_methods):
-                                s2j_methods.append("+serialize(sipmessage& msg)$ string")
-            except Exception as e:
-                print(f"[generate_api_docs] Warning parsing sip2json.xml: {e}")
-
-        if not s2j_methods:
-            s2j_methods = [
-                "+parse(string_view& buffer)$ vector~sipmessage~",
-                "+parseFromBuffer(string_view& buffer)$ sipmessage",
-                "+parseAsync(string_view& buffer, onMsg, onErr)$ size_t",
-                "+serialize(sipmessage& msg)$ string",
-            ]
+        s2j = classes.get("sip2json", {})
+        s2j_file = s2j.get("header_file", "include/siddiqsoft/sip2json.hpp")
+        smsg = classes.get("sipmessage", {})
+        smsg_file = smsg.get("header_file", "include/siddiqsoft/sipmessage.hpp")
+        exc = classes.get("sip2json_exception", {})
+        exc_file = exc.get("header_file", "include/siddiqsoft/private/sip2json_exception.hpp")
 
         lines = [
             "```mermaid",
@@ -1711,32 +1843,42 @@ def generate_class_uml_diagram(xml_dir: Path, target_class: str) -> str:
             "    classDef exceptionClass fill:rgba(185,28,28,0.06),stroke:#b91c1c,stroke-width:1.5px;",
             "    classDef highlightClass fill:rgba(2,132,199,0.18),stroke:#0284c7,stroke-width:3px;",
             "",
-            '    class sip2json["siddiqsoft::sip2json"] {',
-            "        <<final utility>>",
+            f'    class sip2json["{s2j.get("name", "siddiqsoft::sip2json")}"] {{',
         ]
-        for sm in s2j_methods:
-            lines.append(f"        {sm}")
+        if s2j.get("is_final"):
+            lines.append("        <<final utility>>")
+        for m in s2j.get("methods", []):
+            st = "$" if m["static"] else ""
+            ret = f" {m['ret']}" if m["ret"] and m["ret"] != m["name"] else ""
+            lines.append(f"        +{m['name']}({m['params']}){st}{ret}")
         lines.extend([
             "    }",
             "    class sip2json:::highlightClass",
             "",
-            '    class sipmessage["siddiqsoft::sipmessage"]',
+            f'    class sipmessage["{smsg.get("name", "siddiqsoft::sipmessage")}"]',
             "    class sipmessage:::coreClass",
             "",
-            '    class sip2json_exception["siddiqsoft::sip2json_exception"]',
+            f'    class sip2json_exception["{exc.get("name", "siddiqsoft::sip2json_exception")}"]',
             "    class sip2json_exception:::exceptionClass",
             "",
             "    sip2json ..> sipmessage : produces / consumes",
             "    sip2json ..> sip2json_exception : throws",
             "",
-            f'    link sip2json "{base_src_url}/include/siddiqsoft/sip2json.hpp" "Source: include/siddiqsoft/sip2json.hpp"',
-            f'    link sipmessage "{base_src_url}/include/siddiqsoft/sipmessage.hpp" "Source: include/siddiqsoft/sipmessage.hpp"',
-            f'    link sip2json_exception "{base_src_url}/include/siddiqsoft/private/sip2json_exception.hpp" "Source: include/siddiqsoft/private/sip2json_exception.hpp"',
+            f'    link sip2json "{base_src_url}/{s2j_file}" "Source: {s2j_file}"',
+            f'    link sipmessage "{base_src_url}/{smsg_file}" "Source: {smsg_file}"',
+            f'    link sip2json_exception "{base_src_url}/{exc_file}" "Source: {exc_file}"',
             "```",
         ])
         return "\n".join(lines)
 
     elif target_class == "sipmessage":
+        smsg = classes.get("sipmessage", {})
+        smsg_file = smsg.get("header_file", "include/siddiqsoft/sipmessage.hpp")
+        hks = classes.get("HeaderKeySet", {})
+        hks_file = hks.get("header_file", "include/siddiqsoft/private/sip2json_header_keys.hpp")
+        smt = enums.get("SIPMessageType", {})
+        smt_file = smt.get("header_file", "include/siddiqsoft/sipmessage.hpp")
+
         lines = [
             "```mermaid",
             "classDiagram",
@@ -1752,35 +1894,34 @@ def generate_class_uml_diagram(xml_dir: Path, target_class: str) -> str:
             "    }",
             "    class json:::externalClass",
             "",
-            '    class sipmessage["siddiqsoft::sipmessage"] {',
-            "        +sipmessage()",
-            "        +sipmessage(string_view method, string_view uri, string_view callId, uint32_t cseq)",
-            "        +sipmessage(const json& src)",
-            "        +getMethodView() string_view",
-            "        +getUriView() string_view",
-            "        +getCallIDView() string_view",
-            "        +getStatusCode() uint32_t",
-            "        +getReasonView() string_view",
-            "        +getHeader(string_view key) string",
-            "        +setHeader(string_view key, string_view val) sipmessage&",
-            "        +hasHeader(string_view key) bool",
-            "        +getContentTypeView() string_view",
+            f'    class sipmessage["{smsg.get("name", "siddiqsoft::sipmessage")}"] {{',
+        ]
+        for m in smsg.get("methods", []):
+            st = "$" if m["static"] else ""
+            ret = f" {m['ret']}" if m["ret"] and m["ret"] != m["name"] else ""
+            lines.append(f"        +{m['name']}({m['params']}){st}{ret}")
+        lines.extend([
             "    }",
             "    class sipmessage:::highlightClass",
             "",
-            '    class HeaderKeySet["siddiqsoft::HeaderKeySet"] {',
-            "        +string_view canonicalKey",
-            "        +char compactAlias",
-            "        +uint64_t hash",
-            "        +canonical() string_view",
-            "        +lower() string_view",
+            f'    class HeaderKeySet["{hks.get("name", "siddiqsoft::HeaderKeySet")}"] {{',
+        ])
+        for a in hks.get("attribs", []):
+            lines.append(f"        +{a['type']} {a['name']}")
+        for m in hks.get("methods", []):
+            st = "$" if m["static"] else ""
+            ret = f" {m['ret']}" if m["ret"] and m["ret"] != m["name"] else ""
+            lines.append(f"        +{m['name']}({m['params']}){st}{ret}")
+        lines.extend([
             "    }",
             "    class HeaderKeySet:::coreClass",
             "",
-            '    class SIPMessageType["siddiqsoft::SIPMessageType"] {',
+            f'    class SIPMessageType["{smt.get("qualified_name", "siddiqsoft::SIPMessageType")}"] {{',
             "        <<enumeration>>",
-            "        Request = 1",
-            "        Response = 2",
+        ])
+        for v in smt.get("values", []):
+            lines.append(f"        {v}")
+        lines.extend([
             "    }",
             "    class SIPMessageType:::enumClass",
             "",
@@ -1788,38 +1929,20 @@ def generate_class_uml_diagram(xml_dir: Path, target_class: str) -> str:
             "    sipmessage ..> SIPMessageType : classifies",
             "    sipmessage ..> HeaderKeySet : uses",
             "",
-            f'    link sipmessage "{base_src_url}/include/siddiqsoft/sipmessage.hpp" "Source: include/siddiqsoft/sipmessage.hpp"',
+            f'    link sipmessage "{base_src_url}/{smsg_file}" "Source: {smsg_file}"',
             '    link json "https://github.com/nlohmann/json" "External: nlohmann/json"',
-            f'    link HeaderKeySet "{base_src_url}/include/siddiqsoft/private/sip2json_header_keys.hpp" "Source: include/siddiqsoft/private/sip2json_header_keys.hpp"',
-            f'    link SIPMessageType "{base_src_url}/include/siddiqsoft/sipmessage.hpp" "Source: include/siddiqsoft/sipmessage.hpp"',
+            f'    link HeaderKeySet "{base_src_url}/{hks_file}" "Source: {hks_file}"',
+            f'    link SIPMessageType "{base_src_url}/{smt_file}" "Source: {smt_file}"',
             "```",
-        ]
+        ])
         return "\n".join(lines)
 
     elif target_class in ("sip2json_exception", "errors"):
-        exc_xml = xml_dir / "classsiddiqsoft_1_1sip2json__exception.xml"
-        derived_exceptions = []
-        if exc_xml.exists():
-            try:
-                tree = ET.parse(exc_xml)
-                for d in tree.findall(".//derivedcompoundref"):
-                    if d.text:
-                        cls_name = d.text.split("::")[-1]
-                        derived_exceptions.append(cls_name)
-            except Exception as e:
-                print(f"[generate_api_docs] Warning parsing sip2json_exception.xml: {e}")
-
-        if not derived_exceptions:
-            derived_exceptions = [
-                "empty_message_error",
-                "incomplete_buffer_for_content_error",
-                "incomplete_buffer_for_header_error",
-                "incomplete_buffer_for_parse_error",
-                "invalid_document_error",
-                "invalid_startline_error",
-                "missing_required_element",
-                "unsupported_contenttype_error",
-            ]
+        exc = classes.get("sip2json_exception", {})
+        exc_file = exc.get("header_file", "include/siddiqsoft/private/sip2json_exception.hpp")
+        errs = enums.get("sip2jsonErrors", {})
+        errs_file = errs.get("header_file", "include/siddiqsoft/private/sip2json_exception.hpp")
+        derived_exceptions = exc.get("derived", [])
 
         lines = [
             "```mermaid",
@@ -1836,33 +1959,32 @@ def generate_class_uml_diagram(xml_dir: Path, target_class: str) -> str:
             "    }",
             "    class runtime_error:::externalClass",
             "",
-            '    class sip2jsonErrors["siddiqsoft::sip2jsonErrors"] {',
+            f'    class sip2jsonErrors["{errs.get("qualified_name", "siddiqsoft::sip2jsonErrors")}"] {{',
             "        <<enumeration>>",
-            "        unknown = -1",
-            "        success = 0",
-            "        invalid_document = 1",
-            "        empty_message = 2",
-            "        invalid_startline = 3",
-            "        incomplete_buffer_for_header = 4",
-            "        incomplete_buffer_for_content = 5",
-            "        incomplete_buffer_for_parse = 6",
-            "        missing_required_element = 7",
-            "        unsupported_contenttype = 8",
+        ]
+        for v in errs.get("values", []):
+            lines.append(f"        {v}")
+        lines.extend([
             "    }",
             "    class sip2jsonErrors:::enumClass",
             "",
-            '    class sip2json_exception["siddiqsoft::sip2json_exception"] {',
-            "        +sip2jsonErrors errCode",
-            "        +sip2json_exception(string message, sip2jsonErrors code)",
-            "        +what() const char*",
+            f'    class sip2json_exception["{exc.get("name", "siddiqsoft::sip2json_exception")}"] {{',
+        ])
+        for a in exc.get("attribs", []):
+            lines.append(f"        +{a['type']} {a['name']}")
+        for m in exc.get("methods", []):
+            st = "$" if m["static"] else ""
+            ret = f" {m['ret']}" if m["ret"] and m["ret"] != m["name"] else ""
+            lines.append(f"        +{m['name']}({m['params']}){st}{ret}")
+        lines.extend([
             "    }",
             "    class sip2json_exception:::highlightClass",
             "",
-        ]
+        ])
 
-        for exc in derived_exceptions:
-            lines.append(f'    class {exc}["siddiqsoft::{exc}"]')
-            lines.append(f"    class {exc}:::exceptionClass")
+        for de in derived_exceptions:
+            lines.append(f'    class {de}["siddiqsoft::{de}"]')
+            lines.append(f"    class {de}:::exceptionClass")
 
         lines.extend([
             "",
@@ -1870,20 +1992,59 @@ def generate_class_uml_diagram(xml_dir: Path, target_class: str) -> str:
             "    sip2json_exception ..> sip2jsonErrors : contains",
         ])
 
-        for exc in derived_exceptions:
-            lines.append(f"    sip2json_exception <|-- {exc}")
+        for de in derived_exceptions:
+            lines.append(f"    sip2json_exception <|-- {de}")
 
         lines.extend([
             "",
-            f'    link sip2json_exception "{base_src_url}/include/siddiqsoft/private/sip2json_exception.hpp" "Source: include/siddiqsoft/private/sip2json_exception.hpp"',
-            f'    link sip2jsonErrors "{base_src_url}/include/siddiqsoft/private/sip2json_exception.hpp" "Source: include/siddiqsoft/private/sip2json_exception.hpp"',
+            f'    link sip2json_exception "{base_src_url}/{exc_file}" "Source: {exc_file}"',
+            f'    link sip2jsonErrors "{base_src_url}/{errs_file}" "Source: {errs_file}"',
             '    link runtime_error "https://en.cppreference.com/w/cpp/error/runtime_error" "Standard Library: std::runtime_error"',
         ])
 
-        for exc in derived_exceptions:
-            lines.append(f'    link {exc} "{base_src_url}/include/siddiqsoft/private/sip2json_exception.hpp" "Source: include/siddiqsoft/private/sip2json_exception.hpp"')
+        for de in derived_exceptions:
+            de_obj = classes.get(de)
+            de_file = de_obj.get("header_file") if de_obj else exc_file
+            lines.append(f'    link {de} "{base_src_url}/{de_file}" "Source: {de_file}"')
 
         lines.append("```")
+        return "\n".join(lines)
+
+    elif target_class in ("HeaderKeySet", "header_keys"):
+        hks = classes.get("HeaderKeySet", {})
+        hks_file = hks.get("header_file", "include/siddiqsoft/private/sip2json_header_keys.hpp")
+        smsg = classes.get("sipmessage", {})
+        smsg_file = smsg.get("header_file", "include/siddiqsoft/sipmessage.hpp")
+
+        lines = [
+            "```mermaid",
+            "classDiagram",
+            "    direction TB",
+            "",
+            "    classDef coreClass fill:rgba(35,73,109,0.08),stroke:#23496d,stroke-width:2px;",
+            "    classDef highlightClass fill:rgba(2,132,199,0.18),stroke:#0284c7,stroke-width:3px;",
+            "",
+            f'    class HeaderKeySet["{hks.get("name", "siddiqsoft::HeaderKeySet")}"] {{',
+        ]
+        for a in hks.get("attribs", []):
+            lines.append(f"        +{a['type']} {a['name']}")
+        for m in hks.get("methods", []):
+            st = "$" if m["static"] else ""
+            ret = f" {m['ret']}" if m["ret"] and m["ret"] != m["name"] else ""
+            lines.append(f"        +{m['name']}({m['params']}){st}{ret}")
+        lines.extend([
+            "    }",
+            "    class HeaderKeySet:::highlightClass",
+            "",
+            '    class sipmessage["siddiqsoft::sipmessage"]',
+            "    class sipmessage:::coreClass",
+            "",
+            "    sipmessage ..> HeaderKeySet : uses",
+            "",
+            f'    link HeaderKeySet "{base_src_url}/{hks_file}" "Source: {hks_file}"',
+            f'    link sipmessage "{base_src_url}/{smsg_file}" "Source: {smsg_file}"',
+            "```",
+        ])
         return "\n".join(lines)
 
     return generate_uml_class_diagram(xml_dir)
@@ -1891,63 +2052,12 @@ def generate_class_uml_diagram(xml_dir: Path, target_class: str) -> str:
 
 def generate_uml_class_diagram(xml_dir: Path, highlight_class: str = None) -> str:
     """
-    Extracts class hierarchies, methods, and relationships from Doxygen XML
+    Extracts class hierarchies, methods, and relationships dynamically from Doxygen XML AST
     and constructs an OpenCV/Material-styled Mermaid UML class diagram.
     Optionally applies highlightClass styling to highlight_class.
     """
-    # 1. Parse sip2json static methods from XML
-    s2j_xml = xml_dir / "classsiddiqsoft_1_1sip2json.xml"
-    s2j_methods = []
-    if s2j_xml.exists():
-        try:
-            tree = ET.parse(s2j_xml)
-            for m in tree.findall(".//memberdef[@kind='function']"):
-                if m.get("prot") == "public":
-                    mname = m.findtext("name")
-                    if mname:
-                        if mname == "parse" and not any("parse(string_view" in s for s in s2j_methods):
-                            s2j_methods.append("+parse(string_view& buffer)$ vector~sipmessage~")
-                        elif mname == "parseFromBuffer" and not any("parseFromBuffer(string_view" in s for s in s2j_methods):
-                            s2j_methods.append("+parseFromBuffer(string_view& buffer)$ sipmessage")
-                        elif mname == "parseAsync" and not any("parseAsync(string_view" in s for s in s2j_methods):
-                            s2j_methods.append("+parseAsync(string_view& buffer, onMsg, onErr)$ size_t")
-                        elif mname == "serialize" and not any("serialize" in s for s in s2j_methods):
-                            s2j_methods.append("+serialize(sipmessage& msg)$ string")
-        except Exception as e:
-            print(f"[generate_api_docs] Warning parsing sip2json.xml: {e}")
-
-    if not s2j_methods:
-        s2j_methods = [
-            "+parse(string_view& buffer)$ vector~sipmessage~",
-            "+parseFromBuffer(string_view& buffer)$ sipmessage",
-            "+parseAsync(string_view& buffer, onMsg, onErr)$ size_t",
-            "+serialize(sipmessage& msg)$ string",
-        ]
-
-    # 2. Parse sip2json_exception derived classes from XML
-    exc_xml = xml_dir / "classsiddiqsoft_1_1sip2json__exception.xml"
-    derived_exceptions = []
-    if exc_xml.exists():
-        try:
-            tree = ET.parse(exc_xml)
-            for d in tree.findall(".//derivedcompoundref"):
-                if d.text:
-                    cls_name = d.text.split("::")[-1]
-                    derived_exceptions.append(cls_name)
-        except Exception as e:
-            print(f"[generate_api_docs] Warning parsing sip2json_exception.xml: {e}")
-
-    if not derived_exceptions:
-        derived_exceptions = [
-            "empty_message_error",
-            "incomplete_buffer_for_content_error",
-            "incomplete_buffer_for_header_error",
-            "incomplete_buffer_for_parse_error",
-            "invalid_document_error",
-            "invalid_startline_error",
-            "missing_required_element",
-            "unsupported_contenttype_error",
-        ]
+    classes, enums = parse_doxygen_ast(xml_dir)
+    base_src_url = "https://github.com/SiddiqSoft/sip2json/blob/master"
 
     lines = [
         "```mermaid",
@@ -1971,107 +2081,121 @@ def generate_uml_class_diagram(xml_dir: Path, highlight_class: str = None) -> st
         "    }",
         "    class runtime_error:::externalClass",
         "",
-        '    class sip2json["siddiqsoft::sip2json"] {',
-        "        <<final utility>>",
     ]
 
-    for sm in s2j_methods:
-        lines.append(f"        {sm}")
+    # 1. sip2json
+    s2j = classes.get("sip2json", {})
+    if s2j:
+        lines.append(f'    class sip2json["{s2j.get("name", "siddiqsoft::sip2json")}"] {{')
+        if s2j.get("is_final"):
+            lines.append("        <<final utility>>")
+        for m in s2j.get("methods", []):
+            st = "$" if m["static"] else ""
+            ret = f" {m['ret']}" if m["ret"] and m["ret"] != m["name"] else ""
+            lines.append(f"        +{m['name']}({m['params']}){st}{ret}")
+        cls_s2j = "highlightClass" if highlight_class == "sip2json" else "utilityClass"
+        lines.extend([
+            "    }",
+            f"    class sip2json:::{cls_s2j}",
+            "",
+        ])
 
-    cls_s2j = "highlightClass" if highlight_class == "sip2json" else "utilityClass"
-    lines.extend([
-        "    }",
-        f"    class sip2json:::{cls_s2j}",
-        "",
-        '    class sipmessage["siddiqsoft::sipmessage"] {',
-        "        +sipmessage()",
-        "        +sipmessage(string_view method, string_view uri, string_view callId, uint32_t cseq)",
-        "        +sipmessage(const json& src)",
-        "        +getMethodView() string_view",
-        "        +getUriView() string_view",
-        "        +getCallIDView() string_view",
-        "        +getStatusCode() uint32_t",
-        "        +getReasonView() string_view",
-        "        +getHeader(string_view key) string",
-        "        +setHeader(string_view key, string_view val) sipmessage&",
-        "        +hasHeader(string_view key) bool",
-        "        +getContentTypeView() string_view",
-        "    }",
-    ])
+    # 2. sipmessage
+    smsg = classes.get("sipmessage", {})
+    if smsg:
+        lines.append(f'    class sipmessage["{smsg.get("name", "siddiqsoft::sipmessage")}"] {{')
+        for m in smsg.get("methods", []):
+            st = "$" if m["static"] else ""
+            ret = f" {m['ret']}" if m["ret"] and m["ret"] != m["name"] else ""
+            lines.append(f"        +{m['name']}({m['params']}){st}{ret}")
+        cls_smsg = "highlightClass" if highlight_class == "sipmessage" else "coreClass"
+        lines.extend([
+            "    }",
+            f"    class sipmessage:::{cls_smsg}",
+            "",
+        ])
 
-    cls_smsg = "highlightClass" if highlight_class == "sipmessage" else "coreClass"
-    lines.extend([
-        f"    class sipmessage:::{cls_smsg}",
-        "",
-        '    class HeaderKeySet["siddiqsoft::HeaderKeySet"] {',
-        "        +string_view canonicalKey",
-        "        +string_view canonicalUpper",
-        "        +char compactAlias",
-        "        +uint64_t hash",
-        "        +HeaderKeySet(string_view key)",
-        "        +canonical() string_view",
-        "        +lower() string_view",
-        "    }",
-    ])
+    # 3. HeaderKeySet
+    hks = classes.get("HeaderKeySet", {})
+    if hks:
+        lines.append(f'    class HeaderKeySet["{hks.get("name", "siddiqsoft::HeaderKeySet")}"] {{')
+        for a in hks.get("attribs", []):
+            lines.append(f"        +{a['type']} {a['name']}")
+        for m in hks.get("methods", []):
+            st = "$" if m["static"] else ""
+            ret = f" {m['ret']}" if m["ret"] and m["ret"] != m["name"] else ""
+            lines.append(f"        +{m['name']}({m['params']}){st}{ret}")
+        cls_hks = "highlightClass" if highlight_class == "HeaderKeySet" else "coreClass"
+        lines.extend([
+            "    }",
+            f"    class HeaderKeySet:::{cls_hks}",
+            "",
+        ])
 
-    cls_hks = "highlightClass" if highlight_class == "HeaderKeySet" else "coreClass"
-    lines.extend([
-        f"    class HeaderKeySet:::{cls_hks}",
-        "",
-        '    class SIPMessageType["siddiqsoft::SIPMessageType"] {',
-        "        <<enumeration>>",
-        "        Request = 1",
-        "        Response = 2",
-        "    }",
-    ])
+    # 4. SIPMessageType
+    smt = enums.get("SIPMessageType", {})
+    if smt:
+        lines.extend([
+            f'    class SIPMessageType["{smt.get("qualified_name", "siddiqsoft::SIPMessageType")}"] {{',
+            "        <<enumeration>>",
+        ])
+        for v in smt.get("values", []):
+            lines.append(f"        {v}")
+        cls_smt = "highlightClass" if highlight_class == "SIPMessageType" else "enumClass"
+        lines.extend([
+            "    }",
+            f"    class SIPMessageType:::{cls_smt}",
+            "",
+        ])
 
-    cls_smt = "highlightClass" if highlight_class == "SIPMessageType" else "enumClass"
-    lines.extend([
-        f"    class SIPMessageType:::{cls_smt}",
-        "",
-        '    class sip2jsonErrors["siddiqsoft::sip2jsonErrors"] {',
-        "        <<enumeration>>",
-        "        unknown = -1",
-        "        success = 0",
-        "        invalid_document = 1",
-        "        empty_message = 2",
-        "        invalid_startline = 3",
-        "        incomplete_buffer_for_header = 4",
-        "        incomplete_buffer_for_content = 5",
-        "        incomplete_buffer_for_parse = 6",
-        "        missing_required_element = 7",
-        "        unsupported_contenttype = 8",
-        "    }",
-    ])
+    # 5. sip2jsonErrors
+    errs = enums.get("sip2jsonErrors", {})
+    if errs:
+        lines.extend([
+            f'    class sip2jsonErrors["{errs.get("qualified_name", "siddiqsoft::sip2jsonErrors")}"] {{',
+            "        <<enumeration>>",
+        ])
+        for v in errs.get("values", []):
+            lines.append(f"        {v}")
+        cls_errs = "highlightClass" if highlight_class == "sip2jsonErrors" else "enumClass"
+        lines.extend([
+            "    }",
+            f"    class sip2jsonErrors:::{cls_errs}",
+            "",
+        ])
 
-    cls_errs = "highlightClass" if highlight_class == "sip2jsonErrors" else "enumClass"
-    lines.extend([
-        f"    class sip2jsonErrors:::{cls_errs}",
-        "",
-        '    class sip2json_exception["siddiqsoft::sip2json_exception"] {',
-        "        +sip2jsonErrors errCode",
-        "        +sip2json_exception(string message, sip2jsonErrors code)",
-        "        +what() const char*",
-        "    }",
-    ])
+    # 6. sip2json_exception
+    exc = classes.get("sip2json_exception", {})
+    if exc:
+        lines.append(f'    class sip2json_exception["{exc.get("name", "siddiqsoft::sip2json_exception")}"] {{')
+        for a in exc.get("attribs", []):
+            lines.append(f"        +{a['type']} {a['name']}")
+        for m in exc.get("methods", []):
+            st = "$" if m["static"] else ""
+            ret = f" {m['ret']}" if m["ret"] and m["ret"] != m["name"] else ""
+            lines.append(f"        +{m['name']}({m['params']}){st}{ret}")
+        cls_exc = "highlightClass" if highlight_class == "sip2json_exception" else "exceptionClass"
+        lines.extend([
+            "    }",
+            f"    class sip2json_exception:::{cls_exc}",
+            "",
+        ])
 
-    cls_exc = "highlightClass" if highlight_class == "sip2json_exception" else "exceptionClass"
-    lines.append(f"    class sip2json_exception:::{cls_exc}")
+    # 7. Derived exceptions
+    derived_exceptions = exc.get("derived", []) if exc else []
+    for de in derived_exceptions:
+        lines.append(f'    class {de}["siddiqsoft::{de}"]')
+        cls_de = "highlightClass" if highlight_class == de else "exceptionClass"
+        lines.append(f"    class {de}:::{cls_de}")
+
     lines.append("")
-
-    for exc in derived_exceptions:
-        lines.append(f'    class {exc}["siddiqsoft::{exc}"]')
-        cls_this_exc = "highlightClass" if highlight_class == exc else "exceptionClass"
-        lines.append(f"    class {exc}:::{cls_this_exc}")
-
-    lines.extend([
-        "",
-        "    json <|-- sipmessage : public inheritance",
-        "    runtime_error <|-- sip2json_exception : public inheritance",
-    ])
-
-    for exc in derived_exceptions:
-        lines.append(f"    sip2json_exception <|-- {exc}")
+    # Inheritance from AST
+    if smsg and any("json" in b for b in smsg.get("bases", [])):
+        lines.append("    json <|-- sipmessage : public inheritance")
+    if exc and any("runtime_error" in b for b in exc.get("bases", [])):
+        lines.append("    runtime_error <|-- sip2json_exception : public inheritance")
+    for de in derived_exceptions:
+        lines.append(f"    sip2json_exception <|-- {de}")
 
     lines.extend([
         "",
@@ -2080,21 +2204,24 @@ def generate_uml_class_diagram(xml_dir: Path, highlight_class: str = None) -> st
         "    sipmessage ..> SIPMessageType : classifies",
         "    sipmessage ..> HeaderKeySet : uses",
         "    sip2json_exception ..> sip2jsonErrors : contains",
-    ])
-
-    base_src_url = "https://github.com/SiddiqSoft/sip2json/blob/master"
-    lines.extend([
         "",
-        f'    link sip2json "{base_src_url}/include/siddiqsoft/sip2json.hpp" "Source: include/siddiqsoft/sip2json.hpp"',
-        f'    link sipmessage "{base_src_url}/include/siddiqsoft/sipmessage.hpp" "Source: include/siddiqsoft/sipmessage.hpp"',
-        f'    link HeaderKeySet "{base_src_url}/include/siddiqsoft/private/sip2json_header_keys.hpp" "Source: include/siddiqsoft/private/sip2json_header_keys.hpp"',
-        f'    link SIPMessageType "{base_src_url}/include/siddiqsoft/sipmessage.hpp" "Source: include/siddiqsoft/sipmessage.hpp"',
-        f'    link sip2jsonErrors "{base_src_url}/include/siddiqsoft/private/sip2json_exception.hpp" "Source: include/siddiqsoft/private/sip2json_exception.hpp"',
-        f'    link sip2json_exception "{base_src_url}/include/siddiqsoft/private/sip2json_exception.hpp" "Source: include/siddiqsoft/private/sip2json_exception.hpp"',
     ])
 
-    for exc in derived_exceptions:
-        lines.append(f'    link {exc} "{base_src_url}/include/siddiqsoft/private/sip2json_exception.hpp" "Source: include/siddiqsoft/private/sip2json_exception.hpp"')
+    # Links from AST
+    for c_key in ["sip2json", "sipmessage", "HeaderKeySet", "sip2json_exception"]:
+        c_obj = classes.get(c_key)
+        if c_obj and c_obj.get("header_file"):
+            lines.append(f'    link {c_key} "{base_src_url}/{c_obj["header_file"]}" "Source: {c_obj["header_file"]}"')
+
+    for e_key in ["SIPMessageType", "sip2jsonErrors"]:
+        e_obj = enums.get(e_key)
+        if e_obj and e_obj.get("header_file"):
+            lines.append(f'    link {e_key} "{base_src_url}/{e_obj["header_file"]}" "Source: {e_obj["header_file"]}"')
+
+    for de in derived_exceptions:
+        de_obj = classes.get(de)
+        de_file = de_obj.get("header_file") if de_obj else "include/siddiqsoft/private/sip2json_exception.hpp"
+        lines.append(f'    link {de} "{base_src_url}/{de_file}" "Source: {de_file}"')
 
     lines.extend([
         '    link json "https://github.com/nlohmann/json" "External: nlohmann/json"',
@@ -2133,78 +2260,317 @@ def generate_source_mapping_table(api_prefix: str = "../api/") -> str:
     ])
 
 
-def update_architecture_uml(arch_file: Path, uml_content: str):
+def generate_structure_diagram() -> str:
     """
-    Injects or updates the UML class diagram and source code mapping in docs/architecture/index.md.
+    Constructs an architectural / component structure Mermaid diagram
+    showing layers, modules, data flow, and clickable source links.
+    """
+    base_src_url = "https://github.com/SiddiqSoft/sip2json/blob/master"
+    return f"""```mermaid
+flowchart TD
+    subgraph PublicAPI["Public API Layer (include/siddiqsoft/)"]
+        S2J["siddiqsoft::sip2json<br/><i>Static Parser & Serializer Facade</i>"]
+        SMSG["siddiqsoft::sipmessage<br/><i>SIP Message Container DTO</i>"]
+    end
+
+    subgraph InternalEngines["Parser & Serializer Engines (private/)"]
+        Parser["sip2json_parser<br/><i>Zero-Copy Token & Delimiter Scanner</i>"]
+        Serial["sip2json_serializer<br/><i>RFC 3261 Wire Serializer</i>"]
+        SDP["sip2json_sdp<br/><i>RFC 4566 / 8866 SDP Body Engine</i>"]
+    end
+
+    subgraph ProtocolDict["Dictionaries & Token Tables (private/)"]
+        HKS["sip2json_header_keys<br/><i>64-bit constexpr FNV-1a Dispatch</i>"]
+        Const["sip2json_constants<br/><i>Method Literals & Delimiters</i>"]
+        Resp["sip2json_response_codes<br/><i>Numeric Status Code Tables</i>"]
+        DT["sip2json_datetime<br/><i>ISO 8601 & RFC 1123 Generators</i>"]
+    end
+
+    subgraph Diagnostics["Diagnostics & Utilities (private/)"]
+        Exc["sip2json_exception<br/><i>Diagnostics & sip2jsonErrors</i>"]
+        Utils["sip2json_utils<br/><i>String View & Memory Utilities</i>"]
+    end
+
+    subgraph External["External Base DOM"]
+        JSON["nlohmann::json<br/><i>JSON Document Base Class</i>"]
+        StdErr["std::runtime_error<br/><i>C++ Standard Exception</i>"]
+    end
+
+    S2J -->|produces / consumes| SMSG
+    SMSG -->|inherits| JSON
+    Exc -->|inherits| StdErr
+
+    S2J -->|delegates streaming| Parser
+    S2J -->|delegates serialization| Serial
+    Parser -->|delegates body payload| SDP
+    Serial -->|formats payload| SDP
+    Parser -->|canonical lookup| HKS
+    Parser -->|scans delimiters| Utils
+    Parser -->|throws framing errors| Exc
+    SMSG -->|queries aliases| HKS
+    SMSG -->|references codes| Resp
+    SMSG -->|timestamps| DT
+    Serial -->|delimiters & tokens| Const
+
+    classDef apiLayer fill:rgba(35,73,109,0.08),stroke:#23496d,stroke-width:2px;
+    classDef engineLayer fill:rgba(15,118,110,0.08),stroke:#0f766e,stroke-width:2px;
+    classDef dictLayer fill:rgba(109,40,217,0.06),stroke:#6d28d9,stroke-width:1.5px;
+    classDef diagLayer fill:rgba(185,28,28,0.06),stroke:#b91c1c,stroke-width:1.5px;
+    classDef extLayer fill:rgba(100,116,139,0.06),stroke:#64748b,stroke-width:1.5px,stroke-dasharray: 4 3;
+
+    class S2J,SMSG apiLayer;
+    class Parser,Serial,SDP engineLayer;
+    class HKS,Const,Resp,DT dictLayer;
+    class Exc,Utils diagLayer;
+    class JSON,StdErr extLayer;
+
+    click S2J "{base_src_url}/include/siddiqsoft/sip2json.hpp" "Source: sip2json.hpp"
+    click SMSG "{base_src_url}/include/siddiqsoft/sipmessage.hpp" "Source: sipmessage.hpp"
+    click Parser "{base_src_url}/include/siddiqsoft/private/sip2json_parser.hpp" "Source: sip2json_parser.hpp"
+    click Serial "{base_src_url}/include/siddiqsoft/private/sip2json_serializer.hpp" "Source: sip2json_serializer.hpp"
+    click SDP "{base_src_url}/include/siddiqsoft/private/sip2json_sdp.hpp" "Source: sip2json_sdp.hpp"
+    click HKS "{base_src_url}/include/siddiqsoft/private/sip2json_header_keys.hpp" "Source: sip2json_header_keys.hpp"
+    click Exc "{base_src_url}/include/siddiqsoft/private/sip2json_exception.hpp" "Source: sip2json_exception.hpp"
+```"""
+
+
+def generate_control_flow_diagram() -> str:
+    """
+    Constructs a Mermaid sequence diagram illustrating the control-flow
+    and callback execution sequence for SIP frame and message processing.
+    """
+    return """```mermaid
+sequenceDiagram
+    autonumber
+    actor App as Caller / Transport
+    participant S2J as siddiqsoft::sip2json
+    participant Parser as sip2json_parser
+    participant HKS as sip2json_header_keys
+    participant SDP as sip2json_sdp
+    participant Msg as siddiqsoft::sipmessage
+
+    App->>S2J: parseAsync(frameBuffer, onMsg, onErr)
+    activate S2J
+    loop While CRLF delimiter present in buffer
+        S2J->>Parser: parseStartLine(sipm, buffer)
+        alt Invalid start line
+            Parser-->>S2J: framing failure
+            S2J->>App: onErr(invalid_startline_error, buffer)
+        else Valid Request or Response
+            Parser-->>S2J: populates start line (/s)
+            S2J->>Parser: parseHeaders(sipm, buffer)
+            loop For each header line
+                Parser->>HKS: hash_header_key(keyToken)
+                HKS-->>Parser: canonical name & alias mapping
+                Parser->>Msg: storeHeaderValue(canonKey, val)
+            end
+            opt Content-Length > 0
+                alt Content-Type == application/sdp
+                    S2J->>SDP: parseSdp(sipm, bodyBuffer)
+                    SDP->>Msg: populates structured SDP (/b/sdp)
+                else Raw Payload
+                    S2J->>Msg: stores raw payload (/b/raw)
+                end
+            end
+            S2J->>Msg: injects metadata (/meta)
+            S2J->>App: onMsg(std::move(sipm))
+        end
+    end
+    deactivate S2J
+```"""
+
+
+def generate_namespace_diagram(xml_dir: Path, ns_name: str = "siddiqsoft") -> str:
+    """
+    Constructs a namespace-level UML package/class diagram illustrating
+    all components contained within the specified namespace and their
+    external boundaries (e.g. nlohmann, std).
+    """
+    classes, enums = parse_doxygen_ast(xml_dir)
+    base_src_url = "https://github.com/SiddiqSoft/sip2json/blob/master"
+
+    lines = [
+        "```mermaid",
+        "classDiagram",
+        "    direction TB",
+        "",
+        "    classDef coreClass fill:rgba(35,73,109,0.08),stroke:#23496d,stroke-width:2px;",
+        "    classDef utilityClass fill:rgba(15,118,110,0.08),stroke:#0f766e,stroke-width:2px;",
+        "    classDef exceptionClass fill:rgba(185,28,28,0.06),stroke:#b91c1c,stroke-width:1.5px;",
+        "    classDef enumClass fill:rgba(109,40,217,0.06),stroke:#6d28d9,stroke-width:1.5px;",
+        "    classDef externalClass fill:rgba(100,116,139,0.06),stroke:#64748b,stroke-width:1.5px,stroke-dasharray: 4 3;",
+        "",
+        f"    namespace {ns_name} {{",
+        "        class sip2json",
+        "        class sipmessage",
+        "        class HeaderKeySet",
+        "        class sip2jsonErrors",
+        "        class sip2json_exception",
+    ]
+
+    exc = classes.get("sip2json_exception", {})
+    derived_exceptions = exc.get("derived", []) if exc else []
+    for de in derived_exceptions:
+        lines.append(f"        class {de}")
+
+    lines.extend([
+        "    }",
+        "",
+        "    namespace nlohmann {",
+        "        class json",
+        "    }",
+        "",
+        "    namespace std {",
+        "        class runtime_error",
+        "    }",
+        "",
+        "    json <|-- sipmessage : public inheritance",
+        "    runtime_error <|-- sip2json_exception : public inheritance",
+    ])
+
+    for de in derived_exceptions:
+        lines.append(f"    sip2json_exception <|-- {de}")
+
+    lines.extend([
+        "",
+        "    sip2json ..> sipmessage : produces / consumes",
+        "    sip2json ..> sip2json_exception : throws",
+        "    sipmessage ..> HeaderKeySet : uses",
+        "    sip2json_exception ..> sip2jsonErrors : contains",
+        "",
+        "    class sip2json:::utilityClass",
+        "    class sipmessage:::coreClass",
+        "    class HeaderKeySet:::coreClass",
+        "    class sip2jsonErrors:::enumClass",
+        "    class sip2json_exception:::exceptionClass",
+    ])
+
+    for de in derived_exceptions:
+        lines.append(f"    class {de}:::exceptionClass")
+
+    lines.extend([
+        "    class json:::externalClass",
+        "    class runtime_error:::externalClass",
+        "",
+    ])
+
+    for c_key in ["sip2json", "sipmessage", "HeaderKeySet", "sip2json_exception"]:
+        c_obj = classes.get(c_key)
+        if c_obj and c_obj.get("header_file"):
+            lines.append(f'    link {c_key} "{base_src_url}/{c_obj["header_file"]}" "Source: {c_obj["header_file"]}"')
+
+    errs = enums.get("sip2jsonErrors")
+    if errs and errs.get("header_file"):
+        lines.append(f'    link sip2jsonErrors "{base_src_url}/{errs["header_file"]}" "Source: {errs["header_file"]}"')
+
+    for de in derived_exceptions:
+        de_obj = classes.get(de)
+        de_file = de_obj.get("header_file") if de_obj else "include/siddiqsoft/private/sip2json_exception.hpp"
+        lines.append(f'    link {de} "{base_src_url}/{de_file}" "Source: {de_file}"')
+
+    lines.extend([
+        '    link json "https://github.com/nlohmann/json" "External: nlohmann/json"',
+        '    link runtime_error "https://en.cppreference.com/w/cpp/error/runtime_error" "Standard Library: std::runtime_error"',
+        "```",
+    ])
+
+    return "\n".join(lines)
+
+
+def generate_snippets(repo_root: Path, xml_dir: Path):
+    """
+    Generates all auto-generated diagrams and tables into docs/snippets/:
+      uml-complete.md, uml-structure.md, uml-control-flow.md, uml-namespace.md,
+      uml-source-table.md, and uml-<class-name>.md for every class in the AST.
+    """
+    snippets_dir = repo_root / "docs" / "snippets"
+    snippets_dir.mkdir(parents=True, exist_ok=True)
+
+    classes, enums = parse_doxygen_ast(xml_dir)
+
+    complete_diagram = generate_uml_class_diagram(xml_dir)
+    (snippets_dir / "uml-complete.md").write_text(complete_diagram + "\n", encoding="utf-8")
+    (snippets_dir / "system_uml_diagram.md").write_text(complete_diagram + "\n", encoding="utf-8")
+
+    structure_diagram = generate_structure_diagram()
+    (snippets_dir / "uml-structure.md").write_text(structure_diagram + "\n", encoding="utf-8")
+
+    flow_diagram = generate_control_flow_diagram()
+    (snippets_dir / "uml-control-flow.md").write_text(flow_diagram + "\n", encoding="utf-8")
+
+    ns_diagram = generate_namespace_diagram(xml_dir, "siddiqsoft")
+    (snippets_dir / "uml-namespace.md").write_text(ns_diagram + "\n", encoding="utf-8")
+    (snippets_dir / "uml_namespace.md").write_text(ns_diagram + "\n", encoding="utf-8")
+    (snippets_dir / "uml-namespace-siddiqsoft.md").write_text(ns_diagram + "\n", encoding="utf-8")
+
+    source_table = generate_source_mapping_table(api_prefix="../api/")
+    (snippets_dir / "uml-source-table.md").write_text(source_table + "\n", encoding="utf-8")
+    (snippets_dir / "source_mapping_table.md").write_text(source_table + "\n", encoding="utf-8")
+
+    print(f"[generate_api_docs] Wrote structural/sequence UML snippets to {snippets_dir}")
+
+
+def update_architecture_uml(arch_file: Path, uml_content: str = ""):
+    """
+    Ensures docs/architecture/index.md uses clean <!-- @@uml-diag:... --> tags.
     """
     if not arch_file.exists():
         return
     text = arch_file.read_text(encoding="utf-8")
-    section_title = "## UML Class Diagram\n\n"
+
+    conversions = [
+        ('--8<-- "docs/snippets/system_uml_diagram.md"\n\n--8<-- "docs/snippets/source_mapping_table.md"', "<!-- @@uml-diag:complete -->\n\n<!-- @@uml-diag:source-table -->"),
+        ("uml:structure", "<!-- @@uml-diag:structure -->"),
+        ("uml:control-flow", "<!-- @@uml-diag:control-flow -->"),
+        ("uml:namespace", "<!-- @@uml-diagram:namespace -->"),
+        ("uml:complete", "<!-- @@uml-diag:complete -->"),
+        ("uml:source-table", "<!-- @@uml-diag:source-table -->"),
+        ("@@uml-diag:structure", "<!-- @@uml-diag:structure -->"),
+        ("@@uml-diag:control-flow", "<!-- @@uml-diag:control-flow -->"),
+        ("@@uml-diagram:namespace", "<!-- @@uml-diagram:namespace -->"),
+        ("@@uml-diag:complete", "<!-- @@uml-diag:complete -->"),
+        ("@@uml-diag:source-table", "<!-- @@uml-diag:source-table -->"),
+    ]
+    for old, new in conversions:
+        if old in text:
+            text = text.replace(old, new)
+
     start_tag = "<!-- UML_CLASS_DIAGRAM_START -->"
     end_tag = "<!-- UML_CLASS_DIAGRAM_END -->"
-
-    source_table = generate_source_mapping_table(api_prefix="../api/")
-    combined_content = f"{uml_content}\n\n{source_table}"
-    new_block = f"{start_tag}\n{combined_content}\n{end_tag}"
-
     if start_tag in text and end_tag in text:
         pattern = re.compile(rf"{re.escape(start_tag)}.*?{re.escape(end_tag)}", re.DOTALL)
-        updated = pattern.sub(new_block, text)
-    else:
-        target = "## Component Relationships & Data Flow"
-        if target in text:
-            next_heading_idx = text.find("\n## ", text.find(target) + len(target))
-            if next_heading_idx != -1:
-                updated = (
-                    text[:next_heading_idx]
-                    + f"\n\n{section_title}{new_block}\n"
-                    + text[next_heading_idx:]
-                )
-            else:
-                updated = text + f"\n\n{section_title}{new_block}\n"
-        else:
-            updated = text + f"\n\n{section_title}{new_block}\n"
+        text = pattern.sub("<!-- @@uml-diag:complete -->\n\n<!-- @@uml-diag:source-table -->", text)
 
-    if updated != text:
-        arch_file.write_text(updated, encoding="utf-8")
-        print(f"[generate_api_docs] Updated UML Class Diagram in {arch_file}")
+    arch_file.write_text(text, encoding="utf-8")
 
 
-def update_maintainer_uml(maintainer_file: Path, uml_content: str):
+def update_maintainer_uml(maintainer_file: Path, uml_content: str = ""):
     """
-    Injects or updates the UML class diagram and source code mapping in docs/maintainers/pipelines.md.
+    Ensures maintainer documentation uses clean <!-- @@uml-diag:... --> tags.
     """
     if not maintainer_file.exists():
         return
     text = maintainer_file.read_text(encoding="utf-8")
-    section_title = "## Codebase Architecture & UML Class Diagram\n\n"
-    lead_text = "The following UML class diagram illustrates the primary classes, relationships, and exception hierarchy in `siddiqsoft::sip2json`. The diagram is auto-generated from the C++ source AST via Doxygen XML. Each node in the diagram links directly to its source header file on GitHub.\n\n"
+
+    conversions = [
+        ('--8<-- "docs/snippets/system_uml_diagram.md"\n\n--8<-- "docs/snippets/source_mapping_table.md"', "<!-- @@uml-diag:complete -->\n\n<!-- @@uml-diag:source-table -->"),
+        ("uml:complete", "<!-- @@uml-diag:complete -->"),
+        ("uml:source-table", "<!-- @@uml-diag:source-table -->"),
+        ("@@uml-diag:complete", "<!-- @@uml-diag:complete -->"),
+        ("@@uml-diag:source-table", "<!-- @@uml-diag:source-table -->"),
+    ]
+    for old, new in conversions:
+        if old in text:
+            text = text.replace(old, new)
+
     start_tag = "<!-- UML_CLASS_DIAGRAM_START -->"
     end_tag = "<!-- UML_CLASS_DIAGRAM_END -->"
-
-    source_table = generate_source_mapping_table(api_prefix="../api/")
-    combined_content = f"{lead_text}{uml_content}\n\n{source_table}"
-    new_block = f"{start_tag}\n{combined_content}\n{end_tag}"
-
+    lead_text = "The following UML class diagram illustrates the primary classes, relationships, and exception hierarchy in `siddiqsoft::sip2json`. The diagram is auto-generated from the C++ source AST via Doxygen XML. Each node in the diagram links directly to its source header file on GitHub.\n\n"
     if start_tag in text and end_tag in text:
         pattern = re.compile(rf"{re.escape(start_tag)}.*?{re.escape(end_tag)}", re.DOTALL)
-        updated = pattern.sub(new_block, text)
-    else:
-        target = "## Pipeline Architecture"
-        if target in text:
-            target_idx = text.find(target)
-            updated = (
-                text[:target_idx]
-                + f"{section_title}{new_block}\n\n"
-                + text[target_idx:]
-            )
-        else:
-            updated = text + f"\n\n{section_title}{new_block}\n"
+        text = pattern.sub(f"{lead_text}<!-- @@uml-diag:complete -->\n\n<!-- @@uml-diag:source-table -->", text)
 
-    if updated != text:
-        maintainer_file.write_text(updated, encoding="utf-8")
-        print(f"[generate_api_docs] Updated UML Class Diagram in {maintainer_file}")
+    maintainer_file.write_text(text, encoding="utf-8")
 
 
 def main():
@@ -2218,19 +2584,16 @@ def main():
 
     run_doxygen(repo_root)
 
-    uml_diagram = generate_uml_class_diagram(xml_dir)
-    uml_diagram_sip2json = generate_class_uml_diagram(xml_dir, "sip2json")
-    uml_diagram_sipmessage = generate_class_uml_diagram(xml_dir, "sipmessage")
-    uml_diagram_errors = generate_class_uml_diagram(xml_dir, "sip2json_exception")
+    generate_snippets(repo_root, xml_dir)
 
-    generate_index_md(api_dir / "index.md", uml_diagram)
-    generate_sip2json_md(xml_dir, api_dir / "sip2json.md", uml_diagram_sip2json)
-    generate_sipmessage_md(xml_dir, api_dir / "sipmessage.md", uml_diagram_sipmessage)
+    generate_index_md(api_dir / "index.md")
+    generate_sip2json_md(xml_dir, api_dir / "sip2json.md")
+    generate_sipmessage_md(xml_dir, api_dir / "sipmessage.md")
     generate_constants_md(api_dir / "constants.md")
-    generate_errors_md(xml_dir, api_dir / "errors.md", uml_diagram_errors)
+    generate_errors_md(xml_dir, api_dir / "errors.md")
 
-    update_architecture_uml(arch_file, uml_diagram)
-    update_maintainer_uml(maintainer_file, uml_diagram)
+    update_architecture_uml(arch_file)
+    update_maintainer_uml(maintainer_file)
 
     print("[generate_api_docs] API documentation generation complete.")
 

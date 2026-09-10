@@ -202,7 +202,25 @@ Doxygen operates strictly as an AST/XML extraction engine without generating HTM
   EXCLUDE_PATTERNS       = */tests/* */benchmarks/* */build/*
   GENERATE_XML           = YES
   XML_OUTPUT             = doxygen_xml
-  GENERATE_HTML          = NO
+  RECURSIVE              = YES
+  FILE_PATTERNS          = *.hpp *.h
+  EXCLUDE_PATTERNS       = */tests/* */benchmarks/* */build/*
+  GENERATE_XML           = YES
+  XML_OUTPUT             = doxygen_xml
+  GENERATE_HTML          = YES
+  HTML_OUTPUT            = doxygen_html
+  HAVE_DOT               = YES
+  DOT_IMAGE_FORMAT       = svg
+  DOT_CLEANUP            = NO
+  UML_LOOK               = YES
+  UML_LIMIT_NUM_FIELDS   = 50
+  CLASS_DIAGRAMS         = YES
+  CLASS_GRAPH            = YES
+  COLLABORATION_GRAPH    = YES
+  INCLUDE_GRAPH          = YES
+  INCLUDED_BY_GRAPH      = YES
+  DIRECTORY_GRAPH        = YES
+  DOT_TRANSPARENT        = YES
   GENERATE_LATEX         = NO
   EXTRACT_ALL            = YES
   EXTRACT_STATIC         = YES
@@ -232,10 +250,9 @@ Doxygen operates strictly as an AST/XML extraction engine without generating HTM
 3. **Authentic Test Snippets**:
    - Example code blocks are extracted directly from live regression and benchmark tests (`tests/regression/`, `tests/validation/`) with file path and line citations. Zero manufactured examples.
 
-4. **UML Class Diagram & Source Links**:
-   - Class hierarchies, method signatures, and exception taxonomies are dynamically derived from Doxygen XML AST.
-   - Generates interactive Mermaid class diagrams with clickable links targeting the source header files on GitHub.
-   - Automatically injected into [`docs/maintainers/maintainer_guide.md`](maintainer_guide.md), [`docs/architecture/index.md`](../architecture/index.md), and [`docs/api/index.md`](../api/index.md) on every build.
+4. **Native GraphViz UML Diagrams via Doxygen**:
+   - Rather than cooking intermediate manual markdown files, UML diagrams are generated natively by **GraphViz (`dot`) via Doxygen** directly into vector SVGs in `docs/doxygen_html/`.
+   - Embedded inline by `docs/hooks.py` with responsive CSS scaling, dark-mode color adaptation, and native Material tab switching for dual inheritance/collaboration views.
 
 ---
 
@@ -246,11 +263,39 @@ The MkDocs build lifecycle executes [`docs/hooks.py`](https://github.com/SiddiqS
 1. **`on_config`**:
    - Resolves SemVer version from `GITVERSION_SEMVER`, `CI_BUILDID`, `GitVersion.yml`, or `git describe`.
    - Executes `generate_dependencies_md.py` to document active CPM dependencies.
-   - Executes `generate_api_docs.py` to regenerate API reference from Doxygen XML.
+   - Executes `generate_api_docs.py` which triggers Doxygen + GraphViz to generate XML (`docs/doxygen_xml/`) and SVG diagrams (`docs/doxygen_html/`).
    - Executes `publish_benchmarks.py` to update architecture benchmark metrics.
    - Injects the resolved version into `config['extra']['version']`.
 2. **`on_page_markdown`**:
    - Dynamically replaces `{{ version }}` and `{{ tag_version }}` placeholders across all markdown pages at build time.
+   - Dynamically expands `<!-- @@uml-diag:... -->` directives by querying the Doxygen AST catalog and resolving to GraphViz SVGs.
+
+### UML Diagram Directives Grammar & GraphViz Resolver
+
+Markdown documentation files remain clean, human-editable, and version-controlled by referencing auto-generated UML diagrams through semantic directives. No intermediate `uml_xxxx.md` files are maintained; Doxygen and GraphViz generate diagrams directly from C++ headers.
+
+To prevent HTML validation issues, GitHub Pages / Jekyll Liquid parser crashes, or interference with adjacent Markdown elements, directives use the standard HTML comment syntax `<!-- @@uml-diagram:... -->` or `<!-- @@uml-diag:... -->`:
+
+| Query / Directive Syntax | Entity Kind / Aspect | GraphViz Target Resolved | Example Use Case |
+| :--- | :--- | :--- | :--- |
+| `<!-- @@uml-diag:<class-name> -->` | Class / Struct | Resolves `{refid}__inherit__graph.svg` and/or `__coll__graph.svg`. Renders tabbed view if both exist. | `<!-- @@uml-diag:sipmessage -->`, `<!-- @@uml-diag:sip2json -->` |
+| `<!-- @@uml-diag:inheritance:<class> -->` | Inheritance View | Explicit inheritance hierarchy only (`{refid}__inherit__graph.svg`) | `<!-- @@uml-diag:inheritance:sipmessage -->`, `<!-- @@uml-diag:inherit:sip2json_exception -->` |
+| `<!-- @@uml-diag:collaboration:<class> -->` | Collaboration View | Explicit member/field associations only (`{refid}__coll__graph.svg`) | `<!-- @@uml-diag:collaboration:sipmessage -->`, `<!-- @@uml-diag:coll:sip2json -->` |
+| `<!-- @@uml-diag:struct:<name> -->` | Struct | Explicit struct search (`struct{refid}__coll__graph.svg`) | `<!-- @@uml-diag:struct:InvokeOnDestruct -->` |
+| `<!-- @@uml-diag:enum:<name> -->` | Enum | Synthesizes authentic UML enumeration diagram with all enumerators via `dot -Tsvg` | `<!-- @@uml-diag:enum:sip2jsonErrors -->`, `<!-- @@uml-diag:enum:SIPMessageType -->` |
+| `<!-- @@uml-diag:file:<name> -->` | Header File | Include dependency and included-by (dependent) graphs (`{refid}__incl.svg`, `{refid}__dep__incl.svg`) | `<!-- @@uml-diag:file:sipmessage.hpp -->`, `<!-- @@uml-diag:includes:sip2json.hpp -->` |
+| `<!-- @@uml-diagram:namespace -->` | Namespace | Namespace overview diagram (`docs/snippets/uml-namespace.md`) | System architecture namespace section |
+| `<!-- @@uml-diag:complete -->` | System Overview | Complete system class diagram (`docs/snippets/uml-complete.md`) | Architecture index, maintainer guide |
+| `<!-- @@uml-diag:structure -->` | Subsystem Topology | Architecture layered topology flowchart | Architecture subsystem breakdown |
+| `<!-- @@uml-diag:control-flow -->` | Sequence Flow | Stream parsing sequence diagram | Stream mechanics & async parsing |
+| `<!-- @@uml-diag:source-table -->` | Source Matrix | Markdown mapping table with GitHub links | System mapping table |
+
+#### Handling Refactoring, Renames, and File Moves:
+* **Decoupled from File Paths**: Compound symbols (classes, structs, enums) are cataloged from `docs/doxygen_xml/index.xml` by their C++ AST identifier. If a header file is moved (e.g. from `include/siddiqsoft/sipmessage.hpp` to `include/siddiqsoft/messages/sipmessage.hpp`), `siddiqsoft::sipmessage` remains unchanged and its GraphViz diagram resolves seamlessly.
+* **Class & Struct Renames**: When a class is renamed in C++, Doxygen generates fresh XML and SVG output on the next documentation build. The resolver matches exact symbols, short names, and normalized identifiers (case-insensitive, ignoring underscores).
+* **Code Modifications (Fields, Methods, Bases)**: Adding methods, fields, or modifying inheritance hierarchy causes Doxygen and GraphViz to automatically update the diagram SVGs. The Markdown directives require zero manual edits.
+* **Zero HTML / GitHub Pages Violations**: Standard HTML comments `<!-- ... -->` conform to W3C HTML5 and CommonMark specifications. They never trigger Liquid parser errors on GitHub Pages and remain completely invisible when viewing raw Markdown files on GitHub.
+* **Code Block & Table Shielding**: Backticks and fenced code blocks in Markdown (e.g. within tables or syntax guides) are shielded with placeholders before replacement, preventing inadvertent expansion inside documentation examples.
 
 ---
 

@@ -23,7 +23,7 @@ flowchart TD
 
 | Guide | Description |
 | :--- | :--- |
-| [**Maintainer Guide**](maintainer_guide.md) | Codebase architecture, UML class diagram, source code mapping, and bulk clang-format instructions |
+| [**Maintainer Guide**](maintainer_guide.md) | Codebase architecture, UML directive grammar (`@@uml-diag:`), class diagrams, and bulk clang-format instructions |
 | [**CI/CD Pipelines**](pipelines.md) | Multi-platform pipeline architecture, platform matrix, and parameters reference |
 | [**CMake Presets**](cmake_presets.md) | Decoupled presets hierarchy, `project-base.json`, and preset reference |
 | [**Development Workflow**](workflow.md) | Local building, testing, standalone validation subproject, and macOS toolchain management |

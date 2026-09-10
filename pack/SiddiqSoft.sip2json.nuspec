@@ -23,7 +23,7 @@
         <icon>docs\Siddiq-Software-Avatar.png</icon>
         <readme>docs\README.md</readme>
         <releaseNotes>
-## v3.1.0 Release - Clean JavaScript-like Modern C++20 API &amp; Streamlined Architecture
+## v3.2.0 Release - Clean JavaScript-like Modern C++20 API &amp; Streamlined Architecture
 
 ### Key Highlights
 - **Zero-Regex Architecture**: Pure zero-copy C++20 std::string_view tokenization and FNV-1 header matching.
