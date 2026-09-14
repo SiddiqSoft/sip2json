@@ -333,7 +333,9 @@
   
 
 
-<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="sip2json" class="md-nav__button md-logo" aria-label="sip2json" data-md-component="logo">
       
@@ -1360,121 +1362,6 @@
               </div>
             
             
-              
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
-                <div class="md-sidebar__scrollwrap">
-                  <div class="md-sidebar__inner">
-                    
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#performance-benchmarks_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Performance &amp; Benchmarks
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#2-running-benchmarks-locally" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2. Running Benchmarks Locally
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#platform-performance-variance-host-architecture" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Platform Performance Variance &amp; Host Architecture
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Platform Performance Variance &amp; Host Architecture">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#key-factors-influencing-cross-platform-measurements" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Key Factors Influencing Cross-Platform Measurements
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Key Factors Influencing Cross-Platform Measurements">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#1-bare-metal-vs-hypervisor-virtualization-memory-address-translation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        1. Bare-Metal vs. Hypervisor Virtualization (Memory &amp; Address Translation)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#2-heterogeneous-core-scheduling-performance-vs-efficiency-cores" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2. Heterogeneous Core Scheduling (Performance vs. Efficiency Cores)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#3-microarchitecture-target-defaults-build-optimization-flags" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3. Microarchitecture Target Defaults &amp; Build Optimization Flags
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-                  </div>
-                </div>
-              </div>
-            
           
           
             <div class="md-content" data-md-component="content">
@@ -1541,9 +1428,9 @@
 <h2 id="performance-benchmarks_1">Performance &amp; Benchmarks<a class="headerlink" href="#performance-benchmarks_1" title="Permanent link">&para;</a></h2>
 <div class="admonition note">
 <p class="admonition-title">Build Release &amp; Runner Environment</p>
-<p><strong>Build Release &amp; Version</strong>: <code>3.2.0-17</code>
+<p><strong>Build Release &amp; Version</strong>: <code>3.2.0-22</code>
 <strong>CI Matrix Host Runners (Derived from Pipeline)</strong>:
-- <strong>macOS Runner</strong>: macdev.siddiq.org (4 Cores, 24 MHz)
+- <strong>macOS Runner</strong>: macdev.local (4 Cores, 24 MHz)
 - <strong>Windows Runner</strong>: WINDEV (4 Cores, 3072 MHz)
 - <strong>Linux Runner</strong>: lba4.siddiq.org (4 Cores, 48 MHz)</p>
 </div>
@@ -1564,29 +1451,29 @@
 <tr>
 <td style="text-align: left;"><strong>Apple macOS (arm64)</strong></td>
 <td style="text-align: center;">AppleClang</td>
-<td style="text-align: left;"><strong>72,785.61 msg/s</strong></td>
-<td style="text-align: center;"><strong>191.84 MB/s</strong></td>
-<td style="text-align: left;"><strong>13.74 us</strong></td>
-<td style="text-align: left;"><strong>76,663.03 msg/s</strong></td>
-<td style="text-align: left;"><strong>13.04 us</strong></td>
+<td style="text-align: left;"><strong>72,091.33 msg/s</strong></td>
+<td style="text-align: center;"><strong>190.01 MB/s</strong></td>
+<td style="text-align: left;"><strong>13.87 us</strong></td>
+<td style="text-align: left;"><strong>75,482.73 msg/s</strong></td>
+<td style="text-align: left;"><strong>13.25 us</strong></td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>Microsoft Windows (arm64)</strong></td>
 <td style="text-align: center;">MSVC</td>
-<td style="text-align: left;"><strong>51,653.58 msg/s</strong></td>
-<td style="text-align: center;"><strong>136.14 MB/s</strong></td>
-<td style="text-align: left;"><strong>19.36 us</strong></td>
-<td style="text-align: left;"><strong>41,638.07 msg/s</strong></td>
-<td style="text-align: left;"><strong>24.02 us</strong></td>
+<td style="text-align: left;"><strong>49,529.93 msg/s</strong></td>
+<td style="text-align: center;"><strong>130.54 MB/s</strong></td>
+<td style="text-align: left;"><strong>20.19 us</strong></td>
+<td style="text-align: left;"><strong>42,493.43 msg/s</strong></td>
+<td style="text-align: left;"><strong>23.53 us</strong></td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>Red Hat Enterprise Linux (arm64)</strong></td>
 <td style="text-align: center;">GCC</td>
-<td style="text-align: left;"><strong>50,706.90 msg/s</strong></td>
-<td style="text-align: center;"><strong>133.64 MB/s</strong></td>
-<td style="text-align: left;"><strong>19.72 us</strong></td>
-<td style="text-align: left;"><strong>60,532.20 msg/s</strong></td>
-<td style="text-align: left;"><strong>16.52 us</strong></td>
+<td style="text-align: left;"><strong>55,378.18 msg/s</strong></td>
+<td style="text-align: center;"><strong>145.96 MB/s</strong></td>
+<td style="text-align: left;"><strong>18.06 us</strong></td>
+<td style="text-align: left;"><strong>59,964.48 msg/s</strong></td>
+<td style="text-align: left;"><strong>16.68 us</strong></td>
 </tr>
 </tbody>
 </table>
@@ -1742,7 +1629,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.2.0-17"}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "toc.integrate", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.2.0-22"}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>

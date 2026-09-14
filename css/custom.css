@@ -20,10 +20,10 @@
   --font-family-code: var(--md-code-font, "JetBrains Mono"), SFMono-Regular, Consolas, Menlo, Monaco, monospace;
 
   /* Standard Display Sizing (Default base: 0.94rem) */
-  --font-size-base: 0.94rem;
-  --font-size-code: 0.82rem;
-  --font-size-nav: 0.84rem;
-  --font-size-table: 0.82rem;
+  --font-size-base: 1.02rem;
+  --font-size-code: 1.02rem;
+  --font-size-nav: 0.94rem;
+  --font-size-table: 0.80rem;
   --font-size-h1: 1.55rem;
   --font-size-h2: 1.25rem;
   --font-size-h3: 1.02rem;
@@ -482,7 +482,7 @@ hr, .md-typeset hr {
 .api-summary-table {
   width: 100%;
   border-collapse: collapse;
-  margin: 1rem 0 1.5rem 0;
+  margin: 0.94rem 0 1.2rem 0;
   font-size: var(--font-size-table) !important;
 }
 
@@ -1129,6 +1129,57 @@ hr, .md-typeset hr {
   display: inline-block;
   white-space: nowrap;
   vertical-align: baseline;
+}
+
+/* ==========================================================================
+   GraphViz UML Diagram Styling & Responsiveness
+   ========================================================================== */
+.uml-diagram-container.graphviz-uml {
+  margin: 1.5rem 0;
+  display: block;
+  text-align: center;
+}
+
+.uml-diagram-container.graphviz-uml .uml-diagram-figure {
+  margin: 0 auto;
+  display: inline-block;
+  max-width: 100%;
+}
+
+.uml-diagram-container.graphviz-uml .uml-diagram-viewport {
+  overflow-x: auto;
+  max-width: 100%;
+  padding: 1rem;
+  border-radius: 8px;
+  background-color: #ffffff;
+  border: 1px solid var(--md-default-fg-color--lightest, #e2e8f0);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.uml-diagram-container.graphviz-uml svg.graphviz-uml-svg {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+.uml-diagram-container.graphviz-uml figcaption {
+  margin-top: 0.6rem;
+  font-size: 0.84rem;
+  color: var(--md-default-fg-color--light, #64748b);
+  font-style: italic;
+  text-align: center;
+}
+
+/* Dark mode palette adaptation for GraphViz SVGs */
+[data-md-color-scheme="slate"] .uml-diagram-container.graphviz-uml .uml-diagram-viewport {
+  background-color: #1e293b;
+  border-color: #334155;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+}
+
+[data-md-color-scheme="slate"] .uml-diagram-container.graphviz-uml svg.graphviz-uml-svg {
+  filter: invert(0.88) hue-rotate(180deg);
 }
 
 

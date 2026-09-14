@@ -333,7 +333,9 @@
   
 
 
-<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="sip2json" class="md-nav__button md-logo" aria-label="sip2json" data-md-component="logo">
       
@@ -1445,209 +1447,6 @@
               </div>
             
             
-              
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
-                <div class="md-sidebar__scrollwrap">
-                  <div class="md-sidebar__inner">
-                    
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#architectural-rationale" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Architectural Rationale
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#top-level-message-json-section-keys" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Top-Level Message JSON Section Keys
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#start-line-json-field-keys" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Start-Line JSON Field Keys
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#meta-section-field-keys" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Meta Section Field Keys
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#standard-sip-methods" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Standard SIP Methods
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Standard SIP Methods">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#valid-methods-array" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Valid Methods Array
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#protocol-network-constants" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Protocol &amp; Network Constants
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#registration-ttl-intervals" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Registration &amp; TTL Intervals
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#supported-content-types" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Supported Content Types
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#authentication-schemes-subscription-states" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Authentication Schemes &amp; Subscription States
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#wire-framing-parsing-delimiters" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Wire Framing &amp; Parsing Delimiters
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#canonical-header-key-constants-hf_" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Canonical Header Key Constants (HF_*)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#header-key-sets-compact-aliases-hfs_" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Header Key Sets &amp; Compact Aliases (HFS_*)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#header-normalization-fnv-1a-hashing" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Header Normalization &amp; FNV-1a Hashing
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Header Normalization &amp; FNV-1a Hashing">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#live-test-example" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Live Test Example
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-                  </div>
-                </div>
-              </div>
-            
           
           
             <div class="md-content" data-md-component="content">
@@ -2567,11 +2366,19 @@
 <p><code>Authorization</code> does not have an official RFC 3261 compact form. The parser recognizes <code>uthorization</code> (mapped via <code>siddiqsoft::HFS_AUTHORIZATION</code>) as a quirks-mode compatibility workaround for corrupt SIP frames generated by certain legacy gateways where the leading character <code>'A'</code> is dropped.</p>
 </div>
 <h2 id="header-normalization-fnv-1a-hashing">Header Normalization &amp; FNV-1a Hashing<a class="headerlink" href="#header-normalization-fnv-1a-hashing" title="Permanent link">&para;</a></h2>
+<div class="grid">
+<div class="api-intro-col">
 <p>The parser matches incoming headers in $O(1)$ time by evaluating a <code>constexpr</code> 64-bit Fowler-Noll-Vo-1a hash over the string:</p>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">uint64_t</span><span class="w"> </span><span class="nf">hash_header_key</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">len</span><span class="p">)</span><span class="w"> </span><span class="k">noexcept</span><span class="p">;</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">uint64_t</span><span class="w"> </span><span class="nf">hash_header_key</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string_view</span><span class="w"> </span><span class="n">sv</span><span class="p">)</span><span class="w"> </span><span class="k">noexcept</span><span class="p">;</span>
 </span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="k">const</span><span class="w"> </span><span class="n">HeaderKeySet</span><span class="o">&amp;</span><span class="w"> </span><span class="nf">canonicalizeHeaderKey</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string_view</span><span class="w"> </span><span class="n">keyFromPayload</span><span class="p">);</span>
 </span></code></pre></div>
+</div>
+<div class="api-diag-col">
+<p><strong>HeaderKeySet UML Class Diagram</strong></p>
+<!-- @@uml-diag:HeaderKeySet -->
+</div>
+</div>
 <h3 id="live-test-example">Live Test Example<a class="headerlink" href="#live-test-example" title="Permanent link">&para;</a></h3>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1">// Source: tests/regression/src/rule_of_five_tests.cpp:L40-L45</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">auto</span><span class="w"> </span><span class="n">callId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">siddiqsoft</span><span class="o">::</span><span class="n">createCallId</span><span class="p">();</span>
@@ -2680,7 +2487,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.2.0-17"}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "toc.integrate", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.2.0-22"}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>

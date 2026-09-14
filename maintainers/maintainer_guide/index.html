@@ -333,7 +333,9 @@
   
 
 
-<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="sip2json" class="md-nav__button md-logo" aria-label="sip2json" data-md-component="logo">
       
@@ -1078,6 +1080,34 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#referencing-uml-diagrams-in-documentation-uml-diag-grammar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Referencing UML Diagrams in Documentation (@@uml-diag: Grammar)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Referencing UML Diagrams in Documentation (@@uml-diag: Grammar)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#markdown-html-compatibility-guarantees" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Markdown &amp; HTML Compatibility Guarantees:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1410,171 +1440,6 @@
               </div>
             
             
-              
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
-                <div class="md-sidebar__scrollwrap">
-                  <div class="md-sidebar__inner">
-                    
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#documentation-index" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Documentation Index
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#codebase-architecture-uml-class-diagram" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Codebase Architecture &amp; UML Class Diagram
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Codebase Architecture &amp; UML Class Diagram">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#source-code-mapping" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Source Code Mapping
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#source-code-formatting-clang-format" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Source Code Formatting (Clang-Format)
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Source Code Formatting (Clang-Format)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#how-to-bulk-clang-format-the-source-code" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        How to Bulk Clang-Format the Source Code
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="How to Bulk Clang-Format the Source Code">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#option-1-via-cmake-build-target-recommended" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Option 1: Via CMake Build Target (Recommended)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#option-2-bulk-command-line-via-find-macos-linux" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Option 2: Bulk Command-Line via Find (macOS &amp; Linux)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#option-3-bulk-command-line-via-git-cross-platform" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Option 3: Bulk Command-Line via Git (Cross-Platform)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#option-4-bulk-powershell-script-windows" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Option 4: Bulk PowerShell Script (Windows)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#option-5-editor-ide-integration" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Option 5: Editor &amp; IDE Integration
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#maintainer-pre-flight-checklist" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Maintainer Pre-Flight Checklist
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-                  </div>
-                </div>
-              </div>
-            
           
           
             <div class="md-content" data-md-component="content">
@@ -1695,7 +1560,6 @@
 </table>
 <hr />
 <h2 id="codebase-architecture-uml-class-diagram">Codebase Architecture &amp; UML Class Diagram<a class="headerlink" href="#codebase-architecture-uml-class-diagram" title="Permanent link">&para;</a></h2>
-<!-- UML_CLASS_DIAGRAM_START -->
 <p>The following UML class diagram illustrates the primary classes, relationships, and exception hierarchy in <code>siddiqsoft::sip2json</code>. The diagram is auto-generated from the C++ source AST via Doxygen XML. Each node in the diagram links directly to its source header file on GitHub.</p>
 <pre class="mermaid"><code>classDiagram
     direction TB
@@ -1719,66 +1583,82 @@
 
     class sip2json["siddiqsoft::sip2json"] {
         &lt;&lt;final utility&gt;&gt;
-        +parseAsync(string_view&amp; buffer, onMsg, onErr)$ size_t
+        +parseAsync(string_view&amp; frameBuffer, callback parseCallback, callback errorCallback)$ size_t
         +parse(string_view&amp; buffer)$ vector~sipmessage~
         +parseFromBuffer(string_view&amp; buffer)$ sipmessage
-        +serialize(sipmessage&amp; msg)$ string
+        +serialize(sipmessage&amp; sipm)$ string
     }
     class sip2json:::utilityClass
 
     class sipmessage["siddiqsoft::sipmessage"] {
         +sipmessage()
-        +sipmessage(string_view method, string_view uri, string_view callId, uint32_t cseq)
-        +sipmessage(const json&amp; src)
+        +headers() auto&amp;
+        +getHeader(string&amp; key, optional~T~ defaultValue) auto
+        +hasHeader(string_view key) bool
+        +setUserAgent(string&amp; ua) auto&amp;
+        +getUserAgent() auto
+        +getContentLength() uint32_t
+        +getExpires() uint32_t
+        +getContentTypeView() string_view
+        +getContentType() string
+        +getCallID() auto
+        +getMethod() auto
+        +getUri() auto
         +getMethodView() string_view
         +getUriView() string_view
-        +getCallIDView() string_view
-        +getStatusCode() uint32_t
         +getReasonView() string_view
-        +getHeader(string_view key) string
-        +setHeader(string_view key, string_view val) sipmessage&amp;
-        +hasHeader(string_view key) bool
-        +getContentTypeView() string_view
+        +getCallIDView() string_view
+        +getStatusCode() auto
+        +getReason() auto
+        +body() auto&amp;
+        +hasBody() bool
+        +getBodyElement(json_pointer&amp; jp, T&amp; defaultValue) T
+        +isMessageRequest() bool
+        +isMessageResponse() bool
+        +setHeader(string&amp; key, T&amp; v) sipmessage&amp;
+        +setBody(json_pointer&amp; key, T&amp; v) sipmessage&amp;
     }
     class sipmessage:::coreClass
 
     class HeaderKeySet["siddiqsoft::HeaderKeySet"] {
-        +string_view canonicalKey
-        +string_view canonicalUpper
-        +char compactAlias
-        +uint64_t hash
-        +HeaderKeySet(string_view key)
-        +canonical() string_view
-        +lower() string_view
+        +bool isCanonical
+        +bool isMultiLine
+        +bool isCustom
+        +HeaderKeySet() constexpr
+        +canonical() string&amp;
+        +lower() string&amp;
+        +alt() string&amp;
     }
     class HeaderKeySet:::coreClass
 
     class SIPMessageType["siddiqsoft::SIPMessageType"] {
         &lt;&lt;enumeration&gt;&gt;
-        Request = 1
-        Response = 2
+        notspecified
+        request = 1
+        response = 2
     }
     class SIPMessageType:::enumClass
 
     class sip2jsonErrors["siddiqsoft::sip2jsonErrors"] {
         &lt;&lt;enumeration&gt;&gt;
-        unknown = -1
-        success = 0
-        invalid_document = 1
-        empty_message = 2
-        invalid_startline = 3
-        incomplete_buffer_for_header = 4
-        incomplete_buffer_for_content = 5
-        incomplete_buffer_for_parse = 6
-        missing_required_element = 7
-        unsupported_contenttype = 8
+        ok = 0
+        incomplete_buffer_for_parse
+        incomplete_buffer_for_content
+        incomplete_buffer_for_header
+        invalid_startline
+        unsupported_contenttype
+        missing_required_element
+        invalid_document
+        invalid_document_unsupported_method
+        invalid_document_unsupported_content
+        empty_message
+        unknown = 0xFFFFFFFF
     }
     class sip2jsonErrors:::enumClass
 
     class sip2json_exception["siddiqsoft::sip2json_exception"] {
         +sip2jsonErrors errCode
-        +sip2json_exception(string message, sip2jsonErrors code)
-        +what() const char*
+        +sip2json_exception(string&amp; msg)
     }
     class sip2json_exception:::exceptionClass
 
@@ -1819,9 +1699,9 @@
     link sip2json "https://github.com/SiddiqSoft/sip2json/blob/master/include/siddiqsoft/sip2json.hpp" "Source: include/siddiqsoft/sip2json.hpp"
     link sipmessage "https://github.com/SiddiqSoft/sip2json/blob/master/include/siddiqsoft/sipmessage.hpp" "Source: include/siddiqsoft/sipmessage.hpp"
     link HeaderKeySet "https://github.com/SiddiqSoft/sip2json/blob/master/include/siddiqsoft/private/sip2json_header_keys.hpp" "Source: include/siddiqsoft/private/sip2json_header_keys.hpp"
+    link sip2json_exception "https://github.com/SiddiqSoft/sip2json/blob/master/include/siddiqsoft/private/sip2json_exception.hpp" "Source: include/siddiqsoft/private/sip2json_exception.hpp"
     link SIPMessageType "https://github.com/SiddiqSoft/sip2json/blob/master/include/siddiqsoft/sipmessage.hpp" "Source: include/siddiqsoft/sipmessage.hpp"
     link sip2jsonErrors "https://github.com/SiddiqSoft/sip2json/blob/master/include/siddiqsoft/private/sip2json_exception.hpp" "Source: include/siddiqsoft/private/sip2json_exception.hpp"
-    link sip2json_exception "https://github.com/SiddiqSoft/sip2json/blob/master/include/siddiqsoft/private/sip2json_exception.hpp" "Source: include/siddiqsoft/private/sip2json_exception.hpp"
     link empty_message_error "https://github.com/SiddiqSoft/sip2json/blob/master/include/siddiqsoft/private/sip2json_exception.hpp" "Source: include/siddiqsoft/private/sip2json_exception.hpp"
     link incomplete_buffer_for_content_error "https://github.com/SiddiqSoft/sip2json/blob/master/include/siddiqsoft/private/sip2json_exception.hpp" "Source: include/siddiqsoft/private/sip2json_exception.hpp"
     link incomplete_buffer_for_header_error "https://github.com/SiddiqSoft/sip2json/blob/master/include/siddiqsoft/private/sip2json_exception.hpp" "Source: include/siddiqsoft/private/sip2json_exception.hpp"
@@ -1929,8 +1809,84 @@
 </tr>
 </tbody>
 </table>
-<!-- UML_CLASS_DIAGRAM_END -->
-
+<hr />
+<h3 id="referencing-uml-diagrams-in-documentation-uml-diag-grammar">Referencing UML Diagrams in Documentation (<code>@@uml-diag:</code> Grammar)<a class="headerlink" href="#referencing-uml-diagrams-in-documentation-uml-diag-grammar" title="Permanent link">&para;</a></h3>
+<p>To keep all documentation Markdown files clean, human-editable, and version-controlled, diagrams and tables are <strong>never</strong> hard-coded or directly pasted as raw Mermaid code blocks. Instead, maintainers embed lightweight, semantic <code>@@uml-diag:</code> or <code>@@uml-diagram:</code> directives.</p>
+<p>To ensure <strong>100% Markdown and HTML compatibility</strong> (avoiding any GitHub Pages, Jekyll Liquid syntax errors, W3C HTML5 validator warnings, or interference with adjacent Markdown elements), the canonical syntax wraps the directive inside standard HTML comments <code>&lt;!-- @@uml-diagram:... --&gt;</code> or <code>&lt;!-- @@uml-diag:... --&gt;</code>:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Canonical Directive Syntax</th>
+<th style="text-align: left;">Alternative Syntax</th>
+<th style="text-align: left;">Target Description</th>
+<th style="text-align: left;">Example Target</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>&lt;!-- @@uml-diag:complete --&gt;</code></td>
+<td style="text-align: left;"><code>@@uml-diag:complete</code></td>
+<td style="text-align: left;">Full system UML class diagram</td>
+<td style="text-align: left;">System architecture, maintainer guide</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>&lt;!-- @@uml-diagram:namespace --&gt;</code></td>
+<td style="text-align: left;"><code>@@uml-diagram:namespace</code></td>
+<td style="text-align: left;">Namespace package architecture &amp; boundary diagram</td>
+<td style="text-align: left;">Architecture namespace section</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>&lt;!-- @@uml-diagram:namespace:&lt;name&gt; --&gt;</code></td>
+<td style="text-align: left;"><code>@@uml-diagram:namespace:&lt;name&gt;</code></td>
+<td style="text-align: left;">Specific namespace package (e.g. <code>siddiqsoft</code>)</td>
+<td style="text-align: left;">Specific package mapping</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>&lt;!-- @@uml-diag:&lt;class-name&gt; --&gt;</code></td>
+<td style="text-align: left;"><code>@@uml-diag:&lt;class-name&gt;</code></td>
+<td style="text-align: left;">Targeted class UML diagram (e.g. <code>sip2json</code>, <code>sipmessage</code>, <code>HeaderKeySet</code>)</td>
+<td style="text-align: left;">Class reference API pages</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>&lt;!-- @@uml-diag:class:&lt;class-name&gt; --&gt;</code></td>
+<td style="text-align: left;"><code>@@uml-diag:class:&lt;class-name&gt;</code></td>
+<td style="text-align: left;">Explicit class specifier</td>
+<td style="text-align: left;">Class reference API pages</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>&lt;!-- @@uml-diag:structure --&gt;</code></td>
+<td style="text-align: left;"><code>@@uml-diag:structure</code></td>
+<td style="text-align: left;">Subsystem topology &amp; layered architecture flowchart</td>
+<td style="text-align: left;">Subsystem structure overview</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>&lt;!-- @@uml-diag:control-flow --&gt;</code></td>
+<td style="text-align: left;"><code>@@uml-diag:control-flow</code></td>
+<td style="text-align: left;">Stream parsing linear control-flow sequence diagram</td>
+<td style="text-align: left;">Stream mechanics &amp; async parsing</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>&lt;!-- @@uml-diag:source-table --&gt;</code></td>
+<td style="text-align: left;"><code>@@uml-diag:source-table</code></td>
+<td style="text-align: left;">Source code mapping table with GitHub links</td>
+<td style="text-align: left;">Mapping tables</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>&lt;!-- @@uml-diag:errors --&gt;</code></td>
+<td style="text-align: left;"><code>@@uml-diag:errors</code></td>
+<td style="text-align: left;">Diagnostic exceptions &amp; error code hierarchy</td>
+<td style="text-align: left;">Error handling reference</td>
+</tr>
+</tbody>
+</table>
+<h4 id="markdown-html-compatibility-guarantees">Markdown &amp; HTML Compatibility Guarantees:<a class="headerlink" href="#markdown-html-compatibility-guarantees" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>HTML &amp; CommonMark Compliant</strong>: Wrapping in <code>&lt;!-- ... --&gt;</code> represents an isolated HTML block per CommonMark 0.30+ specification, preventing conflicts with Markdown headers, list indentation, tables, or emphasis.</li>
+<li><strong>GitHub Pages &amp; Jekyll Safe</strong>: Unlike template curly braces <code>{{ ... }}</code> which trigger Jekyll Liquid parse errors on GitHub Pages, HTML comments pass through cleanly without causing build failures.</li>
+<li><strong>Clean Web Repository Browsing</strong>: On github.com, HTML comments remain hidden, preventing raw directive text from displaying on unrendered Markdown pages.</li>
+<li><strong>Flexible Parser</strong>: The hook (<a href="../documentation/#8-dynamic-build-hooks-docshookspy"><code><span class="filepath-dir">docs/</span><wbr><span class="filepath-name">hooks.py</span></code></a>) also supports Markdown invisible link comments <code>[//]: # (@@uml-diag:...)</code>, HTML tags <code>&lt;div class="uml-diagram" data-diagram="..."&gt;&lt;/div&gt;</code>, and bare <code>@@uml-diag:...</code> lines.</li>
+<li><strong>Automated Clickable Source Links</strong>: All generated diagrams automatically include clickable GitHub source links (<code><span class="filepath-dir">link ClassName "https://github.com/</span><wbr><span class="filepath-name">..."</span></code>).</li>
+</ul>
 <hr />
 <h2 id="source-code-formatting-clang-format">Source Code Formatting (Clang-Format)<a class="headerlink" href="#source-code-formatting-clang-format" title="Permanent link">&para;</a></h2>
 <p>All C++ source code (<code>include/</code>, <code>tests/</code>, and <code>benchmarks/</code>) adheres to the formatting rules defined in <a href="https://github.com/SiddiqSoft/sip2json/blob/master/.clang-format"><code>.clang-format</code></a> at the repository root.</p>
@@ -2011,6 +1967,7 @@
 <li><strong>Validate Documentation</strong>: Verify zero broken links or markdown syntax errors:
    <div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>mkdocs<span class="w"> </span>build<span class="w"> </span>--strict
 </span></code></pre></div></li>
+<li><strong>Major Version Updates</strong>: When introducing breaking API changes or preparing a major version release, manually update the <code>next-version:</code> entry in <a href="https://github.com/SiddiqSoft/sip2json/blob/master/GitVersion.yml"><code>GitVersion.yml</code></a> (e.g. <code>next-version: 4.0.0</code>) so GitVersion establishes the new major version baseline.</li>
 </ol>
 
 
@@ -2107,7 +2064,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.2.0-17"}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "toc.integrate", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.2.0-22"}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>

@@ -333,7 +333,9 @@
   
 
 
-<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="sip2json" class="md-nav__button md-logo" aria-label="sip2json" data-md-component="logo">
       
@@ -1204,6 +1206,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="1. Dynamic Versioning &amp; Documentation Hooks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gitversion-configuration-major-version-updates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GitVersion Configuration &amp; Major Version Updates
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1326,87 +1345,6 @@
               </div>
             
             
-              
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
-                <div class="md-sidebar__scrollwrap">
-                  <div class="md-sidebar__inner">
-                    
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#release-workflow" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Release Workflow
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#1-dynamic-versioning-documentation-hooks" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        1. Dynamic Versioning &amp; Documentation Hooks
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#2-nuget-packaging-publication" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2. NuGet Packaging &amp; Publication
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#3-mkdocs-site-publication-gh-pages" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3. MkDocs Site Publication (gh-pages)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#related-topics" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Related Topics
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-                  </div>
-                </div>
-              </div>
-            
           
           
             <div class="md-content" data-md-component="content">
@@ -1517,13 +1455,22 @@
 <ol>
 <li>
 <p><strong><a href="https://github.com/SiddiqSoft/sip2json/blob/master/docs/hooks.py"><code><span class="filepath-dir">docs/</span><wbr><span class="filepath-name">hooks.py</span></code></a></strong>:
-   Dynamically injects GitVersion SemVer into site metadata (<code>config['extra']['version']</code>) and replaces <code>3.2.0-17</code> and <code>v3.2.0</code> placeholders across all markdown files.</p>
+   Dynamically injects GitVersion SemVer into site metadata (<code>config['extra']['version']</code>) and replaces <code>3.2.0-22</code> and <code>v3.2.0</code> placeholders across all markdown files.</p>
 </li>
 <li>
 <p><strong><a href="https://github.com/SiddiqSoft/sip2json/blob/master/scripts/publish_benchmarks.py"><code><span class="filepath-dir">scripts/</span><wbr><span class="filepath-name">publish_benchmarks.py</span></code></a></strong>:
    Collects benchmark outputs across build matrix platforms, extracts CPU architecture and core count, and renders responsive platform-grouped benchmark tables and visual comparison charts into <a href="../../architecture/benchmarks/"><code><span class="filepath-dir">docs/architecture/</span><wbr><span class="filepath-name">benchmarks.md</span></code></a>.</p>
 </li>
 </ol>
+<h3 id="gitversion-configuration-major-version-updates">GitVersion Configuration &amp; Major Version Updates<a class="headerlink" href="#gitversion-configuration-major-version-updates" title="Permanent link">&para;</a></h3>
+<p>Version calculation is driven by <a href="https://github.com/SiddiqSoft/sip2json/blob/master/GitVersion.yml"><code>GitVersion.yml</code></a> located at the repository root:</p>
+<ul>
+<li><strong>Automated Increments</strong>: Minor and patch increments are computed dynamically by GitVersion based on branch types and commit message pragmas (<code>+semver: feature|minor</code>, <code>+semver: fix|patch</code>).</li>
+<li><strong>Manual Major Version Reflection</strong>: For breaking changes or major milestone increments (e.g. transitioning from <code>3.x</code> to <code>4.0.0</code>), maintainers <strong>must manually update the <code>next-version:</code> field in <a href="https://github.com/SiddiqSoft/sip2json/blob/master/GitVersion.yml"><code>GitVersion.yml</code></a></strong>:
+  <div class="language-yaml highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">next-version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4.0.0</span>
+</span></code></pre></div>
+  This explicit declaration is required because GitVersion relies on the <code>ConfiguredNextVersion</code> strategy to establish the new major version baseline. Without updating <code>next-version:</code> in <code>GitVersion.yml</code>, GitVersion will continue incrementing against the previous major baseline across all CI/CD build stages, NuGet package generation, GitHub release creation, and MkDocs site publication.</li>
+</ul>
 <hr />
 <h2 id="2-nuget-packaging-publication">2. NuGet Packaging &amp; Publication<a class="headerlink" href="#2-nuget-packaging-publication" title="Permanent link">&para;</a></h2>
 <p>NuGet packaging (<code>NuGetCommand@2 pack</code>) runs during the Windows Release job:
@@ -1638,7 +1585,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.2.0-17"}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "toc.integrate", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.2.0-22"}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
