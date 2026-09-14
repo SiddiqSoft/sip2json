@@ -1,5 +1,7 @@
 # siddiqsoft::sipmessage Class Reference
 
+<div class="grid" markdown="1">
+<div class="api-intro-col" markdown="1">
 <div class="api-header-block">
   <div class="api-module-name">Namespace siddiqsoft</div>
   <div class="api-header-file">Inherits <strong>public nlohmann::json</strong> &bull; #include &lt;siddiqsoft/sipmessage.hpp&gt;</div>
@@ -7,11 +9,17 @@
 
 Represents a Session Initiation Protocol (SIP) message with native JSON serialization. Provides accessors for start-line / status-line fields, standard RFC 3261 headers, SDP bodies, and metadata tracking.
 
-## Class Hierarchy & Inheritance
+</div>
+<div class="api-diag-col" markdown="1">
 
-The following UML class diagram highlights `siddiqsoft::sipmessage` within the system architecture. Each node links directly to its source header file on GitHub:
+**Class Hierarchy & Inheritance**
+
+The following UML class diagram highlights `siddiqsoft::sipmessage` within the system architecture.
 
 <!-- @@uml-diag:sipmessage -->
+
+</div>
+</div>
 
 ## Member Functions Summary
 

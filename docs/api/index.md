@@ -20,19 +20,19 @@ The `siddiqsoft` namespace provides data structures, stream parsing utilities, d
 <table class="api-summary-table">
   <tr>
     <td class="memtype"><code>class</code></td>
-    <td class="memitemleft"><a href="sip2json.md"><strong>siddiqsoft::sip2json</strong></a><div class="mdesc">Static utility class for streaming, parsing, and serializing SIP and SDP messages.</div></td>
+    <td class="memitemleft"><a href="sip2json/"><strong>siddiqsoft::sip2json</strong></a><div class="mdesc">Static utility class for streaming, parsing, and serializing SIP and SDP messages.</div></td>
   </tr>
   <tr>
     <td class="memtype"><code>class</code></td>
-    <td class="memitemleft"><a href="sipmessage.md"><strong>siddiqsoft::sipmessage</strong></a><div class="mdesc">Primary message DTO inheriting <code>nlohmann::json</code>. Represents request and response packets.</div></td>
+    <td class="memitemleft"><a href="sipmessage/"><strong>siddiqsoft::sipmessage</strong></a><div class="mdesc">Primary message DTO inheriting <code>nlohmann::json</code>. Represents request and response packets.</div></td>
   </tr>
   <tr>
     <td class="memtype"><code>class</code></td>
-    <td class="memitemleft"><a href="errors.md#exception-class-hierarchy"><strong>siddiqsoft::sip2json_exception</strong></a><div class="mdesc">Base exception class for parse syntax, framing, and serialization failures.</div></td>
+    <td class="memitemleft"><a href="errors/#exception-class-hierarchy"><strong>siddiqsoft::sip2json_exception</strong></a><div class="mdesc">Base exception class for parse syntax, framing, and serialization failures.</div></td>
   </tr>
   <tr>
     <td class="memtype"><code>class</code></td>
-    <td class="memitemleft"><a href="constants.md#header-key-sets--compact-aliases-hfs_"><strong>siddiqsoft::HeaderKeySet</strong></a><div class="mdesc">Canonical header metadata and compact alias mapping descriptor.</div></td>
+    <td class="memitemleft"><a href="constants/#header-key-sets--compact-aliases-hfs_"><strong>siddiqsoft::HeaderKeySet</strong></a><div class="mdesc">Canonical header metadata and compact alias mapping descriptor.</div></td>
   </tr>
 </table>
 
@@ -41,15 +41,15 @@ The `siddiqsoft` namespace provides data structures, stream parsing utilities, d
 <table class="api-summary-table">
   <tr>
     <td class="memtype"><code>constants</code></td>
-    <td class="memitemleft"><a href="constants.md"><strong>Protocol &amp; Header Constants</strong></a><div class="mdesc">Complete dictionary of methods, JSON section keys, delimiters, and canonical headers.</div></td>
+    <td class="memitemleft"><a href="constants/"><strong>Protocol &amp; Header Constants</strong></a><div class="mdesc">Complete dictionary of methods, JSON section keys, delimiters, and canonical headers.</div></td>
   </tr>
   <tr>
     <td class="memtype"><code>enum class</code></td>
-    <td class="memitemleft"><a href="errors.md#sip2jsonerrors-enumeration"><strong>siddiqsoft::sip2jsonErrors</strong></a><div class="mdesc">Diagnostic error classification passed to <code>parseAsync</code> error callbacks.</div></td>
+    <td class="memitemleft"><a href="errors/#sip2jsonerrors-enumeration"><strong>siddiqsoft::sip2jsonErrors</strong></a><div class="mdesc">Diagnostic error classification passed to <code>parseAsync</code> error callbacks.</div></td>
   </tr>
   <tr>
     <td class="memtype"><code>enum class</code></td>
-    <td class="memitemleft"><a href="sipmessage.md"><strong>siddiqsoft::SIPMessageType</strong></a><div class="mdesc">Discriminator distinguishing request (1) from response (2) messages.</div></td>
+    <td class="memitemleft"><a href="sipmessage/"><strong>siddiqsoft::SIPMessageType</strong></a><div class="mdesc">Discriminator distinguishing request (1) from response (2) messages.</div></td>
   </tr>
 </table>
 

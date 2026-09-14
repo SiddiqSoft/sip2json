@@ -187,8 +187,6 @@ class DoxygenGraphvizCatalog:
 
         def _adjust_svg_tag(match):
             tag = match.group(0)
-            tag = re.sub(r'\s+width="[^"]*"', '', tag)
-            tag = re.sub(r'\s+height="[^"]*"', '', tag)
             if 'class=' not in tag:
                 tag = tag.replace('<svg', '<svg class="graphviz-uml-svg" style="max-width: 100%; height: auto;"')
             else:
@@ -239,12 +237,12 @@ class DoxygenGraphvizCatalog:
 
     def wrap_svg(self, svg_content: str, diagram_id: str, graph_type: str, display_name: str) -> str:
         return f"""<div class="uml-diagram-container graphviz-uml" data-diagram="{diagram_id}" data-graph-type="{graph_type}">
-  <figure class="uml-diagram-figure">
-    <div class="uml-diagram-viewport">
-      {svg_content}
-    </div>
-    <figcaption>Figure: GraphViz UML {graph_type} diagram for <code>{display_name}</code></figcaption>
-  </figure>
+<span class="uml-diagram-figure" style="display: block;">
+<span class="uml-diagram-viewport" style="display: block;">
+{svg_content.strip()}
+</span>
+<span class="uml-diagram-figcaption" style="display: block; text-align: center; font-style: italic; margin-top: 0.5em;">Figure: GraphViz UML {graph_type} diagram for <code>{display_name}</code></span>
+</span>
 </div>"""
 
     def resolve(self, raw_target: str) -> str:

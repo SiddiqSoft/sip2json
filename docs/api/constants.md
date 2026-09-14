@@ -217,6 +217,8 @@ RFC 3261 defines single-character compact aliases to minimize packet size over M
 
 ## Header Normalization & FNV-1a Hashing
 
+<div class="grid" markdown="1">
+<div class="api-intro-col" markdown="1">
 The parser matches incoming headers in $O(1)$ time by evaluating a `constexpr` 64-bit Fowler-Noll-Vo-1a hash over the string:
 
 ```cpp
@@ -224,10 +226,15 @@ constexpr uint64_t hash_header_key(const char* s, size_t len) noexcept;
 constexpr uint64_t hash_header_key(std::string_view sv) noexcept;
 const HeaderKeySet& canonicalizeHeaderKey(std::string_view keyFromPayload);
 ```
+</div>
+<div class="api-diag-col" markdown="1">
 
-### HeaderKeySet UML Class Diagram
+**HeaderKeySet UML Class Diagram**
 
 <!-- @@uml-diag:HeaderKeySet -->
+
+</div>
+</div>
 
 ### Live Test Example
 

@@ -50,6 +50,8 @@ enum class sip2jsonErrors : uint32_t {
 
 ## Exception Class Hierarchy
 
+<div class="grid" markdown="1">
+<div class="api-intro-col" markdown="1">
 All exceptions derive from `std::exception` via `siddiqsoft::sip2json_exception`:
 
 ```text
@@ -64,10 +66,15 @@ std::exception
       |-- missing_required_element
       \-- empty_message_error
 ```
+</div>
+<div class="api-diag-col" markdown="1">
 
-### Exception Class UML Diagram
+**Exception Class UML Diagram**
 
 <!-- @@uml-diag:sip2json_exception -->
+
+</div>
+</div>
 
 ### Exception Handling Example
 

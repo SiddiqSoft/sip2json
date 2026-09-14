@@ -189,9 +189,12 @@ namespace siddiqsoft {
                 it->push_back(std::move(value));
             else {
                 auto existing = *it;
-                *it           = nlohmann::json::array({existing, std::move(value)});
+                // Update the existing array with the new value (swap it out)
+                *it = nlohmann::json::array({existing, std::move(value)});
             }
         } else {
+            // This is really tricky! The library has lots of overloads to stuff arrays but we need
+            // to ensure that the value is always stored as an array, even if it's the first entry.
             headersJson.emplace(targetKey, nlohmann::json::array({std::move(value)}));
         }
     }
@@ -208,6 +211,7 @@ namespace siddiqsoft {
 
         uint64_t len   = 0;
         auto [ptr, ec] = std::from_chars(value.data(), value.data() + value.size(), len);
+        // Guard against invalid content length values and excessively large sizes.
         if (ec != std::errc() || ptr != (value.data() + value.size()) || len > 100 * 1024 * 1024)
             throw invalid_document_error {std::format("storeHeaderValue:Invalid Content-Length value '{}'", value)};
         return static_cast<uint32_t>(len);
@@ -457,17 +461,27 @@ namespace siddiqsoft {
     inline std::vector<sipmessage> sip2json::parse(std::string::iterator&       bufferStart,
                                                    const std::string::iterator& bufferEnd) noexcept(false)
     {
+        // Bailout if the buffer is empty.
         if (bufferStart == bufferEnd) return {};
+
+        // Convert the iterator range to a string_view for parsing.
         const char*      pStart = std::to_address(bufferStart);
         const char*      pEnd   = std::to_address(bufferEnd);
         std::string_view sv(pStart, static_cast<size_t>(pEnd - pStart));
-        auto             msgs     = parse(sv);
-        size_t           consumed = (pEnd - pStart) - sv.size();
-        bufferStart += consumed;
+
+        // Parse the buffer using the string_view API.
+        // This can throw..
+        auto msgs = parse(sv);
+
+        // At this point the parse worked with at least one message..
+        // Update the iterator to reflect the consumed portion of the buffer.
+        bufferStart += size_t((pEnd - pStart) - sv.size());
+
+        // Return the parsed messages.
         return msgs;
     }
 
-    /// @brief De-serialize the *first* SIP message (if present) from the buffer view and advances the view.
+    /// @brief De-serialize the *first* SIP message (if present) from the buffer view and advances the view. Only a single validmessage is consumed.
     /// @param buffer Buffer view containing SIP message.
     /// @return A sipmessage object containing the decoded message.
     inline sipmessage sip2json::parseFromBuffer(std::string_view& buffer) noexcept(false)

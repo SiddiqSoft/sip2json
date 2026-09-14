@@ -1,5 +1,7 @@
 # siddiqsoft::sip2json Class Reference
 
+<div class="grid" markdown="1">
+<div class="api-intro-col" markdown="1">
 <div class="api-header-block">
   <div class="api-module-name">Namespace siddiqsoft</div>
   <div class="api-header-file">#include &lt;siddiqsoft/sip2json.hpp&gt;</div>
@@ -7,11 +9,17 @@
 
 Final utility class providing static routines for encoding, decoding, and streaming SIP and SDP payloads to and from `nlohmann::json` documents.
 
-## Class Hierarchy & Inheritance
+</div>
+<div class="api-diag-col" markdown="1">
 
-The following UML class diagram highlights `siddiqsoft::sip2json` within the system architecture. Each node links directly to its source header file on GitHub:
+**Class Hierarchy & Inheritance**
+
+The following UML class diagram highlights `siddiqsoft::sip2json` within the system architecture.
 
 <!-- @@uml-diag:sip2json -->
+
+</div>
+</div>
 
 ## Static Public Member Functions
 
@@ -277,7 +285,7 @@ static sipmessage siddiqsoft::sip2json::parseFromBuffer(
 
 De-serialize the first SIP message from the buffer view and advances the view past the message.
 
-De-serialize the first SIP message (if present) from the buffer view and advances the view.
+De-serialize the first SIP message (if present) from the buffer view and advances the view. Only a single validmessage is consumed.
 
 <div class="memdoc-section-title">Parameters</div>
 
