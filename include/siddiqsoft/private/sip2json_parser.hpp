@@ -530,6 +530,14 @@ namespace siddiqsoft {
         return sipm;
     }
 
+    /// @brief De-serialize the *first* SIP message (if present) from the iterator range and advances the iterator. Only a single valid message is consumed.
+    /// @param bufferStart Iterator pointing to the beginning of the buffer.
+    /// @param bufferEnd Iterator pointing to the end of the buffer.
+    /// @note This implementation is a backward compatible wrapper around the string_view-based parseFromBuffer method.
+    /// @return The first parsed SIP message, or an empty message if the buffer is empty.
+    /// @throws incomplete_buffer_for_parse_error if the buffer does not contain a complete SIP message.
+    /// @throws unsupported_contenttype_error if the SIP message contains an unsupported Content-Type.
+    /// @throws incomplete_buffer_for_content_error if the buffer does not contain the full content as specified by Content-Length.
     inline sipmessage sip2json::parseFromBuffer(std::string::iterator&       bufferStart,
                                                 const std::string::iterator& bufferEnd) noexcept(false)
     {
